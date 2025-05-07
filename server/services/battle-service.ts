@@ -176,6 +176,22 @@ export const battleService = {
       
       await storage.joinBattle(battleId, userId, team);
       
+      // Broadcast the join event via WebSocket if available
+      if ((global as any).broadcastToBattle) {
+        const user = await storage.getUserById(userId);
+        (global as any).broadcastToBattle(battleId.toString(), {
+          type: 'user_joined',
+          battleId: battleId,
+          user: {
+            id: user.id,
+            username: user.username,
+            profileImage: user.profileImage || ''
+          },
+          team: team,
+          timestamp: new Date().toISOString()
+        });
+      }
+      
       // Check if the battle is now full and should start
       const updatedParticipants = await storage.getBattleParticipants(battleId);
       
@@ -233,6 +249,18 @@ export const battleService = {
       // Submit the answer
       await storage.submitBattleAnswer(battleId, userId, answer);
       
+      // Broadcast the submission event via WebSocket if available
+      if ((global as any).broadcastToBattle) {
+        const user = await storage.getUserById(userId);
+        (global as any).broadcastToBattle(battleId.toString(), {
+          type: 'submission_update',
+          battleId: battleId,
+          userId: userId,
+          username: user.username,
+          timestamp: new Date().toISOString()
+        });
+      }
+      
       // Check if all participants have submitted
       const participants = await storage.getBattleParticipants(battleId);
       const allSubmitted = participants.every(p => p.submission);
@@ -240,6 +268,16 @@ export const battleService = {
       if (allSubmitted) {
         // Mark the battle as completed
         await storage.completeBattle(battleId);
+        
+        // Broadcast the battle completion event
+        if ((global as any).broadcastToBattle) {
+          (global as any).broadcastToBattle(battleId.toString(), {
+            type: 'battle_completed',
+            battleId: battleId,
+            message: "All participants have submitted their answers. The battle is complete and will be judged by AI.",
+            timestamp: new Date().toISOString()
+          });
+        }
       }
       
       return res.status(200).json({ message: "Answer submitted successfully" });

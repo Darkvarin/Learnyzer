@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import { setupAuth } from "./auth";
 import { authService } from "./services/auth-service";
 import { userService } from "./services/user-service";
@@ -63,6 +64,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/achievements/:id", userService.getAchievementById);
 
   const httpServer = createServer(app);
+  
+  // Set up WebSocket server for real-time battle updates
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  // Store active connections by user ID and battle ID
+  const connections = new Map<string, WebSocket>();
+  
+  wss.on('connection', (ws) => {
+    console.log('WebSocket connection established');
+    let userId: string | null = null;
+    let battleId: string | null = null;
+    
+    ws.on('message', (message) => {
+      try {
+        const data = JSON.parse(message.toString());
+        
+        // Handle authentication
+        if (data.type === 'auth') {
+          userId = data.userId;
+          connections.set(`user_${userId}`, ws);
+          console.log(`User ${userId} authenticated via WebSocket`);
+        }
+        
+        // Handle battle join
+        if (data.type === 'join_battle') {
+          battleId = data.battleId;
+          connections.set(`battle_${battleId}_user_${userId}`, ws);
+          console.log(`User ${userId} joined battle ${battleId} via WebSocket`);
+          
+          // Notify all battle participants
+          broadcastToBattle(battleId, {
+            type: 'user_joined',
+            userId: userId,
+            battleId: battleId,
+            timestamp: new Date().toISOString()
+          });
+        }
+        
+        // Handle battle message
+        if (data.type === 'battle_message' && battleId) {
+          broadcastToBattle(battleId, {
+            type: 'message',
+            userId: userId,
+            battleId: battleId,
+            content: data.content,
+            timestamp: new Date().toISOString()
+          });
+        }
+        
+        // Handle battle submission
+        if (data.type === 'battle_submission' && battleId) {
+          broadcastToBattle(battleId, {
+            type: 'submission_update',
+            userId: userId,
+            battleId: battleId,
+            timestamp: new Date().toISOString()
+          });
+        }
+      } catch (error) {
+        console.error('Error processing WebSocket message:', error);
+      }
+    });
+    
+    ws.on('close', () => {
+      if (userId) {
+        connections.delete(`user_${userId}`);
+        if (battleId) {
+          connections.delete(`battle_${battleId}_user_${userId}`);
+          broadcastToBattle(battleId, {
+            type: 'user_left',
+            userId: userId,
+            battleId: battleId,
+            timestamp: new Date().toISOString()
+          });
+        }
+      }
+      console.log('WebSocket connection closed');
+    });
+  });
+  
+  // Helper function to broadcast messages to all battle participants
+  function broadcastToBattle(battleId: string, message: any) {
+    const battlePrefix = `battle_${battleId}_user_`;
+    
+    for (const [key, connection] of connections.entries()) {
+      if (key.startsWith(battlePrefix) && connection.readyState === WebSocket.OPEN) {
+        connection.send(JSON.stringify(message));
+      }
+    }
+  }
+  
+  // Export the broadcast function for use in battle service
+  (global as any).broadcastToBattle = broadcastToBattle;
 
   return httpServer;
 }
