@@ -15,14 +15,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, History, Sword } from "lucide-react";
 import { format, parseISO } from "date-fns";
+import { BattleDetail } from "@/components/battle/battle-detail";
 
 export default function BattleZone() {
+  const [selectedBattle, setSelectedBattle] = useState<Battle | null>(null);
   const { data: battles, isLoading } = useQuery<{
     active: Battle[],
     upcoming: Battle[],
     past: Battle[]
   }>({
     queryKey: ['/api/battles'],
+  });
+  
+  // Fetch specific battle details when selected
+  const { data: battleDetail, isLoading: isLoadingBattleDetail } = useQuery<Battle>({
+    queryKey: [`/api/battles/${selectedBattle?.id}`],
+    enabled: !!selectedBattle,
   });
   
   const { toast } = useToast();
@@ -82,6 +90,15 @@ export default function BattleZone() {
     joinBattleMutation.mutate(battleId);
   };
   
+  const handleViewBattle = (battle: Battle) => {
+    setSelectedBattle(battle);
+  };
+  
+  const handleCloseBattleDetail = () => {
+    setSelectedBattle(null);
+    queryClient.invalidateQueries({ queryKey: ['/api/battles'] });
+  };
+  
   const handleCreateBattle = () => {
     if (!battleTitle.trim()) {
       toast({
@@ -134,11 +151,18 @@ export default function BattleZone() {
       <MobileNavigation />
       
       <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold font-gaming">Battle Zone</h1>
-            <p className="text-gray-400 mt-1">Compete with other students and earn rewards</p>
-          </div>
+        {selectedBattle && battleDetail ? (
+          <BattleDetail 
+            battle={battleDetail}
+            onClose={handleCloseBattleDetail}
+          />
+        ) : (
+          <>
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+              <div>
+                <h1 className="text-2xl font-bold font-gaming">Battle Zone</h1>
+                <p className="text-gray-400 mt-1">Compete with other students and earn rewards</p>
+              </div>
           
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
@@ -482,6 +506,8 @@ export default function BattleZone() {
             )}
           </TabsContent>
         </Tabs>
+          </>
+        )}
       </main>
     </div>
   );
