@@ -39,6 +39,7 @@ function App() {
                 <ProtectedRoute path="/ai-tools" component={AiTools} />
                 <ProtectedRoute path="/ai-tools/study-notes" component={StudyNotesGenerator} />
                 <ProtectedRoute path="/ai-tools/answer-checker" component={AnswerChecker} />
+                <ProtectedRoute path="/ai-tools/performance" component={PerformanceAnalytics} />
                 <ProtectedRoute path="/ai-tutor" component={AiTutor} />                 
                 <ProtectedRoute path="/profile" component={ProfileSettings} />
                 <ProtectedRoute path="/create-profile" component={CreateProfile} />
