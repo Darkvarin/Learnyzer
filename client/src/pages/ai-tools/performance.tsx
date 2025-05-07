@@ -23,60 +23,14 @@ export default function PerformanceAnalytics() {
     queryKey: ['/api/ai/tools/analytics/' + (user?.id || ''), timeRange, subjectFilter],
   });
   
-  // Use real API data if available, otherwise use empty placeholders
+  // Use real API data if available, otherwise use empty data structures
   const analyticsData = performanceData || {
-    subjectPerformance: [
-      { subject: "Mathematics", score: 78, average: 65 },
-      { subject: "Science", score: 92, average: 70 },
-      { subject: "English", score: 85, average: 75 },
-      { subject: "History", score: 65, average: 60 },
-      { subject: "Geography", score: 88, average: 72 }
-    ],
-    timeSpent: [
-      { date: '2023-04-01', hours: 2.5 },
-      { date: '2023-04-02', hours: 1.8 },
-      { date: '2023-04-03', hours: 3.2 },
-      { date: '2023-04-04', hours: 2.0 },
-      { date: '2023-04-05', hours: 4.1 },
-      { date: '2023-04-06', hours: 1.5 },
-      { date: '2023-04-07', hours: 3.7 }
-    ],
-    skillDistribution: [
-      { name: 'Problem Solving', value: 35 },
-      { name: 'Memorization', value: 20 },
-      { name: 'Critical Thinking', value: 25 },
-      { name: 'Application', value: 20 }
-    ],
-    weakestAreas: [
-      { topic: "Calculus - Differential Equations", score: 45 },
-      { topic: "Physics - Quantum Mechanics", score: 52 },
-      { topic: "Grammar - Complex Sentences", score: 58 }
-    ],
-    strengths: [
-      { topic: "Algebra - Equations", score: 95 },
-      { topic: "Science - Biology", score: 92 },
-      { topic: "Literature - Poetry Analysis", score: 88 }
-    ],
-    recommendations: [
-      {
-        id: 1,
-        title: "Focus on Differential Equations",
-        description: "Your weakest area is calculus, particularly differential equations. Consider spending 30% more time practicing these problems.",
-        category: "weakness"
-      },
-      {
-        id: 2,
-        title: "Maintain Your Algebra Skills",
-        description: "You're excelling in algebra. Keep up the good work and consider helping peers with this subject to reinforce your knowledge.",
-        category: "strength"
-      },
-      {
-        id: 3,
-        title: "Adjust Study Schedule",
-        description: "Your data shows you're most effective when studying in the morning. Consider shifting more complex topics to this time period.",
-        category: "habit"
-      }
-    ]
+    subjectPerformance: [],
+    timeSpent: [],
+    skillDistribution: [],
+    weaknesses: [],
+    strengths: [],
+    recommendations: []
   };
   
   // Dynamic colors
@@ -209,24 +163,41 @@ export default function PerformanceAnalytics() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={analyticsData.subjectPerformance}
-                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                      <XAxis dataKey="subject" stroke="#999" />
-                      <YAxis stroke="#999" />
-                      <Tooltip 
-                        contentStyle={{ backgroundColor: '#1e1e1e', borderColor: '#333' }}
-                        labelStyle={{ color: '#fff' }}
-                        itemStyle={{ color: '#fff' }}
-                      />
-                      <Legend />
-                      <Bar dataKey="score" name="Your Score" fill="#8884d8" />
-                      <Bar dataKey="average" name="Class Average" fill="#82ca9d" />
-                    </BarChart>
-                  </ResponsiveContainer>
+                  {isLoadingPerformance ? (
+                    <div className="h-full flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                        <p className="text-muted-foreground">Loading performance data...</p>
+                      </div>
+                    </div>
+                  ) : analyticsData.subjectPerformance.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={analyticsData.subjectPerformance}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                        <XAxis dataKey="subject" stroke="#999" />
+                        <YAxis stroke="#999" />
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: '#1e1e1e', borderColor: '#333' }}
+                          labelStyle={{ color: '#fff' }}
+                          itemStyle={{ color: '#fff' }}
+                        />
+                        <Legend />
+                        <Bar dataKey="score" name="Your Score" fill="#8884d8" />
+                        <Bar dataKey="average" name="Class Average" fill="#82ca9d" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-full flex items-center justify-center">
+                      <div className="text-center p-4">
+                        <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                        <p className="text-muted-foreground">No subject performance data available yet.</p>
+                        <p className="text-sm text-muted-foreground">Complete more activities to generate insights.</p>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
               
@@ -238,47 +209,68 @@ export default function PerformanceAnalytics() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-sm font-medium mb-2 flex items-center">
-                        <Badge className="mr-2 bg-red-500/20 text-red-400 hover:bg-red-500/30">Needs Improvement</Badge>
-                      </h4>
-                      <div className="space-y-2">
-                        {analyticsData.weaknesses.map((area, index) => (
-                          <div key={index} className="flex items-center">
-                            <div className="w-full bg-dark-card rounded-full h-4 mr-2">
-                              <div
-                                className="bg-gradient-to-r from-red-500/50 to-red-400 h-4 rounded-full"
-                                style={{ width: `${area.score}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-sm whitespace-nowrap w-12">{area.score}%</span>
-                            <span className="text-sm ml-2 text-muted-foreground">{area.topic}</span>
-                          </div>
-                        ))}
+                  {isLoadingPerformance ? (
+                    <div className="h-80 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                        <p className="text-muted-foreground">Analyzing your learning patterns...</p>
                       </div>
                     </div>
-                    
-                    <div>
-                      <h4 className="text-sm font-medium mb-2 flex items-center">
-                        <Badge className="mr-2 bg-green-500/20 text-green-400 hover:bg-green-500/30">Strong Areas</Badge>
-                      </h4>
-                      <div className="space-y-2">
-                        {analyticsData.strengths.map((area, index) => (
-                          <div key={index} className="flex items-center">
-                            <div className="w-full bg-dark-card rounded-full h-4 mr-2">
-                              <div
-                                className="bg-gradient-to-r from-green-500/50 to-green-400 h-4 rounded-full"
-                                style={{ width: `${area.score}%` }}
-                              ></div>
+                  ) : analyticsData.weaknesses.length > 0 || analyticsData.strengths.length > 0 ? (
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="text-sm font-medium mb-2 flex items-center">
+                          <Badge className="mr-2 bg-red-500/20 text-red-400 hover:bg-red-500/30">Needs Improvement</Badge>
+                        </h4>
+                        <div className="space-y-2">
+                          {analyticsData.weaknesses.length > 0 ? analyticsData.weaknesses.map((area, index) => (
+                            <div key={index} className="flex items-center">
+                              <div className="w-full bg-dark-card rounded-full h-4 mr-2">
+                                <div
+                                  className="bg-gradient-to-r from-red-500/50 to-red-400 h-4 rounded-full"
+                                  style={{ width: `${area.score}%` }}
+                                ></div>
+                              </div>
+                              <span className="text-sm whitespace-nowrap w-12">{area.score}%</span>
+                              <span className="text-sm ml-2 text-muted-foreground">{area.topic}</span>
                             </div>
-                            <span className="text-sm whitespace-nowrap w-12">{area.score}%</span>
-                            <span className="text-sm ml-2 text-muted-foreground">{area.topic}</span>
-                          </div>
-                        ))}
+                          )) : (
+                            <p className="text-sm text-muted-foreground">No improvement areas identified yet</p>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-sm font-medium mb-2 flex items-center">
+                          <Badge className="mr-2 bg-green-500/20 text-green-400 hover:bg-green-500/30">Strong Areas</Badge>
+                        </h4>
+                        <div className="space-y-2">
+                          {analyticsData.strengths.length > 0 ? analyticsData.strengths.map((area, index) => (
+                            <div key={index} className="flex items-center">
+                              <div className="w-full bg-dark-card rounded-full h-4 mr-2">
+                                <div
+                                  className="bg-gradient-to-r from-green-500/50 to-green-400 h-4 rounded-full"
+                                  style={{ width: `${area.score}%` }}
+                                ></div>
+                              </div>
+                              <span className="text-sm whitespace-nowrap w-12">{area.score}%</span>
+                              <span className="text-sm ml-2 text-muted-foreground">{area.topic}</span>
+                            </div>
+                          )) : (
+                            <p className="text-sm text-muted-foreground">No strengths identified yet</p>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="h-80 flex items-center justify-center">
+                      <div className="text-center p-4">
+                        <Brain className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                        <p className="text-muted-foreground">No strength/weakness data available yet.</p>
+                        <p className="text-sm text-muted-foreground">Complete more quizzes and assessments to generate insights.</p>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -293,30 +285,47 @@ export default function PerformanceAnalytics() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ReLineChart
-                    data={analyticsData.timeSpent}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                    <XAxis dataKey="date" stroke="#999" />
-                    <YAxis stroke="#999" />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#1e1e1e', borderColor: '#333' }}
-                      labelStyle={{ color: '#fff' }}
-                      itemStyle={{ color: '#fff' }}
-                    />
-                    <Legend />
-                    <Line 
-                      type="monotone" 
-                      dataKey="hours" 
-                      name="Study Hours" 
-                      stroke="#8884d8" 
-                      activeDot={{ r: 8 }}
-                      strokeWidth={2}
-                    />
-                  </ReLineChart>
-                </ResponsiveContainer>
+                {isLoadingPerformance ? (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                      <p className="text-muted-foreground">Loading time data...</p>
+                    </div>
+                  </div>
+                ) : analyticsData.timeSpent.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ReLineChart
+                      data={analyticsData.timeSpent}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                      <XAxis dataKey="date" stroke="#999" />
+                      <YAxis stroke="#999" />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#1e1e1e', borderColor: '#333' }}
+                        labelStyle={{ color: '#fff' }}
+                        itemStyle={{ color: '#fff' }}
+                      />
+                      <Legend />
+                      <Line 
+                        type="monotone" 
+                        dataKey="hours" 
+                        name="Study Hours" 
+                        stroke="#8884d8" 
+                        activeDot={{ r: 8 }}
+                        strokeWidth={2}
+                      />
+                    </ReLineChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-center p-4">
+                      <Clock className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                      <p className="text-muted-foreground">No study time data available yet.</p>
+                      <p className="text-sm text-muted-foreground">Complete more courses to track your study hours.</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -330,30 +339,47 @@ export default function PerformanceAnalytics() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RePieChart>
-                    <Pie
-                      data={analyticsData.skillDistribution}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={true}
-                      outerRadius={120}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                    >
-                      {analyticsData.skillDistribution.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#1e1e1e', borderColor: '#333' }}
-                      labelStyle={{ color: '#fff' }}
-                      itemStyle={{ color: '#fff' }}
-                    />
-                    <Legend />
-                  </RePieChart>
-                </ResponsiveContainer>
+                {isLoadingPerformance ? (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                      <p className="text-muted-foreground">Analyzing your skills...</p>
+                    </div>
+                  </div>
+                ) : analyticsData.skillDistribution && analyticsData.skillDistribution.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RePieChart>
+                      <Pie
+                        data={analyticsData.skillDistribution}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={true}
+                        outerRadius={120}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      >
+                        {analyticsData.skillDistribution.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#1e1e1e', borderColor: '#333' }}
+                        labelStyle={{ color: '#fff' }}
+                        itemStyle={{ color: '#fff' }}
+                      />
+                      <Legend />
+                    </RePieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="text-center p-4">
+                      <PieChart className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                      <p className="text-muted-foreground">No skill distribution data available yet.</p>
+                      <p className="text-sm text-muted-foreground">Complete more activities to generate a skill breakdown.</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -367,18 +393,35 @@ export default function PerformanceAnalytics() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {analyticsData.recommendations.map((rec) => (
-                    <Card key={rec.id} className={`bg-${rec.category === 'weakness' ? 'red' : rec.category === 'strength' ? 'green' : 'blue'}-500/10 border-${rec.category === 'weakness' ? 'red' : rec.category === 'strength' ? 'green' : 'blue'}-500/20`}>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-md">{rec.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm">{rec.description}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                {isLoadingPerformance ? (
+                  <div className="h-80 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                      <p className="text-muted-foreground">Generating personalized insights...</p>
+                    </div>
+                  </div>
+                ) : analyticsData.recommendations && analyticsData.recommendations.length > 0 ? (
+                  <div className="space-y-4">
+                    {analyticsData.recommendations.map((rec) => (
+                      <Card key={rec.id} className={`bg-${rec.category === 'weakness' ? 'red' : rec.category === 'strength' ? 'green' : 'blue'}-500/10 border-${rec.category === 'weakness' ? 'red' : rec.category === 'strength' ? 'green' : 'blue'}-500/20`}>
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-md">{rec.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm">{rec.description}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="h-80 flex items-center justify-center">
+                    <div className="text-center p-4">
+                      <Brain className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                      <p className="text-muted-foreground">No AI insights available yet.</p>
+                      <p className="text-sm text-muted-foreground">Complete more activities to receive personalized recommendations.</p>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

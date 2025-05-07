@@ -22,6 +22,7 @@ import WebSocketTest from "./pages/websocket-test";
 import AiTutor from "./pages/ai-tutor";
 import StudyNotesGenerator from "./pages/ai-tools/study-notes";
 import AnswerChecker from "./pages/ai-tools/answer-checker";
+import PerformanceAnalytics from "./pages/ai-tools/performance";
 
 function App() {
   return (
