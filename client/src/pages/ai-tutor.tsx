@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { useUser } from "@/contexts/user-context";
@@ -8,6 +8,8 @@ import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Send, 
   Mic, 
@@ -19,7 +21,16 @@ import {
   Book,
   GraduationCap,
   FileCheck,
-  UserCircle
+  UserCircle,
+  
+  PenTool,
+  Eraser,
+  ArrowLeftCircle,
+  BarChart4,
+  AlertTriangle,
+  Check,
+  ImageIcon,
+  PieChart
 } from "lucide-react";
 
 export default function AiTutor() {
@@ -27,6 +38,169 @@ export default function AiTutor() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [message, setMessage] = useState("");
+  const [activeTab, setActiveTab] = useState("chat");
+  const [activeTool, setActiveTool] = useState("pen");
+  const [currentSubject, setCurrentSubject] = useState("mathematics");
+  const [currentTopic, setCurrentTopic] = useState("");
+  const [isGeneratingWhiteboard, setIsGeneratingWhiteboard] = useState(false);
+  const [weakPoints, setWeakPoints] = useState<string[]>([]); 
+  const whiteboardRef = useRef<HTMLCanvasElement>(null);
+  const [diagramUrl, setDiagramUrl] = useState<string | null>(null);
+  
+  // Canvas drawing functionality
+  useEffect(() => {
+    const canvas = whiteboardRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    let isDrawing = false;
+    let lastX = 0;
+    let lastY = 0;
+    
+    // Set initial canvas properties
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = activeTool === 'eraser' ? '#1E1E24' : '#ffffff';
+    
+    const draw = (e: MouseEvent) => {
+      if (!isDrawing) return;
+      
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+      
+      [lastX, lastY] = [e.offsetX, e.offsetY];
+    };
+    
+    const startDrawing = (e: MouseEvent) => {
+      isDrawing = true;
+      [lastX, lastY] = [e.offsetX, e.offsetY];
+    };
+    
+    const stopDrawing = () => {
+      isDrawing = false;
+    };
+    
+    // Mobile/touch support
+    const drawTouch = (e: TouchEvent) => {
+      if (!isDrawing || !canvas) return;
+      e.preventDefault();
+      
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      
+      [lastX, lastY] = [x, y];
+    };
+    
+    const startDrawingTouch = (e: TouchEvent) => {
+      if (!canvas) return;
+      e.preventDefault();
+      
+      isDrawing = true;
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      
+      [lastX, lastY] = [x, y];
+    };
+    
+    // Event listeners
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+    
+    canvas.addEventListener('touchstart', startDrawingTouch);
+    canvas.addEventListener('touchmove', drawTouch);
+    canvas.addEventListener('touchend', stopDrawing);
+    
+    return () => {
+      canvas.removeEventListener('mousedown', startDrawing);
+      canvas.removeEventListener('mousemove', draw);
+      canvas.removeEventListener('mouseup', stopDrawing);
+      canvas.removeEventListener('mouseout', stopDrawing);
+      
+      canvas.removeEventListener('touchstart', startDrawingTouch);
+      canvas.removeEventListener('touchmove', drawTouch);
+      canvas.removeEventListener('touchend', stopDrawing);
+    };
+  }, [activeTool]);
+  
+  const clearWhiteboard = () => {
+    const canvas = whiteboardRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+  
+  const setToolColor = (color: string) => {
+    const canvas = whiteboardRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    ctx.strokeStyle = color;
+  };
+  
+  // Mock function to generate diagram - in production, this would use OpenAI's API
+  const generateDiagram = () => {
+    setIsGeneratingWhiteboard(true);
+    
+    // Simulating API call delay
+    setTimeout(() => {
+      // This would be replaced with actual diagram generation API call response
+      const diagrams = {
+        "mathematics": {
+          "calculus": "/sample-whiteboard-calculus.svg",
+          "algebra": "/sample-whiteboard-algebra.svg",
+          "trigonometry": "/sample-whiteboard-trig.svg",
+          "statistics": "/sample-whiteboard-stats.svg"
+        },
+        "physics": {
+          "mechanics": "/sample-whiteboard-mechanics.svg",
+          "electromagnetism": "/sample-whiteboard-em.svg",
+          "quantum": "/sample-whiteboard-quantum.svg"
+        },
+        "chemistry": {
+          "organic": "/sample-whiteboard-organic.svg",
+          "inorganic": "/sample-whiteboard-inorganic.svg"
+        }
+      };
+      
+      // Placeholder image when real diagram generation fails
+      const placeholderDiagram = "https://placehold.co/800x500/1E1E24/FFFFFF/svg?text=Generated+Diagram+for+" + currentTopic.replace(/\s/g, '+');
+      
+      // In production, this would use actual API response
+      setDiagramUrl(placeholderDiagram);
+      setIsGeneratingWhiteboard(false);
+      
+      // Generate mock weak points based on selected topic
+      if (currentTopic) {
+        const mockWeakPoints = [
+          `Understanding ${currentTopic} fundamentals`,
+          `Application of ${currentTopic} in problem-solving`,
+          `Connecting ${currentTopic} to related concepts`
+        ];
+        setWeakPoints(mockWeakPoints);
+      }
+    }, 2000);
+  };
   
   const { data: aiTutor, isLoading: isLoadingTutor } = useQuery({
     queryKey: ['/api/ai/tutor'],
@@ -73,6 +247,29 @@ export default function AiTutor() {
 
   const handlePromptClick = (promptText: string) => {
     setMessage(promptText);
+  };
+  
+  const handleStartTeaching = () => {
+    if (!currentTopic.trim()) {
+      toast({
+        title: "Topic required", 
+        description: "Please enter a specific topic to learn about",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // In production, this would trigger the AI to generate a teaching session
+    toast({
+      title: "Starting teaching session",
+      description: `Preparing a lesson on ${currentTopic} in ${currentSubject}`
+    });
+    
+    // Generate the diagram for whiteboard teaching
+    generateDiagram();
+    
+    // Switch to whiteboard tab
+    setActiveTab("whiteboard");
   };
 
   return (
@@ -156,145 +353,422 @@ export default function AiTutor() {
           {/* Main chat area */}
           <div className="md:col-span-3 flex flex-col">
             <div className="bg-dark-surface rounded-xl border border-dark-border p-6 flex-1 flex flex-col">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold font-gaming">Chat Session</h2>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" className="bg-dark-card hover:bg-dark-hover">
-                    <HelpCircle className="h-4 w-4 mr-2" />
-                    Help
-                  </Button>
-                  <Button variant="outline" size="sm" className="bg-dark-card hover:bg-dark-hover">
-                    New Chat
-                  </Button>
-                </div>
-              </div>
-              
-              {/* Chat messages */}
-              <div className="bg-dark-card rounded-lg p-4 flex-1 min-h-[400px] overflow-y-auto mb-4">
-                {isLoadingConversation ? (
-                  <>
-                    <div className="flex items-start space-x-3 mb-4">
-                      <Skeleton className="w-10 h-10 rounded-full flex-shrink-0" />
-                      <div className="w-full">
-                        <Skeleton className="h-4 w-20 mb-2" />
-                        <Skeleton className="h-4 w-full mb-1" />
-                        <Skeleton className="h-4 w-3/4" />
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <Skeleton className="w-10 h-10 rounded-full flex-shrink-0" />
-                      <div className="w-full">
-                        <Skeleton className="h-4 w-16 mb-2" />
-                        <Skeleton className="h-16 w-full rounded-lg" />
-                      </div>
-                    </div>
-                  </>
-                ) : conversation && conversation.messages && conversation.messages.length > 0 ? (
-                  conversation.messages.map((msg, idx) => (
-                    <div key={idx} className="flex items-start space-x-3 mb-6">
-                      {msg.role === 'assistant' ? (
-                        <>
-                          <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <Robot className="h-5 w-5 text-white" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="text-sm font-semibold text-primary-400 mb-1">{aiTutor?.name || "AI Tutor"}</div>
-                            <div className="bg-dark-surface text-gray-200 p-4 rounded-lg border border-dark-border">
-                              {msg.content}
-                            </div>
-                            <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                              <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-10 h-10 bg-dark-surface rounded-full flex items-center justify-center flex-shrink-0 border border-dark-border">
-                            <UserCircle className="h-6 w-6 text-gray-400" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="text-sm font-semibold mb-1">You</div>
-                            <div className="bg-primary-900/20 text-gray-200 p-4 rounded-lg">
-                              {msg.content}
-                            </div>
-                            <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                              <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
-                            </div>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                    <Robot className="h-16 w-16 mb-4 text-gray-600" />
-                    <p className="text-lg mb-2">Start a conversation with your AI tutor</p>
-                    <p className="text-sm text-center max-w-md">
-                      Ask questions about any subject, request study materials, or get help with difficult concepts.
-                    </p>
+              <Tabs defaultValue="chat" value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <div className="flex items-center justify-between mb-4">
+                  <TabsList className="grid grid-cols-3 w-auto">
+                    <TabsTrigger value="chat" className="text-sm px-4">
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Chat
+                    </TabsTrigger>
+                    <TabsTrigger value="whiteboard" className="text-sm px-4">
+                      <PenTool className="h-4 w-4 mr-2" />
+                      Whiteboard
+                    </TabsTrigger>
+                    <TabsTrigger value="performance" className="text-sm px-4">
+                      <BarChart4 className="h-4 w-4 mr-2" />
+                      Progress
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" className="bg-dark-card hover:bg-dark-hover">
+                      <HelpCircle className="h-4 w-4 mr-2" />
+                      Help
+                    </Button>
+                    <Button variant="outline" size="sm" className="bg-dark-card hover:bg-dark-hover">
+                      New Session
+                    </Button>
                   </div>
-                )}
-              </div>
-              
-              {/* Message input */}
-              <form onSubmit={handleSendMessage} className="relative">
-                <Input
-                  type="text"
-                  placeholder="Ask anything about your studies..."
-                  className="w-full bg-dark-card border border-dark-border focus:border-primary-500 rounded-lg py-3 px-4 text-gray-300 focus:outline-none pr-20 h-12"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  disabled={sendMessageMutation.isPending}
-                />
-                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
-                  <Button type="button" size="icon" variant="ghost" className="text-gray-400 hover:text-white transition-colors">
-                    <Paperclip className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    type="button" 
-                    size="icon" 
-                    variant="ghost"
-                    onClick={handleVoiceInteraction}
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    <Mic className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    type="submit" 
-                    size="icon" 
-                    variant="ghost" 
-                    className="text-gray-400 hover:text-white transition-colors"
-                    disabled={sendMessageMutation.isPending || !message.trim()}
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
                 </div>
-              </form>
-              
-              {/* Quick prompts */}
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                <Button
-                  variant="outline"
-                  className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-3 rounded-lg transition-colors text-left h-auto"
-                  onClick={() => handlePromptClick("Create a study plan for my upcoming exams")}
-                >
-                  <span className="block font-semibold">Create a study plan</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-3 rounded-lg transition-colors text-left h-auto"
-                  onClick={() => handlePromptClick("Explain the concept of quantum mechanics simply")}
-                >
-                  <span className="block font-semibold">Explain quantum mechanics</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-3 rounded-lg transition-colors text-left h-auto"
-                  onClick={() => handlePromptClick("Create practice questions for calculus")}
-                >
-                  <span className="block font-semibold">Generate practice questions</span>
-                </Button>
-              </div>
+                
+                {/* Chat Tab */}
+                <TabsContent value="chat" className="flex-1 flex flex-col mt-0">
+                  {/* Chat messages */}
+                  <div className="bg-dark-card rounded-lg p-4 flex-1 min-h-[400px] overflow-y-auto mb-4">
+                    {isLoadingConversation ? (
+                      <>
+                        <div className="flex items-start space-x-3 mb-4">
+                          <Skeleton className="w-10 h-10 rounded-full flex-shrink-0" />
+                          <div className="w-full">
+                            <Skeleton className="h-4 w-20 mb-2" />
+                            <Skeleton className="h-4 w-full mb-1" />
+                            <Skeleton className="h-4 w-3/4" />
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-3">
+                          <Skeleton className="w-10 h-10 rounded-full flex-shrink-0" />
+                          <div className="w-full">
+                            <Skeleton className="h-4 w-16 mb-2" />
+                            <Skeleton className="h-16 w-full rounded-lg" />
+                          </div>
+                        </div>
+                      </>
+                    ) : conversation && conversation.messages && conversation.messages.length > 0 ? (
+                      conversation.messages.map((msg, idx) => (
+                        <div key={idx} className="flex items-start space-x-3 mb-6">
+                          {msg.role === 'assistant' ? (
+                            <>
+                              <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <Robot className="h-5 w-5 text-white" />
+                              </div>
+                              <div className="flex-1">
+                                <div className="text-sm font-semibold text-primary-400 mb-1">{aiTutor?.name || "AI Tutor"}</div>
+                                <div className="bg-dark-surface text-gray-200 p-4 rounded-lg border border-dark-border">
+                                  {msg.content}
+                                </div>
+                                <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                                  <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="w-10 h-10 bg-dark-surface rounded-full flex items-center justify-center flex-shrink-0 border border-dark-border">
+                                <UserCircle className="h-6 w-6 text-gray-400" />
+                              </div>
+                              <div className="flex-1">
+                                <div className="text-sm font-semibold mb-1">You</div>
+                                <div className="bg-primary-900/20 text-gray-200 p-4 rounded-lg">
+                                  {msg.content}
+                                </div>
+                                <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                                  <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                        <Robot className="h-16 w-16 mb-4 text-gray-600" />
+                        <p className="text-lg mb-2">Start a conversation with your AI tutor</p>
+                        <p className="text-sm text-center max-w-md">
+                          Ask questions about any subject, request study materials, or get help with difficult concepts.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Message input */}
+                  <form onSubmit={handleSendMessage} className="relative">
+                    <Input
+                      type="text"
+                      placeholder="Ask anything about your studies..."
+                      className="w-full bg-dark-card border border-dark-border focus:border-primary-500 rounded-lg py-3 px-4 text-gray-300 focus:outline-none pr-20 h-12"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      disabled={sendMessageMutation.isPending}
+                    />
+                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
+                      <Button type="button" size="icon" variant="ghost" className="text-gray-400 hover:text-white transition-colors">
+                        <Paperclip className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        type="button" 
+                        size="icon" 
+                        variant="ghost"
+                        onClick={handleVoiceInteraction}
+                        className="text-gray-400 hover:text-white transition-colors"
+                      >
+                        <Mic className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        size="icon" 
+                        variant="ghost" 
+                        className="text-gray-400 hover:text-white transition-colors"
+                        disabled={sendMessageMutation.isPending || !message.trim()}
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </form>
+                  
+                  {/* Quick prompts */}
+                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                    <Button
+                      variant="outline"
+                      className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-3 rounded-lg transition-colors text-left h-auto"
+                      onClick={() => handlePromptClick("Create a study plan for my upcoming exams")}
+                    >
+                      <span className="block font-semibold">Create a study plan</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-3 rounded-lg transition-colors text-left h-auto"
+                      onClick={() => handlePromptClick("Explain the concept of quantum mechanics simply")}
+                    >
+                      <span className="block font-semibold">Explain quantum mechanics</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-3 rounded-lg transition-colors text-left h-auto"
+                      onClick={() => handlePromptClick("Create practice questions for calculus")}
+                    >
+                      <span className="block font-semibold">Generate practice questions</span>
+                    </Button>
+                  </div>
+                </TabsContent>
+                
+                {/* Whiteboard Tab */}
+                <TabsContent value="whiteboard" className="flex-1 flex flex-col mt-0">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full min-h-[500px]">
+                    <div className="lg:col-span-2 flex flex-col gap-4">
+                      <div className="bg-dark-card rounded-lg p-4 flex-1 overflow-hidden">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-lg font-bold">Interactive Whiteboard</h3>
+                          <div className="flex items-center gap-2">
+                            <Button size="sm" variant="outline" onClick={clearWhiteboard} className="h-8 px-2 py-1 text-xs">
+                              <Eraser className="h-3 w-3 mr-1" />
+                              Clear
+                            </Button>
+                            <div className="flex items-center gap-1 bg-dark-surface p-1 rounded-md">
+                              <Button 
+                                size="sm" 
+                                variant={activeTool === "pen" ? "default" : "ghost"} 
+                                onClick={() => setActiveTool("pen")}
+                                className="h-7 w-7 p-0"
+                              >
+                                <PenTool className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant={activeTool === "eraser" ? "default" : "ghost"} 
+                                onClick={() => setActiveTool("eraser")}
+                                className="h-7 w-7 p-0"
+                              >
+                                <Eraser className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="relative aspect-video w-full bg-[#1E1E24] rounded-lg overflow-hidden">
+                          {diagramUrl && (
+                            <img 
+                              src={diagramUrl} 
+                              alt="AI Generated Diagram" 
+                              className="absolute top-0 left-0 w-full h-full object-contain opacity-70 z-10" 
+                            />
+                          )}
+                          <canvas 
+                            ref={whiteboardRef} 
+                            width={800} 
+                            height={500} 
+                            className="absolute top-0 left-0 w-full h-full z-20"
+                          ></canvas>
+                          
+                          {isGeneratingWhiteboard && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-dark-card/80 z-30">
+                              <div className="flex flex-col items-center">
+                                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mb-4"></div>
+                                <p className="text-gray-300">Generating teaching materials...</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col gap-4">
+                      <div className="bg-dark-card rounded-lg p-4 flex-1">
+                        <div className="flex flex-col gap-4">
+                          <h3 className="text-lg font-bold">Teaching Session</h3>
+                          
+                          <div className="space-y-3">
+                            <div>
+                              <label className="text-sm font-medium mb-1 block">Subject</label>
+                              <Select
+                                value={currentSubject}
+                                onValueChange={(value) => setCurrentSubject(value)}
+                              >
+                                <SelectTrigger className="w-full">
+                                  <SelectValue placeholder="Select subject" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="mathematics">Mathematics</SelectItem>
+                                  <SelectItem value="physics">Physics</SelectItem>
+                                  <SelectItem value="chemistry">Chemistry</SelectItem>
+                                  <SelectItem value="biology">Biology</SelectItem>
+                                  <SelectItem value="computer_science">Computer Science</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div>
+                              <label className="text-sm font-medium mb-1 block">Topic</label>
+                              <Input
+                                type="text"
+                                placeholder="Enter specific topic (e.g. Calculus, Quantum Physics)"
+                                className="w-full bg-dark-surface border border-dark-border focus:border-primary-500"
+                                value={currentTopic}
+                                onChange={(e) => setCurrentTopic(e.target.value)}
+                              />
+                            </div>
+                            
+                            <Button 
+                              onClick={handleStartTeaching}
+                              className="w-full bg-primary-600 hover:bg-primary-500"
+                              disabled={isGeneratingWhiteboard}
+                            >
+                              {isGeneratingWhiteboard ? (
+                                <>Generating... <span className="ml-2 animate-pulse">⏳</span></>
+                              ) : (
+                                <>Start Teaching Session</>
+                              )}
+                            </Button>
+                          </div>
+                          
+                          {weakPoints.length > 0 && (
+                            <div className="mt-4">
+                              <h4 className="font-medium text-amber-400 flex items-center">
+                                <AlertTriangle className="h-4 w-4 mr-1" />
+                                Weak Points Identified
+                              </h4>
+                              <ul className="mt-2 space-y-2">
+                                {weakPoints.map((point, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 text-sm">
+                                    <span className="text-amber-500 mt-0.5">•</span>
+                                    <span>{point}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="bg-dark-card rounded-lg p-4">
+                        <h3 className="text-md font-bold mb-2">Your Tutor</h3>
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-12 rounded-full overflow-hidden">
+                            <img 
+                              src={aiTutor?.image || "/ai-tutor-placeholder.svg"} 
+                              alt="AI Tutor" 
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div>
+                            <p className="font-medium">{aiTutor?.name || "AI Tutor"}</p>
+                            <p className="text-xs text-gray-400">{aiTutor?.specialty || "Your Learning Assistant"}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+                
+                {/* Performance Tab */}
+                <TabsContent value="performance" className="flex-1 flex flex-col mt-0">
+                  <div className="bg-dark-card rounded-lg p-4 flex-1 min-h-[500px]">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-lg font-bold">Learning Progress</h3>
+                      <Select defaultValue="last30">
+                        <SelectTrigger className="w-[140px]">
+                          <SelectValue placeholder="Time Period" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="last7">Last 7 days</SelectItem>
+                          <SelectItem value="last30">Last 30 days</SelectItem>
+                          <SelectItem value="last90">Last 90 days</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                      <div className="bg-dark-surface rounded-lg p-4">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm text-gray-400">Total Study Time</p>
+                          <Clock className="h-4 w-4 text-primary-400" />
+                        </div>
+                        <p className="text-2xl font-bold mt-2">18.5 hrs</p>
+                        <p className="text-xs text-green-500 mt-1">
+                          <ArrowLeftCircle className="h-3 w-3 inline rotate-[-135deg] mr-1" />
+                          +12% from last period
+                        </p>
+                      </div>
+                      
+                      <div className="bg-dark-surface rounded-lg p-4">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm text-gray-400">Topics Mastered</p>
+                          <Check className="h-4 w-4 text-primary-400" />
+                        </div>
+                        <p className="text-2xl font-bold mt-2">7</p>
+                        <p className="text-xs text-green-500 mt-1">
+                          <ArrowLeftCircle className="h-3 w-3 inline rotate-[-135deg] mr-1" />
+                          +3 from last period
+                        </p>
+                      </div>
+                      
+                      <div className="bg-dark-surface rounded-lg p-4">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm text-gray-400">Practice Questions</p>
+                          <FileCheck className="h-4 w-4 text-primary-400" />
+                        </div>
+                        <p className="text-2xl font-bold mt-2">93</p>
+                        <p className="text-xs text-green-500 mt-1">
+                          <ArrowLeftCircle className="h-3 w-3 inline rotate-[-135deg] mr-1" />
+                          +28 from last period
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      <div>
+                        <h4 className="font-medium mb-2 flex items-center text-sm">
+                          <PieChart className="h-4 w-4 mr-2 text-primary-400" />
+                          Subject Distribution
+                        </h4>
+                        <div className="bg-dark-surface rounded-lg p-4 h-40">
+                          {/* Placeholder for chart */}
+                          <div className="flex h-full items-center justify-center text-gray-500">
+                            <p className="text-center">Subject performance visualization would appear here</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-medium mb-2 flex items-center text-sm">
+                          <BarChart4 className="h-4 w-4 mr-2 text-primary-400" />
+                          Improvement Areas
+                        </h4>
+                        <div className="space-y-2">
+                          <div className="bg-dark-surface rounded-lg p-3">
+                            <div className="flex justify-between mb-1">
+                              <span className="text-sm">Calculus - Integration</span>
+                              <span className="text-xs text-amber-500">Needs Work</span>
+                            </div>
+                            <div className="w-full bg-dark h-2 rounded-full overflow-hidden">
+                              <div className="bg-amber-500 h-full rounded-full" style={{ width: '35%' }}></div>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-dark-surface rounded-lg p-3">
+                            <div className="flex justify-between mb-1">
+                              <span className="text-sm">Physics - Electromagnetism</span>
+                              <span className="text-xs text-primary-400">Good Progress</span>
+                            </div>
+                            <div className="w-full bg-dark h-2 rounded-full overflow-hidden">
+                              <div className="bg-primary-400 h-full rounded-full" style={{ width: '68%' }}></div>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-dark-surface rounded-lg p-3">
+                            <div className="flex justify-between mb-1">
+                              <span className="text-sm">Chemistry - Organic Compounds</span>
+                              <span className="text-xs text-green-500">Excellent</span>
+                            </div>
+                            <div className="w-full bg-dark h-2 rounded-full overflow-hidden">
+                              <div className="bg-green-500 h-full rounded-full" style={{ width: '92%' }}></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
         </div>

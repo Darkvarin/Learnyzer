@@ -6,7 +6,6 @@ import { BattleZoneSection } from "@/components/dashboard/battle-zone-section";
 import { StreakSection } from "@/components/dashboard/streak-section";
 import { RankSection } from "@/components/dashboard/rank-section";
 import { ReferralSection } from "@/components/dashboard/referral-section";
-import { AiToolsSection } from "@/components/dashboard/ai-tools-section";
 
 export default function Dashboard() {
   return (
@@ -28,7 +27,6 @@ export default function Dashboard() {
             <StreakSection />
             <RankSection />
             <ReferralSection />
-            <AiToolsSection />
           </div>
         </div>
       </main>

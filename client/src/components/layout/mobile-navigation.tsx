@@ -12,6 +12,12 @@ export function MobileNavigation() {
             <span className="text-xs mt-1">Home</span>
           </a>
         </Link>
+        <Link href="/dashboard">
+          <a className={`flex items-center justify-center flex-col py-2 flex-1 ${location === '/dashboard' ? 'text-primary' : 'text-gray-400'}`}>
+            <i className="ri-dashboard-line text-xl"></i>
+            <span className="text-xs mt-1">Dashboard</span>
+          </a>
+        </Link>
         <Link href="/courses">
           <a className={`flex items-center justify-center flex-col py-2 flex-1 ${location === '/courses' ? 'text-primary' : 'text-gray-400'}`}>
             <i className="ri-book-open-line text-xl"></i>
