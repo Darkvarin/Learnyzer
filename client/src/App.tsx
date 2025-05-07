@@ -14,7 +14,7 @@ import Rewards from "@/pages/rewards";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 import CreateProfile from "@/pages/create-profile";
-import HomePage from "@/pages/home-page";
+import HomePage from "./pages/home-page";
 
 function App() {
   return (

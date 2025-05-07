@@ -164,6 +164,37 @@
     @apply px-4 md:px-6 max-w-[1400px] mx-auto overflow-hidden;
   }
   
+  /* Background grid pattern for gaming aesthetics */
+  .bg-grid-pattern {
+    background-image:
+      linear-gradient(to right, hsl(var(--primary) / 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--primary) / 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  /* Glowing border effect for cards and containers */
+  .glow-border {
+    @apply relative rounded-xl overflow-hidden;
+  }
+  
+  .glow-border::before {
+    content: '';
+    @apply absolute inset-0 -z-10 rounded-xl opacity-70;
+    background: conic-gradient(
+      hsl(var(--primary)),
+      hsl(var(--success)),
+      hsl(var(--warning)),
+      hsl(var(--primary))
+    );
+    filter: blur(15px);
+    animation: spin 10s linear infinite;
+  }
+  
+  /* Glass morphism effect */
+  .glass-morphism {
+    @apply backdrop-blur-md bg-white/10 dark:bg-black/10 border border-white/20 dark:border-white/10;
+  }
+  
   /* Rank badges with different tiers */
   .rank-badge {
     @apply relative inline-flex items-center justify-center;
@@ -393,6 +424,21 @@
   
   .game-button:hover {
     box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5);
+  }
+  
+  .game-button-secondary {
+    @apply px-4 py-2 rounded-md font-medium border transition-all duration-200;
+    @apply hover:scale-105 active:scale-95 bg-transparent;
+    background: transparent;
+    border-color: hsl(var(--primary) / 0.5);
+    color: hsl(var(--primary));
+    box-shadow: 0 2px 10px rgba(139, 92, 246, 0.1);
+  }
+  
+  .game-button-secondary:hover {
+    background-color: hsl(var(--primary) / 0.1);
+    border-color: hsl(var(--primary) / 0.8);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
   }
 }
 
