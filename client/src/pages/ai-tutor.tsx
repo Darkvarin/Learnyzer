@@ -237,12 +237,47 @@ export default function AiTutor() {
     sendMessageMutation.mutate(message);
   };
   
+  // Track voice interaction state
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  
   const handleVoiceInteraction = () => {
+    // If already listening, stop listening
+    if (isListening) {
+      setIsListening(false);
+      toast({
+        title: "Voice recognition stopped",
+        description: "Processing your question..."
+      });
+      
+      // Simulate AI processing time
+      setTimeout(() => {
+        setIsSpeaking(true);
+        toast({
+          title: "AI Tutor is speaking",
+          description: `${aiTutor?.name || "AI Tutor"} is explaining ${currentTopic}`
+        });
+        
+        // Simulate AI speaking time
+        setTimeout(() => {
+          setIsSpeaking(false);
+        }, 4000);
+      }, 1500);
+      
+      return;
+    }
+    
+    // Start listening
+    setIsListening(true);
     toast({
       title: "Voice interaction activated",
       description: "Speak clearly and I'll listen to your questions."
     });
-    // Voice interaction logic would be implemented here
+    
+    // In a real implementation, this would use the Web Speech API:
+    // const recognition = new window.SpeechRecognition();
+    // recognition.onresult = (event) => { ... }
+    // recognition.start();
   };
 
   const handlePromptClick = (promptText: string) => {
@@ -353,16 +388,12 @@ export default function AiTutor() {
           {/* Main chat area */}
           <div className="md:col-span-3 flex flex-col">
             <div className="bg-dark-surface rounded-xl border border-dark-border p-6 flex-1 flex flex-col">
-              <Tabs defaultValue="chat" value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <Tabs defaultValue="whiteboard" value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <div className="flex items-center justify-between mb-4">
-                  <TabsList className="grid grid-cols-3 w-auto">
-                    <TabsTrigger value="chat" className="text-sm px-4">
-                      <MessageSquare className="h-4 w-4 mr-2" />
-                      Chat
-                    </TabsTrigger>
+                  <TabsList className="grid grid-cols-2 w-auto">
                     <TabsTrigger value="whiteboard" className="text-sm px-4">
                       <PenTool className="h-4 w-4 mr-2" />
-                      Whiteboard
+                      Teaching Session
                     </TabsTrigger>
                     <TabsTrigger value="performance" className="text-sm px-4">
                       <BarChart4 className="h-4 w-4 mr-2" />
@@ -640,8 +671,8 @@ export default function AiTutor() {
                       </div>
                       
                       <div className="bg-dark-card rounded-lg p-4">
-                        <h3 className="text-md font-bold mb-2">Your Tutor</h3>
-                        <div className="flex items-center space-x-3">
+                        <h3 className="text-md font-bold mb-2">Voice Interaction</h3>
+                        <div className="flex items-center space-x-3 mb-4">
                           <div className="w-12 h-12 rounded-full overflow-hidden">
                             <img 
                               src={aiTutor?.image || "/ai-tutor-placeholder.svg"} 
@@ -653,6 +684,54 @@ export default function AiTutor() {
                             <p className="font-medium">{aiTutor?.name || "AI Tutor"}</p>
                             <p className="text-xs text-gray-400">{aiTutor?.specialty || "Your Learning Assistant"}</p>
                           </div>
+                        </div>
+                        
+                        <div className="mt-3 flex flex-col items-center">
+                          <div className="w-full p-3 rounded-lg border border-primary-600/30 bg-dark-surface mb-3">
+                            <p className="text-sm text-center text-gray-300">
+                              {isGeneratingWhiteboard ? (
+                                <span>Preparing teaching materials...</span>
+                              ) : diagramUrl ? (
+                                <span>I'm teaching you about <span className="text-primary-400 font-medium">{currentTopic}</span> now. Ask me anything!</span>
+                              ) : (
+                                <span>Select a subject and topic, then start a teaching session</span>
+                              )}
+                            </p>
+                          </div>
+                          
+                          <Button 
+                            onClick={handleVoiceInteraction}
+                            size="lg"
+                            className={`h-16 w-16 rounded-full relative
+                              ${isListening ? 'bg-red-500 hover:bg-red-600' : 
+                                isSpeaking ? 'bg-green-500 hover:bg-green-600' : 
+                                diagramUrl ? 'bg-primary-600 hover:bg-primary-500' : 'bg-gray-700'}`}
+                            disabled={!diagramUrl || isSpeaking}
+                          >
+                            {isListening ? (
+                              // Listening animation
+                              <>
+                                <Mic className="h-6 w-6 text-white animate-pulse" />
+                                <div className="absolute inset-0 rounded-full border-2 border-red-400 animate-ping"></div>
+                              </>
+                            ) : isSpeaking ? (
+                              // Speaking animation 
+                              <>
+                                <div className="flex items-center justify-center space-x-1">
+                                  <div className="w-1 h-3 bg-white animate-sound-wave1"></div>
+                                  <div className="w-1 h-5 bg-white animate-sound-wave2"></div>
+                                  <div className="w-1 h-3 bg-white animate-sound-wave3"></div>
+                                </div>
+                              </>
+                            ) : (
+                              <Mic className={`h-6 w-6 ${diagramUrl ? 'text-white' : 'text-gray-400'}`} />
+                            )}
+                          </Button>
+                          <p className="text-xs text-center mt-2 text-gray-400">
+                            {isListening ? "Listening... (click to stop)" : 
+                             isSpeaking ? "AI Tutor is speaking..." : 
+                             diagramUrl ? "Press to speak" : "Start teaching session first"}
+                          </p>
                         </div>
                       </div>
                     </div>
