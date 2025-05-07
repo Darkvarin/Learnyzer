@@ -96,6 +96,7 @@ type RealTimeUpdateMessage =
 // Context interface
 interface RealTimeContextType {
   connected: boolean;
+  reconnecting: boolean;
   lastUpdate: RealTimeUpdateMessage | null;
   notifications: NotificationMessage[];
   clearNotification: (index: number) => void;
@@ -148,6 +149,35 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
     socketRef.current.onclose = () => {
       console.log('Real-time WebSocket connection closed');
       setConnected(false);
+      
+      // Attempt to reconnect after a delay if user is still logged in
+      if (user) {
+        setTimeout(() => {
+          console.log('Attempting to reconnect to real-time service...');
+          // Re-establish connection if the component is still mounted
+          if (socketRef.current === null || socketRef.current.readyState === WebSocket.CLOSED) {
+            const newWs = new WebSocket(wsUrl);
+            socketRef.current = newWs;
+            
+            newWs.onopen = () => {
+              console.log('Real-time WebSocket reconnected');
+              setConnected(true);
+              
+              // Re-authenticate
+              newWs.send(JSON.stringify({
+                type: 'auth',
+                userId: user.id,
+                timestamp: new Date().toISOString()
+              }));
+            };
+            
+            // Set up the same event handlers for the new connection
+            newWs.onmessage = socketRef.current.onmessage;
+            newWs.onerror = socketRef.current.onerror;
+            newWs.onclose = socketRef.current.onclose;
+          }
+        }, 3000); // Wait 3 seconds before attempting to reconnect
+      }
     };
     
     socketRef.current.onerror = (error) => {
@@ -308,6 +338,9 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
       } else if (message.messageType === 'flashcards') {
         title = "Flashcards Generated";
         queryClient.invalidateQueries({ queryKey: ['/api/ai/tools/flashcards'] });
+      } else if (message.messageType === 'answer_check') {
+        title = "Answer Evaluated";
+        queryClient.invalidateQueries({ queryKey: ['/api/ai/tools/check-answer'] });
       } else {
         title = "New AI Insight";
       }
