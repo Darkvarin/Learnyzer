@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { User } from "@shared/types";
+import { useAuth } from "@/hooks/use-auth";
 
 type UserContextType = {
   user: User | null;
@@ -14,17 +15,17 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const queryClient = useQueryClient();
   
-  const { isLoading } = useQuery({
-    queryKey: ['/api/auth/me'],
-    onSuccess: (data) => {
-      if (data) {
-        setUser(data);
-      }
-    },
-    onError: () => {
+  // Use the authenticated user from auth context
+  const { user: authUser, isLoading } = useAuth();
+  
+  // Update user state when auth user changes
+  useEffect(() => {
+    if (authUser) {
+      setUser(authUser as unknown as User);
+    } else {
       setUser(null);
-    },
-  });
+    }
+  }, [authUser]);
 
   // Auto-refresh user data every 5 minutes
   useEffect(() => {

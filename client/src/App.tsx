@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { queryClient } from "./lib/queryClient";
 import { AuthProvider } from "@/hooks/use-auth";
+import { UserProvider } from "@/contexts/user-context";
 import { ProtectedRoute } from "@/components/protected-route";
 
 import Dashboard from "@/pages/dashboard";
@@ -21,18 +22,20 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="dark">
         <AuthProvider>
-          <Switch>
-            <Route path="/" component={HomePage} />
-            <ProtectedRoute path="/dashboard" component={Dashboard} />
-            <ProtectedRoute path="/courses" component={Courses} />
-            <ProtectedRoute path="/battle-zone" component={BattleZone} />
-            <ProtectedRoute path="/ai-tools" component={AiTools} />
-            <ProtectedRoute path="/rewards" component={Rewards} />
-            <ProtectedRoute path="/create-profile" component={CreateProfile} />
-            <Route path="/auth" component={AuthPage} />
-            <Route component={NotFound} />
-          </Switch>
-          <Toaster />
+          <UserProvider>
+            <Switch>
+              <Route path="/" component={HomePage} />
+              <ProtectedRoute path="/dashboard" component={Dashboard} />
+              <ProtectedRoute path="/courses" component={Courses} />
+              <ProtectedRoute path="/battle-zone" component={BattleZone} />
+              <ProtectedRoute path="/ai-tools" component={AiTools} />
+              <ProtectedRoute path="/rewards" component={Rewards} />
+              <ProtectedRoute path="/create-profile" component={CreateProfile} />
+              <Route path="/auth" component={AuthPage} />
+              <Route component={NotFound} />
+            </Switch>
+            <Toaster />
+          </UserProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
