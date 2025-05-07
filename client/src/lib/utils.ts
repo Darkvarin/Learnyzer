@@ -66,8 +66,8 @@ export function getSubjectIcon(subject: string): React.ElementType {
   
   if (subjectLower.includes('math')) return Calculator;
   if (subjectLower.includes('physics')) return Atom;
-  if (subjectLower.includes('chemistry')) return FlaskIcon;
-  if (subjectLower.includes('biology')) return DnaIcon;
+  if (subjectLower.includes('chemistry')) return FlaskConical;
+  if (subjectLower.includes('biology')) return Binary;
   if (subjectLower.includes('computer')) return Code;
   if (subjectLower.includes('history')) return Clock;
   if (subjectLower.includes('geography')) return Globe;
