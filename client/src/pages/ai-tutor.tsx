@@ -30,7 +30,8 @@ import {
   AlertTriangle,
   Check,
   ImageIcon,
-  PieChart
+  PieChart,
+  Search as ScanSearch
 } from "lucide-react";
 
 export default function AiTutor() {
@@ -158,48 +159,23 @@ export default function AiTutor() {
     ctx.strokeStyle = color;
   };
   
-  // Mock function to generate diagram - in production, this would use OpenAI's API
+  // In a production environment, this would call the OpenAI API to generate a diagram
   const generateDiagram = () => {
     setIsGeneratingWhiteboard(true);
     
-    // Simulating API call delay
+    // Simulating API call delay (in production this would be a real API call)
     setTimeout(() => {
-      // This would be replaced with actual diagram generation API call response
-      const diagrams = {
-        "mathematics": {
-          "calculus": "/sample-whiteboard-calculus.svg",
-          "algebra": "/sample-whiteboard-algebra.svg",
-          "trigonometry": "/sample-whiteboard-trig.svg",
-          "statistics": "/sample-whiteboard-stats.svg"
-        },
-        "physics": {
-          "mechanics": "/sample-whiteboard-mechanics.svg",
-          "electromagnetism": "/sample-whiteboard-em.svg",
-          "quantum": "/sample-whiteboard-quantum.svg"
-        },
-        "chemistry": {
-          "organic": "/sample-whiteboard-organic.svg",
-          "inorganic": "/sample-whiteboard-inorganic.svg"
-        }
-      };
+      // Simple generated whiteboard background - no fake data
+      const defaultWhiteboardBg = "/whiteboard-background.svg";
       
-      // Placeholder image when real diagram generation fails
-      const placeholderDiagram = "https://placehold.co/800x500/1E1E24/FFFFFF/svg?text=Generated+Diagram+for+" + currentTopic.replace(/\s/g, '+');
-      
-      // In production, this would use actual API response
-      setDiagramUrl(placeholderDiagram);
+      // Set the basic whiteboard background
+      setDiagramUrl(defaultWhiteboardBg);
       setIsGeneratingWhiteboard(false);
       
-      // Generate mock weak points based on selected topic
-      if (currentTopic) {
-        const mockWeakPoints = [
-          `Understanding ${currentTopic} fundamentals`,
-          `Application of ${currentTopic} in problem-solving`,
-          `Connecting ${currentTopic} to related concepts`
-        ];
-        setWeakPoints(mockWeakPoints);
-      }
-    }, 2000);
+      // In a real implementation, we would use the AI to identify weak points
+      // For now, start with empty array
+      setWeakPoints([]);
+    }, 1500);
   };
   
   const { data: aiTutor, isLoading: isLoadingTutor } = useQuery({
@@ -761,10 +737,9 @@ export default function AiTutor() {
                           <p className="text-sm text-gray-400">Total Study Time</p>
                           <MessageSquare className="h-4 w-4 text-primary-400" />
                         </div>
-                        <p className="text-2xl font-bold mt-2">18.5 hrs</p>
-                        <p className="text-xs text-green-500 mt-1">
-                          <ArrowLeftCircle className="h-3 w-3 inline rotate-[-135deg] mr-1" />
-                          +12% from last period
+                        <p className="text-2xl font-bold mt-2">0 hrs</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          No data available yet
                         </p>
                       </div>
                       
@@ -773,10 +748,9 @@ export default function AiTutor() {
                           <p className="text-sm text-gray-400">Topics Mastered</p>
                           <Check className="h-4 w-4 text-primary-400" />
                         </div>
-                        <p className="text-2xl font-bold mt-2">7</p>
-                        <p className="text-xs text-green-500 mt-1">
-                          <ArrowLeftCircle className="h-3 w-3 inline rotate-[-135deg] mr-1" />
-                          +3 from last period
+                        <p className="text-2xl font-bold mt-2">0</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          No data available yet
                         </p>
                       </div>
                       
@@ -785,10 +759,9 @@ export default function AiTutor() {
                           <p className="text-sm text-gray-400">Practice Questions</p>
                           <FileCheck className="h-4 w-4 text-primary-400" />
                         </div>
-                        <p className="text-2xl font-bold mt-2">93</p>
-                        <p className="text-xs text-green-500 mt-1">
-                          <ArrowLeftCircle className="h-3 w-3 inline rotate-[-135deg] mr-1" />
-                          +28 from last period
+                        <p className="text-2xl font-bold mt-2">0</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          No data available yet
                         </p>
                       </div>
                     </div>
@@ -799,11 +772,10 @@ export default function AiTutor() {
                           <PieChart className="h-4 w-4 mr-2 text-primary-400" />
                           Subject Distribution
                         </h4>
-                        <div className="bg-dark-surface rounded-lg p-4 h-40">
-                          {/* Placeholder for chart */}
-                          <div className="flex h-full items-center justify-center text-gray-500">
-                            <p className="text-center">Subject performance visualization would appear here</p>
-                          </div>
+                        <div className="bg-dark-surface rounded-lg p-4 h-40 flex flex-col items-center justify-center text-gray-500">
+                          <PieChart className="h-8 w-8 mb-2 opacity-50" />
+                          <p className="text-sm text-center">No subject data available yet</p>
+                          <p className="text-xs mt-1 text-center">Data will populate as you interact with different subjects</p>
                         </div>
                       </div>
                       
@@ -812,36 +784,10 @@ export default function AiTutor() {
                           <BarChart4 className="h-4 w-4 mr-2 text-primary-400" />
                           Improvement Areas
                         </h4>
-                        <div className="space-y-2">
-                          <div className="bg-dark-surface rounded-lg p-3">
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm">Calculus - Integration</span>
-                              <span className="text-xs text-amber-500">Needs Work</span>
-                            </div>
-                            <div className="w-full bg-dark h-2 rounded-full overflow-hidden">
-                              <div className="bg-amber-500 h-full rounded-full" style={{ width: '35%' }}></div>
-                            </div>
-                          </div>
-                          
-                          <div className="bg-dark-surface rounded-lg p-3">
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm">Physics - Electromagnetism</span>
-                              <span className="text-xs text-primary-400">Good Progress</span>
-                            </div>
-                            <div className="w-full bg-dark h-2 rounded-full overflow-hidden">
-                              <div className="bg-primary-400 h-full rounded-full" style={{ width: '68%' }}></div>
-                            </div>
-                          </div>
-                          
-                          <div className="bg-dark-surface rounded-lg p-3">
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm">Chemistry - Organic Compounds</span>
-                              <span className="text-xs text-green-500">Excellent</span>
-                            </div>
-                            <div className="w-full bg-dark h-2 rounded-full overflow-hidden">
-                              <div className="bg-green-500 h-full rounded-full" style={{ width: '92%' }}></div>
-                            </div>
-                          </div>
+                        <div className="bg-dark-surface rounded-lg p-4 text-center text-gray-500">
+                          <ScanSearch className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                          <p className="text-sm">No improvement areas identified yet</p>
+                          <p className="text-xs mt-1">Data will appear as you use the AI Tutor</p>
                         </div>
                       </div>
                     </div>
