@@ -595,6 +595,20 @@ export const storage = {
         })
         .where(eq(schema.userStreakGoals.id, goal.id));
     }
+    
+    // Calculate streak data for real-time notification
+    const streakData = await this.getUserStreakData(userId);
+    
+    // Send real-time update
+    if ((global as any).sendToUser) {
+      (global as any).sendToUser(userId, {
+        type: 'streak_update',
+        userId: userId,
+        streakDays: streakData.days,
+        canClaimReward: false, // Just claimed, so can't claim again
+        timestamp: new Date().toISOString()
+      });
+    }
   },
   
   /**
@@ -638,6 +652,20 @@ export const storage = {
       referredId,
       xpEarned
     }).returning();
+    
+    // Get the referred user's information for the notification
+    const referredUser = await this.getUserById(referredId);
+    
+    if (referredUser && (global as any).sendToUser) {
+      (global as any).sendToUser(referrerId, {
+        type: 'referral_joined',
+        referrerId: referrerId,
+        referredId: referredId,
+        referredName: referredUser.name,
+        xpEarned: xpEarned,
+        timestamp: new Date().toISOString()
+      });
+    }
     
     return referral;
   },
@@ -703,12 +731,31 @@ export const storage = {
    * Claim a reward for a user
    */
   async claimReward(userId: number, rewardId: number) {
+    // Get the reward details for the notification
+    const reward = await this.getRewardById(rewardId);
+    
+    if (!reward) {
+      throw new Error("Reward not found");
+    }
+    
     const [userReward] = await db.insert(schema.userRewards).values({
       userId,
       rewardId,
       claimedAt: new Date(),
       active: true // Automatically activate the reward
     }).returning();
+    
+    // Send real-time update
+    if ((global as any).sendToUser) {
+      (global as any).sendToUser(userId, {
+        type: 'reward_claimed',
+        userId: userId,
+        rewardId: reward.id,
+        rewardName: reward.name,
+        rewardDescription: reward.description,
+        timestamp: new Date().toISOString()
+      });
+    }
     
     return userReward;
   },
@@ -806,32 +853,64 @@ export const storage = {
       )
     });
     
+    let newProgress = 0;
+    let completed = false;
+    
     if (!userAchievement) {
       // Initialize the achievement if it doesn't exist
+      newProgress = progressIncrement;
+      completed = progressIncrement >= achievement.target;
+      
       await db.insert(schema.userAchievements).values({
         userId,
         achievementId: achievement.id,
-        progress: progressIncrement,
-        completed: progressIncrement >= achievement.target,
-        completedAt: progressIncrement >= achievement.target ? new Date() : null
+        progress: newProgress,
+        completed,
+        completedAt: completed ? new Date() : null
       });
       
-      if (progressIncrement >= achievement.target) {
+      if (completed) {
         // Award XP for completing the achievement
         await this.addUserXP(userId, achievement.xpReward);
+        
+        // Send achievement completed notification
+        if ((global as any).sendToUser) {
+          (global as any).sendToUser(userId, {
+            type: 'achievement_completed',
+            userId: userId,
+            achievementId: achievement.id,
+            achievementName: achievement.name,
+            progress: newProgress,
+            isCompleted: true,
+            timestamp: new Date().toISOString()
+          });
+        }
+      } else if (progressIncrement > 0) {
+        // Send achievement progress notification
+        if ((global as any).sendToUser) {
+          (global as any).sendToUser(userId, {
+            type: 'achievement_progress',
+            userId: userId,
+            achievementId: achievement.id,
+            achievementName: achievement.name,
+            progress: newProgress,
+            isCompleted: false,
+            timestamp: new Date().toISOString()
+          });
+        }
       }
       
-      return;
+      return { progress: newProgress, completed };
     }
     
     // If the achievement is already completed, no need to update
     if (userAchievement.completed) {
-      return;
+      return { progress: userAchievement.progress, completed: true };
     }
     
     // Update progress
-    const newProgress = userAchievement.progress + progressIncrement;
-    const completed = newProgress >= achievement.target;
+    newProgress = userAchievement.progress + progressIncrement;
+    completed = newProgress >= achievement.target;
     
     await db.update(schema.userAchievements)
       .set({
@@ -844,6 +923,32 @@ export const storage = {
     if (completed) {
       // Award XP for completing the achievement
       await this.addUserXP(userId, achievement.xpReward);
+      
+      // Send achievement completed notification
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser(userId, {
+          type: 'achievement_completed',
+          userId: userId,
+          achievementId: achievement.id,
+          achievementName: achievement.name,
+          progress: newProgress,
+          isCompleted: true,
+          timestamp: new Date().toISOString()
+        });
+      }
+    } else if (progressIncrement > 0) {
+      // Send achievement progress notification
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser(userId, {
+          type: 'achievement_progress',
+          userId: userId,
+          achievementId: achievement.id,
+          achievementName: achievement.name,
+          progress: newProgress,
+          isCompleted: false,
+          timestamp: new Date().toISOString()
+        });
+      }
     }
     
     return { progress: newProgress, completed };
