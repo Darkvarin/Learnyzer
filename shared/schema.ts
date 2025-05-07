@@ -11,7 +11,8 @@ export const users = pgTable("users", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   profileImage: text("profile_image"),
-  track: text("track").default("General"),
+  grade: text("grade"),             // Student's class/grade (e.g., "5", "11", "undergraduate")
+  track: text("track"),             // Educational track or stream
   level: integer("level").default(1).notNull(),
   currentXp: integer("current_xp").default(0).notNull(),
   nextLevelXp: integer("next_level_xp").default(1000).notNull(),

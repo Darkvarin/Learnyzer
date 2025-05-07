@@ -5,6 +5,9 @@ import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
+import { db } from "../db";
+import { eq } from "drizzle-orm";
+import { users } from "../shared/schema";
 import { User } from "@shared/schema";
 import connectPg from "connect-pg-simple";
 import { pool } from "../db";
@@ -181,18 +184,77 @@ export function setupAuth(app: Express) {
   });
 
   // Update user profile
-  app.post("/api/user/profile", (req, res) => {
+  app.post("/api/user/profile", async (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Authentication required" });
     }
     
-    // Implementation will depend on your storage interface
-    // This will be a placeholder until we implement the actual updateUserProfile method
-    // storage.updateUserProfile(req.user.id, req.body);
-    
-    return res.status(200).json({ message: "Profile updated successfully" });
+    try {
+      // Update user profile in the database
+      const userId = req.user.id;
+      const profileData = req.body;
+      
+      const updatedUser = await db.update(users)
+        .set({
+          name: profileData.name,
+          email: profileData.email,
+          profileImage: profileData.profileImage || null,
+          grade: profileData.class,          // Store class/grade
+          track: profileData.stream || null  // Store educational track/stream
+        })
+        .where(eq(users.id, userId))
+        .returning();
+        
+      if (updatedUser.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Update the session user data
+      req.user = updatedUser[0];
+      
+      return res.status(200).json(updatedUser[0]);
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      return res.status(500).json({ message: "Failed to update profile" });
+    }
   });
 
+  // PATCH endpoint for profile settings page
+  app.patch("/api/user/profile", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    try {
+      // Update user profile in the database
+      const userId = req.user.id;
+      const profileData = req.body;
+      
+      const updatedUser = await db.update(users)
+        .set({
+          name: profileData.name,
+          email: profileData.email,
+          profileImage: profileData.profileImage || null,
+          grade: profileData.class || profileData.grade, // Support both field names
+          track: profileData.stream || profileData.track  // Support both field names
+        })
+        .where(eq(users.id, userId))
+        .returning();
+        
+      if (updatedUser.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Update the session user data
+      req.user = updatedUser[0];
+      
+      return res.status(200).json(updatedUser[0]);
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      return res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+  
   // Middleware for protected routes
   app.use("/api/user", (req, res, next) => {
     if (!req.isAuthenticated()) {

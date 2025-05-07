@@ -21,12 +21,57 @@ export const courseService = {
     try {
       const examType = req.query.exam as string;
       const subject = req.query.subject as string;
+      const userGrade = req.query.grade as string || (req.user as any)?.grade;
+      const ignoreLevelFilter = req.query.ignoreLevelFilter === 'true';
+      
+      // Function to determine if a course is appropriate for the student's grade
+      function isGradeAppropriate(course: any, grade: string) {
+        if (!grade || ignoreLevelFilter) return true; // If no grade or filtering disabled, show all courses
+        
+        // Convert grade to number if it's a regular class
+        let gradeLevel = 0;
+        if (/^\d+$/.test(grade)) {
+          gradeLevel = parseInt(grade);
+        } else if (grade === 'undergraduate') {
+          gradeLevel = 13; // Higher than 12th grade
+        } else if (grade === 'postgraduate') {
+          gradeLevel = 15; // Higher than undergraduate
+        }
+        
+        // Check if the course has grade level information
+        if (course.gradeLevel) {
+          return (course.gradeLevel <= gradeLevel); // Only show courses at or below student's grade
+        }
+        
+        // If no grade level in course, use exam type as a proxy
+        if (course.examType === 'jee' || course.examType === 'neet' || 
+            course.examType === 'upsc' || course.examType === 'clat') {
+          return gradeLevel >= 11; // These are for 11th and above
+        }
+        
+        // For regular courses, we can infer from the course title or subject
+        const courseTitle = course.title.toLowerCase();
+        
+        // Check for grade-specific information in title
+        const gradeMatch = courseTitle.match(/class (\d+)/i);
+        if (gradeMatch) {
+          const courseGradeLevel = parseInt(gradeMatch[1]);
+          return courseGradeLevel <= gradeLevel;
+        }
+        
+        return true; // If we can't determine, show the course
+      }
       
       // Get the courses with optional filters
       const courses = await storage.getAllCourses({
         examType: examType !== 'all' ? examType : undefined,
         subject: subject !== 'all' ? subject : undefined
       });
+      
+      // Filter courses by grade level if user is logged in and has a grade
+      const filteredCourses = userGrade 
+        ? courses.filter(course => isGradeAppropriate(course, userGrade))
+        : courses;
       
       // If the user is authenticated, add their progress to each course
       if (req.isAuthenticated() && req.user) {
