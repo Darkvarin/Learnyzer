@@ -8,14 +8,31 @@ import { storage } from "./storage";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
 import { users } from "../shared/schema";
-import { User } from "@shared/schema";
 import connectPg from "connect-pg-simple";
 import { pool } from "../db";
 
 // Type declaration for Express session
 declare global {
   namespace Express {
-    interface User extends User {}
+    // Define User properties without circular reference
+    interface User {
+      id: number;
+      username: string;
+      name: string;
+      email: string;
+      profileImage: string | null;
+      grade: string | null;
+      track: string | null;
+      level: number;
+      currentXp: number;
+      nextLevelXp: number;
+      rank: string;
+      rankPoints: number;
+      streakDays: number;
+      lastStreakDate: Date | null;
+      referralCode: string;
+      createdAt: Date;
+    }
   }
 }
 
