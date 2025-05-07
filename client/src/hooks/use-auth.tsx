@@ -47,6 +47,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryFn: getQueryFn({ on401: "returnNull" }),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
+  
+  // Ensure user is always User | null (not undefined)
+  const safeUser = user ?? null;
 
   // Login mutation
   const loginMutation = useMutation({

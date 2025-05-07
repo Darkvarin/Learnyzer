@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -36,11 +36,12 @@ export default function AuthPage() {
   const [, navigate] = useLocation();
   const { user, loginMutation, registerMutation } = useAuth();
 
-  // If already logged in, redirect to dashboard
-  if (user) {
-    navigate("/");
-    return null;
-  }
+  // Use useEffect for navigation instead of early return
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   // Login form
   const loginForm = useForm<LoginForm>({
