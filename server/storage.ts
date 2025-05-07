@@ -171,12 +171,14 @@ export const storage = {
     let currentXp = user.currentXp + xp;
     let level = user.level;
     let nextLevelXp = user.nextLevelXp;
+    let leveledUp = false;
     
     // Check for level ups
     while (currentXp >= nextLevelXp) {
       currentXp -= nextLevelXp;
       level++;
       nextLevelXp = getXpForLevel(level);
+      leveledUp = true;
       
       // Also add some rank points on level up - reduced for more challenge
       const rankPointsForLevelUp = 40 + Math.floor(level * level * 1.5); // Reduced RP gain to make ranking up harder
@@ -194,6 +196,20 @@ export const storage = {
     
     // Check achievements
     await this.checkAchievements(userId);
+    
+    // Send real-time update to user if WebSocket is available
+    if ((global as any).sendToUser) {
+      (global as any).sendToUser(userId, {
+        type: 'progress_update',
+        userId: userId,
+        xpGained: xp,
+        newLevel: leveledUp ? level : undefined,
+        message: leveledUp ? 
+          `You leveled up to level ${level}! You gained ${xp} XP.` : 
+          `You gained ${xp} XP.`,
+        timestamp: new Date().toISOString()
+      });
+    }
     
     return { currentXp, level, nextLevelXp };
   },
@@ -220,6 +236,10 @@ export const storage = {
       }
     }
     
+    // Check if rank changed
+    const rankChanged = newRank !== user.rank;
+    const oldRank = user.rank;
+    
     // Update user
     await db.update(schema.users)
       .set({
@@ -227,6 +247,18 @@ export const storage = {
         rank: newRank
       })
       .where(eq(schema.users.id, userId));
+    
+    // Send real-time update if rank changed
+    if (rankChanged && (global as any).sendToUser) {
+      (global as any).sendToUser(userId, {
+        type: 'rank_update',
+        userId: userId,
+        oldRank: oldRank,
+        newRank: newRank,
+        rankPoints: newPoints,
+        timestamp: new Date().toISOString()
+      });
+    }
     
     return { rankPoints: newPoints, rank: newRank };
   },
@@ -321,6 +353,17 @@ export const storage = {
       // Initialize streak goals for today
       await this.initializeStreakGoals(userId);
       
+      // Send real-time update
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser(userId, {
+          type: 'streak_update',
+          userId: userId,
+          streakDays: 1,
+          canClaimReward: false,
+          timestamp: new Date().toISOString()
+        });
+      }
+      
       return;
     }
     
@@ -329,12 +372,15 @@ export const storage = {
     
     const differenceInDays = Math.floor((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
     
+    let newStreakDays = user.streakDays;
+    
     if (differenceInDays === 1) {
       // Consecutive day, increment streak
+      newStreakDays = user.streakDays + 1;
       await db.update(schema.users)
         .set({
           lastStreakDate: today,
-          streakDays: user.streakDays + 1
+          streakDays: newStreakDays
         })
         .where(eq(schema.users.id, userId));
       
@@ -343,16 +389,32 @@ export const storage = {
       
     } else if (differenceInDays > 1) {
       // Streak broken, reset to 1
+      newStreakDays = 1;
       await db.update(schema.users)
         .set({
           lastStreakDate: today,
-          streakDays: 1
+          streakDays: newStreakDays
         })
         .where(eq(schema.users.id, userId));
     }
     
     // Initialize streak goals for today
     await this.initializeStreakGoals(userId);
+    
+    // Check if all goals are completed
+    const streakData = await this.getUserStreakData(userId);
+    
+    // Send real-time update
+    if ((global as any).sendToUser) {
+      (global as any).sendToUser(userId, {
+        type: 'streak_update',
+        userId: userId,
+        streakDays: newStreakDays,
+        streakGoalsCompleted: streakData.goals.filter(g => g.completed).length,
+        canClaimReward: streakData.canClaimReward,
+        timestamp: new Date().toISOString()
+      });
+    }
   },
   
   /**
