@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, History, Sword } from "lucide-react";
+import { format, parseISO } from "date-fns";
 
 export default function BattleZone() {
   const { data: battles, isLoading } = useQuery<{
@@ -108,6 +109,25 @@ export default function BattleZone() {
     });
   };
 
+  // Helper function to safely format battle topics
+  const formatTopics = (topics: unknown): string => {
+    if (Array.isArray(topics)) {
+      return topics.join(', ');
+    }
+    return String(topics || '');
+  };
+
+  // Helper function to safely format dates
+  const formatDate = (dateString: string | Date | undefined): string => {
+    if (!dateString) return '';
+    try {
+      const date = typeof dateString === 'string' ? parseISO(dateString) : dateString;
+      return format(date, 'PPp');
+    } catch (error) {
+      return String(dateString);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-dark text-white">
       <Header />
@@ -123,7 +143,7 @@ export default function BattleZone() {
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button className="mt-4 md:mt-0 bg-gradient-to-r from-warning-600 to-danger-600 hover:from-warning-500 hover:to-danger-500">
-                <i className="ri-sword-line mr-2"></i>
+                <Sword className="w-4 h-4 mr-2" />
                 Create Battle
               </Button>
             </DialogTrigger>
@@ -264,7 +284,7 @@ export default function BattleZone() {
                             ? 'from-warning-600 to-danger-600' 
                             : 'from-primary-600 to-info-600'
                         } rounded-md flex items-center justify-center`}>
-                          <i className={`${getBattleTypeIcon(battle.type)} text-xl`}></i>
+                          <Sword className="h-5 w-5" />
                         </div>
                         <div>
                           <h3 className="font-bold font-gaming">{battle.title}</h3>
@@ -278,7 +298,7 @@ export default function BattleZone() {
                         <span className="text-xs text-gray-400">Rewards</span>
                         <div className="flex items-center space-x-1 mt-1">
                           <span className="text-warning-400 font-bold">{battle.rewardPoints}</span>
-                          <i className="ri-vip-crown-line text-warning-400"></i>
+                          <span className="text-warning-400">RP</span>
                         </div>
                       </div>
                       <Button 
@@ -299,7 +319,7 @@ export default function BattleZone() {
                     <div className="flex justify-between items-center">
                       <div className="flex items-center space-x-3">
                         <div className="flex -space-x-2">
-                          {battle.participants.map((participant, idx) => (
+                          {battle.participants && battle.participants.length > 0 && battle.participants.map((participant, idx) => (
                             <img 
                               key={idx}
                               src={participant.profileImage}
@@ -309,12 +329,12 @@ export default function BattleZone() {
                           ))}
                         </div>
                         <span className="text-xs text-gray-400">
-                          {battle.participants.length} players waiting
+                          {battle.participants ? battle.participants.length : 0} players waiting
                         </span>
                       </div>
                       <div className="text-xs text-gray-400">
                         <span>Topics: </span>
-                        <span className="text-white">{battle.topics.join(', ')}</span>
+                        <span className="text-white">{formatTopics(battle.topics)}</span>
                       </div>
                     </div>
                   </div>
@@ -354,24 +374,34 @@ export default function BattleZone() {
                             ? 'from-warning-600/50 to-danger-600/50' 
                             : 'from-primary-600/50 to-info-600/50'
                         } rounded-md flex items-center justify-center`}>
-                          <i className={`${getBattleTypeIcon(battle.type)} text-xl`}></i>
+                          <Calendar className="h-5 w-5" />
                         </div>
                         <div>
                           <h3 className="font-bold font-gaming">{battle.title}</h3>
-                          <p className="text-xs text-gray-400">
-                            Starts in {battle.startsIn} · {battle.type} · {battle.duration} mins
-                          </p>
+                          <p className="text-xs text-gray-400">{battle.type} · {battle.duration} mins · AI Judged</p>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-4">
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <div className="px-3 py-1 bg-dark-card rounded-md text-xs flex items-center">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          <span>Starts in {battle.startsIn}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 border-t border-dark-border pt-4">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="text-xs text-gray-400">Reward: </span>
+                        <span className="text-xs text-warning-400 font-bold">{battle.rewardPoints} RP</span>
+                      </div>
                       <div className="text-xs text-gray-400">
                         <span>Topics: </span>
-                        <span className="text-white">{battle.topics.join(', ')}</span>
-                      </div>
-                      <div className="px-3 py-1 rounded-full bg-primary-600/20 text-primary-400 text-xs">
-                        {battle.participants.length} participants
+                        <span className="text-white">{formatTopics(battle.topics)}</span>
                       </div>
                     </div>
                   </div>
@@ -395,34 +425,49 @@ export default function BattleZone() {
               </div>
             ) : battles?.past && battles.past.length > 0 ? (
               battles.past.map((battle) => (
-                <div key={battle.id} className="battle-card rounded-lg p-4 opacity-80">
+                <div key={battle.id} className="battle-card rounded-lg p-4">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center space-x-2">
-                        <div className={`w-10 h-10 bg-gradient-to-br ${
-                          battle.type.includes('1v1') 
-                            ? 'from-warning-600/30 to-danger-600/30' 
-                            : 'from-primary-600/30 to-info-600/30'
-                        } rounded-md flex items-center justify-center`}>
-                          <i className={`${getBattleTypeIcon(battle.type)} text-xl`}></i>
+                        <div className="w-10 h-10 bg-gray-800 rounded-md flex items-center justify-center">
+                          <History className="h-5 w-5 text-gray-400" />
                         </div>
                         <div>
-                          <h3 className="font-bold font-gaming">{battle.title}</h3>
+                          <h3 className="font-bold">{battle.title}</h3>
                           <p className="text-xs text-gray-400">
-                            {new Date(battle.completedAt).toLocaleDateString()} · {battle.type} · {battle.duration} mins
+                            {battle.type} · Completed {battle.completedAt ? formatDate(battle.completedAt) : 'Unknown date'}
                           </p>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-4">
-                      <div className="text-xs text-gray-400">
-                        <span>Winner: </span>
-                        <span className="text-success-400 font-bold">{battle.winner}</span>
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <div className="px-3 py-1 bg-dark-card rounded-md text-xs">
+                          Winner: <span className="text-success-400 font-bold">{battle.winner || 'Unknown'}</span>
+                        </div>
                       </div>
-                      <Button variant="outline" size="sm" className="bg-dark-card border-dark-border">
-                        View Results
-                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 border-t border-dark-border pt-4">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center space-x-3">
+                        <div className="flex -space-x-2">
+                          {battle.participants && battle.participants.map((participant, idx) => (
+                            <img 
+                              key={idx}
+                              src={participant.profileImage}
+                              alt={participant.name}
+                              className="w-6 h-6 rounded-full border border-dark-surface"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        <span>Topics: </span>
+                        <span className="text-white">{formatTopics(battle.topics)}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
