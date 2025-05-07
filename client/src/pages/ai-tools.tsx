@@ -162,10 +162,10 @@ export default function AITools() {
                 <CardFooter className="pt-0">
                   <Link href={getToolPath(tool.name)} className="w-full">
                     <Button 
-                      className={`w-full bg-${tool.color || 'blue'}-600 hover:bg-${tool.color || 'blue'}-500 text-white`}
+                      className={`w-full bg-${tool.color || 'blue'}-600 hover:bg-${tool.color || 'blue'}-500 text-white transform transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-${tool.color || 'blue'}-500/20`}
                     >
                       Open Tool
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                     </Button>
                   </Link>
                 </CardFooter>
@@ -216,30 +216,6 @@ export default function AITools() {
               </CardContent>
               <CardFooter>
                 <Button disabled className="w-full bg-purple-800/30 text-white cursor-not-allowed">
-                  Coming Soon
-                </Button>
-              </CardFooter>
-            </Card>
-            
-            <Card className="bg-dark-surface border-dark-border opacity-70">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="bg-green-600/20 p-2 rounded-lg">
-                    <BarChart className="h-6 w-6 text-green-400" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Performance Analytics</CardTitle>
-                    <CardDescription>Performance Tool</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-400 text-sm">
-                  Get detailed insights on your learning progress with AI-powered performance analytics and suggestions.
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Button disabled className="w-full bg-green-800/30 text-white cursor-not-allowed">
                   Coming Soon
                 </Button>
               </CardFooter>
