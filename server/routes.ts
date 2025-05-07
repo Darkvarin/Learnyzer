@@ -65,7 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const httpServer = createServer(app);
   
-  // Set up WebSocket server for real-time battle updates
+  // Set up WebSocket server for real-time updates across the platform
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
   
   // Store active connections by user ID and battle ID
@@ -80,14 +80,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const data = JSON.parse(message.toString());
         
-        // Store user and battle IDs from incoming messages
-        if (data.userId) {
-          userId = data.userId;
+        // Handle authentication and store connections by user ID
+        if (data.type === 'auth' && data.userId) {
+          userId = data.userId.toString();
           connections.set(`user_${userId}`, ws);
+          console.log(`User ${userId} authenticated via WebSocket`);
         }
         
+        // Store battle-specific connections
         if (data.battleId) {
-          battleId = data.battleId;
+          battleId = data.battleId.toString();
           if (userId) {
             connections.set(`battle_${battleId}_user_${userId}`, ws);
           }
@@ -95,7 +97,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Handle battle join
         if (data.type === 'join_battle') {
-          console.log(`User ${data.username || userId} joined battle ${battleId} via WebSocket`);
+          console.log(`User ${data.username || userId} joined battle ${data.battleId} via WebSocket`);
           
           // Notify all battle participants
           broadcastToBattle(data.battleId.toString(), {
@@ -162,8 +164,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
   
-  // Export the broadcast function for use in battle service
+  // Helper function to send a message to a specific user
+  function sendToUser(userId: string | number, message: any) {
+    const userKey = `user_${userId}`;
+    const connection = connections.get(userKey);
+    
+    if (connection && connection.readyState === WebSocket.OPEN) {
+      connection.send(JSON.stringify(message));
+      return true;
+    }
+    return false;
+  }
+  
+  // Helper function to broadcast a message to all connected users
+  function broadcastToAll(message: any) {
+    for (const [key, connection] of connections.entries()) {
+      if (connection.readyState === WebSocket.OPEN) {
+        connection.send(JSON.stringify(message));
+      }
+    }
+  }
+  
+  // Export the broadcast functions for use throughout the application
   (global as any).broadcastToBattle = broadcastToBattle;
+  (global as any).sendToUser = sendToUser;
+  (global as any).broadcastToAll = broadcastToAll;
 
   return httpServer;
 }
