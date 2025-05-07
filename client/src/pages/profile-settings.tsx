@@ -95,8 +95,8 @@ export default function ProfileSettings() {
       name: user?.name || "",
       email: user?.email || "",
       profileImage: user?.profileImage || "",
-      track: user?.track || "",
-      grade: user?.grade as string || "",
+      track: (user as any)?.track || "",
+      grade: (user as any)?.grade || "",
     },
   });
 
@@ -235,15 +235,15 @@ export default function ProfileSettings() {
                   
                   <div className="flex items-center justify-center mb-2">
                     <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-2">
-                      <span className="text-xs font-bold">{user?.level}</span>
+                      <span className="text-xs font-bold">{(user as any)?.level || 1}</span>
                     </div>
                     <div>
-                      <p className="text-xs text-muted-foreground">Level {user?.level}</p>
+                      <p className="text-xs text-muted-foreground">Level {(user as any)?.level || 1}</p>
                       <div className="w-24 h-1.5 bg-muted rounded-full overflow-hidden">
                         <div 
                           className="h-full bg-primary"
                           style={{ 
-                            width: `${Math.min(100, ((user?.currentXp || 0) / (user?.nextLevelXp || 1)) * 100)}%` 
+                            width: `${Math.min(100, (((user as any)?.currentXp || 0) / ((user as any)?.nextLevelXp || 100)) * 100)}%` 
                           }}
                         ></div>
                       </div>
@@ -251,7 +251,7 @@ export default function ProfileSettings() {
                   </div>
                   
                   <div className="px-3 py-1 rounded-full bg-primary/20 text-primary text-sm font-semibold">
-                    {user?.rank || "Bronze"}
+                    {(user as any)?.rank || "Bronze"}
                   </div>
                 </div>
               </CardContent>

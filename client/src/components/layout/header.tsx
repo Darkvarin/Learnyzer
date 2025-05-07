@@ -98,14 +98,8 @@ export function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/profile" className="flex items-center w-full">
-                    <i className="ri-user-line mr-2"></i>
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/settings" className="flex items-center w-full">
-                    <i className="ri-settings-3-line mr-2"></i>
-                    Settings
+                    <i className="ri-user-settings-line mr-2"></i>
+                    Profile & Settings
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
