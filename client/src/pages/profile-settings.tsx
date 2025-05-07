@@ -349,12 +349,50 @@ export default function ProfileSettings() {
                             name="profileImage"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Profile Image URL</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="https://example.com/your-image.jpg" {...field} />
-                                </FormControl>
+                                <FormLabel>Profile Image</FormLabel>
+                                <div className="grid grid-cols-1 gap-4">
+                                  <FormControl>
+                                    <Input 
+                                      placeholder="https://example.com/your-image.jpg" 
+                                      {...field}
+                                      className="mb-2" 
+                                    />
+                                  </FormControl>
+                                  
+                                  <div className="flex flex-col gap-4">
+                                    <div className="flex gap-2">
+                                      <Button 
+                                        type="button" 
+                                        variant="outline" 
+                                        onClick={() => field.onChange("https://api.dicebear.com/7.x/avataaars/svg?seed=" + Math.random())}
+                                        className="w-full"
+                                      >
+                                        Generate Random Avatar
+                                      </Button>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-4 gap-2">
+                                      {["Warrior", "Mage", "Scholar", "Ninja"].map((avatar) => (
+                                        <Button
+                                          key={avatar}
+                                          type="button"
+                                          variant="outline"
+                                          className={`p-2 h-auto aspect-square ${field.value?.includes(avatar.toLowerCase()) ? 'ring-2 ring-primary' : ''}`}
+                                          onClick={() => field.onChange(`https://api.dicebear.com/7.x/avataaars/svg?seed=${avatar.toLowerCase()}`)}
+                                        >
+                                          <img 
+                                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${avatar.toLowerCase()}`} 
+                                            alt={avatar}
+                                            className="w-full h-full object-contain"
+                                          />
+                                          <span className="text-xs mt-1">{avatar}</span>
+                                        </Button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
                                 <FormDescription>
-                                  Enter a URL for your profile picture or avatar
+                                  Enter a URL, generate a random avatar, or select from options
                                 </FormDescription>
                                 <FormMessage />
                               </FormItem>
@@ -369,14 +407,9 @@ export default function ProfileSettings() {
                                 <FormItem>
                                   <FormLabel>Education Track</FormLabel>
                                   <Select 
-                                    onValueChange={(value) => {
-                                      try {
-                                        field.onChange(value);
-                                      } catch (error) {
-                                        console.error("Error selecting track:", error);
-                                      }
-                                    }} 
-                                    defaultValue={field.value || "school"}
+                                    onValueChange={(value) => field.onChange(value)}
+                                    value={field.value || undefined}
+                                    defaultValue="school"
                                   >
                                     <FormControl>
                                       <SelectTrigger>
@@ -409,14 +442,9 @@ export default function ProfileSettings() {
                                 <FormItem>
                                   <FormLabel>Grade/Class</FormLabel>
                                   <Select 
-                                    onValueChange={(value) => {
-                                      try {
-                                        field.onChange(value);
-                                      } catch (error) {
-                                        console.error("Error selecting grade:", error);
-                                      }
-                                    }}
-                                    defaultValue={field.value || "other"}
+                                    onValueChange={(value) => field.onChange(value)}
+                                    value={field.value || undefined}
+                                    defaultValue="other"
                                   >
                                     <FormControl>
                                       <SelectTrigger>
