@@ -120,13 +120,13 @@ export default function PerformanceAnalytics() {
                   
                   <div className="flex-1 p-4 bg-dark-card rounded-lg">
                     <Brain className="h-8 w-8 mx-auto mb-2 text-purple-400" />
-                    <div className="text-2xl font-bold">87%</div>
+                    <div className="text-2xl font-bold">{performanceData?.accuracyRate || '0%'}</div>
                     <div className="text-sm text-muted-foreground">Accuracy Rate</div>
                   </div>
                   
                   <div className="flex-1 p-4 bg-dark-card rounded-lg">
                     <Clock className="h-8 w-8 mx-auto mb-2 text-green-400" />
-                    <div className="text-2xl font-bold">24.5h</div>
+                    <div className="text-2xl font-bold">{performanceData?.totalStudyTime || '0h'}</div>
                     <div className="text-sm text-muted-foreground">Study Time</div>
                   </div>
                 </div>
@@ -264,7 +264,7 @@ export default function PerformanceAnalytics() {
                         <Badge className="mr-2 bg-green-500/20 text-green-400 hover:bg-green-500/30">Strong Areas</Badge>
                       </h4>
                       <div className="space-y-2">
-                        {mockData.strengths.map((area, index) => (
+                        {analyticsData.strengths.map((area, index) => (
                           <div key={index} className="flex items-center">
                             <div className="w-full bg-dark-card rounded-full h-4 mr-2">
                               <div
@@ -295,7 +295,7 @@ export default function PerformanceAnalytics() {
               <CardContent className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <ReLineChart
-                    data={mockData.timeSpent}
+                    data={analyticsData.timeSpent}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#444" />
@@ -333,7 +333,7 @@ export default function PerformanceAnalytics() {
                 <ResponsiveContainer width="100%" height="100%">
                   <RePieChart>
                     <Pie
-                      data={mockData.skillDistribution}
+                      data={analyticsData.skillDistribution}
                       cx="50%"
                       cy="50%"
                       labelLine={true}
@@ -342,7 +342,7 @@ export default function PerformanceAnalytics() {
                       dataKey="value"
                       label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                     >
-                      {mockData.skillDistribution.map((entry, index) => (
+                      {analyticsData.skillDistribution.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
@@ -368,7 +368,7 @@ export default function PerformanceAnalytics() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {mockData.recommendations.map((rec) => (
+                  {analyticsData.recommendations.map((rec) => (
                     <Card key={rec.id} className={`bg-${rec.category === 'weakness' ? 'red' : rec.category === 'strength' ? 'green' : 'blue'}-500/10 border-${rec.category === 'weakness' ? 'red' : rec.category === 'strength' ? 'green' : 'blue'}-500/20`}>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-md">{rec.title}</CardTitle>
