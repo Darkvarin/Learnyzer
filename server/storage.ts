@@ -499,6 +499,24 @@ export const storage = {
       })
       .where(eq(schema.userStreakGoals.id, userGoal.id));
     
+    // Check if the completion of this goal means all goals are now complete
+    if (completed) {
+      const streakData = await this.getUserStreakData(userId);
+      const allGoalsCompleted = streakData.goals.every(g => g.completed);
+      
+      // Send real-time update for goal completion
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser(userId, {
+          type: 'streak_update',
+          userId: userId,
+          streakDays: streakData.days,
+          streakGoalsCompleted: streakData.goals.filter(g => g.completed).length,
+          canClaimReward: allGoalsCompleted && !streakData.canClaimReward,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+    
     return { progress: newProgress, completed };
   },
   

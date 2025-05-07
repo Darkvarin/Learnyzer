@@ -508,6 +508,17 @@ export const aiService = {
       // Increment user's AI sessions count
       await storage.incrementAISessionCount((req.user as any).id);
       
+      // Send real-time notification about generated insights
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser(userId, {
+          type: 'ai_insight_generated',
+          userId: userId,
+          messageType: 'performance_insights',
+          message: 'New performance insights are available with personalized recommendations!',
+          timestamp: new Date().toISOString()
+        });
+      }
+      
       return res.status(200).json(result);
     } catch (error) {
       console.error("Performance insights error:", error);
