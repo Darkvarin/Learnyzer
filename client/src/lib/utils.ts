@@ -149,6 +149,30 @@ export function getRankColor(rank: string): string {
 }
 
 /**
+ * Get a safe color for AI tools to prevent CSS issues
+ * @param color - The original color name
+ * @returns A safe Tailwind CSS color
+ */
+export function getSafeColor(color: string | undefined): string {
+  // Default safe colors that work well in UI
+  const safeColors: Record<string, string> = {
+    primary: "blue",
+    secondary: "purple",
+    success: "green",
+    warning: "yellow",
+    info: "sky",
+    danger: "red",
+    default: "gray"
+  };
+  
+  if (!color || !safeColors[color]) {
+    return safeColors.default;
+  }
+  
+  return safeColors[color];
+}
+
+/**
  * Format relative time (e.g., "2 hours ago")
  * @param date - The date to format
  * @returns Formatted time string

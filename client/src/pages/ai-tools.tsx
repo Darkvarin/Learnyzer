@@ -2,9 +2,16 @@ import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getAIToolIcon } from "@/lib/utils";
+import { getAIToolIcon, getSafeColor } from "@/lib/utils";
 import { AITool } from "@shared/types";
 import { Link } from "wouter";
+import { 
+  BookText, 
+  FileCheck, 
+  Flashlight, 
+  BrainCircuit, 
+  Zap 
+} from "lucide-react";
 
 export default function AiTools() {
   const { data: tools, isLoading } = useQuery<AITool[]>({
@@ -41,8 +48,19 @@ export default function AiTools() {
             tools.map((tool) => (
               <div key={tool.id} className="bg-dark-surface border border-dark-border rounded-lg overflow-hidden">
                 <div className="p-5">
-                  <div className={`w-12 h-12 bg-${tool.color}-600/20 rounded-lg flex items-center justify-center mb-4`}>
-                    <i className={`${getAIToolIcon(tool.name)} text-${tool.color}-400 text-2xl`}></i>
+                  <div className={`w-12 h-12 bg-${getSafeColor(tool.color)}-600/20 rounded-lg flex items-center justify-center mb-4`}>
+                    {/* Use Lucide icons instead of icon fonts */}
+                    {tool.name.toLowerCase().includes('notes') ? (
+                      <BookText className={`text-${getSafeColor(tool.color)}-400`} />
+                    ) : tool.name.toLowerCase().includes('check') ? (
+                      <FileCheck className={`text-${getSafeColor(tool.color)}-400`} />
+                    ) : tool.name.toLowerCase().includes('flash') ? (
+                      <Flashlight className={`text-${getSafeColor(tool.color)}-400`} />
+                    ) : tool.name.toLowerCase().includes('performance') || tool.name.toLowerCase().includes('insight') ? (
+                      <BrainCircuit className={`text-${getSafeColor(tool.color)}-400`} />
+                    ) : (
+                      <Zap className={`text-${getSafeColor(tool.color)}-400`} />
+                    )}
                   </div>
                   <h2 className="text-lg font-bold mb-2">{tool.name}</h2>
                   <p className="text-sm text-gray-400">{tool.description}</p>
@@ -51,7 +69,7 @@ export default function AiTools() {
                     <ul className="mt-3 space-y-1">
                       {tool.features.map((feature, idx) => (
                         <li key={idx} className="text-xs text-gray-400 flex items-start">
-                          <i className="ri-checkbox-circle-line text-success-400 mr-1.5 mt-0.5"></i>
+                          <FileCheck className="text-green-400 w-4 h-4 mr-1.5 mt-0.5" />
                           {feature}
                         </li>
                       ))}
@@ -61,7 +79,7 @@ export default function AiTools() {
                 
                 <div className="border-t border-dark-border p-4">
                   <Link href={`/ai-tools/${tool.id}`}>
-                    <a className={`block w-full py-2 px-4 text-center rounded-md bg-${tool.color}-600 hover:bg-${tool.color}-500 text-white transition-colors`}>
+                    <a className={`block w-full py-2 px-4 text-center rounded-md bg-${getSafeColor(tool.color)}-600 hover:bg-${getSafeColor(tool.color)}-500 text-white transition-colors`}>
                       Use Tool
                     </a>
                   </Link>
@@ -70,7 +88,9 @@ export default function AiTools() {
             ))
           ) : (
             <div className="col-span-full text-center py-12 text-gray-400">
-              <i className="ri-robot-line text-5xl mb-3"></i>
+              <div className="flex justify-center mb-3">
+                <Zap className="h-12 w-12 opacity-50" />
+              </div>
               <p className="text-lg">No AI tools available yet</p>
               <p className="text-sm mt-2">Check back soon for new tools!</p>
             </div>
