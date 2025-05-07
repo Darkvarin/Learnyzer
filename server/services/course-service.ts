@@ -30,14 +30,14 @@ export const courseService = {
       }
       
       // Handle range-based cases like "11-12-science"
-      if (course.targetGrade.includes("-")) {
+      if (typeof course.targetGrade === 'string' && course.targetGrade.includes("-")) {
         const parts = course.targetGrade.split("-");
         
         // Stream-specific courses for 11th and 12th grades
         if (parts.length === 3 && parts[0] === "11" && parts[1] === "12") {
           // Check if student's grade matches stream requirement
           if ((grade === "11" || grade === "12") && 
-              grade.includes(parts[2])) {
+              typeof grade === 'string' && grade.includes(parts[2])) {
             return true;
           }
           
@@ -61,7 +61,8 @@ export const courseService = {
       }
       
       // Handle numeric grades
-      if (/^\d+$/.test(course.targetGrade) && /^\d+$/.test(grade)) {
+      if (typeof course.targetGrade === 'string' && typeof grade === 'string' && 
+          /^\d+$/.test(course.targetGrade) && /^\d+$/.test(grade)) {
         // For specific numeric grades, only exact matches or lower grades
         const courseGrade = parseInt(course.targetGrade);
         const studentGrade = parseInt(grade);
