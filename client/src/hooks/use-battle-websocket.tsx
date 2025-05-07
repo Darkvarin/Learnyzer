@@ -79,7 +79,7 @@ export function useBattleWebSocket(battleId?: number) {
               setMessages(prev => [...prev, {
                 userId: data.userId,
                 username: data.username || 'User',
-                content: data.content,
+                content: data.content || '',
                 timestamp: data.timestamp
               }]);
             }
@@ -87,7 +87,11 @@ export function useBattleWebSocket(battleId?: number) {
             
           case 'participant_joined':
             if (data.userId) {
-              setParticipants(prev => new Set([...prev, data.userId!]));
+              setParticipants(prev => {
+                const newSet = new Set(prev);
+                newSet.add(data.userId!);
+                return newSet;
+              });
               
               // Add a system message about user joining
               setMessages(prev => [...prev, {
@@ -99,7 +103,11 @@ export function useBattleWebSocket(battleId?: number) {
             
           case 'answer_submitted':
             if (data.userId) {
-              setSubmissions(prev => new Set([...prev, data.userId!]));
+              setSubmissions(prev => {
+                const newSet = new Set(prev);
+                newSet.add(data.userId!);
+                return newSet;
+              });
               
               // Add a system message about submission
               setMessages(prev => [...prev, {
@@ -114,7 +122,7 @@ export function useBattleWebSocket(battleId?: number) {
             
             // Add a system message about battle completion
             setMessages(prev => [...prev, {
-              content: 'Battle completed! Results will be announced shortly.',
+              content: data.message || 'Battle completed! Results will be announced shortly.',
               timestamp: data.timestamp
             }]);
             break;

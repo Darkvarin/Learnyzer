@@ -180,8 +180,10 @@ export const battleService = {
       if ((global as any).broadcastToBattle) {
         const user = await storage.getUserById(userId);
         (global as any).broadcastToBattle(battleId.toString(), {
-          type: 'user_joined',
+          type: 'participant_joined',
           battleId: battleId,
+          userId: userId,
+          username: user.username,
           user: {
             id: user.id,
             username: user.username,
@@ -253,7 +255,7 @@ export const battleService = {
       if ((global as any).broadcastToBattle) {
         const user = await storage.getUserById(userId);
         (global as any).broadcastToBattle(battleId.toString(), {
-          type: 'submission_update',
+          type: 'answer_submitted',
           battleId: battleId,
           userId: userId,
           username: user.username,

@@ -51,7 +51,11 @@ export interface Battle extends BattleSchema {
     id: number;
     name: string;
     profileImage: string;
+    team?: number;
+    submission?: boolean;
   }>;
+  startedAt?: Date | string;
+  description?: string;
   startsIn?: string;
   completedAt?: Date | string;
   winner?: string;
