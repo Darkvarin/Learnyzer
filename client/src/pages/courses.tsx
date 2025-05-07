@@ -10,7 +10,7 @@ import { getProgressColor, getSubjectIcon } from "@/lib/utils";
 import { useState } from "react";
 import { Course } from "@shared/types";
 import { useLocation } from "wouter";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default function Courses() {
@@ -233,7 +233,10 @@ export default function Courses() {
                                 </div>
                                 <span className="text-sm">{course.subject}</span>
                               </div>
-                              <Button className={`bg-${course.subject.toLowerCase()}-600 hover:bg-${course.subject.toLowerCase()}-500 text-white`}>
+                              <Button 
+                                className={`bg-${course.subject.toLowerCase()}-600 hover:bg-${course.subject.toLowerCase()}-500 text-white`}
+                                onClick={() => setSelectedCourse(course)}
+                              >
                                 Continue
                               </Button>
                             </div>
@@ -320,18 +323,18 @@ export default function Courses() {
         <DialogContent className="bg-dark-surface border-dark-border text-white max-w-3xl">
           {selectedCourse && (
             <div>
+              <DialogTitle className="text-xl font-bold font-gaming mb-2">{selectedCourse.title}</DialogTitle>
               <div className="flex items-center space-x-3 mb-4">
                 <div className={`w-10 h-10 bg-${selectedCourse.subject.toLowerCase()}-600/20 rounded-lg flex items-center justify-center`}>
                   <i className={`${getSubjectIcon(selectedCourse.subject)} text-${selectedCourse.subject.toLowerCase()}-400 text-xl`}></i>
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold font-gaming">{selectedCourse.title}</h2>
                   <p className="text-sm text-gray-400">{selectedCourse.subject}</p>
                 </div>
               </div>
               
               <div className="mb-4">
-                <p className="text-sm text-gray-300 mb-4">{selectedCourse.description}</p>
+                <DialogDescription className="text-sm text-gray-300 mb-4">{selectedCourse.description}</DialogDescription>
                 {selectedCourse.progress > 0 && (
                   <div>
                     <div className="flex justify-between text-xs text-gray-400 mb-2">
