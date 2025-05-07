@@ -80,46 +80,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const data = JSON.parse(message.toString());
         
-        // Handle authentication
-        if (data.type === 'auth') {
+        // Store user and battle IDs from incoming messages
+        if (data.userId) {
           userId = data.userId;
           connections.set(`user_${userId}`, ws);
-          console.log(`User ${userId} authenticated via WebSocket`);
+        }
+        
+        if (data.battleId) {
+          battleId = data.battleId;
+          if (userId) {
+            connections.set(`battle_${battleId}_user_${userId}`, ws);
+          }
         }
         
         // Handle battle join
         if (data.type === 'join_battle') {
-          battleId = data.battleId;
-          connections.set(`battle_${battleId}_user_${userId}`, ws);
-          console.log(`User ${userId} joined battle ${battleId} via WebSocket`);
+          console.log(`User ${data.username || userId} joined battle ${battleId} via WebSocket`);
           
           // Notify all battle participants
-          broadcastToBattle(battleId, {
-            type: 'user_joined',
-            userId: userId,
-            battleId: battleId,
-            timestamp: new Date().toISOString()
+          broadcastToBattle(data.battleId.toString(), {
+            type: 'participant_joined',
+            userId: data.userId,
+            username: data.username,
+            battleId: data.battleId,
+            timestamp: data.timestamp || new Date().toISOString()
           });
         }
         
-        // Handle battle message
-        if (data.type === 'battle_message' && battleId) {
-          broadcastToBattle(battleId, {
-            type: 'message',
-            userId: userId,
-            battleId: battleId,
+        // Handle chat message
+        if (data.type === 'chat_message') {
+          broadcastToBattle(data.battleId.toString(), {
+            type: 'chat_message',
+            userId: data.userId,
+            username: data.username,
+            battleId: data.battleId,
             content: data.content,
-            timestamp: new Date().toISOString()
+            timestamp: data.timestamp || new Date().toISOString()
           });
         }
         
-        // Handle battle submission
-        if (data.type === 'battle_submission' && battleId) {
-          broadcastToBattle(battleId, {
-            type: 'submission_update',
-            userId: userId,
-            battleId: battleId,
-            timestamp: new Date().toISOString()
+        // Handle answer submission
+        if (data.type === 'answer_submitted') {
+          broadcastToBattle(data.battleId.toString(), {
+            type: 'answer_submitted',
+            userId: data.userId,
+            username: data.username,
+            battleId: data.battleId,
+            timestamp: data.timestamp || new Date().toISOString()
           });
         }
       } catch (error) {

@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/hooks/use-auth';
-import { useToast } from '@/hooks/use-toast';
 
 interface BattleWebSocketMessage {
   type: string;
@@ -18,152 +17,154 @@ interface BattleWebSocketMessage {
   timestamp: string;
 }
 
+interface ChatMessage {
+  userId?: number;
+  username?: string;
+  content: string;
+  timestamp: string;
+}
+
 export function useBattleWebSocket(battleId?: number) {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [connected, setConnected] = useState(false);
-  const [messages, setMessages] = useState<BattleWebSocketMessage[]>([]);
-  const [participants, setParticipants] = useState<any[]>([]);
-  const [submissions, setSubmissions] = useState<Set<number>>(new Set());
-  const [battleCompleted, setBattleCompleted] = useState(false);
   const { user } = useAuth();
-  const { toast } = useToast();
+  const [connected, setConnected] = useState<boolean>(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [participants, setParticipants] = useState<Set<number>>(new Set());
+  const [submissions, setSubmissions] = useState<Set<number>>(new Set());
+  const [battleCompleted, setBattleCompleted] = useState<boolean>(false);
+  const socketRef = useRef<WebSocket | null>(null);
 
   // Initialize WebSocket connection
   useEffect(() => {
-    if (!user || !user.id) return;
+    if (!battleId || !user) return;
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/ws`;
-    const webSocket = new WebSocket(wsUrl);
-
-    webSocket.onopen = () => {
-      console.log('WebSocket connection established');
+    
+    socketRef.current = new WebSocket(wsUrl);
+    
+    socketRef.current.onopen = () => {
       setConnected(true);
-
-      // Authenticate with the WebSocket server
-      webSocket.send(JSON.stringify({
-        type: 'auth',
-        userId: user.id
-      }));
-
-      // Join battle if battleId is provided
-      if (battleId) {
-        webSocket.send(JSON.stringify({
+      console.log('WebSocket connection established');
+      
+      // Join the battle's virtual room
+      if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+        socketRef.current.send(JSON.stringify({
           type: 'join_battle',
+          battleId,
           userId: user.id,
-          battleId: battleId
+          username: user.username,
+          timestamp: new Date().toISOString()
         }));
       }
     };
-
-    webSocket.onmessage = (event) => {
+    
+    socketRef.current.onclose = () => {
+      setConnected(false);
+      console.log('WebSocket connection closed');
+    };
+    
+    socketRef.current.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+    
+    socketRef.current.onmessage = (event) => {
       try {
-        const data = JSON.parse(event.data) as BattleWebSocketMessage;
-        console.log('WebSocket message received:', data);
+        const data: BattleWebSocketMessage = JSON.parse(event.data);
         
-        // Handle different message types
+        if (data.battleId !== battleId) return;
+        
         switch (data.type) {
-          case 'user_joined':
-            if (data.user && !participants.some(p => p.id === data.user?.id)) {
-              setParticipants(prev => [...prev, data.user]);
-              
-              // Show toast notification
-              toast({
-                title: `${data.user.username} joined the battle`,
-                duration: 3000
-              });
+          case 'chat_message':
+            if (data.content) {
+              setMessages(prev => [...prev, {
+                userId: data.userId,
+                username: data.username || 'User',
+                content: data.content,
+                timestamp: data.timestamp
+              }]);
             }
             break;
             
-          case 'user_left':
+          case 'participant_joined':
             if (data.userId) {
-              setParticipants(prev => prev.filter(p => p.id !== data.userId));
+              setParticipants(prev => new Set([...prev, data.userId!]));
               
-              // Show toast notification if we have the username
-              if (data.username) {
-                toast({
-                  title: `${data.username} left the battle`,
-                  duration: 3000
-                });
-              }
+              // Add a system message about user joining
+              setMessages(prev => [...prev, {
+                content: `${data.username || 'A user'} joined the battle`,
+                timestamp: data.timestamp
+              }]);
             }
             break;
             
-          case 'message':
-            setMessages(prev => [...prev, data]);
-            break;
-            
-          case 'submission_update':
+          case 'answer_submitted':
             if (data.userId) {
-              setSubmissions(prev => new Set([...prev, data.userId]));
+              setSubmissions(prev => new Set([...prev, data.userId!]));
               
-              // Show toast notification
-              if (data.username) {
-                toast({
-                  title: `${data.username} submitted an answer`,
-                  duration: 3000
-                });
-              }
+              // Add a system message about submission
+              setMessages(prev => [...prev, {
+                content: `${data.username || 'A user'} submitted their answer`,
+                timestamp: data.timestamp
+              }]);
             }
             break;
             
           case 'battle_completed':
             setBattleCompleted(true);
             
-            // Show toast notification
-            toast({
-              title: 'Battle completed',
-              description: data.message || 'All participants have submitted their answers.',
-              duration: 5000
-            });
+            // Add a system message about battle completion
+            setMessages(prev => [...prev, {
+              content: 'Battle completed! Results will be announced shortly.',
+              timestamp: data.timestamp
+            }]);
             break;
+            
+          default:
+            console.log('Unhandled message type:', data.type);
         }
-        
       } catch (error) {
         console.error('Error parsing WebSocket message:', error);
       }
     };
-
-    webSocket.onerror = (error) => {
-      console.error('WebSocket error:', error);
-      setConnected(false);
-    };
-
-    webSocket.onclose = () => {
-      console.log('WebSocket connection closed');
-      setConnected(false);
-    };
-
-    setSocket(webSocket);
-
+    
     return () => {
-      webSocket.close();
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
     };
-  }, [user, battleId]);
-
-  // Function to send messages
+  }, [battleId, user]);
+  
+  // Send a chat message
   const sendMessage = useCallback((content: string) => {
-    if (socket && connected && battleId && user) {
-      socket.send(JSON.stringify({
-        type: 'battle_message',
-        userId: user.id,
-        battleId: battleId,
-        content
-      }));
+    if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN || !battleId || !user) {
+      return;
     }
-  }, [socket, connected, battleId, user]);
-
-  // Function to notify about submission
+    
+    socketRef.current.send(JSON.stringify({
+      type: 'chat_message',
+      battleId,
+      userId: user.id,
+      username: user.username,
+      content,
+      timestamp: new Date().toISOString()
+    }));
+  }, [battleId, user]);
+  
+  // Notify about answer submission
   const submitAnswer = useCallback(() => {
-    if (socket && connected && battleId && user) {
-      socket.send(JSON.stringify({
-        type: 'battle_submission',
-        userId: user.id,
-        battleId: battleId
-      }));
+    if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN || !battleId || !user) {
+      return;
     }
-  }, [socket, connected, battleId, user]);
-
+    
+    socketRef.current.send(JSON.stringify({
+      type: 'answer_submitted',
+      battleId,
+      userId: user.id,
+      username: user.username,
+      timestamp: new Date().toISOString()
+    }));
+  }, [battleId, user]);
+  
   return {
     connected,
     messages,
