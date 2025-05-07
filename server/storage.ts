@@ -4,33 +4,35 @@ import { eq, and, desc, gte, lt, sql, isNull, asc, ne } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import bcrypt from "bcrypt";
 
-// Define ranks and their point requirements
+// Define ranks and their point requirements - made more challenging
 const RANKS = [
   { name: "Bronze I", points: 0 },
-  { name: "Bronze II", points: 100 },
-  { name: "Bronze III", points: 250 },
-  { name: "Silver I", points: 500 },
-  { name: "Silver II", points: 750 },
-  { name: "Silver III", points: 1000 },
-  { name: "Gold I", points: 1500 },
-  { name: "Gold II", points: 2000 },
-  { name: "Gold III", points: 2500 },
-  { name: "Platinum I", points: 3000 },
-  { name: "Platinum II", points: 3500 },
-  { name: "Platinum III", points: 4000 },
-  { name: "Diamond I", points: 5000 },
-  { name: "Diamond II", points: 6000 },
-  { name: "Diamond III", points: 7000 },
-  { name: "Heroic", points: 8000 },
-  { name: "Elite Heroic", points: 9000 },
-  { name: "Master", points: 10000 },
-  { name: "Elite Master", points: 12000 },
-  { name: "Grandmaster", points: 15000 }
+  { name: "Bronze II", points: 150 },
+  { name: "Bronze III", points: 400 },
+  { name: "Silver I", points: 800 },
+  { name: "Silver II", points: 1300 },
+  { name: "Silver III", points: 2000 },
+  { name: "Gold I", points: 3000 },
+  { name: "Gold II", points: 4500 },
+  { name: "Gold III", points: 6500 },
+  { name: "Platinum I", points: 9000 },
+  { name: "Platinum II", points: 12000 },
+  { name: "Platinum III", points: 16000 },
+  { name: "Diamond I", points: 21000 },
+  { name: "Diamond II", points: 27000 },
+  { name: "Diamond III", points: 35000 },
+  { name: "Heroic", points: 45000 },
+  { name: "Elite Heroic", points: 60000 },
+  { name: "Master", points: 80000 },
+  { name: "Elite Master", points: 100000 },
+  { name: "Grandmaster", points: 125000 }
 ];
 
-// Level XP requirements (exponential growth)
+// Level XP requirements (exponential growth) - made more challenging
 function getXpForLevel(level: number): number {
-  return Math.floor(1000 * Math.pow(1.2, level - 1));
+  // Base XP required for level 1 is 1000
+  // Each level increases by a higher factor, creating a steeper curve
+  return Math.floor(1000 * Math.pow(1.35, level - 1));
 }
 
 export const storage = {
@@ -176,8 +178,8 @@ export const storage = {
       level++;
       nextLevelXp = getXpForLevel(level);
       
-      // Also add some rank points on level up
-      const rankPointsForLevelUp = 50 + level * 10;
+      // Also add some rank points on level up - improved scaling for more challenge
+      const rankPointsForLevelUp = 75 + Math.floor(level * level * 2.5);
       await this.updateUserRankPoints(userId, user.rankPoints + rankPointsForLevelUp);
     }
     
@@ -492,9 +494,10 @@ export const storage = {
       completedDays.push(i);
     }
     
-    // Calculate reward XP based on streak length
-    const baseReward = 150;
-    const streakMultiplier = Math.floor(user.streakDays / 7) + 1; // +1 multiplier for each week
+    // Calculate reward XP based on streak length - enhanced for more challenge
+    const baseReward = 200;
+    // Exponential scaling for longer streaks to make it more rewarding
+    const streakMultiplier = Math.min(10, 1 + Math.floor(Math.sqrt(user.streakDays))); // Capped at 10x for balance
     const rewardXp = baseReward * streakMultiplier;
     
     return {
