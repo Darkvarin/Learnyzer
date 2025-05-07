@@ -5,18 +5,16 @@ import { useUser } from "@/contexts/user-context";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { 
-  Button,
-  Input,
-  Skeleton 
-} from "@/components/ui";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Send, 
   Mic, 
   Paperclip, 
   Settings2, 
   MessageSquare,
-  Robot,
+  Bot as Robot,
   HelpCircle,
   Book,
   GraduationCap,
