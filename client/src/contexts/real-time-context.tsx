@@ -110,6 +110,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [connected, setConnected] = useState(false);
+  const [reconnecting, setReconnecting] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<RealTimeUpdateMessage | null>(null);
   const [notifications, setNotifications] = useState<NotificationMessage[]>([]);
   const socketRef = useRef<WebSocket | null>(null);
@@ -152,6 +153,9 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
       
       // Attempt to reconnect after a delay if user is still logged in
       if (user) {
+        // Set reconnecting state to true when we start the reconnection process
+        setReconnecting(true);
+        
         setTimeout(() => {
           console.log('Attempting to reconnect to real-time service...');
           // Re-establish connection if the component is still mounted
@@ -162,6 +166,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
             newWs.onopen = () => {
               console.log('Real-time WebSocket reconnected');
               setConnected(true);
+              setReconnecting(false); // Reset reconnecting state on successful connection
               
               // Re-authenticate
               newWs.send(JSON.stringify({
@@ -169,12 +174,25 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
                 userId: user.id,
                 timestamp: new Date().toISOString()
               }));
+              
+              // Send a notification about reconnection
+              sendNotification({
+                title: 'Connection Restored',
+                message: 'Your connection to LearnityX has been restored.',
+                severity: 'info'
+              });
             };
             
             // Set up the same event handlers for the new connection
             newWs.onmessage = socketRef.current.onmessage;
             newWs.onerror = socketRef.current.onerror;
-            newWs.onclose = socketRef.current.onclose;
+            newWs.onclose = () => {
+              setReconnecting(false); // Reset reconnecting state if we failed to reconnect
+              socketRef.current?.onclose?.(); // Chain to the original onclose handler
+            };
+          } else {
+            // If we're already reconnected, reset the state
+            setReconnecting(false);
           }
         }, 3000); // Wait 3 seconds before attempting to reconnect
       }
@@ -184,7 +202,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
       console.error('Real-time WebSocket error:', error);
     };
     
-    socketRef.current.onmessage = (event) => {
+    socketRef.current.onmessage = (event: MessageEvent) => {
       try {
         const data: RealTimeUpdateMessage = JSON.parse(event.data);
         
@@ -269,7 +287,11 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
         break;
         
       default:
-        console.log('Unhandled real-time message type:', message.type);
+        if ('type' in message) {
+          console.log('Unhandled real-time message type:', message.type);
+        } else {
+          console.log('Unknown message format received:', message);
+        }
     }
   };
   
@@ -377,7 +399,9 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
       type: 'notification',
       userId: user.id,
       timestamp: new Date().toISOString(),
-      ...notification
+      title: notification.title,
+      message: notification.message,
+      severity: notification.severity
     };
     
     setNotifications(prev => [...prev, fullNotification]);
@@ -387,6 +411,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
   return (
     <RealTimeContext.Provider value={{
       connected,
+      reconnecting,
       lastUpdate,
       notifications,
       clearNotification,

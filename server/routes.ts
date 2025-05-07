@@ -7,6 +7,7 @@ import { userService } from "./services/user-service";
 import { aiService } from "./services/ai-service";
 import { courseService } from "./services/course-service";
 import { battleService } from "./services/battle-service";
+import { notificationService } from "./services/notification-service";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up enhanced authentication with improved security and database session storage
