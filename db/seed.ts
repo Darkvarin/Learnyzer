@@ -81,14 +81,15 @@ async function seed() {
         ])
       },
       {
-        name: "Performance Insights",
-        description: "AI analysis of your progress and learning patterns",
-        color: "info",
+        name: "Performance Analytics",
+        description: "AI-powered visualization and analysis of your learning progress",
+        color: "green",
         features: JSON.stringify([
-          "Identify knowledge gaps",
-          "Personalized study recommendations",
-          "Time management suggestions",
-          "Comparative analysis with peers"
+          "Interactive visualizations and graphs",
+          "Time pattern analysis for optimal study times",
+          "Skill distribution across learning domains",
+          "Personalized action plan with targeted improvements",
+          "Strength and weakness identification"
         ])
       }
     ];

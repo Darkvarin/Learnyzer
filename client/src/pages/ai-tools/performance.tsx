@@ -20,11 +20,11 @@ export default function PerformanceAnalytics() {
   
   // Fetch user performance data
   const { data: performanceData, isLoading: isLoadingPerformance } = useQuery({
-    queryKey: ['/api/user/performance', timeRange, subjectFilter],
+    queryKey: ['/api/ai/tools/analytics/' + (user?.id || ''), timeRange, subjectFilter],
   });
   
-  // Mock data structure for development (will be replaced by actual API data)
-  const mockData = {
+  // Use real API data if available, otherwise use empty placeholders
+  const analyticsData = performanceData || {
     subjectPerformance: [
       { subject: "Mathematics", score: 78, average: 65 },
       { subject: "Science", score: 92, average: 70 },
@@ -211,7 +211,7 @@ export default function PerformanceAnalytics() {
                 <CardContent className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
-                      data={mockData.subjectPerformance}
+                      data={analyticsData.subjectPerformance}
                       margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="#444" />
@@ -244,7 +244,7 @@ export default function PerformanceAnalytics() {
                         <Badge className="mr-2 bg-red-500/20 text-red-400 hover:bg-red-500/30">Needs Improvement</Badge>
                       </h4>
                       <div className="space-y-2">
-                        {mockData.weakestAreas.map((area, index) => (
+                        {analyticsData.weaknesses.map((area, index) => (
                           <div key={index} className="flex items-center">
                             <div className="w-full bg-dark-card rounded-full h-4 mr-2">
                               <div
