@@ -63,6 +63,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Achievements routes
   app.get("/api/achievements", userService.getAllAchievements);
   app.get("/api/achievements/:id", userService.getAchievementById);
+  
+  // Real-time notification testing routes
+  app.post("/api/notifications/test", notificationService.sendTestNotification);
+  app.post("/api/notifications/streak", notificationService.simulateStreakUpdate);
+  app.post("/api/notifications/rank", notificationService.simulateRankPromotion);
+  app.post("/api/notifications/achievement", notificationService.simulateAchievement);
+  app.post("/api/notifications/xp", notificationService.simulateXpGained);
+  app.post("/api/notifications/ai-tool", notificationService.simulateAiToolCompletion);
 
   const httpServer = createServer(app);
   

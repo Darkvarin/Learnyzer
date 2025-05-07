@@ -18,6 +18,7 @@ import AuthPage from "@/pages/auth-page";
 import CreateProfile from "@/pages/create-profile";
 import ProfileSettings from "@/pages/profile-settings";
 import HomePage from "./pages/home-page";
+import WebSocketTest from "./pages/websocket-test";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
                 <ProtectedRoute path="/rewards" component={Rewards} />
                 <ProtectedRoute path="/profile" component={ProfileSettings} />
                 <ProtectedRoute path="/create-profile" component={CreateProfile} />
+                <ProtectedRoute path="/websocket-test" component={WebSocketTest} />
                 <Route path="/auth" component={AuthPage} />
                 <Route component={NotFound} />
               </Switch>
