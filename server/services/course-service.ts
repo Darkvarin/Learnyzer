@@ -71,7 +71,7 @@ export const courseService = {
       
       // Filter courses by grade level if user is logged in and has a grade
       const filteredCourses = userGrade 
-        ? courses.filter(course => this.isGradeAppropriate(course, userGrade, ignoreLevelFilter))
+        ? courses.filter(course => courseService.isGradeAppropriate(course, userGrade, ignoreLevelFilter))
         : courses;
       
       // If the user is authenticated, add their progress to each course

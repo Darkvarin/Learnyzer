@@ -8,16 +8,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getProgressColor, getSubjectIcon } from "@/lib/utils";
 import { useState } from "react";
-import { Course, CourseCategory } from "@shared/types";
+import { Course } from "@shared/types";
 
 export default function Courses() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedExam, setSelectedExam] = useState("all");
   const [selectedSubject, setSelectedSubject] = useState("all");
 
-  const { data: categories, isLoading: categoriesLoading } = useQuery<CourseCategory[]>({
-    queryKey: ['/api/courses/categories'],
-  });
+  // Categories have been removed as per requirement
   
   const { data: courses, isLoading: coursesLoading } = useQuery<Course[]>({
     queryKey: [`/api/courses?exam=${selectedExam}&subject=${selectedSubject}`],
@@ -39,82 +37,58 @@ export default function Courses() {
           <p className="text-gray-400 mt-1">Learn, practice, and master your subjects</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* Sidebar with categories */}
-          <div className="md:col-span-1">
-            <div className="bg-dark-surface rounded-xl p-4 border border-dark-border mb-4">
-              <h3 className="text-lg font-bold mb-3">Categories</h3>
-              <div className="space-y-2">
-                {categoriesLoading ? (
-                  Array(6).fill(0).map((_, i) => (
-                    <Skeleton key={i} className="h-9 w-full rounded" />
-                  ))
-                ) : (
-                  <>
-                    <button className="w-full text-left px-3 py-2 rounded-md bg-primary-600/20 text-primary-400 font-medium">
-                      All Courses
-                    </button>
-                    {categories?.map(category => (
-                      <button key={category.id} className="w-full text-left px-3 py-2 rounded-md hover:bg-dark-hover text-gray-300">
-                        {category.name}
-                      </button>
-                    ))}
-                  </>
-                )}
-              </div>
-            </div>
+        <div className="flex flex-col space-y-6">
+          {/* Filters Section */}
+          <div className="bg-dark-surface rounded-xl p-4 border border-dark-border">
+            <h3 className="text-lg font-bold mb-3">Filters</h3>
             
-            <div className="bg-dark-surface rounded-xl p-4 border border-dark-border">
-              <h3 className="text-lg font-bold mb-3">Filters</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-400 mb-1 block">Exam Type</label>
+                <Select
+                  value={selectedExam}
+                  onValueChange={setSelectedExam}
+                >
+                  <SelectTrigger className="bg-dark-card border-dark-border">
+                    <SelectValue placeholder="Select exam type" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-dark-surface border-dark-border">
+                    <SelectItem value="all">All Exams</SelectItem>
+                    <SelectItem value="jee">JEE</SelectItem>
+                    <SelectItem value="neet">NEET</SelectItem>
+                    <SelectItem value="upsc">UPSC</SelectItem>
+                    <SelectItem value="clat">CLAT</SelectItem>
+                    <SelectItem value="school">School</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-400 mb-1 block">Exam Type</label>
-                  <Select
-                    value={selectedExam}
-                    onValueChange={setSelectedExam}
-                  >
-                    <SelectTrigger className="bg-dark-card border-dark-border">
-                      <SelectValue placeholder="Select exam type" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-dark-surface border-dark-border">
-                      <SelectItem value="all">All Exams</SelectItem>
-                      <SelectItem value="jee">JEE</SelectItem>
-                      <SelectItem value="neet">NEET</SelectItem>
-                      <SelectItem value="upsc">UPSC</SelectItem>
-                      <SelectItem value="clat">CLAT</SelectItem>
-                      <SelectItem value="school">School</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium text-gray-400 mb-1 block">Subject</label>
-                  <Select
-                    value={selectedSubject}
-                    onValueChange={setSelectedSubject}
-                  >
-                    <SelectTrigger className="bg-dark-card border-dark-border">
-                      <SelectValue placeholder="Select subject" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-dark-surface border-dark-border">
-                      <SelectItem value="all">All Subjects</SelectItem>
-                      <SelectItem value="mathematics">Mathematics</SelectItem>
-                      <SelectItem value="physics">Physics</SelectItem>
-                      <SelectItem value="chemistry">Chemistry</SelectItem>
-                      <SelectItem value="biology">Biology</SelectItem>
-                      <SelectItem value="history">History</SelectItem>
-                      <SelectItem value="geography">Geography</SelectItem>
-                      <SelectItem value="computer_science">Computer Science</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div>
+                <label className="text-sm font-medium text-gray-400 mb-1 block">Subject</label>
+                <Select
+                  value={selectedSubject}
+                  onValueChange={setSelectedSubject}
+                >
+                  <SelectTrigger className="bg-dark-card border-dark-border">
+                    <SelectValue placeholder="Select subject" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-dark-surface border-dark-border">
+                    <SelectItem value="all">All Subjects</SelectItem>
+                    <SelectItem value="mathematics">Mathematics</SelectItem>
+                    <SelectItem value="physics">Physics</SelectItem>
+                    <SelectItem value="chemistry">Chemistry</SelectItem>
+                    <SelectItem value="biology">Biology</SelectItem>
+                    <SelectItem value="history">History</SelectItem>
+                    <SelectItem value="geography">Geography</SelectItem>
+                    <SelectItem value="computer_science">Computer Science</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
           
-          {/* Main content */}
-          <div className="md:col-span-3">
+          {/* Search and Tabs */}
+          <div>
             <div className="mb-6">
               <Input
                 placeholder="Search courses..."
