@@ -19,6 +19,9 @@ import CreateProfile from "@/pages/create-profile";
 import ProfileSettings from "@/pages/profile-settings";
 import HomePage from "./pages/home-page";
 import WebSocketTest from "./pages/websocket-test";
+import AiTutor from "./pages/ai-tutor";
+import StudyNotesGenerator from "./pages/ai-tools/study-notes";
+import AnswerChecker from "./pages/ai-tools/answer-checker";
 
 function App() {
   return (
@@ -33,6 +36,9 @@ function App() {
                 <ProtectedRoute path="/courses" component={Courses} />
                 <ProtectedRoute path="/battle-zone" component={BattleZone} />
                 <ProtectedRoute path="/ai-tools" component={AiTools} />
+                <ProtectedRoute path="/ai-tools/study-notes" component={StudyNotesGenerator} />
+                <ProtectedRoute path="/ai-tools/answer-checker" component={AnswerChecker} />
+                <ProtectedRoute path="/ai-tutor" component={AiTutor} />
                 <ProtectedRoute path="/rewards" component={Rewards} />
                 <ProtectedRoute path="/profile" component={ProfileSettings} />
                 <ProtectedRoute path="/create-profile" component={CreateProfile} />

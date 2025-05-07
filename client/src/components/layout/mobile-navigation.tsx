@@ -24,6 +24,12 @@ export function MobileNavigation() {
             <span className="text-xs mt-1">Battle</span>
           </a>
         </Link>
+        <Link href="/ai-tutor">
+          <a className={`flex items-center justify-center flex-col py-2 flex-1 ${location === '/ai-tutor' ? 'text-primary' : 'text-gray-400'}`}>
+            <i className="ri-brain-line text-xl"></i>
+            <span className="text-xs mt-1">AI Tutor</span>
+          </a>
+        </Link>
         <Link href="/ai-tools">
           <a className={`flex items-center justify-center flex-col py-2 flex-1 ${location === '/ai-tools' ? 'text-primary' : 'text-gray-400'}`}>
             <i className="ri-robot-line text-xl"></i>
