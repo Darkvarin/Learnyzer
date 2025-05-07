@@ -221,9 +221,14 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
         
       case 'ai_insight_generated':
       case 'ai_tutor_session_completed':
-        // Invalidate AI-related queries
-        queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation/recent'] });
-        showAIToast(message as AIUpdateMessage);
+        // Handle each AI message type with specific query invalidation
+        const aiMessage = message as AIUpdateMessage;
+        
+        // Base invalidation for all AI-related events
+        queryClient.invalidateQueries({ queryKey: ['/api/ai'] });
+        
+        // Specific invalidation based on message type will be handled in showAIToast
+        showAIToast(aiMessage);
         break;
         
       case 'notification':
@@ -290,8 +295,29 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
   };
   
   const showAIToast = (message: AIUpdateMessage) => {
+    let title = "";
+    
+    // Set title based on message type and specific AI feature
+    if (message.type === 'ai_insight_generated') {
+      if (message.messageType === 'performance_insights') {
+        title = "Performance Insights Ready!";
+        queryClient.invalidateQueries({ queryKey: ['/api/ai/tools/insights'] });
+      } else if (message.messageType === 'study_notes') {
+        title = "Study Notes Generated";
+        queryClient.invalidateQueries({ queryKey: ['/api/ai/tools/notes'] });
+      } else if (message.messageType === 'flashcards') {
+        title = "Flashcards Generated";
+        queryClient.invalidateQueries({ queryKey: ['/api/ai/tools/flashcards'] });
+      } else {
+        title = "New AI Insight";
+      }
+    } else if (message.type === 'ai_tutor_session_completed') {
+      title = "AI Tutor Session Completed";
+      queryClient.invalidateQueries({ queryKey: ['/api/ai/tutor'] });
+    }
+    
     toast({
-      title: message.type === 'ai_insight_generated' ? "New AI Insight" : "AI Session Completed",
+      title: title,
       description: message.message,
       variant: "default"
     });

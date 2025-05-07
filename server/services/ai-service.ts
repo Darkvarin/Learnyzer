@@ -301,6 +301,17 @@ export const aiService = {
       // Increment user's AI sessions count
       await storage.incrementAISessionCount((req.user as any).id);
       
+      // Send real-time notification about generated study notes
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser((req.user as any).id, {
+          type: 'ai_insight_generated',
+          userId: (req.user as any).id,
+          messageType: 'study_notes',
+          message: `Study notes on "${topic}" have been generated!`,
+          timestamp: new Date().toISOString()
+        });
+      }
+      
       return res.status(200).json({ notes });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -367,6 +378,17 @@ export const aiService = {
       // Increment user's AI sessions count
       await storage.incrementAISessionCount((req.user as any).id);
       
+      // Send real-time notification about answer evaluation
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser((req.user as any).id, {
+          type: 'ai_insight_generated',
+          userId: (req.user as any).id,
+          messageType: 'answer_check',
+          message: `Your answer has been evaluated with a score of ${evaluation.score}/10`,
+          timestamp: new Date().toISOString()
+        });
+      }
+      
       return res.status(200).json(evaluation);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -425,6 +447,17 @@ export const aiService = {
       
       // Increment user's AI sessions count
       await storage.incrementAISessionCount((req.user as any).id);
+      
+      // Send real-time notification about generated flashcards
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser((req.user as any).id, {
+          type: 'ai_insight_generated',
+          userId: (req.user as any).id,
+          messageType: 'flashcards',
+          message: `${trimmedFlashcards.length} flashcards on "${topic}" have been generated!`,
+          timestamp: new Date().toISOString()
+        });
+      }
       
       return res.status(200).json({ flashcards: trimmedFlashcards });
     } catch (error) {
