@@ -162,7 +162,19 @@ export default function AITools() {
                 <CardFooter className="pt-0">
                   <Link href={getToolPath(tool.name)} className="w-full">
                     <Button 
-                      className={`w-full bg-${tool.color || 'blue'}-600 hover:bg-${tool.color || 'blue'}-500 text-white transform transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-${tool.color || 'blue'}-500/20`}
+                      className={`w-full ${
+                        tool.color === 'primary' ? 'bg-primary hover:bg-primary/90' :
+                        tool.color === 'success' ? 'bg-green-600 hover:bg-green-500' :
+                        tool.color === 'warning' ? 'bg-amber-600 hover:bg-amber-500' : 
+                        tool.color === 'purple' ? 'bg-purple-600 hover:bg-purple-500' :
+                        'bg-blue-600 hover:bg-blue-500'
+                      } text-white transform transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${
+                        tool.color === 'primary' ? 'hover:shadow-primary/20' :
+                        tool.color === 'success' ? 'hover:shadow-green-500/20' :
+                        tool.color === 'warning' ? 'hover:shadow-amber-500/20' :
+                        tool.color === 'purple' ? 'hover:shadow-purple-500/20' :
+                        'hover:shadow-blue-500/20'
+                      }`}
                     >
                       Open Tool
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
