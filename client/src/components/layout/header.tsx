@@ -41,10 +41,8 @@ export function Header() {
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Link href="/">
-              <a className="text-2xl font-bold font-gaming gaming-text">
-                LearnityX
-              </a>
+            <Link href="/" className="text-2xl font-bold font-gaming gaming-text">
+              LearnityX
             </Link>
             <span className="bg-primary-700 text-xs px-2 py-0.5 rounded-full font-medium">
               BETA
@@ -56,25 +54,17 @@ export function Header() {
             
             {!isMobile && (
               <div className="flex items-center space-x-4">
-                <Link href="/courses">
-                  <a className="text-gray-300 hover:text-white transition-colors">
-                    Courses
-                  </a>
+                <Link href="/courses" className="text-gray-300 hover:text-white transition-colors">
+                  Courses
                 </Link>
-                <Link href="/battle-zone">
-                  <a className="text-gray-300 hover:text-white transition-colors">
-                    Battle Zone
-                  </a>
+                <Link href="/battle-zone" className="text-gray-300 hover:text-white transition-colors">
+                  Battle Zone
                 </Link>
-                <Link href="/ai-tools">
-                  <a className="text-gray-300 hover:text-white transition-colors">
-                    AI Tools
-                  </a>
+                <Link href="/ai-tools" className="text-gray-300 hover:text-white transition-colors">
+                  AI Tools
                 </Link>
-                <Link href="/rewards">
-                  <a className="text-gray-300 hover:text-white transition-colors">
-                    Rewards
-                  </a>
+                <Link href="/rewards" className="text-gray-300 hover:text-white transition-colors">
+                  Rewards
                 </Link>
               </div>
             )}
@@ -106,20 +96,16 @@ export function Header() {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link href="/profile">
-                    <a className="flex items-center w-full">
-                      <i className="ri-user-line mr-2"></i>
-                      Profile
-                    </a>
+                <DropdownMenuItem asChild>
+                  <Link href="/profile" className="flex items-center w-full">
+                    <i className="ri-user-line mr-2"></i>
+                    Profile
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/settings">
-                    <a className="flex items-center w-full">
-                      <i className="ri-settings-3-line mr-2"></i>
-                      Settings
-                    </a>
+                <DropdownMenuItem asChild>
+                  <Link href="/settings" className="flex items-center w-full">
+                    <i className="ri-settings-3-line mr-2"></i>
+                    Settings
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

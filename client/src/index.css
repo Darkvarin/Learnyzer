@@ -139,6 +139,12 @@
 }
 
 @layer components {
+  /* Base components */
+  .container {
+    @apply px-4 md:px-6 max-w-[1400px] mx-auto overflow-hidden;
+  }
+  
+  /* Rank badges with different tiers */
   .rank-badge {
     @apply relative inline-flex items-center justify-center;
   }
@@ -155,8 +161,98 @@
     animation: spin 4s linear infinite;
   }
   
+  /* Bronze rank */
+  .rank-badge.bronze::before {
+    background: conic-gradient(
+      hsl(30 60% 50% / 0.6),
+      hsl(30 70% 40% / 0.8),
+      hsl(30 60% 50% / 0.6)
+    );
+  }
+  
+  /* Silver rank */
+  .rank-badge.silver::before {
+    background: conic-gradient(
+      hsl(220 10% 70% / 0.6),
+      hsl(220 15% 60% / 0.8),
+      hsl(220 10% 70% / 0.6)
+    );
+  }
+  
+  /* Gold rank */
+  .rank-badge.gold::before {
+    background: conic-gradient(
+      hsl(45 90% 50% / 0.6),
+      hsl(45 100% 45% / 0.8),
+      hsl(45 90% 50% / 0.6)
+    );
+  }
+  
+  /* Platinum rank */
+  .rank-badge.platinum::before {
+    background: conic-gradient(
+      hsl(180 50% 50% / 0.6),
+      hsl(180 60% 45% / 0.8),
+      hsl(180 50% 50% / 0.6)
+    );
+  }
+  
+  /* Diamond rank */
+  .rank-badge.diamond::before {
+    background: conic-gradient(
+      hsl(200 70% 60% / 0.6),
+      hsl(200 80% 50% / 0.8),
+      hsl(200 70% 60% / 0.6)
+    );
+  }
+  
+  /* Heroic rank - new */
+  .rank-badge.heroic::before {
+    background: conic-gradient(
+      hsl(280 80% 55% / 0.6),
+      hsl(280 90% 45% / 0.8),
+      hsl(280 80% 55% / 0.6)
+    );
+    animation: spin 3s linear infinite;
+  }
+  
+  /* Elite rank - new */
+  .rank-badge.elite::before {
+    background: conic-gradient(
+      hsl(300 80% 55% / 0.6),
+      hsl(300 90% 45% / 0.8),
+      hsl(300 80% 55% / 0.6)
+    );
+    animation: spin 2.5s linear infinite;
+  }
+  
+  /* Master rank - new */
+  .rank-badge.master::before {
+    background: conic-gradient(
+      hsl(320 90% 55% / 0.6),
+      hsl(320 100% 45% / 0.8),
+      hsl(320 90% 55% / 0.6)
+    );
+    animation: spin 2s linear infinite;
+    filter: drop-shadow(0 0 5px hsla(320, 90%, 55%, 0.5));
+  }
+  
+  /* Grandmaster rank - new */
+  .rank-badge.grandmaster::before {
+    background: conic-gradient(
+      hsl(0 90% 55% / 0.6),
+      hsl(30 100% 50% / 0.7),
+      hsl(60 100% 50% / 0.8),
+      hsl(30 100% 50% / 0.7),
+      hsl(0 90% 55% / 0.6)
+    );
+    animation: spin 1.5s linear infinite, glow 1.5s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 8px hsla(30, 100%, 50%, 0.7));
+  }
+
+  /* Battle cards with proper theme support */
   .battle-card {
-    @apply border backdrop-blur-sm;
+    @apply border backdrop-blur-sm rounded-xl shadow-lg overflow-hidden;
     background: linear-gradient(
       to bottom right,
       hsla(var(--dark-surface), 0.7),
@@ -165,8 +261,36 @@
     border-color: hsla(var(--dark-border), 0.8);
   }
   
+  .dark .battle-card {
+    background: linear-gradient(
+      to bottom right,
+      hsla(var(--dark-surface), 0.7),
+      hsla(var(--dark-card), 0.9)
+    );
+    border-color: hsla(var(--dark-border), 0.8);
+  }
+  
+  :not(.dark) .battle-card {
+    background: linear-gradient(
+      to bottom right,
+      hsla(var(--light-surface), 0.7),
+      hsla(var(--light-card), 0.9)
+    );
+    border-color: hsla(var(--light-border), 0.8);
+  }
+  
+  /* XP bar with theme support */
   .xp-bar {
-    @apply relative h-2 bg-white/10 rounded overflow-hidden;
+    @apply relative h-2 rounded overflow-hidden;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .dark .xp-bar {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  :not(.dark) .xp-bar {
+    background: rgba(0, 0, 0, 0.1);
   }
   
   .xp-progress {
@@ -178,6 +302,7 @@
     );
   }
   
+  /* Streak calendar with theme support */
   .streak-day {
     @apply relative w-10 h-10 flex items-center justify-center rounded-lg font-bold transition-all duration-300;
   }
@@ -194,21 +319,60 @@
     border-color: hsl(var(--primary));
   }
   
-  .streak-day.future {
+  .dark .streak-day.future {
     @apply bg-white/5 border-2 border-white/10 text-white/30;
   }
   
+  :not(.dark) .streak-day.future {
+    @apply bg-black/5 border-2 border-black/10 text-black/30;
+  }
+  
+  /* Shape utilities */
   .hexagon {
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   }
   
+  /* Text styling */
   .gaming-text {
-    @apply text-transparent bg-clip-text;
+    @apply text-transparent bg-clip-text font-gaming font-bold;
     background-image: linear-gradient(
       to right,
-      hsl(var(--primary) / 0.4),
-      hsl(var(--primary) / 0.6)
+      hsl(var(--primary) / 0.8),
+      hsl(var(--primary))
     );
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Card components with theme support */
+  .game-card {
+    @apply relative rounded-xl overflow-hidden border transition-all duration-300;
+    @apply hover:scale-[1.02] hover:shadow-lg;
+  }
+  
+  .dark .game-card {
+    @apply bg-dark-card/90 border-dark-border/80;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  }
+  
+  :not(.dark) .game-card {
+    @apply bg-light-card/90 border-light-border/80;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Button styles */
+  .game-button {
+    @apply px-4 py-2 rounded-md font-medium transition-all duration-200;
+    @apply hover:scale-105 active:scale-95;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)),
+      hsl(var(--primary) / 0.8)
+    );
+    box-shadow: 0 2px 10px rgba(139, 92, 246, 0.3);
+  }
+  
+  .game-button:hover {
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5);
   }
 }
 
