@@ -181,19 +181,7 @@ export default function ProfileSettings() {
     }
   };
 
-  // Handle theme toggle
-  const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    
-    localStorage.setItem("theme", newTheme);
-  };
+  // Theme toggle removed - dark theme enforced
 
   // Handle logout
   const handleLogout = async () => {
@@ -278,18 +266,7 @@ export default function ProfileSettings() {
                 <Bell className="mr-2 h-4 w-4" />
                 Notifications
               </Button>
-              <Button 
-                variant="ghost" 
-                className={`w-full justify-start ${activeTab === 'appearance' ? 'bg-primary/10 text-primary' : ''}`}
-                onClick={() => setActiveTab('appearance')}
-              >
-                {theme === 'dark' ? (
-                  <Moon className="mr-2 h-4 w-4" />
-                ) : (
-                  <Sun className="mr-2 h-4 w-4" />
-                )}
-                Appearance
-              </Button>
+
             </nav>
 
             <Button 
@@ -684,73 +661,7 @@ export default function ProfileSettings() {
                   </div>
                 )}
                 
-                {activeTab === 'appearance' && (
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-6">Appearance Settings</h2>
-                    
-                    <div className="space-y-6">
-                      <div className="space-y-2">
-                        <h3 className="text-lg font-medium">Theme</h3>
-                        <p className="text-muted-foreground">Choose the theme for the application</p>
-                        
-                        <div className="flex space-x-4 mt-4">
-                          <Card 
-                            className={`relative cursor-pointer transition-all ${theme === 'light' ? 'ring-2 ring-primary' : ''}`}
-                            onClick={() => {
-                              setTheme('light');
-                              document.documentElement.classList.remove('dark');
-                              localStorage.setItem('theme', 'light');
-                            }}
-                          >
-                            <CardContent className="p-4 flex flex-col items-center">
-                              <Sun className="h-12 w-12 mb-2 text-orange-500" />
-                              <p>Light</p>
-                            </CardContent>
-                          </Card>
-                          
-                          <Card 
-                            className={`relative cursor-pointer transition-all ${theme === 'dark' ? 'ring-2 ring-primary' : ''}`}
-                            onClick={() => {
-                              setTheme('dark');
-                              document.documentElement.classList.add('dark');
-                              localStorage.setItem('theme', 'dark');
-                            }}
-                          >
-                            <CardContent className="p-4 flex flex-col items-center">
-                              <Moon className="h-12 w-12 mb-2 text-indigo-400" />
-                              <p>Dark</p>
-                            </CardContent>
-                          </Card>
-                          
-                          <Card 
-                            className={`relative cursor-pointer transition-all ${theme === 'system' ? 'ring-2 ring-primary' : ''}`}
-                            onClick={() => {
-                              const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                              setTheme('system');
-                              
-                              if (prefersDark) {
-                                document.documentElement.classList.add('dark');
-                              } else {
-                                document.documentElement.classList.remove('dark');
-                              }
-                              
-                              localStorage.setItem('theme', 'system');
-                            }}
-                          >
-                            <CardContent className="p-4 flex flex-col items-center">
-                              <div className="flex items-center h-12 mb-2">
-                                <Sun className="h-6 w-6 text-orange-500" />
-                                <span className="mx-1">/</span>
-                                <Moon className="h-6 w-6 text-indigo-400" />
-                              </div>
-                              <p>System</p>
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                {/* Appearance tab removed - dark theme enforced */}
               </CardContent>
             </Card>
           </div>
