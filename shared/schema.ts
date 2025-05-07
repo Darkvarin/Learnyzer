@@ -33,6 +33,8 @@ export const courses = pgTable("courses", {
   examType: text("exam_type").notNull(),
   coverImage: text("cover_image").notNull(),
   chapters: integer("chapters").notNull(),
+  chapterDetails: jsonb("chapter_details"), // Array of chapters with titles and descriptions
+  targetGrade: text("target_grade"), // Target grade/class for this course, e.g., "5", "10", "11-science"
   difficulty: text("difficulty").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull()
 });

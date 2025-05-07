@@ -148,73 +148,437 @@ async function seed() {
 
     // Seed Courses
     console.log("Seeding courses...");
-    const courses = [
+    
+    // Grade 3-5 Elementary Courses
+    const elementaryCoursesGrade3to5 = [
       {
-        title: "Calculus Fundamentals",
+        title: "Mathematics for Class 3",
+        description: "Learn foundational mathematics concepts including addition, subtraction, multiplication, and basic fractions.",
+        subject: "Mathematics",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "3",
+        difficulty: "Beginner",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Numbers up to 10,000", description: "Learning to read, write and compare numbers up to 10,000." },
+          { title: "Chapter 2: Addition and Subtraction", description: "Adding and subtracting 3-digit and 4-digit numbers." },
+          { title: "Chapter 3: Multiplication", description: "Learning multiplication tables and basic multiplication techniques." },
+          { title: "Chapter 4: Division", description: "Introduction to division and simple division problems." },
+          { title: "Chapter 5: Fractions", description: "Basic understanding of fractions and their representations." },
+          { title: "Chapter 6: Measurement", description: "Measuring length, weight, and capacity using standard units." },
+          { title: "Chapter 7: Time", description: "Reading clocks and understanding time concepts." },
+          { title: "Chapter 8: Money", description: "Handling money and solving simple money problems." },
+          { title: "Chapter 9: Shapes and Patterns", description: "Recognizing shapes and creating patterns." },
+          { title: "Chapter 10: Data Handling", description: "Reading and creating simple pictographs." }
+        ])
+      },
+      {
+        title: "EVS for Class 3",
+        description: "Explore our environment, plants, animals, food, water, and shelter through engaging lessons.",
+        subject: "Environmental Studies",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3",
+        chapters: 8,
+        targetGrade: "3",
+        difficulty: "Beginner",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Family and Friends", description: "Understanding relationships and social connections." },
+          { title: "Chapter 2: Plants and Animals", description: "Learning about various plants and animals around us." },
+          { title: "Chapter 3: Food", description: "Understanding food sources, nutrition, and balanced diet." },
+          { title: "Chapter 4: Water", description: "Importance of water, sources, and conservation." },
+          { title: "Chapter 5: Shelter", description: "Different types of houses and their importance." },
+          { title: "Chapter 6: Travel and Communication", description: "Modes of transport and communication." },
+          { title: "Chapter 7: Work We Do", description: "Different occupations and their importance." },
+          { title: "Chapter 8: Earth and Sky", description: "Basic concepts about our planet and the sky." }
+        ])
+      },
+      {
+        title: "English for Class 3",
+        description: "Develop reading, writing, and speaking skills through stories, poems, and grammar lessons.",
+        subject: "English",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3",
+        chapters: 8,
+        targetGrade: "3",
+        difficulty: "Beginner",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Reading and Comprehension", description: "Reading short stories and answering questions." },
+          { title: "Chapter 2: Poetry", description: "Reading and understanding simple poems." },
+          { title: "Chapter 3: Grammar Basics", description: "Nouns, pronouns, and basic sentence structure." },
+          { title: "Chapter 4: Verbs and Tenses", description: "Using action words and understanding present, past, and future." },
+          { title: "Chapter 5: Adjectives", description: "Describing words and their usage." },
+          { title: "Chapter 6: Writing Skills", description: "Composing short paragraphs and stories." },
+          { title: "Chapter 7: Punctuation", description: "Using capital letters, full stops, question marks, and commas." },
+          { title: "Chapter 8: Vocabulary Building", description: "Learning new words and their meanings." }
+        ])
+      },
+      {
+        title: "Mathematics for Class 4",
+        description: "Build upon basic math skills with fractions, decimals, geometry, and problem-solving techniques.",
+        subject: "Mathematics",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "4",
+        difficulty: "Beginner",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Numbers up to 1,000,000", description: "Reading, writing, and comparing large numbers." },
+          { title: "Chapter 2: Addition and Subtraction", description: "Advanced strategies for addition and subtraction." },
+          { title: "Chapter 3: Multiplication and Division", description: "Multi-digit multiplication and division techniques." },
+          { title: "Chapter 4: Fractions", description: "Equivalent fractions, comparing, and ordering fractions." },
+          { title: "Chapter 5: Decimals", description: "Introduction to decimals and basic operations." },
+          { title: "Chapter 6: Geometry", description: "Angles, lines, and basic geometric shapes." },
+          { title: "Chapter 7: Measurement", description: "Area, perimeter, and volume of simple shapes." },
+          { title: "Chapter 8: Time and Calendar", description: "Advanced concepts of time and using calendars." },
+          { title: "Chapter 9: Data Handling", description: "Creating and interpreting bar graphs." },
+          { title: "Chapter 10: Patterns and Symmetry", description: "Identifying patterns and understanding symmetry." }
+        ])
+      },
+      {
+        title: "Science for Class 4",
+        description: "Explore the natural world through topics like plants, animals, matter, energy, and the environment.",
+        subject: "Science",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1532094349884-543019a69b2f?ixlib=rb-4.0.3",
+        chapters: 9,
+        targetGrade: "4",
+        difficulty: "Beginner",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Plants", description: "Parts of plants, photosynthesis, and plant adaptations." },
+          { title: "Chapter 2: Animals", description: "Animal habitats, adaptations, and life cycles." },
+          { title: "Chapter 3: Human Body", description: "Body systems and their functions." },
+          { title: "Chapter 4: Food and Nutrition", description: "Food groups, balanced diet, and digestion." },
+          { title: "Chapter 5: Matter and Materials", description: "Properties of matter and common materials." },
+          { title: "Chapter 6: Force and Energy", description: "Different types of forces and energy forms." },
+          { title: "Chapter 7: Light and Sound", description: "Properties and behavior of light and sound." },
+          { title: "Chapter 8: Earth and Space", description: "Earth's features, day and night, and seasons." },
+          { title: "Chapter 9: Environment and Conservation", description: "Protecting our environment and natural resources." }
+        ])
+      },
+      {
+        title: "Social Studies for Class 5",
+        description: "Learn about India's geography, history, and culture through engaging lessons and activities.",
+        subject: "Social Studies",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1594394489098-acef21cbfb86?ixlib=rb-4.0.3",
+        chapters: 8,
+        targetGrade: "5",
+        difficulty: "Beginner",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: India - Physical Features", description: "Mountains, rivers, plains, and plateaus of India." },
+          { title: "Chapter 2: Climate of India", description: "Different climate zones and seasons in India." },
+          { title: "Chapter 3: Natural Vegetation and Wildlife", description: "Forests, wildlife, and conservation efforts." },
+          { title: "Chapter 4: Early Civilizations", description: "Indus Valley Civilization and early settlements." },
+          { title: "Chapter 5: Ancient India", description: "Mauryan and Gupta Empires and their contributions." },
+          { title: "Chapter 6: Medieval India", description: "Delhi Sultanate and Mughal Empire." },
+          { title: "Chapter 7: British Rule in India", description: "Colonization and the freedom struggle." },
+          { title: "Chapter 8: Independent India", description: "India after independence and major developments." }
+        ])
+      },
+      
+      // Middle School (6-8) Courses
+      {
+        title: "Mathematics for Class 6",
+        description: "Advance your mathematical skills with integers, algebra, geometry, and data handling concepts.",
+        subject: "Mathematics",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "6",
+        difficulty: "Intermediate",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Knowing Our Numbers", description: "Large numbers, estimation, and number operations." },
+          { title: "Chapter 2: Whole Numbers", description: "Properties of whole numbers and operations." },
+          { title: "Chapter 3: Integers", description: "Introduction to negative numbers and operations with integers." },
+          { title: "Chapter 4: Fractions and Decimals", description: "Advanced operations with fractions and decimals." },
+          { title: "Chapter 5: Introduction to Algebra", description: "Variables, expressions, and simple equations." },
+          { title: "Chapter 6: Ratio and Proportion", description: "Understanding ratios and solving proportion problems." },
+          { title: "Chapter 7: Geometry", description: "Lines, angles, triangles, and quadrilaterals." },
+          { title: "Chapter 8: Mensuration", description: "Perimeter and area of 2D shapes." },
+          { title: "Chapter 9: Data Handling", description: "Collection, organization, and representation of data." },
+          { title: "Chapter 10: Practical Geometry", description: "Constructing geometric figures using tools." }
+        ])
+      },
+      {
+        title: "Science for Class 7",
+        description: "Deepen your understanding of scientific concepts through nutrition, motion, heat, acids, and more.",
+        subject: "Science",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1532094349884-543019a69b2f?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "7",
+        difficulty: "Intermediate",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Nutrition in Plants and Animals", description: "Photosynthesis, nutrients, and digestion." },
+          { title: "Chapter 2: Fibre to Fabric", description: "Natural and synthetic fibres and fabric production." },
+          { title: "Chapter 3: Heat and Temperature", description: "Heat transfer, expansion, and contraction." },
+          { title: "Chapter 4: Acids, Bases, and Salts", description: "Properties and indicators of acids and bases." },
+          { title: "Chapter 5: Physical and Chemical Changes", description: "Distinguishing between physical and chemical changes." },
+          { title: "Chapter 6: Weather and Climate", description: "Factors affecting weather and climate patterns." },
+          { title: "Chapter 7: Motion and Time", description: "Speed, distance, time, and graphical representations." },
+          { title: "Chapter 8: Electric Current and Circuits", description: "Simple electric circuits and components." },
+          { title: "Chapter 9: Light", description: "Reflection, mirrors, and lenses." },
+          { title: "Chapter 10: Reproduction in Plants", description: "Sexual and asexual reproduction in plants." }
+        ])
+      },
+      {
+        title: "Social Science for Class 8",
+        description: "Explore Indian history, geography, civics, and economics through comprehensive lessons.",
+        subject: "Social Science",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1594394489098-acef21cbfb86?ixlib=rb-4.0.3",
+        chapters: 12,
+        targetGrade: "8",
+        difficulty: "Intermediate",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: The Indian Constitution", description: "Key features and fundamental rights." },
+          { title: "Chapter 2: Parliamentary Government", description: "Structure and functioning of Indian democracy." },
+          { title: "Chapter 3: Judiciary", description: "Indian judicial system and its functions." },
+          { title: "Chapter 4: Modern Period in Indian History", description: "British colonization and its impact." },
+          { title: "Chapter 5: Freedom Struggle", description: "Key movements and leaders in India's independence struggle." },
+          { title: "Chapter 6: Resources", description: "Types of resources and their conservation." },
+          { title: "Chapter 7: Industries", description: "Types of industries and their importance in economy." },
+          { title: "Chapter 8: Human Resources", description: "Population, migration, and human development." },
+          { title: "Chapter 9: Rise of Nationalism", description: "Nationalism in Europe and its influence on India." },
+          { title: "Chapter 10: Agriculture", description: "Farming practices, crops, and agricultural challenges." },
+          { title: "Chapter 11: Urbanization", description: "Growth of cities and related issues." },
+          { title: "Chapter 12: Public Facilities", description: "Water, sanitation, and public infrastructure." }
+        ])
+      },
+      
+      // High School (9-10) Courses
+      {
+        title: "Mathematics for Class 9",
+        description: "Master algebraic equations, coordinate geometry, statistics, and more complex mathematical concepts.",
+        subject: "Mathematics",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "9",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Number Systems", description: "Real numbers, irrational numbers, and operations." },
+          { title: "Chapter 2: Polynomials", description: "Algebraic expressions, factorization, and identities." },
+          { title: "Chapter 3: Coordinate Geometry", description: "Cartesian system and plotting points." },
+          { title: "Chapter 4: Linear Equations", description: "Solving linear equations in two variables." },
+          { title: "Chapter 5: Triangles", description: "Congruence, similarity, and properties of triangles." },
+          { title: "Chapter 6: Quadrilaterals", description: "Properties of parallelograms and special quadrilaterals." },
+          { title: "Chapter 7: Circles", description: "Properties of circles, chords, and arcs." },
+          { title: "Chapter 8: Surface Areas and Volumes", description: "Formulas for 3D shapes and solving problems." },
+          { title: "Chapter 9: Statistics", description: "Measures of central tendency and graphical representation." },
+          { title: "Chapter 10: Probability", description: "Basic probability concepts and experimental probability." }
+        ])
+      },
+      {
+        title: "Physics for Class 10",
+        description: "Study mechanics, electricity, magnetism, and optics through theory and practical experiments.",
+        subject: "Physics",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1636466497217-26a42e75f996?ixlib=rb-4.0.3",
+        chapters: 8,
+        targetGrade: "10",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Motion", description: "Uniform and non-uniform motion, acceleration, and graphical analysis." },
+          { title: "Chapter 2: Force and Laws of Motion", description: "Newton's laws and applications." },
+          { title: "Chapter 3: Work, Energy, and Power", description: "Different forms of energy and energy conservation." },
+          { title: "Chapter 4: Electricity", description: "Electric current, potential difference, and circuits." },
+          { title: "Chapter 5: Magnetic Effects of Current", description: "Electromagnets, motors, and generators." },
+          { title: "Chapter 6: Light - Reflection and Refraction", description: "Laws of reflection and refraction, lenses." },
+          { title: "Chapter 7: The Human Eye", description: "Structure, functioning, and defects of the human eye." },
+          { title: "Chapter 8: Sources of Energy", description: "Conventional and alternative energy sources." }
+        ])
+      },
+      {
+        title: "Chemistry for Class 10",
+        description: "Learn about chemical reactions, acids, bases, metals, carbon compounds, and periodic properties.",
+        subject: "Chemistry",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?ixlib=rb-4.0.3",
+        chapters: 7,
+        targetGrade: "10",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Chemical Reactions", description: "Types of reactions and balanced chemical equations." },
+          { title: "Chapter 2: Acids, Bases, and Salts", description: "Properties, reactions, and pH scale." },
+          { title: "Chapter 3: Metals and Non-metals", description: "Physical and chemical properties and reactivity series." },
+          { title: "Chapter 4: Carbon and its Compounds", description: "Organic chemistry basics and functional groups." },
+          { title: "Chapter 5: Periodic Classification of Elements", description: "Development of periodic table and periodic trends." },
+          { title: "Chapter 6: Life Processes", description: "Nutrition, respiration, and transport in living organisms." },
+          { title: "Chapter 7: Control and Coordination", description: "Nervous system and hormones in animals and plants." }
+        ])
+      },
+      
+      // Higher Secondary (11-12) Science Stream
+      {
+        title: "Mathematics for Class 11 (Science)",
+        description: "Advanced mathematical concepts including calculus, trigonometry, probability, and statistics.",
+        subject: "Mathematics",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "11-science",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Sets and Functions", description: "Set theory, relations, and functions." },
+          { title: "Chapter 2: Trigonometric Functions", description: "Angles, trigonometric ratios, and identities." },
+          { title: "Chapter 3: Complex Numbers", description: "Algebraic properties, polar form, and applications." },
+          { title: "Chapter 4: Linear Inequalities", description: "Solving and graphing linear inequalities." },
+          { title: "Chapter 5: Permutations and Combinations", description: "Counting principles and applications." },
+          { title: "Chapter 6: Binomial Theorem", description: "Binomial expansion and applications." },
+          { title: "Chapter 7: Sequences and Series", description: "Arithmetic and geometric progressions." },
+          { title: "Chapter 8: Straight Lines", description: "Different forms of equations of lines and applications." },
+          { title: "Chapter 9: Conic Sections", description: "Circles, parabolas, ellipses, and hyperbolas." },
+          { title: "Chapter 10: Limits and Derivatives", description: "Introduction to calculus concepts." }
+        ])
+      },
+      {
+        title: "Physics for Class 11 (Science)",
+        description: "Comprehensive study of mechanics, thermodynamics, waves, and optics with problem-solving approach.",
+        subject: "Physics",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1636466497217-26a42e75f996?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "11-science",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Physical World and Measurement", description: "Units, dimensions, and error analysis." },
+          { title: "Chapter 2: Kinematics", description: "Motion in straight line and plane." },
+          { title: "Chapter 3: Laws of Motion", description: "Newton's laws and applications." },
+          { title: "Chapter 4: Work, Energy, and Power", description: "Energy conservation and transformations." },
+          { title: "Chapter 5: Rotational Motion", description: "Torque, angular momentum, and equilibrium." },
+          { title: "Chapter 6: Gravitation", description: "Kepler's laws and gravitational field." },
+          { title: "Chapter 7: Properties of Solids and Liquids", description: "Elasticity, surface tension, and fluid mechanics." },
+          { title: "Chapter 8: Thermodynamics", description: "Heat, work, and laws of thermodynamics." },
+          { title: "Chapter 9: Oscillations", description: "Simple harmonic motion and applications." },
+          { title: "Chapter 10: Waves", description: "Wave propagation, superposition, and standing waves." }
+        ])
+      },
+      
+      // Higher Secondary (11-12) Commerce Stream
+      {
+        title: "Economics for Class 11 (Commerce)",
+        description: "Introduction to micro and macroeconomics concepts, markets, and Indian economic development.",
+        subject: "Economics",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1607944024060-0450380ddd33?ixlib=rb-4.0.3",
+        chapters: 8,
+        targetGrade: "11-commerce",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Introduction to Economics", description: "Basic concepts and economic problems." },
+          { title: "Chapter 2: Consumer Behavior and Demand", description: "Utility, demand theory, and elasticity." },
+          { title: "Chapter 3: Production and Costs", description: "Production functions and cost analysis." },
+          { title: "Chapter 4: Market Structures", description: "Perfect competition, monopoly, and oligopoly." },
+          { title: "Chapter 5: Income and Employment", description: "National income accounting and determination." },
+          { title: "Chapter 6: Money and Banking", description: "Money, banking system, and monetary policy." },
+          { title: "Chapter 7: Indian Economy", description: "Pre and post-independence development." },
+          { title: "Chapter 8: Development Strategies", description: "Economic planning and reforms in India." }
+        ])
+      },
+      {
+        title: "Business Studies for Class 12 (Commerce)",
+        description: "Learn about business organization, management principles, financial markets, and marketing.",
+        subject: "Business Studies",
+        examType: "School",
+        coverImage: "https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3",
+        chapters: 9,
+        targetGrade: "12-commerce",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Nature and Significance of Management", description: "Management concepts, importance, and functions." },
+          { title: "Chapter 2: Principles of Management", description: "Management principles and scientific management." },
+          { title: "Chapter 3: Business Environment", description: "Elements and dynamic nature of business environment." },
+          { title: "Chapter 4: Planning", description: "Process and types of plans." },
+          { title: "Chapter 5: Organizing", description: "Structure, delegation, and decentralization." },
+          { title: "Chapter 6: Staffing", description: "Human resource management and staffing process." },
+          { title: "Chapter 7: Directing", description: "Motivation, leadership, and communication." },
+          { title: "Chapter 8: Financial Management", description: "Financial planning, capital structure, and fixed capital." },
+          { title: "Chapter 9: Marketing Management", description: "Marketing concept, mix, and digital marketing." }
+        ])
+      },
+      
+      // Competitive Exam Courses
+      {
+        title: "Calculus Fundamentals for JEE",
         description: "Master differentiation, integration, and applications of calculus for JEE and other engineering entrance exams.",
         subject: "Mathematics",
         examType: "JEE",
         coverImage: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3",
         chapters: 10,
-        difficulty: "Advanced"
+        targetGrade: "11-12-science",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Functions and Limits", description: "Domain, range, continuity, and evaluation of limits." },
+          { title: "Chapter 2: Differentiation", description: "Rules, techniques, and applications of derivatives." },
+          { title: "Chapter 3: Applications of Derivatives", description: "Rate of change, tangents, normals, and optimization." },
+          { title: "Chapter 4: Indefinite Integration", description: "Basic integrals and techniques of integration." },
+          { title: "Chapter 5: Definite Integration", description: "Properties and evaluation of definite integrals." },
+          { title: "Chapter 6: Areas Under Curves", description: "Finding areas using integration." },
+          { title: "Chapter 7: Differential Equations", description: "First order differential equations and applications." },
+          { title: "Chapter 8: Multivariable Calculus", description: "Partial derivatives and multiple integrals." },
+          { title: "Chapter 9: Vector Calculus", description: "Vector functions, gradients, and line integrals." },
+          { title: "Chapter 10: Problem Solving for JEE", description: "Advanced problems and exam strategies." }
+        ])
       },
       {
-        title: "Chemical Bonding",
+        title: "Chemical Bonding for NEET",
         description: "Learn about different types of chemical bonds, molecular geometry, and hybridization for NEET preparation.",
         subject: "Chemistry",
         examType: "NEET",
         coverImage: "https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?ixlib=rb-4.0.3",
         chapters: 8,
-        difficulty: "Intermediate"
+        targetGrade: "11-12-science",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Atomic Structure", description: "Quantum numbers, orbitals, and electronic configuration." },
+          { title: "Chapter 2: Ionic Bonding", description: "Formation, properties, and lattice energy." },
+          { title: "Chapter 3: Covalent Bonding", description: "Lewis structures, VSEPR theory, and properties." },
+          { title: "Chapter 4: Hybridization", description: "sp, sp², sp³ hybridization and molecular shapes." },
+          { title: "Chapter 5: Molecular Orbital Theory", description: "Bonding and antibonding orbitals and bond order." },
+          { title: "Chapter 6: Hydrogen Bonding", description: "Intermolecular forces and their effects on properties." },
+          { title: "Chapter 7: Metallic Bonding", description: "Free electron theory and band theory." },
+          { title: "Chapter 8: NEET Practice Problems", description: "Previous years' questions and problem-solving strategies." }
+        ])
       },
       {
-        title: "Mechanics & Thermodynamics",
-        description: "Comprehensive coverage of mechanics, fluid dynamics, and thermodynamics with problem-solving techniques.",
-        subject: "Physics",
-        examType: "JEE",
-        coverImage: "https://images.unsplash.com/photo-1636466497217-26a42e75f996?ixlib=rb-4.0.3",
-        chapters: 12,
-        difficulty: "Advanced"
-      },
-      {
-        title: "Human Physiology",
+        title: "Human Physiology for NEET",
         description: "Detailed study of human organ systems, their functions, and related disorders for NEET preparation.",
         subject: "Biology",
         examType: "NEET",
         coverImage: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3",
-        chapters: 9,
-        difficulty: "Intermediate"
-      },
-      {
-        title: "Indian Constitution",
-        description: "Comprehensive analysis of the Indian Constitution for UPSC Civil Services preparation.",
-        subject: "Polity",
-        examType: "UPSC",
-        coverImage: "https://images.unsplash.com/photo-1594394489098-acef21cbfb86?ixlib=rb-4.0.3",
-        chapters: 15,
-        difficulty: "Advanced"
-      },
-      {
-        title: "Data Structures & Algorithms",
-        description: "Learn essential data structures and algorithms with practical implementation in competitive programming.",
-        subject: "Computer Science",
-        examType: "School",
-        coverImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3",
-        chapters: 14,
-        difficulty: "Intermediate"
+        chapters: 10,
+        targetGrade: "11-12-science",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Digestive System", description: "Organs, enzymes, and process of digestion." },
+          { title: "Chapter 2: Respiratory System", description: "Breathing mechanism and gas exchange." },
+          { title: "Chapter 3: Circulatory System", description: "Heart, blood vessels, and circulation." },
+          { title: "Chapter 4: Excretory System", description: "Kidneys, nephrons, and urine formation." },
+          { title: "Chapter 5: Nervous System", description: "Neurons, brain, spinal cord, and nerve impulses." },
+          { title: "Chapter 6: Endocrine System", description: "Glands, hormones, and their functions." },
+          { title: "Chapter 7: Reproductive System", description: "Male and female reproductive organs and processes." },
+          { title: "Chapter 8: Muscular and Skeletal Systems", description: "Bones, joints, and muscle contraction." },
+          { title: "Chapter 9: Immune System", description: "Immunity, antibodies, and immune responses." },
+          { title: "Chapter 10: Common Disorders", description: "Diseases related to various organ systems." }
+        ])
       }
     ];
     
-    // Check if courses already exist
-    const existingCourse = await db.query.courses.findFirst();
+    // Check if we have any detailed courses already (courses with targetGrade field)
+    const existingDetailedCourse = await db.query.courses.findFirst({
+      where: (courses, { isNotNull }) => isNotNull(courses.targetGrade)
+    });
     
-    if (!existingCourse) {
-      for (const course of courses) {
+    if (!existingDetailedCourse) {
+      // Insert detailed courses with grade targeting
+      for (const course of elementaryCoursesGrade3to5) {
         await db.insert(schema.courses).values(course);
       }
-      console.log(`✅ Added ${courses.length} courses`);
+      console.log(`✅ Added ${elementaryCoursesGrade3to5.length} courses with detailed chapter information`);
     } else {
-      console.log("⏩ Courses already exist, skipping...");
+      console.log("⏩ Detailed courses already exist, skipping...");
     }
 
     // Seed Streak Goals

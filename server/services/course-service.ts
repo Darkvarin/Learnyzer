@@ -22,6 +22,61 @@ export const courseService = {
   isGradeAppropriate(course: any, grade: string, ignoreLevelFilter: boolean): boolean {
     if (!grade || ignoreLevelFilter) return true; // If no grade or filtering disabled, show all courses
     
+    // First, check if the course has the targetGrade field
+    if (course.targetGrade) {
+      // Direct match for specific grade
+      if (course.targetGrade === grade) {
+        return true;
+      }
+      
+      // Handle range-based cases like "11-12-science"
+      if (course.targetGrade.includes("-")) {
+        const parts = course.targetGrade.split("-");
+        
+        // Stream-specific courses for 11th and 12th grades
+        if (parts.length === 3 && parts[0] === "11" && parts[1] === "12") {
+          // Check if student's grade matches stream requirement
+          if ((grade === "11" || grade === "12") && 
+              grade.includes(parts[2])) {
+            return true;
+          }
+          
+          // If student is in 11 or 12 but no stream specified, show courses 
+          // from all streams to avoid hiding content
+          if (grade === "11" || grade === "12") {
+            return true;
+          }
+        }
+        
+        // Simple grade range like "3-5"
+        if (parts.length === 2 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[1])) {
+          const minGrade = parseInt(parts[0]);
+          const maxGrade = parseInt(parts[1]);
+          
+          if (/^\d+$/.test(grade)) {
+            const studentGrade = parseInt(grade);
+            return studentGrade >= minGrade && studentGrade <= maxGrade;
+          }
+        }
+      }
+      
+      // Handle numeric grades
+      if (/^\d+$/.test(course.targetGrade) && /^\d+$/.test(grade)) {
+        // For specific numeric grades, only exact matches or lower grades
+        const courseGrade = parseInt(course.targetGrade);
+        const studentGrade = parseInt(grade);
+        
+        // Only show courses for the student's current grade or lower grades
+        // This ensures students don't see advanced content for grades they haven't reached
+        return studentGrade >= courseGrade;
+      }
+      
+      // Grade doesn't match, but we have targetGrade information
+      return false;
+    }
+    
+    // Fallback to older logic if targetGrade is not available
+    
     // Convert grade to number if it's a regular class
     let gradeLevel = 0;
     if (/^\d+$/.test(grade)) {
@@ -32,14 +87,9 @@ export const courseService = {
       gradeLevel = 15; // Higher than undergraduate
     }
     
-    // Check if the course has grade level information
-    if (course.gradeLevel) {
-      return (course.gradeLevel <= gradeLevel); // Only show courses at or below student's grade
-    }
-    
     // If no grade level in course, use exam type as a proxy
-    if (course.examType === 'jee' || course.examType === 'neet' || 
-        course.examType === 'upsc' || course.examType === 'clat') {
+    if (course.examType === 'JEE' || course.examType === 'NEET' || 
+        course.examType === 'UPSC' || course.examType === 'CLAT') {
       return gradeLevel >= 11; // These are for 11th and above
     }
     
@@ -50,7 +100,7 @@ export const courseService = {
     const gradeMatch = courseTitle.match(/class (\d+)/i);
     if (gradeMatch) {
       const courseGradeLevel = parseInt(gradeMatch[1]);
-      return courseGradeLevel <= gradeLevel;
+      return gradeLevel >= courseGradeLevel;
     }
     
     return true; // If we can't determine, show the course
