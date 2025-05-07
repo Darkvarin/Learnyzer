@@ -44,7 +44,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, UploadCloud, Shield, Bell, Moon, Sun, LogOut } from "lucide-react";
+import { User, UploadCloud, Shield, Bell, LogOut } from "lucide-react";
 
 // Validation schemas
 const profileSchema = z.object({
@@ -83,12 +83,6 @@ export default function ProfileSettings() {
   const [activeTab, setActiveTab] = useState("profile");
   const [currentGrade, setCurrentGrade] = useState((user as any)?.grade || "");
   const [isHigherGrade, setIsHigherGrade] = useState(false);
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== "undefined") {
-      return document.documentElement.classList.contains("dark") ? "dark" : "light";
-    }
-    return "dark";
-  });
 
   // Profile form
   const profileForm = useForm<ProfileForm>({

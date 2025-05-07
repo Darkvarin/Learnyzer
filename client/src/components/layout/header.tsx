@@ -1,5 +1,4 @@
 import { Link } from "wouter";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useUser } from "@/contexts/user-context";
 import { 
   DropdownMenu,
@@ -49,9 +48,7 @@ export function Header() {
             </span>
           </div>
           
-          <div className="flex items-center space-x-6">
-            <ThemeToggle />
-            
+          <div className="flex items-center space-x-6">            
             {!isMobile && (
               <div className="flex items-center space-x-4">
                 <Link href="/dashboard" className="text-gray-300 hover:text-white transition-colors">
