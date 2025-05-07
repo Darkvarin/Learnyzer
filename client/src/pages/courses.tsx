@@ -1,0 +1,322 @@
+import { Header } from "@/components/layout/header";
+import { MobileNavigation } from "@/components/layout/mobile-navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getProgressColor, getSubjectIcon } from "@/lib/utils";
+import { useState } from "react";
+import { Course, CourseCategory } from "@shared/types";
+
+export default function Courses() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedExam, setSelectedExam] = useState("all");
+  const [selectedSubject, setSelectedSubject] = useState("all");
+
+  const { data: categories, isLoading: categoriesLoading } = useQuery<CourseCategory[]>({
+    queryKey: ['/api/courses/categories'],
+  });
+  
+  const { data: courses, isLoading: coursesLoading } = useQuery<Course[]>({
+    queryKey: [`/api/courses?exam=${selectedExam}&subject=${selectedSubject}`],
+  });
+  
+  const filteredCourses = courses?.filter(course => 
+    course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    course.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="min-h-screen flex flex-col bg-dark text-white">
+      <Header />
+      <MobileNavigation />
+      
+      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold font-gaming">Courses</h1>
+          <p className="text-gray-400 mt-1">Learn, practice, and master your subjects</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {/* Sidebar with categories */}
+          <div className="md:col-span-1">
+            <div className="bg-dark-surface rounded-xl p-4 border border-dark-border mb-4">
+              <h3 className="text-lg font-bold mb-3">Categories</h3>
+              <div className="space-y-2">
+                {categoriesLoading ? (
+                  Array(6).fill(0).map((_, i) => (
+                    <Skeleton key={i} className="h-9 w-full rounded" />
+                  ))
+                ) : (
+                  <>
+                    <button className="w-full text-left px-3 py-2 rounded-md bg-primary-600/20 text-primary-400 font-medium">
+                      All Courses
+                    </button>
+                    {categories?.map(category => (
+                      <button key={category.id} className="w-full text-left px-3 py-2 rounded-md hover:bg-dark-hover text-gray-300">
+                        {category.name}
+                      </button>
+                    ))}
+                  </>
+                )}
+              </div>
+            </div>
+            
+            <div className="bg-dark-surface rounded-xl p-4 border border-dark-border">
+              <h3 className="text-lg font-bold mb-3">Filters</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-400 mb-1 block">Exam Type</label>
+                  <Select
+                    value={selectedExam}
+                    onValueChange={setSelectedExam}
+                  >
+                    <SelectTrigger className="bg-dark-card border-dark-border">
+                      <SelectValue placeholder="Select exam type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-dark-surface border-dark-border">
+                      <SelectItem value="all">All Exams</SelectItem>
+                      <SelectItem value="jee">JEE</SelectItem>
+                      <SelectItem value="neet">NEET</SelectItem>
+                      <SelectItem value="upsc">UPSC</SelectItem>
+                      <SelectItem value="clat">CLAT</SelectItem>
+                      <SelectItem value="school">School</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-400 mb-1 block">Subject</label>
+                  <Select
+                    value={selectedSubject}
+                    onValueChange={setSelectedSubject}
+                  >
+                    <SelectTrigger className="bg-dark-card border-dark-border">
+                      <SelectValue placeholder="Select subject" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-dark-surface border-dark-border">
+                      <SelectItem value="all">All Subjects</SelectItem>
+                      <SelectItem value="mathematics">Mathematics</SelectItem>
+                      <SelectItem value="physics">Physics</SelectItem>
+                      <SelectItem value="chemistry">Chemistry</SelectItem>
+                      <SelectItem value="biology">Biology</SelectItem>
+                      <SelectItem value="history">History</SelectItem>
+                      <SelectItem value="geography">Geography</SelectItem>
+                      <SelectItem value="computer_science">Computer Science</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Main content */}
+          <div className="md:col-span-3">
+            <div className="mb-6">
+              <Input
+                placeholder="Search courses..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-dark-card border-dark-border"
+                prefix={<i className="ri-search-line mr-2 text-gray-400"></i>}
+              />
+            </div>
+            
+            <Tabs defaultValue="all" className="w-full">
+              <TabsList className="bg-dark-card border border-dark-border w-full justify-start mb-6">
+                <TabsTrigger value="all" className="data-[state=active]:bg-primary-600">All Courses</TabsTrigger>
+                <TabsTrigger value="in_progress" className="data-[state=active]:bg-primary-600">In Progress</TabsTrigger>
+                <TabsTrigger value="completed" className="data-[state=active]:bg-primary-600">Completed</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="all" className="space-y-4">
+                {coursesLoading ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {Array(4).fill(0).map((_, i) => (
+                      <div key={i} className="bg-dark-surface border border-dark-border rounded-lg overflow-hidden">
+                        <div className="h-40 bg-dark-card">
+                          <Skeleton className="h-full w-full" />
+                        </div>
+                        <div className="p-4">
+                          <div className="flex justify-between items-center mb-2">
+                            <Skeleton className="h-6 w-32" />
+                            <Skeleton className="h-5 w-16 rounded-full" />
+                          </div>
+                          <Skeleton className="h-4 w-full mb-3" />
+                          <Skeleton className="h-4 w-3/4 mb-5" />
+                          <div className="flex justify-between items-center">
+                            <Skeleton className="h-5 w-24" />
+                            <Skeleton className="h-9 w-24 rounded" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : filteredCourses && filteredCourses.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filteredCourses.map(course => (
+                      <div key={course.id} className="bg-dark-surface border border-dark-border hover:border-primary-600 rounded-lg overflow-hidden transition-all duration-300">
+                        <div 
+                          className="h-40 bg-dark-card bg-cover bg-center" 
+                          style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url(${course.coverImage})` }}
+                        >
+                          <div className="p-4 h-full flex flex-col justify-end">
+                            <span className={`inline-block rounded-full px-2 py-1 text-xs bg-${course.examType.toLowerCase()}-600/70 text-white mb-2 self-start`}>
+                              {course.examType}
+                            </span>
+                            <h3 className="text-xl font-bold font-gaming">{course.title}</h3>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <p className="text-sm text-gray-300 mb-4">{course.description}</p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <div className={`w-8 h-8 bg-${course.subject.toLowerCase()}-600/20 rounded-lg flex items-center justify-center`}>
+                                <i className={`${getSubjectIcon(course.subject)} text-${course.subject.toLowerCase()}-400`}></i>
+                              </div>
+                              <span className="text-sm">{course.subject}</span>
+                            </div>
+                            <Button className={`bg-${course.subject.toLowerCase()}-600 hover:bg-${course.subject.toLowerCase()}-500 text-white`}>
+                              {course.progress > 0 ? 'Continue' : 'Start Course'}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-400">
+                    <i className="ri-search-line text-5xl mb-3"></i>
+                    <p className="text-lg mb-2">No courses found</p>
+                    <p className="text-sm mb-4">Try adjusting your filters or search query</p>
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="in_progress" className="space-y-4">
+                {coursesLoading ? (
+                  <Skeleton className="h-40 w-full" />
+                ) : filteredCourses?.filter(c => c.progress > 0 && c.progress < 100).length ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filteredCourses
+                      .filter(c => c.progress > 0 && c.progress < 100)
+                      .map(course => (
+                        <div key={course.id} className="bg-dark-surface border border-dark-border hover:border-primary-600 rounded-lg overflow-hidden transition-all duration-300">
+                          <div 
+                            className="h-40 bg-dark-card bg-cover bg-center" 
+                            style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url(${course.coverImage})` }}
+                          >
+                            <div className="p-4 h-full flex flex-col justify-end">
+                              <span className={`inline-block rounded-full px-2 py-1 text-xs bg-${course.examType.toLowerCase()}-600/70 text-white mb-2 self-start`}>
+                                {course.examType}
+                              </span>
+                              <h3 className="text-xl font-bold font-gaming">{course.title}</h3>
+                            </div>
+                          </div>
+                          <div className="p-4">
+                            <div className="flex justify-between text-sm text-gray-400 mb-3">
+                              <span>{course.currentChapter}</span>
+                              <span>{course.progress}% Complete</span>
+                            </div>
+                            
+                            <div className="w-full bg-dark-card rounded-full h-2 mb-4">
+                              <div 
+                                className={getProgressColor(course.subject)}
+                                style={{ width: `${course.progress}%`, height: '8px', borderRadius: '4px' }}
+                              ></div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-2">
+                                <div className={`w-8 h-8 bg-${course.subject.toLowerCase()}-600/20 rounded-lg flex items-center justify-center`}>
+                                  <i className={`${getSubjectIcon(course.subject)} text-${course.subject.toLowerCase()}-400`}></i>
+                                </div>
+                                <span className="text-sm">{course.subject}</span>
+                              </div>
+                              <Button className={`bg-${course.subject.toLowerCase()}-600 hover:bg-${course.subject.toLowerCase()}-500 text-white`}>
+                                Continue
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    }
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-400">
+                    <i className="ri-book-open-line text-5xl mb-3"></i>
+                    <p className="text-lg mb-2">No courses in progress</p>
+                    <p className="text-sm mb-4">Start a course to see it here</p>
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="completed" className="space-y-4">
+                {coursesLoading ? (
+                  <Skeleton className="h-40 w-full" />
+                ) : filteredCourses?.filter(c => c.progress === 100).length ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filteredCourses
+                      .filter(c => c.progress === 100)
+                      .map(course => (
+                        <div key={course.id} className="bg-dark-surface border border-dark-border hover:border-primary-600 rounded-lg overflow-hidden transition-all duration-300">
+                          <div 
+                            className="h-40 bg-dark-card bg-cover bg-center" 
+                            style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url(${course.coverImage})` }}
+                          >
+                            <div className="p-4 h-full flex flex-col justify-end">
+                              <span className={`inline-block rounded-full px-2 py-1 text-xs bg-${course.examType.toLowerCase()}-600/70 text-white mb-2 self-start`}>
+                                {course.examType}
+                              </span>
+                              <div className="flex justify-between items-center">
+                                <h3 className="text-xl font-bold font-gaming">{course.title}</h3>
+                                <div className="bg-success-600/70 rounded-full p-1">
+                                  <i className="ri-check-double-line"></i>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="p-4">
+                            <div className="mb-3 flex justify-between items-center">
+                              <div className="flex items-center space-x-2">
+                                <div className={`w-8 h-8 bg-${course.subject.toLowerCase()}-600/20 rounded-lg flex items-center justify-center`}>
+                                  <i className={`${getSubjectIcon(course.subject)} text-${course.subject.toLowerCase()}-400`}></i>
+                                </div>
+                                <span className="text-sm">{course.subject}</span>
+                              </div>
+                              <span className="text-xs bg-success-600/20 text-success-400 px-2 py-1 rounded-full">
+                                Completed
+                              </span>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <div className="text-xs text-gray-400">
+                                Completed {new Date(course.completedAt || Date.now()).toLocaleDateString()}
+                              </div>
+                              <Button variant="outline" className="bg-dark-card border-dark-border">
+                                Review
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    }
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-400">
+                    <i className="ri-medal-line text-5xl mb-3"></i>
+                    <p className="text-lg mb-2">No completed courses yet</p>
+                    <p className="text-sm mb-4">Keep learning to complete courses</p>
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

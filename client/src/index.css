@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+
+    --radius: 0.5rem;
+    
+    /* Extended colors for gaming theme */
+    --success: 152.2 76.2% 40.2%;
+    --success-foreground: 210 40% 98%;
+    
+    --warning: 37.7 92.1% 50.2%;
+    --warning-foreground: 210 40% 98%;
+    
+    --info: 217.2 91.2% 59.8%;
+    --info-foreground: 210 40% 98%;
+    
+    /* Light theme colors */
+    --light: 210 40% 98%;
+    --light-surface: 0 0% 100%;
+    --light-card: 210 40% 97%;
+    --light-border: 214.3 31.8% 91.4%;
+    --light-hover: 210 40% 98%;
+    
+    /* Chart colors */
+    --chart-1: 262.1 83.3% 57.8%;
+    --chart-2: 152.2 76.2% 40.2%;
+    --chart-3: 37.7 92.1% 50.2%;
+    --chart-4: 217.2 91.2% 59.8%;
+    --chart-5: 0 84.2% 60.2%;
+    
+    /* Sidebar colors (for light mode) */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222.2 84% 4.9%;
+    --sidebar-primary: 262.1 83.3% 57.8%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96.1%;
+    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 221.2 83.2% 53.3%;
+  }
+
+  .dark {
+    --background: 225 9% 9%;
+    --foreground: 210 40% 98%;
+
+    --card: 238 15% 16%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 238 15% 16%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+    
+    /* Extended colors for gaming theme */
+    --success: 142.1 70.6% 45.3%;
+    --success-foreground: 210 40% 98%;
+    
+    --warning: 47.7 92.1% 50.2%;
+    --warning-foreground: 210 40% 98%;
+    
+    --info: 217.2 91.2% 59.8%;
+    --info-foreground: 210 40% 98%;
+    
+    /* Dark theme colors */
+    --dark: 225 9% 9%;
+    --dark-surface: 238 15% 11%;
+    --dark-card: 240 16% 19%;
+    --dark-border: 230 18% 22%;
+    --dark-hover: 230 15% 24%;
+    
+    /* Sidebar colors (for dark mode) */
+    --sidebar-background: 238 15% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 262.1 83.3% 57.8%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 230 18% 22%;
+    --sidebar-ring: 224.3 76.3% 48%;
+  }
+  
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply font-sans antialiased bg-background text-foreground dark;
+  }
+}
+
+@layer components {
+  .rank-badge {
+    @apply relative inline-flex items-center justify-center;
+  }
+  
+  .rank-badge::before {
+    content: '';
+    @apply absolute inset-[-5px] rounded-full -z-10;
+    background: conic-gradient(
+      hsl(var(--primary) / 0.4),
+      hsl(var(--success) / 0.5),
+      hsl(var(--primary) / 0.6),
+      hsl(var(--primary) / 0.4)
+    );
+    animation: spin 4s linear infinite;
+  }
+  
+  .battle-card {
+    @apply border backdrop-blur-sm;
+    background: linear-gradient(
+      to bottom right,
+      hsla(var(--dark-surface), 0.7),
+      hsla(var(--dark-card), 0.9)
+    );
+    border-color: hsla(var(--dark-border), 0.8);
+  }
+  
+  .xp-bar {
+    @apply relative h-2 bg-white/10 rounded overflow-hidden;
+  }
+  
+  .xp-progress {
+    @apply absolute h-full rounded transition-all duration-500;
+    background: linear-gradient(
+      to right,
+      hsl(var(--primary) / 0.6),
+      hsl(var(--primary) / 0.4)
+    );
+  }
+  
+  .streak-day {
+    @apply relative w-10 h-10 flex items-center justify-center rounded-lg font-bold transition-all duration-300;
+  }
+  
+  .streak-day.completed {
+    @apply border-2;
+    background-color: hsla(var(--primary), 0.2);
+    border-color: hsl(var(--primary));
+  }
+  
+  .streak-day.current {
+    @apply border-2 border-dashed;
+    background-color: hsla(var(--primary), 0.1);
+    border-color: hsl(var(--primary));
+  }
+  
+  .streak-day.future {
+    @apply bg-white/5 border-2 border-white/10 text-white/30;
+  }
+  
+  .hexagon {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+  
+  .gaming-text {
+    @apply text-transparent bg-clip-text;
+    background-image: linear-gradient(
+      to right,
+      hsl(var(--primary) / 0.4),
+      hsl(var(--primary) / 0.6)
+    );
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes glow {
+  0% { box-shadow: 0 0 5px rgba(139, 92, 246, 0.5); }
+  100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.8); }
+}
