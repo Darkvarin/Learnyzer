@@ -56,8 +56,16 @@ export default function CreateProfile() {
   // Handle class selection to conditionally show stream field
   const handleClassChange = (value: string) => {
     form.setValue("class", value);
+    setCurrentGrade(value);
+    
+    // Check if grade is 11th or above (including undergraduate and postgraduate)
+    const higherGrades = ["11", "12", "undergraduate", "postgraduate"];
+    const isHigher = higherGrades.includes(value);
+    
+    setIsHigherGrade(isHigher);
     setShowStreamField(value === "11" || value === "12");
-    if (!(value === "11" || value === "12")) {
+    
+    if (!isHigher) {
       form.setValue("stream", "");
     }
   };
@@ -193,28 +201,52 @@ export default function CreateProfile() {
                 )}
               />
               
-              {showStreamField && (
+              {isHigherGrade && (
                 <FormField
                   control={form.control}
                   name="stream"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Stream/Track</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        defaultValue={field.value}
+                        disabled={!isHigherGrade}
+                      >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select your stream" />
+                            <SelectValue placeholder={isHigherGrade 
+                              ? (showStreamField ? "Select your stream" : "Select your education track") 
+                              : "Available for Class 11 and above"} 
+                            />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="medical">Medical (PCB)</SelectItem>
-                          <SelectItem value="non_medical">Non-Medical (PCM)</SelectItem>
-                          <SelectItem value="commerce">Commerce</SelectItem>
-                          <SelectItem value="humanities">Humanities/Arts</SelectItem>
+                          {showStreamField ? (
+                            // Stream options for 11th and 12th
+                            <>
+                              <SelectItem value="medical">Medical (PCB)</SelectItem>
+                              <SelectItem value="non_medical">Non-Medical (PCM)</SelectItem>
+                              <SelectItem value="commerce">Commerce</SelectItem>
+                              <SelectItem value="humanities">Humanities/Arts</SelectItem>
+                            </>
+                          ) : (
+                            // Track options for undergraduate and above
+                            <>
+                              <SelectItem value="engineering">Engineering</SelectItem>
+                              <SelectItem value="medical">Medical</SelectItem>
+                              <SelectItem value="commerce">Commerce</SelectItem>
+                              <SelectItem value="arts">Arts</SelectItem>
+                              <SelectItem value="upsc">UPSC</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </>
+                          )}
                         </SelectContent>
                       </Select>
                       <FormDescription>
-                        Your stream helps us recommend appropriate courses and study materials
+                        {showStreamField 
+                          ? "Your stream helps us recommend appropriate courses and study materials" 
+                          : "Your education track helps us personalize your learning content"}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
