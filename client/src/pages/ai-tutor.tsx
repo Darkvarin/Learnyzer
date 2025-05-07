@@ -226,6 +226,23 @@ export default function AiTutor() {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   
+  // Auto-start teaching if coming from course page with chapter parameters
+  useEffect(() => {
+    if (chapterParam && subjectParam && courseParam) {
+      // Auto-start teaching with the provided chapter
+      toast({
+        title: `Loading chapter content`,
+        description: `Preparing ${chapterParam} from ${courseParam}`
+      });
+      
+      // Generate the diagram for whiteboard teaching
+      generateDiagram();
+      
+      // Switch to whiteboard tab
+      setActiveTab("whiteboard");
+    }
+  }, [chapterParam, subjectParam, courseParam]);
+  
   const handleVoiceInteraction = () => {
     // If already listening, stop listening
     if (isListening) {
@@ -529,6 +546,30 @@ export default function AiTutor() {
                 
                 {/* Whiteboard Tab */}
                 <TabsContent value="whiteboard" className="flex-1 flex flex-col mt-0">
+                  {/* Course info header when opened from a course */}
+                  {chapterParam && courseParam && (
+                    <div className="mb-4 bg-dark-card rounded-lg p-4 border-l-4 border-primary-600">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <Book className="h-5 w-5 text-primary-400" />
+                            <h3 className="text-lg font-bold">{chapterParam}</h3>
+                          </div>
+                          <p className="text-sm text-gray-400 mt-1">From {courseParam} • {subjectParam}</p>
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => window.location.href = '/courses'}
+                          className="bg-dark-surface border-dark-border hover:bg-dark-hover"
+                        >
+                          <ArrowLeftCircle className="h-4 w-4 mr-2" />
+                          Back to Course
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full min-h-[500px]">
                     <div className="lg:col-span-2 flex flex-col gap-4">
                       <div className="bg-dark-card rounded-lg p-4 flex-1 overflow-hidden">
