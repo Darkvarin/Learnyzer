@@ -471,15 +471,17 @@ export const aiService = {
   },
   
   /**
-   * Get performance insights using AI
+   * Get performance analytics using AI
    */
-  async getPerformanceInsights(req: Request, res: Response) {
+  async getPerformanceAnalytics(req: Request, res: Response) {
     if (!req.isAuthenticated() || !req.user) {
       return res.status(401).json({ message: "Authentication required" });
     }
     
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = parseInt(req.params.userId || (req.user as any).id.toString());
+      const timeRange = req.query.timeRange as string || 'month';
+      const subject = req.query.subject as string || 'all';
       
       if (isNaN(userId)) {
         return res.status(400).json({ message: "Invalid user ID" });
@@ -497,22 +499,33 @@ export const aiService = {
         return res.status(200).json({
           strengths: [],
           weaknesses: [],
-          recommendations: ["Start completing more activities to get personalized insights."],
-          subjectPerformance: {}
+          recommendations: ["Start completing more activities to get personalized analytics."],
+          subjectPerformance: {},
+          timeSpent: [],
+          skillDistribution: []
         });
       }
       
-      // Build the prompt for AI insights
+      // Build the prompt for AI insights with more detailed analytics
       const prompt = `
-        Analyze this student's performance data and provide personalized insights:
+Analyze this student's performance data and provide comprehensive analytics:
         ${JSON.stringify(userPerformance)}
         
-        Please identify:
-        1. Their top 3 strengths
-        2. Areas they need to improve (up to 3)
-        3. Specific recommendations for improvement (3-5 points)
+        Please provide:
+        1. Their top 3 strengths with score percentages
+        2. Areas they need to improve (up to 3) with score percentages
+        3. Specific actionable recommendations for improvement (3-5 points)
+        4. Time analysis showing study patterns over the ${timeRange} period
+        5. Skill distribution across cognitive domains (Problem Solving, Memorization, Critical Thinking, Application)
         
-        Format your response as JSON with the fields: strengths (array), weaknesses (array), and recommendations (array).
+        Format your response as JSON with these fields: 
+        - strengths (array of {topic: string, score: number})
+        - weaknesses (array of {topic: string, score: number})
+        - recommendations (array of {id: number, title: string, description: string, category: string})
+        - timeSpent (array of {date: string, hours: number})
+        - skillDistribution (array of {name: string, value: number})
+        
+        Make the data realistic and personalized. For the timeSpent, create entries for each day in the past ${timeRange === 'week' ? '7' : timeRange === 'month' ? '30' : timeRange === 'quarter' ? '90' : '365'} days.
       `;
       
       // Get insights from OpenAI
@@ -521,41 +534,41 @@ export const aiService = {
         messages: [
           { 
             role: "system", 
-            content: "You are an expert educational analyst who provides personalized, actionable insights for students based on their performance data." 
+            content: "You are an expert educational data analyst who provides comprehensive, actionable analytics for students based on their performance data using visualizations and patterns." 
           },
           { role: "user", content: prompt }
         ],
         response_format: { type: "json_object" },
-        max_tokens: 1000
+        max_tokens: 2000
       });
       
       const responseContent = completion.choices[0].message.content;
-      const insights = JSON.parse(responseContent);
+      const analytics = JSON.parse(responseContent);
       
-      // Combine AI insights with the raw performance data
+      // Combine AI analytics with the raw performance data
       const result = {
-        ...insights,
+        ...analytics,
         subjectPerformance: userPerformance.subjectPerformance
       };
       
       // Increment user's AI sessions count
       await storage.incrementAISessionCount((req.user as any).id);
       
-      // Send real-time notification about generated insights
+      // Send real-time notification about generated analytics
       if ((global as any).sendToUser) {
         (global as any).sendToUser(userId, {
           type: 'ai_insight_generated',
-          userId: userId,
-          messageType: 'performance_insights',
-          message: 'New performance insights are available with personalized recommendations!',
+          userId,
+          messageType: 'performance_analytics',
+          message: 'Your performance analytics have been generated with detailed visualizations!',
           timestamp: new Date().toISOString()
         });
       }
       
       return res.status(200).json(result);
     } catch (error) {
-      console.error("Performance insights error:", error);
-      return res.status(500).json({ message: "Error getting performance insights" });
+      console.error("Performance analytics error:", error);
+      return res.status(500).json({ message: "Error generating performance analytics" });
     }
   },
   

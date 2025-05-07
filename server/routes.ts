@@ -37,7 +37,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/ai/tools/notes", aiService.generateStudyNotes);
   app.post("/api/ai/tools/answer-check", aiService.checkAnswer);
   app.post("/api/ai/tools/flashcards", aiService.generateFlashcards);
-  app.get("/api/ai/tools/insights/:userId", aiService.getPerformanceInsights);
+  app.get("/api/ai/tools/analytics/:userId", aiService.getPerformanceAnalytics);
   app.post("/api/ai/battle/judge/:battleId", aiService.judgeBattle);
   
   // Course routes
