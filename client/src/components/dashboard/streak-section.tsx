@@ -67,19 +67,24 @@ export function StreakSection() {
             ))
           ) : (
             weekdays.map((day, idx) => {
-              const isCompleted = streak?.completedDays.includes(idx);
+              const isCompleted = streak?.completedDays?.includes(idx);
               const isCurrent = streak?.currentDay === idx;
               const isFuture = !isCompleted && !isCurrent;
               
               return (
                 <div 
                   key={idx} 
-                  className={`streak-day ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''} ${isFuture ? 'future' : ''}`}
+                  className={`w-10 h-10 rounded-lg flex items-center justify-center relative 
+                    ${isCompleted ? 'bg-primary-600/20 text-primary-400 border-2 border-primary-600' : ''} 
+                    ${isCurrent ? 'bg-dark-card text-white border-2 border-warning-400' : ''} 
+                    ${isFuture ? 'bg-dark-card text-gray-500' : ''}`}
                 >
                   <span>{day}</span>
                   {isCompleted && (
                     <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary-600 rounded-full flex items-center justify-center">
-                      <i className="ri-check-line text-xs"></i>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3 h-3 fill-white">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                      </svg>
                     </div>
                   )}
                 </div>
@@ -107,17 +112,19 @@ export function StreakSection() {
                   <Skeleton className="h-4 w-full" />
                 </div>
               ))
-            ) : streak?.goals ? (
+            ) : streak?.goals && streak.goals.length > 0 ? (
               streak.goals.map((goal, idx) => (
                 <div key={idx} className="flex items-center mb-2">
                   <div className="w-5 h-5 bg-dark-surface rounded flex items-center justify-center mr-2">
                     {goal.completed && (
-                      <i className="ri-check-line text-xs text-primary-400"></i>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3 h-3 fill-primary-400">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                      </svg>
                     )}
                   </div>
                   <span className="text-sm text-gray-400">{goal.description}</span>
                   <span className="ml-auto text-xs text-primary-400">
-                    {goal.progress}/{goal.target}
+                    {goal.progress || 0}/{goal.target || 0}
                   </span>
                 </div>
               ))
@@ -135,11 +142,13 @@ export function StreakSection() {
           >
             {claimingReward ? (
               <span className="flex items-center">
-                <i className="ri-check-line mr-2"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 mr-2 fill-white">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
                 Claimed!
               </span>
             ) : (
-              `Claim ${streak?.rewardXp || 150} XP`
+              `Claim ${streak?.rewardXp || 0} XP`
             )}
           </Button>
         </div>
