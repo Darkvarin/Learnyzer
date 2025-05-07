@@ -1,10 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
-import passport from "passport";
-import session from "express-session";
-import { Strategy as LocalStrategy } from "passport-local";
-import bcrypt from "bcrypt";
+import { setupAuth } from "./auth";
 import { authService } from "./services/auth-service";
 import { userService } from "./services/user-service";
 import { aiService } from "./services/ai-service";
@@ -12,55 +8,8 @@ import { courseService } from "./services/course-service";
 import { battleService } from "./services/battle-service";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Set up session middleware
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET || "learnityX-secret-key",
-      resave: false,
-      saveUninitialized: false,
-      cookie: { secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 } // 7 days
-    })
-  );
-
-  // Set up Passport for authentication
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-  // Configure Passport local strategy
-  passport.use(
-    new LocalStrategy(async (username, password, done) => {
-      try {
-        const user = await storage.getUserByUsername(username);
-        
-        if (!user) {
-          return done(null, false, { message: "Incorrect username." });
-        }
-        
-        const isValidPassword = await bcrypt.compare(password, user.password);
-        
-        if (!isValidPassword) {
-          return done(null, false, { message: "Incorrect password." });
-        }
-        
-        return done(null, user);
-      } catch (error) {
-        return done(error);
-      }
-    })
-  );
-
-  passport.serializeUser((user: any, done) => {
-    done(null, user.id);
-  });
-
-  passport.deserializeUser(async (id: number, done) => {
-    try {
-      const user = await storage.getUserById(id);
-      done(null, user);
-    } catch (error) {
-      done(error);
-    }
-  });
+  // Set up enhanced authentication with improved security and database session storage
+  setupAuth(app);
 
   // Auth routes
   app.post("/api/auth/register", authService.register);
