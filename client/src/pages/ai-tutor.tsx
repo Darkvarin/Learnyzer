@@ -560,7 +560,7 @@ export default function AiTutor() {
                         <Button 
                           variant="outline" 
                           size="sm" 
-                          onClick={() => window.location.href = '/courses'}
+                          onClick={() => window.location.pathname = '/courses'}
                           className="bg-dark-surface border-dark-border hover:bg-dark-hover"
                         >
                           <ArrowLeftCircle className="h-4 w-4 mr-2" />
