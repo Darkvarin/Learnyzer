@@ -55,6 +55,7 @@ export default function AuthPage() {
   const registerForm = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: "",
       username: "",
       email: "",
       password: "",
@@ -79,6 +80,7 @@ export default function AuthPage() {
   const onRegisterSubmit = async (data: RegisterForm) => {
     try {
       await registerMutation.mutateAsync({
+        name: data.name,
         username: data.username,
         email: data.email,
         password: data.password,
@@ -155,6 +157,19 @@ export default function AuthPage() {
                 <Form {...registerForm}>
                   <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
                     <CardContent className="space-y-4">
+                      <FormField
+                        control={registerForm.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Full Name</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Enter your full name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       <FormField
                         control={registerForm.control}
                         name="username"

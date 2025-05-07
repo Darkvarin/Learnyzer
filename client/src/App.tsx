@@ -14,6 +14,7 @@ import Rewards from "@/pages/rewards";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 import CreateProfile from "@/pages/create-profile";
+import HomePage from "@/pages/home-page";
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
       <ThemeProvider defaultTheme="dark">
         <AuthProvider>
           <Switch>
-            <ProtectedRoute path="/" component={Dashboard} />
+            <Route path="/" component={HomePage} />
+            <ProtectedRoute path="/dashboard" component={Dashboard} />
             <ProtectedRoute path="/courses" component={Courses} />
             <ProtectedRoute path="/battle-zone" component={BattleZone} />
             <ProtectedRoute path="/ai-tools" component={AiTools} />
