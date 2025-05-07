@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useLocation } from "wouter";
 import { 
   Send, 
   Mic, 
@@ -38,11 +39,19 @@ export default function AiTutor() {
   const { user } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [location] = useLocation();
+  
+  // Parse URL parameters if coming from course page
+  const searchParams = new URLSearchParams(window.location.search);
+  const subjectParam = searchParams.get('subject');
+  const chapterParam = searchParams.get('chapter');
+  const courseParam = searchParams.get('course');
+  
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState("chat");
   const [activeTool, setActiveTool] = useState("pen");
-  const [currentSubject, setCurrentSubject] = useState("mathematics");
-  const [currentTopic, setCurrentTopic] = useState("");
+  const [currentSubject, setCurrentSubject] = useState(subjectParam?.toLowerCase() || "mathematics");
+  const [currentTopic, setCurrentTopic] = useState(chapterParam || "");
   const [isGeneratingWhiteboard, setIsGeneratingWhiteboard] = useState(false);
   const [weakPoints, setWeakPoints] = useState<string[]>([]); 
   const whiteboardRef = useRef<HTMLCanvasElement>(null);

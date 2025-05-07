@@ -9,17 +9,34 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getProgressColor, getSubjectIcon } from "@/lib/utils";
 import { useState } from "react";
 import { Course } from "@shared/types";
+import { useLocation } from "wouter";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default function Courses() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedExam, setSelectedExam] = useState("all");
   const [selectedSubject, setSelectedSubject] = useState("all");
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [, navigate] = useLocation();
+  
+  // Get the currently authenticated user to access their grade
+  const { data: user } = useQuery({
+    queryKey: ['/api/auth/me'],
+  });
 
   // Categories have been removed as per requirement
   
   const { data: courses, isLoading: coursesLoading } = useQuery<Course[]>({
-    queryKey: [`/api/courses?exam=${selectedExam}&subject=${selectedSubject}`],
+    queryKey: [`/api/courses?exam=${selectedExam}&subject=${selectedSubject}&grade=${user?.grade || ''}`],
   });
+  
+  // Function to open AI tutor with specific chapter content
+  const openAITutorWithChapter = (course: Course, chapterTitle: string) => {
+    // Navigate to AI Tutor page with state via URL params
+    navigate(`/ai-tutor?subject=${encodeURIComponent(course.subject)}&chapter=${encodeURIComponent(chapterTitle)}&course=${encodeURIComponent(course.title)}`);
+  };
   
   const filteredCourses = courses?.filter(course => 
     course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -153,8 +170,14 @@ export default function Courses() {
                               </div>
                               <span className="text-sm">{course.subject}</span>
                             </div>
-                            <Button className={`bg-${course.subject.toLowerCase()}-600 hover:bg-${course.subject.toLowerCase()}-500 text-white`}>
-                              {course.progress > 0 ? 'Continue' : 'Start Course'}
+                            <Button 
+                              className={`bg-${course.subject.toLowerCase()}-600 hover:bg-${course.subject.toLowerCase()}-500 text-white`}
+                              onClick={() => {
+                                setSelectedCourse(course);
+                                setIsDialogOpen(true);
+                              }}
+                            >
+                              {course.progress > 0 ? 'Continue' : 'View Chapters'}
                             </Button>
                           </div>
                         </div>
@@ -291,6 +314,83 @@ export default function Courses() {
           </div>
         </div>
       </main>
+      
+      {/* Chapter Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="bg-dark-surface border-dark-border text-white max-w-3xl">
+          {selectedCourse && (
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className={`w-10 h-10 bg-${selectedCourse.subject.toLowerCase()}-600/20 rounded-lg flex items-center justify-center`}>
+                  <i className={`${getSubjectIcon(selectedCourse.subject)} text-${selectedCourse.subject.toLowerCase()}-400 text-xl`}></i>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold font-gaming">{selectedCourse.title}</h2>
+                  <p className="text-sm text-gray-400">{selectedCourse.subject}</p>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <p className="text-sm text-gray-300 mb-4">{selectedCourse.description}</p>
+                {selectedCourse.progress > 0 && (
+                  <div>
+                    <div className="flex justify-between text-xs text-gray-400 mb-2">
+                      <span>Progress</span>
+                      <span>{selectedCourse.progress}%</span>
+                    </div>
+                    <div className="w-full bg-dark-card rounded-full h-2 mb-4">
+                      <div 
+                        className={getProgressColor(selectedCourse.subject)}
+                        style={{ width: `${selectedCourse.progress}%`, height: '8px', borderRadius: '4px' }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="border-t border-dark-border pt-4">
+                <h3 className="text-lg font-semibold mb-3">Chapters</h3>
+                
+                {selectedCourse.chapterDetails ? (
+                  <Accordion type="single" collapsible className="w-full">
+                    {Object.entries(JSON.parse(selectedCourse.chapterDetails as string)).map(([unit, chapters], index) => (
+                      <AccordionItem key={index} value={`unit-${index}`} className="border-dark-border">
+                        <AccordionTrigger className="text-left font-medium py-3">
+                          {unit}
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-2 pl-2">
+                            {Array.isArray(chapters) && chapters.map((chapter: string, chapterIndex: number) => (
+                              <div 
+                                key={chapterIndex}
+                                className="p-3 rounded-lg bg-dark-card hover:bg-dark-hover flex justify-between items-center cursor-pointer transition-colors"
+                                onClick={() => openAITutorWithChapter(selectedCourse, chapter)}
+                              >
+                                <div className="flex items-center space-x-3">
+                                  <div className="w-8 h-8 rounded-full bg-primary-700/20 flex items-center justify-center">
+                                    <i className="ri-book-2-line text-primary-400"></i>
+                                  </div>
+                                  <span>{chapter}</span>
+                                </div>
+                                <i className="ri-arrow-right-line text-gray-400"></i>
+                              </div>
+                            ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                ) : (
+                  <div className="text-center py-6 text-gray-400">
+                    <i className="ri-file-list-line text-4xl mb-2"></i>
+                    <p>No chapter details available for this course</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
