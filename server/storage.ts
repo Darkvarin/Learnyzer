@@ -1,6 +1,6 @@
 import { db } from "@db";
 import * as schema from "@shared/schema";
-import { eq, and, desc, gte, lt, sql, isNull, asc, ne } from "drizzle-orm";
+import { eq, and, desc, gte, lt, sql, isNull, asc, ne, inArray } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import bcrypt from "bcrypt";
 
@@ -1204,10 +1204,25 @@ export const storage = {
    * Get past battles for a user
    */
   async getPastBattles(userId: number) {
+    // First get the battle IDs where the user participated
+    const participations = await db.query.battleParticipants.findMany({
+      where: eq(schema.battleParticipants.userId, userId),
+      columns: {
+        battleId: true
+      }
+    });
+    
+    const battleIds = participations.map(p => p.battleId);
+    
+    if (battleIds.length === 0) {
+      return [];
+    }
+    
+    // Then get those battles
     const battles = await db.query.battles.findMany({
       where: and(
         eq(schema.battles.status, "completed"),
-        eq(schema.battleParticipants.userId, userId)
+        inArray(schema.battles.id, battleIds)
       ),
       with: {
         participants: {
