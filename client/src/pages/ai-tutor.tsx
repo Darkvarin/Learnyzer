@@ -680,7 +680,7 @@ export default function AiTutor() {
                       <div className="bg-dark-surface rounded-lg p-4">
                         <div className="flex items-center justify-between">
                           <p className="text-sm text-gray-400">Total Study Time</p>
-                          <Clock className="h-4 w-4 text-primary-400" />
+                          <MessageSquare className="h-4 w-4 text-primary-400" />
                         </div>
                         <p className="text-2xl font-bold mt-2">18.5 hrs</p>
                         <p className="text-xs text-green-500 mt-1">
