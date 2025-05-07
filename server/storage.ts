@@ -4,28 +4,28 @@ import { eq, and, desc, gte, lt, sql, isNull, asc, ne } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import bcrypt from "bcrypt";
 
-// Define ranks and their point requirements - made more challenging
+// Define ranks and their point requirements - made more challenging with 2000 points for Bronze to Silver
 const RANKS = [
   { name: "Bronze I", points: 0 },
-  { name: "Bronze II", points: 150 },
-  { name: "Bronze III", points: 400 },
-  { name: "Silver I", points: 800 },
-  { name: "Silver II", points: 1300 },
-  { name: "Silver III", points: 2000 },
-  { name: "Gold I", points: 3000 },
-  { name: "Gold II", points: 4500 },
-  { name: "Gold III", points: 6500 },
-  { name: "Platinum I", points: 9000 },
-  { name: "Platinum II", points: 12000 },
-  { name: "Platinum III", points: 16000 },
-  { name: "Diamond I", points: 21000 },
-  { name: "Diamond II", points: 27000 },
-  { name: "Diamond III", points: 35000 },
-  { name: "Heroic", points: 45000 },
-  { name: "Elite Heroic", points: 60000 },
-  { name: "Master", points: 80000 },
-  { name: "Elite Master", points: 100000 },
-  { name: "Grandmaster", points: 125000 }
+  { name: "Bronze II", points: 500 },
+  { name: "Bronze III", points: 1200 },
+  { name: "Silver I", points: 2000 },     // Bronze to Silver at 2000 as requested
+  { name: "Silver II", points: 3000 },
+  { name: "Silver III", points: 4500 },
+  { name: "Gold I", points: 6500 },
+  { name: "Gold II", points: 9000 },
+  { name: "Gold III", points: 12000 },
+  { name: "Platinum I", points: 16000 },
+  { name: "Platinum II", points: 21000 },
+  { name: "Platinum III", points: 27000 },
+  { name: "Diamond I", points: 35000 },
+  { name: "Diamond II", points: 45000 },
+  { name: "Diamond III", points: 60000 },
+  { name: "Heroic", points: 75000 },
+  { name: "Elite Heroic", points: 95000 },
+  { name: "Master", points: 120000 },
+  { name: "Elite Master", points: 150000 },
+  { name: "Grandmaster", points: 200000 }
 ];
 
 // Level XP requirements (exponential growth) - made more challenging
@@ -133,18 +133,18 @@ export const storage = {
     }
     
     // Count AI sessions
-    const [result] = await db.execute(sql`
+    const result = await db.execute(sql`
       SELECT COUNT(*) as count FROM ${schema.conversations}
       WHERE ${schema.conversations.userId} = ${userId}
     `);
-    const aiSessions = result ? Number(result.count) : 0;
+    const aiSessions = result.rows && result.rows[0] ? Number(result.rows[0].count) : 0;
     
     // Count battles won
-    const [wonResult] = await db.execute(sql`
+    const wonResult = await db.execute(sql`
       SELECT COUNT(*) as count FROM ${schema.battles}
       WHERE ${schema.battles.winnerId} = ${userId}
     `);
-    const battlesWon = wonResult ? Number(wonResult.count) : 0;
+    const battlesWon = wonResult.rows && wonResult.rows[0] ? Number(wonResult.rows[0].count) : 0;
     
     return {
       level: user.level,
@@ -178,8 +178,8 @@ export const storage = {
       level++;
       nextLevelXp = getXpForLevel(level);
       
-      // Also add some rank points on level up - improved scaling for more challenge
-      const rankPointsForLevelUp = 75 + Math.floor(level * level * 2.5);
+      // Also add some rank points on level up - reduced for more challenge
+      const rankPointsForLevelUp = 40 + Math.floor(level * level * 1.5); // Reduced RP gain to make ranking up harder
       await this.updateUserRankPoints(userId, user.rankPoints + rankPointsForLevelUp);
     }
     
@@ -481,7 +481,7 @@ export const storage = {
       where: and(
         eq(schema.userStreakGoals.userId, userId),
         eq(schema.userStreakGoals.date, today),
-        eq(sql`${schema.userStreakGoals.progress} < 0`, true) // Using negative progress as a flag for claimed
+        lt(schema.userStreakGoals.progress, 0) // Using negative progress as a flag for claimed
       )
     });
     

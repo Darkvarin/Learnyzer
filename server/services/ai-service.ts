@@ -595,9 +595,9 @@ export const aiService = {
       // Update battle with results
       await storage.updateBattleResults(battleId, judgement);
       
-      // Award XP to the winner and participants
-      const winnerXp = battle.rewardPoints;
-      const participantXp = Math.floor(battle.rewardPoints * 0.2); // 20% of reward points for participation
+      // Award XP to the winner and participants - reduced for more challenge
+      const winnerXp = Math.floor(battle.rewardPoints * 0.7); // Reduced rewards for more challenge
+      const participantXp = Math.floor(battle.rewardPoints * 0.1); // 10% of reward points for participation
       
       await storage.awardBattleXP(battleId, judgement.winnerId, winnerXp, participantXp);
       
