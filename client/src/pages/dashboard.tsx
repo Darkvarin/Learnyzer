@@ -1,7 +1,6 @@
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { UserProfileCard } from "@/components/dashboard/user-profile-card";
-import { AiTutorSection } from "@/components/dashboard/ai-tutor-section";
 import { CoursesSection } from "@/components/dashboard/courses-section";
 import { BattleZoneSection } from "@/components/dashboard/battle-zone-section";
 import { StreakSection } from "@/components/dashboard/streak-section";
@@ -20,7 +19,6 @@ export default function Dashboard() {
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             <UserProfileCard />
-            <AiTutorSection />
             <CoursesSection />
             <BattleZoneSection />
           </div>

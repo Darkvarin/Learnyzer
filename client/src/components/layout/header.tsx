@@ -60,6 +60,9 @@ export function Header() {
                 <Link href="/battle-zone" className="text-gray-300 hover:text-white transition-colors">
                   Battle Zone
                 </Link>
+                <Link href="/ai-tutor" className="text-gray-300 hover:text-white transition-colors">
+                  AI Tutor
+                </Link>
                 <Link href="/ai-tools" className="text-gray-300 hover:text-white transition-colors">
                   AI Tools
                 </Link>
