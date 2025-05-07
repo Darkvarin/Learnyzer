@@ -343,23 +343,38 @@ export default function BattleZone() {
                         <div className="flex justify-between items-center">
                           <div className="flex items-center space-x-3">
                             <div className="flex -space-x-2">
-                              {battle.participants && battle.participants.length > 0 && battle.participants.map((participant, idx) => (
-                                <img 
-                                  key={idx}
-                                  src={participant.profileImage}
-                                  alt={participant.name}
-                                  className="w-6 h-6 rounded-full border border-dark-surface"
-                                />
-                              ))}
+                              {battle.participants && battle.participants.length > 0 ? (
+                                battle.participants.map((participant, idx) => (
+                                  <div 
+                                    key={idx}
+                                    className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface flex items-center justify-center text-xs"
+                                    title={participant.name || `Player ${idx + 1}`}
+                                  >
+                                    {participant.profileImage ? (
+                                      <img 
+                                        src={participant.profileImage}
+                                        alt={participant.name || `Player ${idx + 1}`}
+                                        className="w-full h-full rounded-full object-cover"
+                                      />
+                                    ) : (
+                                      <span>{(participant.name || 'P').charAt(0)}</span>
+                                    )}
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface" />
+                              )}
                             </div>
                             <span className="text-xs text-gray-400">
-                              {battle.participants ? battle.participants.length : 0} players waiting
+                              {battle.participants && battle.participants.length || 0} players waiting
                             </span>
                           </div>
                           <div className="flex items-center space-x-3">
                             <div className="text-xs text-gray-400">
                               <span>Topics: </span>
-                              <span className="text-white">{formatTopics(battle.topics)}</span>
+                              <span className="text-white">{battle.topics ? Array.isArray(battle.topics) ? 
+                                formatTopics(battle.topics) : 
+                                typeof battle.topics === 'string' ? battle.topics : 'Subject Topics' : 'Subject Topics'}</span>
                             </div>
                             <Button 
                               size="sm" 
@@ -434,23 +449,38 @@ export default function BattleZone() {
                         <div className="flex justify-between items-center">
                           <div className="flex items-center space-x-3">
                             <div className="flex -space-x-2">
-                              {battle.participants && battle.participants.length > 0 && battle.participants.map((participant, idx) => (
-                                <img 
-                                  key={idx}
-                                  src={participant.profileImage}
-                                  alt={participant.name}
-                                  className="w-6 h-6 rounded-full border border-dark-surface"
-                                />
-                              ))}
+                              {battle.participants && battle.participants.length > 0 ? (
+                                battle.participants.map((participant, idx) => (
+                                  <div 
+                                    key={idx}
+                                    className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface flex items-center justify-center text-xs"
+                                    title={participant.name || `Player ${idx + 1}`}
+                                  >
+                                    {participant.profileImage ? (
+                                      <img 
+                                        src={participant.profileImage}
+                                        alt={participant.name || `Player ${idx + 1}`}
+                                        className="w-full h-full rounded-full object-cover"
+                                      />
+                                    ) : (
+                                      <span>{(participant.name || 'P').charAt(0)}</span>
+                                    )}
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface" />
+                              )}
                             </div>
                             <span className="text-xs text-gray-400">
-                              {battle.participants ? battle.participants.length : 0} players registered
+                              {battle.participants && battle.participants.length || 0} players registered
                             </span>
                           </div>
                           <div className="flex items-center space-x-3">
                             <div className="text-xs text-gray-400">
                               <span>Topics: </span>
-                              <span className="text-white">{formatTopics(battle.topics)}</span>
+                              <span className="text-white">{battle.topics ? Array.isArray(battle.topics) ? 
+                                formatTopics(battle.topics) : 
+                                typeof battle.topics === 'string' ? battle.topics : 'Subject Topics' : 'Subject Topics'}</span>
                             </div>
                           </div>
                         </div>
@@ -510,22 +540,37 @@ export default function BattleZone() {
                         <div className="flex justify-between items-center">
                           <div className="flex items-center space-x-3">
                             <div className="flex -space-x-2">
-                              {battle.participants && battle.participants.length > 0 && battle.participants.map((participant, idx) => (
-                                <img 
-                                  key={idx}
-                                  src={participant.profileImage}
-                                  alt={participant.name}
-                                  className="w-6 h-6 rounded-full border border-dark-surface opacity-70"
-                                />
-                              ))}
+                              {battle.participants && battle.participants.length > 0 ? (
+                                battle.participants.map((participant, idx) => (
+                                  <div 
+                                    key={idx}
+                                    className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface flex items-center justify-center text-xs opacity-70"
+                                    title={participant.name || `Player ${idx + 1}`}
+                                  >
+                                    {participant.profileImage ? (
+                                      <img 
+                                        src={participant.profileImage}
+                                        alt={participant.name || `Player ${idx + 1}`}
+                                        className="w-full h-full rounded-full object-cover"
+                                      />
+                                    ) : (
+                                      <span>{(participant.name || 'P').charAt(0)}</span>
+                                    )}
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface opacity-70" />
+                              )}
                             </div>
                             <span className="text-xs text-gray-400">
-                              {battle.participants ? battle.participants.length : 0} participants
+                              {battle.participants && battle.participants.length || 0} participants
                             </span>
                           </div>
                           <div className="text-xs text-gray-400">
                             <span>Topics: </span>
-                            <span className="text-gray-300">{formatTopics(battle.topics)}</span>
+                            <span className="text-gray-300">{battle.topics ? Array.isArray(battle.topics) ? 
+                              formatTopics(battle.topics) : 
+                              typeof battle.topics === 'string' ? battle.topics : 'Subject Topics' : 'Subject Topics'}</span>
                           </div>
                         </div>
                       </div>
