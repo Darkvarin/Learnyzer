@@ -100,6 +100,7 @@ export const battleParticipants = pgTable("battle_participants", {
   team: integer("team").default(0).notNull(),
   score: integer("score"),
   feedback: text("feedback"),
+  submission: text("submission"),
   joinedAt: timestamp("joined_at").defaultNow().notNull()
 });
 
