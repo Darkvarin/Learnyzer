@@ -1,114 +1,187 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { 
+  BookOpen, 
+  Code, 
+  Globe, 
+  Calculator, 
+  Atom, 
+  FlaskConical, 
+  PenTool, 
+  Clock,
+  Binary,
+  Building,
+  Users,
+  Sword,
+  ShieldAlert,
+  Swords,
+  Trophy,
+  Zap,
+  BookText,
+  FileCheck,
+  BrainCircuit,
+  Flashlight
+} from "lucide-react";
 
+/**
+ * Combines classes with tailwind-merge
+ * @param inputs - Class names to be combined
+ * @returns Merged class names string
+ */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getInitials(name: string) {
-  return name
-    .split(' ')
-    .map(part => part.charAt(0).toUpperCase())
-    .join('')
-    .slice(0, 2);
-}
-
-export function formatTimeSince(date: Date): string {
-  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
-  
-  let interval = seconds / 31536000;
-  if (interval > 1) {
-    return Math.floor(interval) + " years ago";
-  }
-  
-  interval = seconds / 2592000;
-  if (interval > 1) {
-    return Math.floor(interval) + " months ago";
-  }
-  
-  interval = seconds / 86400;
-  if (interval > 1) {
-    return Math.floor(interval) + " days ago";
-  }
-  
-  interval = seconds / 3600;
-  if (interval > 1) {
-    return Math.floor(interval) + " hours ago";
-  }
-  
-  interval = seconds / 60;
-  if (interval > 1) {
-    return Math.floor(interval) + " minutes ago";
-  }
-  
-  return Math.floor(seconds) + " seconds ago";
-}
-
+/**
+ * Formats XP numbers in a user-friendly way
+ * @param xp - The XP value to format
+ * @returns Formatted XP string
+ */
 export function formatXP(xp: number): string {
-  return xp.toLocaleString();
+  if (xp >= 1000000) {
+    return `${(xp / 1000000).toFixed(1)}M`;
+  } else if (xp >= 1000) {
+    return `${(xp / 1000).toFixed(1)}K`;
+  } else {
+    return xp.toString();
+  }
 }
 
+/**
+ * Format a number with commas
+ * @param num - The number to format
+ * @returns Formatted number string with commas
+ */
+export function formatNumber(num: number): string {
+  return new Intl.NumberFormat().format(num);
+}
+
+/**
+ * Get an icon for a specific subject
+ * @param subject - The subject name
+ * @returns The icon component for the subject
+ */
+export function getSubjectIcon(subject: string): React.ElementType {
+  const subjectLower = subject.toLowerCase();
+  
+  if (subjectLower.includes('math')) return Calculator;
+  if (subjectLower.includes('physics')) return Atom;
+  if (subjectLower.includes('chemistry')) return FlaskIcon;
+  if (subjectLower.includes('biology')) return DnaIcon;
+  if (subjectLower.includes('computer')) return Code;
+  if (subjectLower.includes('history')) return Clock;
+  if (subjectLower.includes('geography')) return Globe;
+  if (subjectLower.includes('literature')) return BookOpen;
+  if (subjectLower.includes('art')) return PenTool;
+  if (subjectLower.includes('commerce')) return Building;
+  if (subjectLower.includes('humanities')) return Users;
+  
+  // Default icon
+  return BookOpen;
+}
+
+/**
+ * Get an icon for a specific AI tool
+ * @param toolName - The AI tool name
+ * @returns The icon component for the AI tool
+ */
+export function getAIToolIcon(toolName: string): React.ElementType {
+  const toolLower = toolName.toLowerCase();
+  
+  if (toolLower.includes('notes')) return BookText;
+  if (toolLower.includes('check')) return FileCheck;
+  if (toolLower.includes('flash')) return Flashlight;
+  if (toolLower.includes('performance') || toolLower.includes('insight')) return BrainCircuit;
+  
+  // Default icon
+  return Zap;
+}
+
+/**
+ * Get an icon for a specific battle type
+ * @param battleType - The battle type
+ * @returns The icon component for the battle type
+ */
+export function getBattleTypeIcon(battleType: string): React.ElementType {
+  const typeLower = battleType.toLowerCase();
+  
+  if (typeLower.includes('1v1')) return Sword;
+  if (typeLower.includes('tournament')) return Trophy;
+  if (typeLower.includes('team')) return Users;
+  if (typeLower.includes('challenge')) return ShieldAlert;
+  
+  // Default icon
+  return Swords;
+}
+
+/**
+ * Get a color for the progress bar based on completion percentage
+ * @param progress - Progress percentage (0-100)
+ * @returns Tailwind CSS color classes
+ */
+export function getProgressColor(progress: number): string {
+  if (progress < 25) return 'from-red-500 to-red-600';
+  if (progress < 50) return 'from-orange-500 to-orange-600';
+  if (progress < 75) return 'from-yellow-500 to-yellow-600';
+  return 'from-green-500 to-green-600';
+}
+
+/**
+ * Get a color for a specific rank
+ * @param rank - The rank name
+ * @returns Tailwind CSS color classes
+ */
 export function getRankColor(rank: string): string {
   const rankLower = rank.toLowerCase();
   
-  if (rankLower.includes('bronze')) return 'from-gray-600 to-gray-700';
-  if (rankLower.includes('silver')) return 'from-gray-300 to-gray-400';
-  if (rankLower.includes('gold')) return 'from-yellow-400 to-yellow-600';
-  if (rankLower.includes('platinum')) return 'from-teal-400 to-teal-600';
-  if (rankLower.includes('diamond')) return 'from-blue-400 to-blue-600';
-  if (rankLower.includes('heroic') || rankLower.includes('elite')) return 'from-purple-400 to-purple-600';
-  if (rankLower.includes('master')) return 'from-red-400 to-red-600';
-  if (rankLower.includes('grandmaster')) return 'from-rose-400 via-purple-500 to-indigo-600';
+  if (rankLower.includes('bronze')) return 'text-[#CD7F32]';
+  if (rankLower.includes('silver')) return 'text-[#C0C0C0]';
+  if (rankLower.includes('gold')) return 'text-[#FFD700]';
+  if (rankLower.includes('platinum')) return 'text-[#E5E4E2]';
+  if (rankLower.includes('diamond')) return 'text-[#B9F2FF]';
+  if (rankLower.includes('heroic')) return 'text-[#9D65C9]';
+  if (rankLower.includes('elite')) return 'text-[#D565C9]';
+  if (rankLower.includes('master')) return 'text-[#CC3363]';
+  if (rankLower.includes('grandmaster')) return 'text-[#FF4500]';
   
-  return 'from-gray-600 to-gray-700';
+  // Default color
+  return 'text-primary';
 }
 
-export function getProgressColor(subject: string): string {
-  const subjectLower = subject.toLowerCase();
+/**
+ * Format relative time (e.g., "2 hours ago")
+ * @param date - The date to format
+ * @returns Formatted time string
+ */
+export function formatTimeSince(date: Date | string): string {
+  const now = new Date();
+  const pastDate = typeof date === 'string' ? new Date(date) : date;
+  const seconds = Math.floor((now.getTime() - pastDate.getTime()) / 1000);
   
-  if (subjectLower.includes('math')) return 'bg-primary-600';
-  if (subjectLower.includes('physics')) return 'bg-info-600';
-  if (subjectLower.includes('chemistry')) return 'bg-success-600';
-  if (subjectLower.includes('biology')) return 'bg-warning-600';
+  let interval = Math.floor(seconds / 31536000);
+  if (interval >= 1) {
+    return interval === 1 ? '1 year ago' : `${interval} years ago`;
+  }
   
-  return 'bg-primary-600';
-}
-
-export function getSubjectIcon(subject: string): string {
-  const subjectLower = subject.toLowerCase();
+  interval = Math.floor(seconds / 2592000);
+  if (interval >= 1) {
+    return interval === 1 ? '1 month ago' : `${interval} months ago`;
+  }
   
-  if (subjectLower.includes('math')) return 'ri-function-line';
-  if (subjectLower.includes('physics')) return 'ri-rocket-line';
-  if (subjectLower.includes('chemistry')) return 'ri-test-tube-line';
-  if (subjectLower.includes('biology')) return 'ri-seedling-line';
-  if (subjectLower.includes('history')) return 'ri-book-open-line';
-  if (subjectLower.includes('geography')) return 'ri-earth-line';
-  if (subjectLower.includes('language')) return 'ri-translate-2';
-  if (subjectLower.includes('computer')) return 'ri-code-s-slash-line';
+  interval = Math.floor(seconds / 86400);
+  if (interval >= 1) {
+    return interval === 1 ? '1 day ago' : `${interval} days ago`;
+  }
   
-  return 'ri-book-open-line';
-}
-
-export function getBattleTypeIcon(type: string): string {
-  const typeLower = type.toLowerCase();
+  interval = Math.floor(seconds / 3600);
+  if (interval >= 1) {
+    return interval === 1 ? '1 hour ago' : `${interval} hours ago`;
+  }
   
-  if (typeLower.includes('1v1')) return 'ri-sword-line';
-  if (typeLower.includes('2v2')) return 'ri-team-line';
-  if (typeLower.includes('3v3')) return 'ri-group-line';
-  if (typeLower.includes('4v4')) return 'ri-community-line';
+  interval = Math.floor(seconds / 60);
+  if (interval >= 1) {
+    return interval === 1 ? '1 minute ago' : `${interval} minutes ago`;
+  }
   
-  return 'ri-sword-line';
-}
-
-export function getAIToolIcon(tool: string): string {
-  const toolLower = tool.toLowerCase();
-  
-  if (toolLower.includes('note')) return 'ri-file-text-line';
-  if (toolLower.includes('check')) return 'ri-question-answer-line';
-  if (toolLower.includes('flash')) return 'ri-flashcard-line';
-  if (toolLower.includes('performance') || toolLower.includes('insight')) return 'ri-line-chart-line';
-  if (toolLower.includes('cheat')) return 'ri-file-list-3-line';
-  if (toolLower.includes('summary')) return 'ri-file-reduce-line';
-  
-  return 'ri-robot-line';
+  return 'just now';
 }
