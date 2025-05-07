@@ -192,7 +192,13 @@
   
   /* Glass morphism effect */
   .glass-morphism {
-    @apply backdrop-blur-md bg-white/10 dark:bg-black/10 border border-white/20 dark:border-white/10;
+    @apply backdrop-blur-md bg-white/10 dark:bg-dark-card/90 border border-white/20 dark:border-white/10;
+  }
+  
+  /* Game-style cards */
+  .game-card {
+    @apply border-primary/20 dark:border-primary/30 bg-card dark:bg-dark-card shadow-lg;
+    background: linear-gradient(to bottom right, rgba(var(--card) / 0.8), rgba(var(--dark-card) / 0.9));
   }
   
   /* Rank badges with different tiers */
@@ -398,16 +404,10 @@
   .game-card {
     @apply relative rounded-xl overflow-hidden border transition-all duration-300;
     @apply hover:scale-[1.02] hover:shadow-lg;
-  }
-  
-  .dark .game-card {
-    @apply bg-dark-card/90 border-dark-border/80;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  }
-  
-  :not(.dark) .game-card {
-    @apply bg-light-card/90 border-light-border/80;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    
+    /* Consistent styling in both themes */
+    @apply bg-card dark:bg-dark-card/90 border-primary/20 dark:border-dark-border/80;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   }
   
   /* Button styles */

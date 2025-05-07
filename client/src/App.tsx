@@ -15,6 +15,7 @@ import Rewards from "@/pages/rewards";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 import CreateProfile from "@/pages/create-profile";
+import ProfileSettings from "@/pages/profile-settings";
 import HomePage from "./pages/home-page";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
               <ProtectedRoute path="/battle-zone" component={BattleZone} />
               <ProtectedRoute path="/ai-tools" component={AiTools} />
               <ProtectedRoute path="/rewards" component={Rewards} />
+              <ProtectedRoute path="/profile" component={ProfileSettings} />
               <ProtectedRoute path="/create-profile" component={CreateProfile} />
               <Route path="/auth" component={AuthPage} />
               <Route component={NotFound} />
