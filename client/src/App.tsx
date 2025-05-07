@@ -12,7 +12,7 @@ import Dashboard from "@/pages/dashboard";
 import Courses from "@/pages/courses";
 import BattleZone from "@/pages/battle-zone";
 import AiTools from "@/pages/ai-tools";
-import Rewards from "@/pages/rewards";
+
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 import CreateProfile from "@/pages/create-profile";
@@ -26,7 +26,7 @@ import AnswerChecker from "./pages/ai-tools/answer-checker";
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="dark">
+      <ThemeProvider>
         <AuthProvider>
           <UserProvider>
             <RealTimeProvider>
@@ -38,8 +38,7 @@ function App() {
                 <ProtectedRoute path="/ai-tools" component={AiTools} />
                 <ProtectedRoute path="/ai-tools/study-notes" component={StudyNotesGenerator} />
                 <ProtectedRoute path="/ai-tools/answer-checker" component={AnswerChecker} />
-                <ProtectedRoute path="/ai-tutor" component={AiTutor} />
-                <ProtectedRoute path="/rewards" component={Rewards} />
+                <ProtectedRoute path="/ai-tutor" component={AiTutor} />                 
                 <ProtectedRoute path="/profile" component={ProfileSettings} />
                 <ProtectedRoute path="/create-profile" component={CreateProfile} />
                 <ProtectedRoute path="/websocket-test" component={WebSocketTest} />
