@@ -39,7 +39,7 @@ export default function AiTutor() {
   const { user } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   
   // Parse URL parameters if coming from course page
   const searchParams = new URLSearchParams(window.location.search);

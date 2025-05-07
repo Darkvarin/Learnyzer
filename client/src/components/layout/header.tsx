@@ -69,9 +69,6 @@ export function Header() {
                 <Link href="/ai-tools" className="text-gray-300 hover:text-white transition-colors">
                   AI Tools
                 </Link>
-                <Link href="/rewards" className="text-gray-300 hover:text-white transition-colors">
-                  Rewards
-                </Link>
               </div>
             )}
             

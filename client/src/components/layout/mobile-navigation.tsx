@@ -30,10 +30,6 @@ export function MobileNavigation() {
           <i className="ri-robot-line text-xl"></i>
           <span className="text-xs mt-1">AI Tools</span>
         </Link>
-        <Link href="/rewards" className={`flex items-center justify-center flex-col py-2 flex-1 ${location === '/rewards' ? 'text-primary' : 'text-gray-400'}`}>
-          <i className="ri-award-line text-xl"></i>
-          <span className="text-xs mt-1">Rewards</span>
-        </Link>
       </div>
     </div>
   );
