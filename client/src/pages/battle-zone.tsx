@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Calendar, History, Sword } from "lucide-react";
 
 export default function BattleZone() {
   const { data: battles, isLoading } = useQuery<{
@@ -321,7 +322,9 @@ export default function BattleZone() {
               ))
             ) : (
               <div className="text-center py-12 text-gray-400">
-                <i className="ri-sword-line text-5xl mb-3"></i>
+                <div className="flex justify-center mb-3">
+                  <Sword className="h-12 w-12 opacity-50" />
+                </div>
                 <p className="text-lg mb-2">No active battles right now</p>
                 <p className="text-sm mb-4">Create a battle and invite others to join!</p>
                 <Button 
@@ -376,7 +379,9 @@ export default function BattleZone() {
               ))
             ) : (
               <div className="text-center py-12 text-gray-400">
-                <i className="ri-calendar-line text-5xl mb-3"></i>
+                <div className="flex justify-center mb-3">
+                  <Calendar className="h-12 w-12 opacity-50" />
+                </div>
                 <p>No upcoming battles scheduled</p>
               </div>
             )}
@@ -424,7 +429,9 @@ export default function BattleZone() {
               ))
             ) : (
               <div className="text-center py-12 text-gray-400">
-                <i className="ri-history-line text-5xl mb-3"></i>
+                <div className="flex justify-center mb-3">
+                  <History className="h-12 w-12 opacity-50" />
+                </div>
                 <p>You haven't participated in any battles yet</p>
               </div>
             )}
