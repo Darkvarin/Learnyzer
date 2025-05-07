@@ -81,6 +81,8 @@ export default function ProfileSettings() {
   const { logoutMutation } = useAuth();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("profile");
+  const [currentGrade, setCurrentGrade] = useState((user as any)?.grade || "");
+  const [isHigherGrade, setIsHigherGrade] = useState(false);
   const [theme, setTheme] = useState(() => {
     if (typeof window !== "undefined") {
       return document.documentElement.classList.contains("dark") ? "dark" : "light";
@@ -410,25 +412,36 @@ export default function ProfileSettings() {
                                     onValueChange={(value) => field.onChange(value)}
                                     value={field.value || undefined}
                                     defaultValue="school"
+                                    disabled={!isHigherGrade}
                                   >
                                     <FormControl>
                                       <SelectTrigger>
-                                        <SelectValue placeholder="Select your education track" />
+                                        <SelectValue placeholder={isHigherGrade 
+                                          ? "Select your education track" 
+                                          : "Available for Class 11 and above"} 
+                                        />
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                      <SelectItem value="school">School (Class 3-10)</SelectItem>
-                                      <SelectItem value="science">Science (11-12)</SelectItem>
-                                      <SelectItem value="commerce">Commerce (11-12)</SelectItem>
-                                      <SelectItem value="arts">Arts (11-12)</SelectItem>
-                                      <SelectItem value="engineering">Engineering</SelectItem>
-                                      <SelectItem value="medical">Medical</SelectItem>
-                                      <SelectItem value="upsc">UPSC</SelectItem>
-                                      <SelectItem value="other">Other</SelectItem>
+                                      {isHigherGrade ? (
+                                        <>
+                                          <SelectItem value="science">Science (11-12)</SelectItem>
+                                          <SelectItem value="commerce">Commerce (11-12)</SelectItem>
+                                          <SelectItem value="arts">Arts (11-12)</SelectItem>
+                                          <SelectItem value="engineering">Engineering</SelectItem>
+                                          <SelectItem value="medical">Medical</SelectItem>
+                                          <SelectItem value="upsc">UPSC</SelectItem>
+                                          <SelectItem value="other">Other</SelectItem>
+                                        </>
+                                      ) : (
+                                        <SelectItem value="school" disabled>Available for Class 11 and above</SelectItem>
+                                      )}
                                     </SelectContent>
                                   </Select>
                                   <FormDescription>
-                                    Choose your education track for personalized content
+                                    {isHigherGrade 
+                                      ? "Choose your education track for personalized content" 
+                                      : "Educational tracks are only available for students in Class 11 or above"}
                                   </FormDescription>
                                   <FormMessage />
                                 </FormItem>
@@ -442,7 +455,19 @@ export default function ProfileSettings() {
                                 <FormItem>
                                   <FormLabel>Grade/Class</FormLabel>
                                   <Select 
-                                    onValueChange={(value) => field.onChange(value)}
+                                    onValueChange={(value) => {
+                                      field.onChange(value);
+                                      setCurrentGrade(value);
+                                      
+                                      // Check if grade is 11th or above (including undergraduate and postgraduate)
+                                      const higherGrades = ["11", "12", "undergraduate", "postgraduate"];
+                                      setIsHigherGrade(higherGrades.includes(value));
+                                      
+                                      // If changing to lower grade, reset track
+                                      if (!higherGrades.includes(value)) {
+                                        profileForm.setValue("track", "");
+                                      }
+                                    }}
                                     value={field.value || undefined}
                                     defaultValue="other"
                                   >

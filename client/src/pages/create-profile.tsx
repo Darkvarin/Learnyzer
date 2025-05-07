@@ -32,6 +32,8 @@ export default function CreateProfile() {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showStreamField, setShowStreamField] = useState(false);
+  const [currentGrade, setCurrentGrade] = useState("");
+  const [isHigherGrade, setIsHigherGrade] = useState(false);
 
   // If not logged in, redirect to auth page
   if (!user) {
