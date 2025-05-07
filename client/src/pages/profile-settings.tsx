@@ -297,8 +297,8 @@ export default function ProfileSettings() {
             </nav>
 
             <Button 
-              variant="destructive" 
-              className="w-full"
+              variant="outline" 
+              className="w-full border-primary/30 text-primary hover:bg-primary/10"
               onClick={handleLogout}
             >
               <LogOut className="mr-2 h-4 w-4" />
@@ -369,8 +369,14 @@ export default function ProfileSettings() {
                                 <FormItem>
                                   <FormLabel>Education Track</FormLabel>
                                   <Select 
-                                    onValueChange={field.onChange} 
-                                    defaultValue={field.value}
+                                    onValueChange={(value) => {
+                                      try {
+                                        field.onChange(value);
+                                      } catch (error) {
+                                        console.error("Error selecting track:", error);
+                                      }
+                                    }} 
+                                    defaultValue={field.value || "school"}
                                   >
                                     <FormControl>
                                       <SelectTrigger>
@@ -403,8 +409,14 @@ export default function ProfileSettings() {
                                 <FormItem>
                                   <FormLabel>Grade/Class</FormLabel>
                                   <Select 
-                                    onValueChange={field.onChange} 
-                                    defaultValue={field.value}
+                                    onValueChange={(value) => {
+                                      try {
+                                        field.onChange(value);
+                                      } catch (error) {
+                                        console.error("Error selecting grade:", error);
+                                      }
+                                    }}
+                                    defaultValue={field.value || "other"}
                                   >
                                     <FormControl>
                                       <SelectTrigger>

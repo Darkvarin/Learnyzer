@@ -10,7 +10,7 @@
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
-    --card: 0 0% 100%;
+    --card: 210 40% 98%;
     --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
@@ -23,15 +23,15 @@
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted-foreground: 215.4 16.3% 35%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 210 40% 92%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
+    --border: 214.3 31.8% 75%;
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
 
@@ -198,7 +198,14 @@
   /* Game-style cards */
   .game-card {
     @apply border-primary/20 dark:border-primary/30 bg-card dark:bg-dark-card shadow-lg;
-    background: linear-gradient(to bottom right, rgba(var(--card) / 0.8), rgba(var(--dark-card) / 0.9));
+  }
+
+  .dark .game-card {
+    background: linear-gradient(to bottom right, hsla(var(--dark-surface), 0.7), hsla(var(--dark-card), 0.9));
+  }
+
+  :not(.dark) .game-card {
+    background: linear-gradient(to bottom right, hsla(var(--background), 0.9), hsla(var(--card), 0.85));
   }
   
   /* Rank badges with different tiers */
@@ -400,13 +407,10 @@
     text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   }
   
-  /* Card components with theme support */
+  /* Additional game card hover effects */
   .game-card {
     @apply relative rounded-xl overflow-hidden border transition-all duration-300;
     @apply hover:scale-[1.02] hover:shadow-lg;
-    
-    /* Consistent styling in both themes */
-    @apply bg-card dark:bg-dark-card/90 border-primary/20 dark:border-dark-border/80;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   }
   
