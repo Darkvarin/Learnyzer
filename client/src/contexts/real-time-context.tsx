@@ -300,7 +300,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
     toast({
       title: message.newLevel ? "Level Up!" : "XP Gained!",
       description: message.message,
-      variant: "default"
+      variant: "level" // Use our new custom variant
     });
   };
   
@@ -308,7 +308,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
     toast({
       title: "Streak Updated",
       description: `You're on a ${message.streakDays} day streak! ${message.canClaimReward ? 'Claim your reward!' : ''}`,
-      variant: "default"
+      variant: "level" // Using level variant for streak too
     });
   };
   
@@ -316,7 +316,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
     toast({
       title: "Rank Promoted!",
       description: `You've been promoted from ${message.oldRank} to ${message.newRank}!`,
-      variant: "default"
+      variant: "rank" // Use our new custom variant
     });
   };
   
@@ -324,7 +324,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
     toast({
       title: message.type === 'reward_unlocked' ? "Reward Unlocked!" : "Reward Claimed!",
       description: message.rewardDescription,
-      variant: "default"
+      variant: "reward" // Use our new custom variant
     });
   };
   
@@ -333,7 +333,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
       toast({
         title: "Achievement Unlocked!",
         description: `You've completed: ${message.achievementName}`,
-        variant: "default"
+        variant: "achievement" // Use our new custom variant
       });
     }
   };
@@ -342,7 +342,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
     toast({
       title: "New Referral!",
       description: `${message.referredName} joined using your referral link! You earned ${message.xpEarned} XP.`,
-      variant: "default"
+      variant: "reward" // Using reward variant for referrals
     });
   };
   

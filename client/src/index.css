@@ -539,6 +539,130 @@
     @apply bg-black/5 border-2 border-black/10 text-black/30;
   }
   
+  /* Solo Leveling inspired styles */
+  @keyframes blue-glow-pulse {
+    0%, 100% { filter: drop-shadow(0 0 2px rgba(56, 189, 248, 0.3)) drop-shadow(0 0 5px rgba(56, 189, 248, 0.2)); }
+    50% { filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.5)) drop-shadow(0 0 12px rgba(56, 189, 248, 0.4)); }
+  }
+  
+  @keyframes purple-glow-pulse {
+    0%, 100% { filter: drop-shadow(0 0 2px rgba(139, 92, 246, 0.3)) drop-shadow(0 0 5px rgba(139, 92, 246, 0.2)); }
+    50% { filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.5)) drop-shadow(0 0 12px rgba(139, 92, 246, 0.4)); }
+  }
+  
+  .solo-leveling-text {
+    @apply text-transparent bg-clip-text font-gaming tracking-wide;
+    background-image: linear-gradient(to bottom, #38bdf8, #818cf8);
+    animation: blue-glow-pulse 2s ease-in-out infinite;
+  }
+  
+  .solo-leveling-icon {
+    animation: blue-glow-pulse 1.5s ease-in-out infinite;
+  }
+  
+  .skill-card {
+    @apply relative rounded-lg overflow-hidden;
+    background: rgba(15, 15, 30, 0.9);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+  }
+  
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(56, 189, 248, 0.1), rgba(139, 92, 246, 0.1));
+    z-index: -1;
+  }
+  
+  .skill-progress-bar {
+    @apply h-1.5 rounded-full bg-black/50 overflow-hidden;
+  }
+  
+  .skill-progress-fill {
+    @apply h-full rounded-full;
+    background: linear-gradient(90deg, #38bdf8, #818cf8);
+    animation: blue-glow-pulse 2s ease-in-out infinite;
+  }
+  
+  /* Solo Leveling notifications/hexagon styles */
+  .hexagon-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .hexagon-shape {
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  }
+  
+  .hexagon-grid {
+    background-image: 
+      repeating-linear-gradient(
+        to right,
+        rgba(56, 189, 248, 0.05) 0px,
+        rgba(56, 189, 248, 0.05) 1px,
+        transparent 1px,
+        transparent 20px
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        rgba(56, 189, 248, 0.05) 0px,
+        rgba(56, 189, 248, 0.05) 1px,
+        transparent 1px,
+        transparent 20px
+      );
+  }
+  
+  .hexagon-border {
+    position: relative;
+  }
+  
+  .hexagon-border::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    background: linear-gradient(45deg, rgba(56, 189, 248, 0.4), rgba(139, 92, 246, 0.4));
+    z-index: -1;
+  }
+  
+  .solo-ability-card {
+    background: rgba(15, 15, 30, 0.9);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .solo-ability-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, rgba(56, 189, 248, 0.3), rgba(139, 92, 246, 0.3));
+    z-index: -1;
+    filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .solo-ability-card:hover::before {
+    opacity: 1;
+  }
+  
+  .solo-ability-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+  }
+  
   /* Shape utilities */
   .hexagon {
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
