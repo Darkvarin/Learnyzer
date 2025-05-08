@@ -195,8 +195,8 @@ export default function HomePage() {
               transition={{ duration: 0.6 }}
               className="lg:w-1/2 text-center lg:text-left"
             >
-              {/* Hero text with futuristic styling */}
-              <div className="relative inline-block">
+              {/* Hero text with futuristic styling - Solo Leveling inspired */}
+              <div className="relative block w-full lg:max-w-xl lg:mx-0 mx-auto">
                 <div className="absolute -left-6 top-6 w-4 h-20 border-l-2 border-t-2 border-primary/60"></div>
                 <div className="mb-2 font-mono tracking-wider text-primary/80">FUTURE OF EDUCATION</div>
                 <h1 className="text-4xl md:text-7xl font-gaming mb-2 relative">
@@ -204,7 +204,7 @@ export default function HomePage() {
                     Your
                     <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-blue-500"></div>
                   </span></span>
-                  <span className="block gradient-text relative z-10" style={{
+                  <span className="block gradient-text relative z-10 hex-clip-badge" style={{
                     background: "linear-gradient(90deg, #7d27ff, #3b82f6, #7d27ff)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
@@ -212,6 +212,9 @@ export default function HomePage() {
                     animation: "gradient-animation 3s linear infinite"
                   }}>Learning Journey</span>
                 </h1>
+                
+                {/* Solo Leveling inspired decorative element */}
+                <div className="absolute -right-2 -bottom-6 w-20 h-20 border-r-2 border-b-2 border-blue-500/40 hidden lg:block"></div>
               </div>
               
               <div className="mt-8 relative">
@@ -357,71 +360,82 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="lg:w-1/2"
             >
-              {/* 3D-looking futuristic showcase */}
-              <div className="neumorph-card p-1 relative">
-                <div className="absolute top-0 left-0 w-full h-1 cyber-scan-line"></div>
-                <div className="absolute -top-5 -right-5 w-10 h-10">
-                  <div className="absolute top-0 right-0 w-full h-full border-t-2 border-r-2 border-primary/40 rounded-tr-lg"></div>
-                </div>
-                <div className="absolute -bottom-5 -left-5 w-10 h-10">
-                  <div className="absolute bottom-0 left-0 w-full h-full border-b-2 border-l-2 border-primary/40 rounded-bl-lg"></div>
-                </div>
+              {/* Solo Leveling + Cybernetic showcase */}
+              <div className="solo-leveling-card p-1 relative">
+                {/* Solo Leveling inspired hexagonal frame with glowing edges */}
+                <div className="absolute -top-3 -right-3 w-36 h-36 solo-leveling-corner-tr"></div>
+                <div className="absolute -bottom-3 -left-3 w-36 h-36 solo-leveling-corner-bl"></div>
                 
-                <div className="glassmorphism p-8 relative overflow-hidden">
+                {/* Scanning line effect */}
+                <div className="absolute top-0 left-0 w-full h-1 cyber-scan-line"></div>
+                <div className="absolute bottom-0 left-0 w-full h-1 cyber-scan-line"></div>
+                
+                <div className="glassmorphism p-8 relative overflow-hidden border-2 border-primary/30 shadow-glow">
                   {/* Animated scanning effect */}
                   <div className="absolute inset-0 cyber-dots opacity-10"></div>
                   
-                  {/* AI Tutor preview */}
+                  {/* AI Tutor preview - Solo Leveling styled */}
                   <div className="mb-8 text-center">
-                    <div className="inline-block mb-3 neumorph-card p-3 px-5 bg-primary/10 rounded-full text-sm font-medium text-primary">REVOLUTIONARY AI-POWERED LEARNING</div>
-                    <h2 className="text-3xl font-gaming mb-4">AI Tutor with Voice Interaction</h2>
+                    <div className="inline-block mb-3 hex-badge p-3 px-5 bg-primary/10 text-sm font-mono tracking-wider text-primary">
+                      REVOLUTIONARY AI-POWERED LEARNING
+                    </div>
+                    <h2 className="text-3xl font-gaming mb-4 hex-title relative inline-block">
+                      AI Tutor with Voice Interaction
+                    </h2>
                     <p className="text-gray-400 mb-6">Experience personalized learning with our advanced AI tutors</p>
                   </div>
                   
-                  {/* Interactive Tech Features */}
+                  {/* Interactive Tech Features with Solo Leveling style */}
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="animated-gradient-border p-[1px] rounded-lg">
-                      <div className="bg-background/95 rounded-lg p-4 h-full">
-                        <Brain className="h-8 w-8 mb-3 text-primary" />
+                    <div className="solo-feature-card p-[1px] rounded-lg relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-blue-600/10"></div>
+                      <div className="bg-background/95 rounded-lg p-4 h-full relative z-10">
+                        <Brain className="h-8 w-8 mb-3 text-primary solo-icon" />
                         <h3 className="text-lg font-semibold mb-1">Voice Interaction</h3>
                         <p className="text-sm text-gray-400">Speak naturally with your AI tutor for an immersive learning experience</p>
                       </div>
                     </div>
                     
-                    <div className="animated-gradient-border p-[1px] rounded-lg">
-                      <div className="bg-background/95 rounded-lg p-4 h-full">
-                        <Compass className="h-8 w-8 mb-3 text-primary" />
+                    <div className="solo-feature-card p-[1px] rounded-lg relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-blue-600/10"></div>
+                      <div className="bg-background/95 rounded-lg p-4 h-full relative z-10">
+                        <Compass className="h-8 w-8 mb-3 text-cyan-400 solo-icon" />
                         <h3 className="text-lg font-semibold mb-1">Adaptive Learning</h3>
                         <p className="text-sm text-gray-400">AI identifies your weak points and adapts content in real-time</p>
                       </div>
                     </div>
                     
-                    <div className="animated-gradient-border p-[1px] rounded-lg">
-                      <div className="bg-background/95 rounded-lg p-4 h-full">
-                        <ShieldCheck className="h-8 w-8 mb-3 text-primary" />
+                    <div className="solo-feature-card p-[1px] rounded-lg relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-blue-600/10"></div>
+                      <div className="bg-background/95 rounded-lg p-4 h-full relative z-10">
+                        <ShieldCheck className="h-8 w-8 mb-3 text-fuchsia-400 solo-icon" />
                         <h3 className="text-lg font-semibold mb-1">Verified Content</h3>
                         <p className="text-sm text-gray-400">All material is aligned with standard curriculum requirements</p>
                       </div>
                     </div>
                     
-                    <div className="animated-gradient-border p-[1px] rounded-lg">
-                      <div className="bg-background/95 rounded-lg p-4 h-full">
-                        <Star className="h-8 w-8 mb-3 text-primary" />
+                    <div className="solo-feature-card p-[1px] rounded-lg relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-blue-600/10"></div>
+                      <div className="bg-background/95 rounded-lg p-4 h-full relative z-10">
+                        <Star className="h-8 w-8 mb-3 text-amber-400 solo-icon" />
                         <h3 className="text-lg font-semibold mb-1">Real-time Feedback</h3>
                         <p className="text-sm text-gray-400">Get instant analyses of your performance and improvement areas</p>
                       </div>
                     </div>
                   </div>
                   
-                  {/* AI Voice Interaction Visual */}
+                  {/* Solo Leveling-styled AI Voice Interaction Visual */}
                   <div className="mt-8 flex items-center justify-center">
-                    <div className="flex items-end gap-1 px-4 py-3 rounded-full bg-background/50 border border-primary/20">
-                      <div className="w-1 bg-primary rounded-full animate-sound-wave1 h-3"></div>
-                      <div className="w-1 bg-primary rounded-full animate-sound-wave2 h-5"></div>
-                      <div className="w-1 bg-primary rounded-full animate-sound-wave3 h-4"></div>
+                    <div className="flex items-end gap-1 px-4 py-3 rounded-md bg-background/80 border border-primary/30 shadow-glow-sm relative">
+                      <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-cyan-500/60"></div>
+                      <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-cyan-500/60"></div>
+                      
+                      <div className="w-1 bg-cyan-500 rounded-full animate-sound-wave1 h-3"></div>
+                      <div className="w-1 bg-cyan-500 rounded-full animate-sound-wave2 h-5"></div>
+                      <div className="w-1 bg-cyan-500 rounded-full animate-sound-wave3 h-4"></div>
                       <div className="w-1 bg-primary rounded-full animate-sound-wave1 h-6"></div>
                       <div className="w-1 bg-primary rounded-full animate-sound-wave2 h-3"></div>
-                      <span className="ml-3 text-sm text-primary">AI Tutor is speaking...</span>
+                      <span className="ml-3 text-sm font-mono text-cyan-500">AI Tutor is speaking...</span>
                     </div>
                   </div>
                 </div>
