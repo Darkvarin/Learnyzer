@@ -229,10 +229,10 @@ export default function ProfileSettings() {
               <div className="absolute -bottom-3 -right-3 w-12 h-12 solo-rune-corner-br"></div>
               
               {/* Improved background opacity */}
-              <div className="absolute inset-0 bg-cyan-900/30 group-hover:bg-cyan-800/40 transition-colors duration-500 rounded-xl"></div>
+              <div className="absolute inset-0 bg-cyan-900/50 group-hover:bg-cyan-800/60 transition-colors duration-500 rounded-xl"></div>
               
               {/* Profile card with enhanced opacity for better readability */}
-              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-cyan border border-cyan-500/30 p-6">
+              <div className="relative z-10 bg-black/90 rounded-xl shadow-glow-cyan border border-cyan-500/30 p-6">
                 <div className="flex flex-col items-center">
                   {/* Hexagonal avatar with Solo Leveling style */}
                   <div className="relative w-28 h-28 mb-4 monarch-profile-frame">
@@ -283,9 +283,9 @@ export default function ProfileSettings() {
               <div className="absolute -left-4 top-10 w-2 h-24 monarch-energy-bar-blue"></div>
               
               {/* Background with improved opacity */}
-              <div className="absolute inset-0 bg-blue-900/20 rounded-xl"></div>
+              <div className="absolute inset-0 bg-blue-900/50 rounded-xl"></div>
               
-              <nav className="relative z-10 space-y-2 bg-black/70 rounded-xl shadow-glow-blue border border-blue-500/20 p-2">
+              <nav className="relative z-10 space-y-2 bg-black/90 rounded-xl shadow-glow-blue border border-blue-500/20 p-2">
                 <Button 
                   variant="ghost" 
                   className={`w-full justify-start font-gaming text-gray-400 hover:text-cyan-400 hover:bg-cyan-950/50 ${
@@ -320,7 +320,7 @@ export default function ProfileSettings() {
             <div className="relative mt-6">
               <Button 
                 variant="outline" 
-                className="w-full justify-start bg-black/70 shadow-glow-xs border border-red-500/30 text-red-400 hover:bg-red-950/30 hover:text-red-300 font-gaming"
+                className="w-full justify-start bg-black/90 shadow-glow-xs border border-red-500/30 text-red-400 hover:bg-red-950/40 hover:text-red-300 font-gaming"
                 onClick={handleLogout}
               >
                 <LogOut className="mr-2 h-4 w-4" />
@@ -341,10 +341,10 @@ export default function ProfileSettings() {
             <div className="absolute -bottom-3 -right-3 w-12 h-12 solo-rune-corner-br"></div>
             
             {/* Improved background opacity */}
-            <div className="absolute inset-0 bg-purple-900/20 rounded-xl"></div>
+            <div className="absolute inset-0 bg-purple-900/50 rounded-xl"></div>
             
             {/* Content area with enhanced opacity for better readability */}
-            <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-purple border border-purple-500/20 p-6">
+            <div className="relative z-10 bg-black/90 rounded-xl shadow-glow-purple border border-purple-500/30 p-6">
               {activeTab === 'profile' && (
                 <div>
                   <div className="flex items-center mb-6">
@@ -366,7 +366,7 @@ export default function ProfileSettings() {
                                   <Input 
                                     placeholder="Your full name" 
                                     {...field}
-                                    className="pl-3 bg-black/50 border-purple-500/40 focus:border-purple-400 shadow-glow-xs focus:shadow-glow-purple" 
+                                    className="pl-3 bg-black/90 border-purple-500/40 focus:border-purple-400 shadow-glow-xs focus:shadow-glow-purple" 
                                   />
                                   <div className="absolute top-0 bottom-0 left-0 w-1 h-full bg-purple-500/50"></div>
                                 </div>
@@ -388,7 +388,7 @@ export default function ProfileSettings() {
                                     type="email" 
                                     placeholder="Your email address" 
                                     {...field}
-                                    className="pl-3 bg-black/50 border-purple-500/40 focus:border-purple-400 shadow-glow-xs focus:shadow-glow-purple" 
+                                    className="pl-3 bg-black/90 border-purple-500/40 focus:border-purple-400 shadow-glow-xs focus:shadow-glow-purple" 
                                   />
                                   <div className="absolute top-0 bottom-0 left-0 w-1 h-full bg-purple-500/50"></div>
                                 </div>
@@ -410,7 +410,7 @@ export default function ProfileSettings() {
                                     <Input 
                                       placeholder="https://example.com/your-image.jpg" 
                                       {...field}
-                                      className="pl-3 bg-black/50 border-purple-500/40 focus:border-purple-400 shadow-glow-xs focus:shadow-glow-purple mb-2" 
+                                      className="pl-3 bg-black/90 border-purple-500/40 focus:border-purple-400 shadow-glow-xs focus:shadow-glow-purple mb-2" 
                                     />
                                     <div className="absolute top-0 bottom-0 left-0 w-1 h-full bg-purple-500/50"></div>
                                   </div>
@@ -475,7 +475,7 @@ export default function ProfileSettings() {
                                   disabled={!isHigherGrade}
                                 >
                                   <FormControl>
-                                    <SelectTrigger className="bg-black/50 border-purple-500/40 shadow-glow-xs focus:shadow-glow-purple">
+                                    <SelectTrigger className="bg-black/90 border-purple-500/40 shadow-glow-xs focus:shadow-glow-purple">
                                       <SelectValue placeholder={isHigherGrade 
                                         ? "Select your education track" 
                                         : "Available for Class 11 and above"} 
@@ -532,7 +532,7 @@ export default function ProfileSettings() {
                                   defaultValue="other"
                                 >
                                   <FormControl>
-                                    <SelectTrigger className="bg-black/50 border-purple-500/40 shadow-glow-xs focus:shadow-glow-purple">
+                                    <SelectTrigger className="bg-black/90 border-purple-500/40 shadow-glow-xs focus:shadow-glow-purple">
                                       <SelectValue placeholder="Select your grade/class" />
                                     </SelectTrigger>
                                   </FormControl>
