@@ -26,7 +26,7 @@ export default function Dashboard() {
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 relative z-10">
+      <main className="flex-1 container mx-auto px-4 pt-28 pb-20 md:pb-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">

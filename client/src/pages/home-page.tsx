@@ -25,80 +25,12 @@ export default function HomePage() {
     };
   }, []);
 
-  // If the user is authenticated, show a different home page or redirect to dashboard
-  if (user && !isLoading) {
-    return (
-      <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background to-background/80">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col items-center justify-center text-center mb-12">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="mb-6"
-            >
-              <h1 className="text-4xl md:text-5xl font-gaming gaming-text mb-4">Welcome back, {user.name}!</h1>
-              <p className="text-xl opacity-80 max-w-2xl mx-auto">Continue your learning journey with LearnityX and level up your skills.</p>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 w-full max-w-3xl"
-            >
-              <Button 
-                className="game-button h-14 text-lg" 
-                onClick={() => navigate("/dashboard")}
-              >
-                Go to Dashboard <ArrowRight className="ml-2" />
-              </Button>
-              <Button 
-                className="game-button-secondary h-14 text-lg" 
-                onClick={() => navigate("/ai-tools")}
-              >
-                Try AI Tutor <Brain className="ml-2" />
-              </Button>
-            </motion.div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <FeaturedCard 
-              title="Continue Learning"
-              description="Resume your courses and pick up where you left off."
-              icon={<Book className="h-8 w-8" />}
-              path="/courses"
-              delay={0.2}
-            />
-            <FeaturedCard 
-              title="Battle Zone"
-              description="Test your skills against other students in real-time competitions."
-              icon={<Sword className="h-8 w-8" />}
-              path="/battle-zone"
-              delay={0.3}
-            />
-            <FeaturedCard 
-              title="Track Achievements"
-              description="See your progress and unlock new rewards as you learn."
-              icon={<Trophy className="h-8 w-8" />}
-              path="/rewards"
-              delay={0.4}
-            />
-            <FeaturedCard 
-              title="Daily Challenges"
-              description="Complete today's challenges to maintain your learning streak."
-              icon={<Calendar className="h-8 w-8" />}
-              path="/dashboard"
-              delay={0.5}
-            />
-          </div>
-        </div>
-        
-        {/* Support Chatbot for authenticated users */}
-        <SupportChatbot />
-      </div>
-    );
-  }
+  // If the user is authenticated, redirect to dashboard
+  useEffect(() => {
+    if (user && !isLoading) {
+      navigate("/dashboard");
+    }
+  }, [user, isLoading, navigate]);
 
   // For non-authenticated users, show landing page
   return (
@@ -154,12 +86,12 @@ export default function HomePage() {
                 <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
               </a>
               <Button 
-                onClick={() => navigate("/auth")}
+                onClick={() => user ? navigate("/dashboard") : navigate("/auth")}
                 className="relative overflow-hidden group bg-transparent border border-primary hover:bg-primary/20 transition-all duration-300"
               >
                 <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/40 to-purple-600/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <span className="relative z-10 flex items-center">
-                  Get Started
+                  {user ? "Dashboard" : "Get Started"}
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </span>
               </Button>
@@ -218,12 +150,12 @@ export default function HomePage() {
             <Button 
               onClick={() => {
                 setMobileMenuOpen(false);
-                navigate("/auth");
+                user ? navigate("/dashboard") : navigate("/auth");
               }}
               className="w-full animated-gradient-border relative overflow-hidden"
             >
               <span className="absolute inset-0.5 bg-background/95 rounded-md backdrop-blur-md"></span>
-              <span className="relative z-10">Get Started</span>
+              <span className="relative z-10">{user ? "Dashboard" : "Get Started"}</span>
             </Button>
           </nav>
         </div>
@@ -291,14 +223,14 @@ export default function HomePage() {
               
               <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start mt-10">
                 <Button 
-                  onClick={() => navigate("/auth")}
+                  onClick={() => user ? navigate("/dashboard") : navigate("/auth")}
                   className="animated-gradient-border py-6 px-10 text-lg relative overflow-hidden group"
                 >
                   <span className="absolute inset-0.5 bg-background/95 rounded-md overflow-hidden">
                     <span className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                   </span>
                   <span className="relative z-10 flex items-center font-medium">
-                    Get Started
+                    {user ? "Dashboard" : "Get Started"}
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
                   </span>
                 </Button>
