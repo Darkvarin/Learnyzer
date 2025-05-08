@@ -103,14 +103,18 @@ export function Header() {
               </div>
               <div className="relative">
                 <span className="text-2xl font-gaming tracking-wide text-glow">
-                  <span className="gradient-text" style={{
+                  <span className="gradient-text font-bold text-3xl" style={{
                     background: "linear-gradient(90deg, #06b6d4, #7d27ff, #06b6d4)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundSize: "200% auto",
-                    animation: "gradient-animation 5s linear infinite"
+                    animation: "gradient-animation 5s linear infinite",
+                    textShadow: "0 0 10px rgba(125, 39, 255, 0.5), 0 0 20px rgba(6, 182, 212, 0.3)"
                   }}>LearnityX</span>
                 </span>
+                
+                {/* Solo Leveling style underline */}
+                <div className="absolute -bottom-1 left-0 right-0 h-[2px] bg-gradient-to-r from-cyan-500/30 via-primary/70 to-cyan-500/30"></div>
               </div>
             </Link>
             <div className="flex items-center h-5 px-2 border border-cyan-500/40 rounded-sm relative">

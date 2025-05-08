@@ -161,30 +161,47 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Hero Section - with futuristic styling */}
+      {/* Hero Section - with Solo Leveling styling */}
       <section className="relative pt-32 md:pt-36 pb-20">
-        {/* Hero background with cyberpunk elements */}
+        {/* Solo Leveling background elements */}
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {/* Abstract geometric shapes */}
-          <div className="absolute -right-20 top-1/4 w-64 h-64 border border-primary/30 rounded-full"></div>
-          <div className="absolute -right-40 top-1/4 w-96 h-96 border border-purple-500/20 rounded-full"></div>
-          <div className="absolute -left-20 bottom-1/4 w-80 h-80 border border-blue-500/20 rounded-full"></div>
+          {/* Solo Leveling runic circles */}
+          <div className="absolute -right-20 top-1/4 w-64 h-64 rounded-full" style={{
+            border: "1px solid rgba(6, 182, 212, 0.3)",
+            boxShadow: "0 0 15px rgba(6, 182, 212, 0.1)"
+          }}></div>
+          <div className="absolute -right-40 top-1/4 w-96 h-96 rounded-full" style={{
+            border: "1px solid rgba(125, 39, 255, 0.2)",
+            boxShadow: "0 0 20px rgba(125, 39, 255, 0.05)"
+          }}></div>
+          <div className="absolute -left-20 bottom-1/4 w-80 h-80 rounded-full" style={{
+            border: "1px solid rgba(6, 182, 212, 0.2)",
+            boxShadow: "0 0 15px rgba(6, 182, 212, 0.05)"
+          }}></div>
           
-          {/* Tech circuit lines */}
+          {/* Solo Leveling monarch energy lines */}
+          <div className="absolute top-0 right-1/4 w-[1px] h-full bg-gradient-to-b from-transparent via-cyan-500/30 to-transparent"></div>
+          <div className="absolute top-0 left-1/3 w-[1px] h-full bg-gradient-to-b from-transparent via-primary/20 to-transparent"></div>
+          
+          {/* Tech circuit lines - with Solo Leveling blue energy appearance */}
           <svg className="absolute top-0 left-0 w-full h-full opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M0,0 L30,10 L70,10 L100,0" stroke="rgba(125, 39, 255, 0.5)" strokeWidth="0.2" fill="none" />
+            <path d="M0,0 L30,10 L70,10 L100,0" stroke="rgba(6, 182, 212, 0.5)" strokeWidth="0.2" fill="none" />
             <path d="M0,20 L40,30 L60,30 L100,20" stroke="rgba(125, 39, 255, 0.3)" strokeWidth="0.2" fill="none" />
-            <path d="M0,40 L35,50 L65,50 L100,40" stroke="rgba(59, 130, 246, 0.3)" strokeWidth="0.2" fill="none" />
-            <path d="M0,60 L30,70 L70,70 L100,60" stroke="rgba(59, 130, 246, 0.4)" strokeWidth="0.2" fill="none" />
+            <path d="M0,40 L35,50 L65,50 L100,40" stroke="rgba(6, 182, 212, 0.3)" strokeWidth="0.2" fill="none" />
+            <path d="M0,60 L30,70 L70,70 L100,60" stroke="rgba(6, 182, 212, 0.4)" strokeWidth="0.2" fill="none" />
             <path d="M0,80 L25,90 L75,90 L100,80" stroke="rgba(125, 39, 255, 0.3)" strokeWidth="0.2" fill="none" />
             <path d="M20,0 L20,100" stroke="rgba(125, 39, 255, 0.2)" strokeWidth="0.1" fill="none" />
-            <path d="M40,0 L40,100" stroke="rgba(59, 130, 246, 0.2)" strokeWidth="0.1" fill="none" />
-            <path d="M60,0 L60,100" stroke="rgba(59, 130, 246, 0.2)" strokeWidth="0.1" fill="none" />
+            <path d="M40,0 L40,100" stroke="rgba(6, 182, 212, 0.2)" strokeWidth="0.1" fill="none" />
+            <path d="M60,0 L60,100" stroke="rgba(6, 182, 212, 0.2)" strokeWidth="0.1" fill="none" />
             <path d="M80,0 L80,100" stroke="rgba(125, 39, 255, 0.2)" strokeWidth="0.1" fill="none" />
           </svg>
           
-          {/* Dots pattern overlay */}
-          <div className="absolute inset-0 cyber-dots opacity-10"></div>
+          {/* Solo Leveling rune patterns */}
+          <div className="absolute inset-0 solo-grid opacity-10"></div>
+          
+          {/* Solo Leveling corner decorations */}
+          <div className="absolute top-20 right-20 w-40 h-40 border-t-2 border-r-2 border-cyan-500/20"></div>
+          <div className="absolute bottom-20 left-20 w-40 h-40 border-b-2 border-l-2 border-primary/20"></div>
         </div>
         
         <div className="container px-4 mx-auto relative z-10">

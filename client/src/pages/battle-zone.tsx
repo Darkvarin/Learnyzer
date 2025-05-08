@@ -146,11 +146,23 @@ export default function BattleZone() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-dark text-white">
+    <div className="min-h-screen flex flex-col bg-background text-white solo-page relative overflow-hidden">
+      {/* Solo Leveling background elements */}
+      <div className="absolute inset-0 solo-grid z-0 opacity-30"></div>
+      
+      {/* Solo Leveling corner decorations */}
+      <div className="absolute top-24 right-4 w-32 h-32 solo-corner-tr z-0"></div>
+      <div className="absolute bottom-4 left-4 w-32 h-32 solo-corner-bl z-0"></div>
+      
+      {/* Fixed scan line effect */}
+      <div className="fixed inset-0 h-screen pointer-events-none z-[1]">
+        <div className="absolute top-0 left-0 right-0 h-[2px] solo-scan-line"></div>
+      </div>
+      
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6">
+      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 relative z-10">
         {selectedBattle && battleDetail ? (
           <BattleDetail 
             battle={battleDetail}
@@ -160,8 +172,17 @@ export default function BattleZone() {
           <>
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl font-bold font-gaming">Battle Zone</h1>
-                <p className="text-gray-400 mt-1">Compete with other students and earn rewards</p>
+                <h1 className="text-3xl font-bold font-gaming relative inline-block" style={{
+                  textShadow: "0 0 10px rgba(6, 182, 212, 0.3), 0 0 15px rgba(125, 39, 255, 0.2)"
+                }}>
+                  Battle Zone
+                  {/* Solo Leveling underline effect */}
+                  <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></span>
+                </h1>
+                <p className="text-gray-300 mt-2 pl-1 flex items-center">
+                  <Sword className="w-4 h-4 text-cyan-500 mr-2" />
+                  Compete with other students to rank up and earn rewards
+                </p>
               </div>
           
               <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
@@ -299,38 +320,54 @@ export default function BattleZone() {
                   ))
                 ) : battles?.active && battles.active.length > 0 ? (
                   battles.active.map((battle) => (
-                    <div key={battle.id} className="battle-card rounded-lg p-4 transform transition-transform hover:scale-[1.01]">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div key={battle.id} className="battle-card rounded-lg p-4 transform transition-transform hover:scale-[1.01] relative bg-background border border-cyan-500/20 overflow-hidden group">
+                      {/* Solo Leveling corner decorations */}
+                      <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-cyan-500/60 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-cyan-500/60 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+                      
+                      {/* Solo Leveling energy glow */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/5 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
                         <div>
-                          <div className="flex items-center space-x-2">
-                            <div className={`w-10 h-10 bg-gradient-to-br ${
-                              battle.type.includes('1v1') 
-                                ? 'from-warning-600 to-danger-600' 
-                                : 'from-primary-600 to-info-600'
-                            } rounded-md flex items-center justify-center`}>
-                              <Sword className="h-5 w-5" />
+                          <div className="flex items-center space-x-3">
+                            <div className={`w-12 h-12 relative flex items-center justify-center`}>
+                              {/* Solo Leveling hexagon clip frame */}
+                              <div className="absolute inset-0 hex-clip-sm overflow-hidden">
+                                <div className={`w-full h-full bg-gradient-to-br ${
+                                  battle.type.includes('1v1') 
+                                    ? 'from-cyan-600 to-primary-600' 
+                                    : 'from-cyan-600 to-blue-600'
+                                } flex items-center justify-center`}>
+                                  {/* Animated energy */}
+                                  <div className="absolute inset-0 w-full h-full opacity-20">
+                                    <div className="absolute inset-0 solo-monarch-insignia"></div>
+                                  </div>
+                                </div>
+                              </div>
+                              <Sword className="h-5 w-5 text-white relative z-10" />
                             </div>
                             <div>
-                              <h3 className="font-bold font-gaming">{battle.title}</h3>
-                              <p className="text-xs text-gray-400">{battle.type} · {battle.duration} mins · AI Judged</p>
+                              <h3 className="font-bold font-gaming text-white">{battle.title}</h3>
+                              <p className="text-xs text-cyan-400/80">{battle.type} · {battle.duration} mins · AI Judged</p>
                             </div>
                           </div>
                         </div>
                         
                         <div className="flex items-center">
-                          <div className="bg-dark-surface px-3 py-2 rounded-l-md text-center">
-                            <span className="text-xs text-gray-400">Rewards</span>
+                          <div className="bg-background/50 border-l border-t border-b border-cyan-500/30 px-3 py-2 rounded-l-md text-center">
+                            <span className="text-xs text-cyan-400/70">Rewards</span>
                             <div className="flex items-center space-x-1 mt-1">
-                              <span className="text-warning-400 font-bold">{battle.rewardPoints}</span>
-                              <span className="text-warning-400">RP</span>
+                              <span className="text-primary font-bold">{battle.rewardPoints}</span>
+                              <span className="text-primary">RP</span>
                             </div>
                           </div>
                           <Button 
-                            className={`bg-gradient-to-r ${
+                            className={`flex items-center justify-center border-t border-r border-b border-cyan-500/30 ${
                               battle.type.includes('1v1') 
-                                ? 'from-warning-600 to-danger-600 hover:from-warning-500 hover:to-danger-500' 
-                                : 'from-primary-600 to-info-600 hover:from-primary-500 hover:to-info-500'
-                            } text-white font-bold py-2 px-4 rounded-r-md transition-colors h-full`}
+                                ? 'bg-gradient-to-r from-cyan-600/80 to-primary/80 hover:from-cyan-600/90 hover:to-primary/90' 
+                                : 'bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90'
+                            } text-white font-bold py-2 px-4 rounded-r-md transition-all duration-300 h-full shadow-glow`}
                             onClick={() => handleJoinBattle(battle.id)}
                             disabled={joinBattleMutation.isPending}
                           >
@@ -339,7 +376,10 @@ export default function BattleZone() {
                         </div>
                       </div>
                       
-                      <div className="mt-4 border-t border-dark-border pt-4">
+                      <div className="mt-4 pt-4 border-t border-cyan-500/20 relative">
+                        {/* Solo Leveling energy line */}
+                        <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/70 to-transparent"></div>
+                        
                         <div className="flex justify-between items-center">
                           <div className="flex items-center space-x-3">
                             <div className="flex -space-x-2">
