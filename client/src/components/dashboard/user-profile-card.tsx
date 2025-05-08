@@ -20,15 +20,18 @@ export function UserProfileCard() {
   };
 
   return (
-    <div className="bg-background/50 rounded-xl overflow-hidden border border-cyan-500/30 shadow-glow-cyan">
-      <div className="bg-gradient-to-r from-cyan-900/30 to-primary-900/30 backdrop-blur p-6 relative">
-        {/* Solo Leveling style corner accents */}
-        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-500/70"></div>
-        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-primary/70"></div>
+    <div className="bg-background/90 rounded-xl overflow-hidden">
+      <div className="backdrop-blur-sm p-6 relative">
+        {/* Home page style corner accents */}
+        <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-cyan-500/40"></div>
+        <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-primary/40"></div>
         
-        {/* Solo Leveling energy lines */}
-        <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent"></div>
-        <div className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent"></div>
+        {/* Home page style energy lines */}
+        <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent"></div>
+        <div className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent"></div>
+        
+        {/* Home page style energy glow */}
+        <div className="absolute right-20 top-1/3 w-32 h-32 rounded-full bg-cyan-500/10 filter blur-2xl"></div>
         
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
           <div className="flex items-center space-x-4">
@@ -126,20 +129,19 @@ export function UserProfileCard() {
       </div>
       
       <div className="p-5 relative">
-        {/* Solo Leveling style corner elements */}
-        <div className="absolute top-0 left-5 w-20 h-[1px] bg-gradient-to-r from-cyan-500/80 to-transparent"></div>
-        <div className="absolute bottom-0 right-5 w-20 h-[1px] bg-gradient-to-l from-cyan-500/80 to-transparent"></div>
+        {/* Home page style corner elements */}
+        <div className="absolute top-0 left-5 w-20 h-[1px] bg-gradient-to-r from-cyan-500/40 to-transparent"></div>
+        <div className="absolute bottom-0 right-5 w-20 h-[1px] bg-gradient-to-l from-cyan-500/40 to-transparent"></div>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {/* Streak Days - Solo Leveling style */}
-          <div className="relative group">
-            {/* Solo Leveling hex frame for stat card */}
-            <div className="absolute inset-0 hex-clip-card-sm bg-gradient-to-br from-primary-900/20 to-primary-900/5 border border-primary/30"></div>
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hex-clip-card-sm bg-gradient-to-br from-primary-900/40 to-primary-900/20 border border-primary/50"></div>
+          {/* Streak Days - Home page style */}
+          <div className="relative group glassmorphism p-0 overflow-hidden border border-primary/20">
+            {/* Home page style corner accents */}
+            <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-primary/40"></div>
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-primary/40"></div>
             
-            {/* Solo Leveling corner accents */}
-            <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-primary/60"></div>
-            <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-primary/60"></div>
+            {/* Background glow */}
+            <div className="absolute right-0 -bottom-4 w-14 h-14 rounded-full bg-primary/10 filter blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
             
             <div className="p-3 relative z-10 text-center">
               {isLoading ? (
@@ -153,15 +155,14 @@ export function UserProfileCard() {
             </div>
           </div>
           
-          {/* Battles Won - Solo Leveling style */}
-          <div className="relative group">
-            {/* Solo Leveling hex frame for stat card */}
-            <div className="absolute inset-0 hex-clip-card-sm bg-gradient-to-br from-success-900/20 to-success-900/5 border border-success/30"></div>
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hex-clip-card-sm bg-gradient-to-br from-success-900/40 to-success-900/20 border border-success/50"></div>
+          {/* Battles Won - Home page style */}
+          <div className="relative group glassmorphism p-0 overflow-hidden border border-success/20">
+            {/* Home page style corner accents */}
+            <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-success/40"></div>
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-success/40"></div>
             
-            {/* Solo Leveling corner accents */}
-            <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-success/60"></div>
-            <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-success/60"></div>
+            {/* Background glow */}
+            <div className="absolute right-0 -bottom-4 w-14 h-14 rounded-full bg-success/10 filter blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
             
             <div className="p-3 relative z-10 text-center">
               {isLoading ? (
@@ -175,15 +176,14 @@ export function UserProfileCard() {
             </div>
           </div>
           
-          {/* Accuracy - Solo Leveling style */}
-          <div className="relative group">
-            {/* Solo Leveling hex frame for stat card */}
-            <div className="absolute inset-0 hex-clip-card-sm bg-gradient-to-br from-warning-900/20 to-warning-900/5 border border-warning/30"></div>
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hex-clip-card-sm bg-gradient-to-br from-warning-900/40 to-warning-900/20 border border-warning/50"></div>
+          {/* Accuracy - Home page style */}
+          <div className="relative group glassmorphism p-0 overflow-hidden border border-warning/20">
+            {/* Home page style corner accents */}
+            <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-warning/40"></div>
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-warning/40"></div>
             
-            {/* Solo Leveling corner accents */}
-            <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-warning/60"></div>
-            <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-warning/60"></div>
+            {/* Background glow */}
+            <div className="absolute right-0 -bottom-4 w-14 h-14 rounded-full bg-warning/10 filter blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
             
             <div className="p-3 relative z-10 text-center">
               {isLoading ? (
@@ -197,15 +197,14 @@ export function UserProfileCard() {
             </div>
           </div>
           
-          {/* AI Sessions - Solo Leveling style */}
-          <div className="relative group">
-            {/* Solo Leveling hex frame for stat card */}
-            <div className="absolute inset-0 hex-clip-card-sm bg-gradient-to-br from-cyan-900/20 to-cyan-900/5 border border-cyan-500/30"></div>
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hex-clip-card-sm bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/50"></div>
+          {/* AI Sessions - Home page style */}
+          <div className="relative group glassmorphism p-0 overflow-hidden border border-cyan-500/20">
+            {/* Home page style corner accents */}
+            <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/40"></div>
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/40"></div>
             
-            {/* Solo Leveling corner accents */}
-            <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/60"></div>
-            <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/60"></div>
+            {/* Background glow */}
+            <div className="absolute right-0 -bottom-4 w-14 h-14 rounded-full bg-cyan-500/10 filter blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
             
             <div className="p-3 relative z-10 text-center">
               {isLoading ? (

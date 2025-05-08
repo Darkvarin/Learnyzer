@@ -11,34 +11,37 @@ export function CoursesSection() {
   });
 
   return (
-    <div className="bg-background/70 rounded-xl overflow-hidden border border-cyan-500/30 shadow-glow-cyan">
+    <div className="bg-background/90 rounded-xl overflow-hidden">
       <div className="p-6 relative">
-        {/* Solo Leveling style corner accents */}
-        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-500/70"></div>
-        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-cyan-500/70"></div>
+        {/* Home page style corner accents */}
+        <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-blue-500/40"></div>
+        <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-primary/40"></div>
         
-        {/* Solo Leveling energy lines */}
-        <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent"></div>
-        <div className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent"></div>
+        {/* Home page style energy lines */}
+        <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent"></div>
+        <div className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent"></div>
+        
+        {/* Home page style energy glow */}
+        <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-40 h-40 rounded-full bg-blue-500/5 filter blur-3xl"></div>
+        <div className="absolute right-1/4 bottom-0 w-32 h-32 rounded-full bg-primary/5 filter blur-xl"></div>
         
         <div className="flex justify-between items-center mb-6 relative z-10">
           <h2 className="text-xl font-bold font-gaming bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-white" style={{
             textShadow: "0 0 10px rgba(6, 182, 212, 0.3)"
           }}>Continue Learning</h2>
-          <Link href="/courses">
-            <a className="text-cyan-500 hover:text-cyan-400 transition-colors duration-300 text-sm flex items-center group">
-              See All
-              <span className="ml-1 transform group-hover:translate-x-1 transition-transform duration-300">→</span>
-            </a>
+          <Link href="/courses" className="text-blue-500 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center group">
+            See All
+            <span className="ml-1 transform group-hover:translate-x-1 transition-transform duration-300">→</span>
           </Link>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {isLoading ? (
             Array(2).fill(0).map((_, i) => (
-              <div key={i} className="relative bg-background/60 rounded-lg overflow-hidden border border-cyan-500/30 shadow-sm shadow-cyan-500/20">
-                <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-cyan-500/60"></div>
-                <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-cyan-500/60"></div>
+              <div key={i} className="relative glassmorphism p-0 overflow-hidden border border-blue-500/20">
+                {/* Home page style corner accents */}
+                <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-blue-500/40"></div>
+                <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-blue-500/40"></div>
                 <div className="p-5">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center space-x-2">
@@ -66,14 +69,17 @@ export function CoursesSection() {
             courses.map((course) => (
               <div 
                 key={course.id} 
-                className="relative bg-background/60 rounded-lg overflow-hidden border border-cyan-500/30 hover:border-cyan-400/60 transition-all duration-300 group shadow-sm hover:shadow-md shadow-cyan-500/10 hover:shadow-cyan-500/20"
+                className="relative glassmorphism p-0 overflow-hidden border border-blue-500/20 group transition-all duration-300 hover:-translate-y-1"
               >
-                {/* Solo Leveling corner accents */}
-                <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-cyan-500/60 transition-all duration-300 group-hover:w-5 group-hover:h-5 group-hover:border-cyan-400/80"></div>
-                <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-cyan-500/60 transition-all duration-300 group-hover:w-5 group-hover:h-5 group-hover:border-cyan-400/80"></div>
+                {/* Home page style corner accents */}
+                <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-blue-500/40"></div>
+                <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-blue-500/40"></div>
                 
-                {/* Solo Leveling energy line */}
-                <div className="absolute -top-[1px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                {/* Home page style energy line */}
+                <div className="absolute -top-[1px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-blue-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Background glow effect */}
+                <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-blue-500/5 filter blur-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 
                 <div className="p-5 relative z-10">
                   <div className="flex items-center justify-between mb-4">
@@ -130,28 +136,30 @@ export function CoursesSection() {
               </div>
             ))
           ) : (
-            <div className="col-span-full text-center py-10 relative">
-              {/* Solo Leveling empty state energy effect */}
-              <div className="absolute inset-0 empty-state-pulse opacity-20"></div>
+            <div className="col-span-full glassmorphism py-10 px-6 relative">
+              {/* Home page style corner accents */}
+              <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-blue-500/40"></div>
+              <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-blue-500/40"></div>
               
-              {/* Solo Leveling style corner accents */}
-              <div className="absolute top-5 left-5 w-6 h-6 border-t border-l border-cyan-500/50"></div>
-              <div className="absolute bottom-5 right-5 w-6 h-6 border-b border-r border-cyan-500/50"></div>
+              {/* Home page style energy lines */}
+              <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
+              <div className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
+              
+              {/* Home page style energy glow */}
+              <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-40 h-40 rounded-full bg-blue-500/5 filter blur-3xl"></div>
               
               <div className="relative z-10 flex flex-col items-center">
-                <div className="w-16 h-16 mb-3 hex-clip bg-gradient-to-br from-cyan-950 to-background border border-cyan-500/40 flex items-center justify-center">
-                  <i className="ri-book-open-line text-3xl text-cyan-500/80"></i>
+                <div className="w-16 h-16 mb-3 rounded-full bg-background/80 border border-blue-500/40 flex items-center justify-center">
+                  <i className="ri-book-open-line text-3xl text-blue-500/80"></i>
                 </div>
-                <p className="text-cyan-400/80 font-gaming mb-2">No courses in progress yet</p>
+                <p className="text-blue-400/90 font-gaming mb-2">No courses in progress yet</p>
                 <p className="text-sm text-gray-400 max-w-md mb-6">Start your learning journey by browsing available courses</p>
-                <Button className="bg-background hover:bg-cyan-950 border border-cyan-500/50 hover:border-cyan-400/70 text-cyan-400 hover:text-cyan-300 transition-all duration-300 shadow-glow-sm shadow-cyan-500/20 group">
-                  <Link href="/courses">
-                    <a className="flex items-center space-x-2">
-                      <span>Browse Courses</span>
-                      <span className="transform group-hover:translate-x-1 transition-transform duration-300">→</span>
-                    </a>
-                  </Link>
-                </Button>
+                <Link href="/courses">
+                  <Button className="bg-background/80 hover:bg-blue-950/80 border border-blue-500/40 hover:border-blue-400/60 text-blue-400 hover:text-blue-300 transition-all duration-300 group">
+                    <span>Browse Courses</span>
+                    <span className="ml-2 transform group-hover:translate-x-1 transition-transform duration-300">→</span>
+                  </Button>
+                </Link>
               </div>
             </div>
           )}
