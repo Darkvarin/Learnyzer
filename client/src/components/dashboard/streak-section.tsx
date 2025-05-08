@@ -47,23 +47,44 @@ export function StreakSection() {
   const weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   return (
-    <div className="bg-dark-surface rounded-xl overflow-hidden border border-dark-border">
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold font-gaming">Daily Streak</h2>
+    <div className="bg-background/70 rounded-xl overflow-hidden border border-amber-500/30 shadow-glow-amber relative">
+      <div className="p-6 relative">
+        {/* Solo Leveling corner accents - amber theme for streaks */}
+        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500/70"></div>
+        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-amber-500/70"></div>
+        
+        {/* Solo Leveling energy lines */}
+        <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-amber-400/60 to-transparent"></div>
+        <div className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-amber-400/60 to-transparent"></div>
+        
+        {/* Solo Leveling rune mark */}
+        <div className="absolute -top-2 -right-2 w-16 h-16 streak-rune-mark opacity-50 z-0"></div>
+        
+        <div className="flex justify-between items-center mb-4 relative z-10">
+          <h2 className="text-xl font-bold font-gaming bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-white" style={{
+            textShadow: "0 0 10px rgba(251, 191, 36, 0.3)"
+          }}>Daily Streak</h2>
           {isLoading ? (
-            <Skeleton className="h-6 w-20 rounded-full" />
+            <Skeleton className="h-6 w-20 rounded-sm" />
           ) : (
-            <div className="bg-primary-600/20 text-primary-400 px-2.5 py-0.5 rounded-full text-sm font-bold">
-              {streak?.days || 0} Days
+            <div className="px-3 py-1 rounded-sm relative overflow-hidden">
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-600/20 to-amber-500/30 backdrop-blur-sm border border-amber-500/30"></div>
+              <div className="relative z-10 text-amber-300 text-sm font-bold font-gaming flex items-center">
+                <span className="mr-1">{streak?.days || 0}</span>
+                <span className="text-amber-400/80">DAYS</span>
+              </div>
             </div>
           )}
         </div>
         
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-6 relative">
+          {/* Solo Leveling timeline bar connecting day indicators */}
+          <div className="absolute top-1/2 left-5 right-5 h-[2px] bg-gradient-to-r from-amber-500/20 via-amber-500/40 to-amber-500/20 -translate-y-1/2 z-0"></div>
+          
           {isLoading ? (
             Array(7).fill(0).map((_, i) => (
-              <Skeleton key={i} className="w-10 h-10 rounded-lg" />
+              <Skeleton key={i} className="w-11 h-11 rounded-sm" />
             ))
           ) : (
             weekdays.map((day, idx) => {
@@ -74,18 +95,41 @@ export function StreakSection() {
               return (
                 <div 
                   key={idx} 
-                  className={`w-10 h-10 rounded-lg flex items-center justify-center relative 
-                    ${isCompleted ? 'bg-primary-600/20 text-primary-400 border-2 border-primary-600' : ''} 
-                    ${isCurrent ? 'bg-dark-card text-white border-2 border-warning-400' : ''} 
-                    ${isFuture ? 'bg-dark-card text-gray-500' : ''}`}
+                  className={`relative group z-10 w-11 h-11 flex items-center justify-center
+                    ${isCompleted ? 'text-amber-400' : ''} 
+                    ${isCurrent ? 'text-white' : ''} 
+                    ${isFuture ? 'text-gray-500' : ''}`}
                 >
-                  <span>{day}</span>
+                  {/* Solo Leveling hex frame for day indicator */}
+                  <div className={`absolute inset-0 hex-clip-sm overflow-hidden ${
+                    isCompleted 
+                      ? 'border-2 border-amber-500 bg-amber-900/20' 
+                      : isCurrent 
+                        ? 'border-2 border-amber-400 bg-background/80 shadow-glow-sm shadow-amber-500/30' 
+                        : 'border border-gray-700/50 bg-background/30'
+                  }`}></div>
+                  
+                  {/* Day label with Solo Leveling styling */}
+                  <span className={`relative z-10 font-gaming text-sm ${
+                    isCompleted 
+                      ? 'text-amber-400' 
+                      : isCurrent 
+                        ? 'text-white' 
+                        : 'text-gray-500'
+                  }`}>{day}</span>
+                  
+                  {/* Completed day indicator with Solo Leveling glow */}
                   {isCompleted && (
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary-600 rounded-full flex items-center justify-center">
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-amber-500 rounded-sm flex items-center justify-center shadow-glow-xs shadow-amber-500/50">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3 h-3 fill-white">
                         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                       </svg>
                     </div>
+                  )}
+                  
+                  {/* Current day indicator with pulsing effect */}
+                  {isCurrent && (
+                    <div className="absolute inset-0 streaking-day-pulse"></div>
                   )}
                 </div>
               );
@@ -93,20 +137,28 @@ export function StreakSection() {
           )}
         </div>
         
-        <div className="bg-dark-card p-4 rounded-lg">
-          <div className="flex justify-between items-center">
+        <div className="relative bg-background/60 p-5 rounded-lg border border-amber-500/30 overflow-hidden">
+          {/* Solo Leveling corner accents */}
+          <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-amber-500/60"></div>
+          <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-amber-500/60"></div>
+          
+          <div className="flex justify-between items-center relative z-10">
             <div>
-              <h3 className="font-bold text-sm">Daily Rewards</h3>
-              <p className="text-xs text-gray-400 mt-1">Check in daily to earn streak rewards</p>
+              <h3 className="font-bold text-sm font-gaming text-amber-400">Daily Rewards</h3>
+              <p className="text-xs text-amber-400/60 mt-1">Check in daily to earn streak rewards</p>
             </div>
-            <div className="w-12 h-12 bg-primary-600/20 rounded-lg flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-primary-400">
-                <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>
-              </svg>
+            <div className="w-12 h-12 relative">
+              {/* Solo Leveling hex icon for rewards */}
+              <div className="absolute inset-0 hex-clip bg-gradient-to-br from-amber-950/30 to-background/50 border border-amber-500/50 overflow-hidden flex items-center justify-center">
+                <div className="absolute inset-0 reward-energy-pulse opacity-30"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-amber-500 relative z-10">
+                  <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>
+                </svg>
+              </div>
             </div>
           </div>
           
-          <div className="mt-4">
+          <div className="mt-4 relative z-10">
             {isLoading ? (
               <div className="py-4">
                 <Skeleton className="h-4 w-full mb-2" />
@@ -114,28 +166,33 @@ export function StreakSection() {
               </div>
             ) : (
               <div className="text-sm">
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-300">Current streak:</span>
-                  <span className="font-bold text-primary-400">{streak?.days || 0} days</span>
+                <div className="flex justify-between mb-3">
+                  <span className="text-amber-400/80 font-gaming">CURRENT STREAK</span>
+                  <span className="font-bold text-amber-400 font-gaming">{streak?.days || 0} DAYS</span>
                 </div>
                 
                 {(streak?.days || 0) >= 7 && (
-                  <div className="bg-primary-600/10 p-3 rounded-lg mb-3 border border-primary-600/30">
-                    <div className="flex items-center">
-                      <div className="w-6 h-6 rounded-full bg-primary-600/20 flex items-center justify-center mr-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-primary-400">
+                  <div className="bg-gradient-to-r from-amber-950/20 to-amber-900/10 p-4 rounded-sm mb-4 border border-amber-500/30 relative overflow-hidden">
+                    {/* Solo Leveling energy pulse for special rewards */}
+                    <div className="absolute inset-0 streak-freeze-pulse opacity-10"></div>
+                    
+                    <div className="flex items-start relative z-10">
+                      <div className="w-8 h-8 hex-clip bg-gradient-to-br from-amber-900/40 to-background/50 border border-amber-500/50 flex items-center justify-center mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-amber-500">
                           <path d="M2 12h10M12 2v10M22 12h-10M12 22v-10"/>
                         </svg>
                       </div>
-                      <span className="text-primary-300 font-medium">Streak Freeze Available!</span>
+                      <div className="flex-1">
+                        <span className="text-amber-400 font-medium font-gaming">STREAK FREEZE UNLOCKED</span>
+                        <p className="text-xs text-amber-400/60 mt-1">
+                          You've earned a streak freeze point for maintaining a 7+ day streak
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-xs text-gray-400 mt-1 ml-8">
-                      You've unlocked a streak freeze point for maintaining a 7+ day streak
-                    </p>
                   </div>
                 )}
                 
-                <p className="text-gray-400 text-xs mb-3">
+                <p className="text-amber-400/60 text-xs mb-4 border-l-2 border-amber-500/30 pl-3">
                   Check in daily to build your streak. After 7 consecutive days, 
                   you'll earn a Streak Freeze that protects your streak for one day of absence.
                 </p>
@@ -144,24 +201,41 @@ export function StreakSection() {
           </div>
           
           <Button 
-            className="w-full mt-4 bg-primary-600 hover:bg-primary-500 text-white font-bold py-2 rounded transition-colors"
+            className={`w-full mt-2 font-bold py-2 rounded-sm transition-all duration-300 relative overflow-hidden group
+              ${claimingReward 
+                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50' 
+                : !streak?.canClaimReward || isLoading || claimRewardMutation.isPending
+                  ? 'bg-background/50 text-gray-500 border border-gray-700/50 cursor-not-allowed'
+                  : 'bg-background hover:bg-amber-950 border border-amber-500/50 hover:border-amber-400/70 text-amber-400 hover:text-amber-300 shadow-glow-sm shadow-amber-500/20'
+              }`}
             onClick={handleClaimReward}
             disabled={isLoading || !streak?.canClaimReward || claimRewardMutation.isPending || claimingReward}
           >
+            {/* Solo Leveling button energy effect */}
+            {streak?.canClaimReward && !claimingReward && !claimRewardMutation.isPending && !isLoading && (
+              <div className="absolute inset-0 streak-button-energy opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            )}
+            
             {claimingReward ? (
-              <span className="flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 mr-2 fill-white">
+              <span className="flex items-center justify-center relative z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 mr-2 fill-amber-300">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
-                Checked In!
+                <span className="font-gaming">CHECKED IN!</span>
               </span>
             ) : (
-              <span className="flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 mr-2">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                  <polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-                Check In Today
+              <span className="flex items-center justify-center relative z-10">
+                {streak?.canClaimReward ? (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 mr-2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                      <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    <span className="font-gaming">CHECK IN TODAY</span>
+                  </>
+                ) : (
+                  <span className="font-gaming">ALREADY CHECKED IN</span>
+                )}
               </span>
             )}
           </Button>
