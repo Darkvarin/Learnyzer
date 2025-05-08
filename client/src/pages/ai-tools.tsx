@@ -87,7 +87,7 @@ export default function AITools() {
   });
   
   return (
-    <div className="min-h-screen flex flex-col solo-bg relative overflow-hidden">
+    <div className="min-h-screen flex flex-col solo-bg relative overflow-hidden solo-page">
       {/* Solo Leveling background elements */}
       <div className="absolute inset-0 solo-grid z-0 opacity-30"></div>
       
