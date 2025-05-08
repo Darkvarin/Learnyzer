@@ -25,12 +25,8 @@ export default function HomePage() {
     };
   }, []);
 
-  // If the user is authenticated, redirect to dashboard
-  useEffect(() => {
-    if (user && !isLoading) {
-      navigate("/dashboard");
-    }
-  }, [user, isLoading, navigate]);
+  // Don't redirect authenticated users - they should be able to see homepage
+  // We'll just show different UI elements based on authentication status
 
   // For non-authenticated users, show landing page
   return (

@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useUser } from "@/contexts/user-context";
 import { 
   DropdownMenu,
@@ -46,6 +46,8 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const [, navigate] = useLocation();
+
   const handleLogout = useCallback(async () => {
     try {
       await apiRequest("POST", "/api/auth/logout", {});
@@ -54,6 +56,8 @@ export function Header() {
         title: "Logged out successfully",
         description: "You have been logged out of your account.",
       });
+      // Redirect to homepage after logout
+      navigate("/");
     } catch (error) {
       toast({
         title: "Logout failed",
@@ -61,7 +65,7 @@ export function Header() {
         variant: "destructive",
       });
     }
-  }, [setUser, toast]);
+  }, [setUser, toast, navigate]);
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glassmorphism backdrop-blur-md border-b border-primary/20' : 'bg-transparent'}`}>
