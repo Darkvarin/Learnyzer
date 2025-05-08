@@ -74,10 +74,10 @@ export default function Dashboard() {
               <div className="absolute -bottom-3 -right-3 w-12 h-12 solo-rune-corner-br"></div>
               
               {/* Power glow effect on hover */}
-              <div className="absolute inset-0 bg-cyan-500/0 group-hover:bg-cyan-500/10 transition-colors duration-500 rounded-xl"></div>
+              <div className="absolute inset-0 bg-cyan-900/30 group-hover:bg-cyan-800/40 transition-colors duration-500 rounded-xl"></div>
               
-              {/* Section content with glow outline */}
-              <div className="relative z-10 monarch-card-glow">
+              {/* Section content with enhanced opacity for better readability */}
+              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-cyan border border-cyan-500/30">
                 <UserProfileCard />
               </div>
             </div>
@@ -90,10 +90,11 @@ export default function Dashboard() {
               {/* Monarch insignia */}
               <div className="absolute -top-2 right-4 w-8 h-8 monarch-insignia opacity-60"></div>
               
-              {/* Power pulses on hover */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/4 h-1/4 rounded-full bg-primary/0 group-hover:bg-primary/20 transition-all duration-700 blur-xl group-hover:w-full group-hover:h-full"></div>
+              {/* Power background with improved opacity */}
+              <div className="absolute inset-0 bg-blue-900/30 group-hover:bg-blue-800/40 transition-colors duration-500 rounded-xl"></div>
               
-              <div className="relative z-10 monarch-card-glow-blue">
+              {/* Section content with enhanced opacity for better readability */}
+              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-cyan border border-blue-500/30">
                 <CoursesSection />
               </div>
             </div>
@@ -106,10 +107,11 @@ export default function Dashboard() {
               {/* Battle runes */}
               <div className="absolute -top-2 -right-2 w-24 h-24 battle-runes opacity-40"></div>
               
-              {/* Animated battle energy */}
-              <div className="absolute inset-0 battle-aura opacity-0 group-hover:opacity-30 transition-opacity duration-700"></div>
+              {/* Improved background opacity */}
+              <div className="absolute inset-0 bg-purple-900/30 group-hover:bg-purple-800/40 transition-colors duration-500 rounded-xl"></div>
               
-              <div className="relative z-10 monarch-card-glow-purple">
+              {/* Section content with enhanced opacity for better readability */}
+              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-sm border border-purple-500/30">
                 <BattleZoneSection />
               </div>
             </div>
@@ -125,10 +127,11 @@ export default function Dashboard() {
               {/* Solo Leveling streak rune */}
               <div className="absolute -top-3 -right-3 w-10 h-10 streak-rune"></div>
               
-              {/* Streak aura */}
-              <div className="absolute inset-0 streak-aura opacity-0 group-hover:opacity-40 transition-opacity duration-500"></div>
+              {/* Improved background opacity */}
+              <div className="absolute inset-0 bg-amber-900/30 group-hover:bg-amber-800/40 transition-colors duration-500 rounded-xl"></div>
               
-              <div className="relative z-10 monarch-card-glow-amber">
+              {/* Section content with enhanced opacity for better readability */}
+              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-amber border border-amber-500/30">
                 <StreakSection />
               </div>
             </div>
@@ -141,10 +144,11 @@ export default function Dashboard() {
               {/* Rank level indicator */}
               <div className="absolute top-0 right-0 w-12 h-12 rank-insignia"></div>
               
-              {/* Power level aura */}
-              <div className="absolute inset-0 rank-aura opacity-0 group-hover:opacity-40 transition-opacity duration-500"></div>
+              {/* Improved background opacity */}
+              <div className="absolute inset-0 bg-emerald-900/30 group-hover:bg-emerald-800/40 transition-colors duration-500 rounded-xl"></div>
               
-              <div className="relative z-10 monarch-card-glow-emerald"> 
+              {/* Section content with enhanced opacity for better readability */}
+              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-emerald border border-emerald-500/30"> 
                 <RankSection />
               </div>
             </div>
@@ -157,10 +161,11 @@ export default function Dashboard() {
               {/* Summoning runes */}
               <div className="absolute -bottom-3 -right-3 w-10 h-10 summon-rune"></div>
               
-              {/* Summon aura */}
-              <div className="absolute inset-0 summon-aura opacity-0 group-hover:opacity-40 transition-opacity duration-500"></div>
+              {/* Improved background opacity */}
+              <div className="absolute inset-0 bg-rose-900/30 group-hover:bg-rose-800/40 transition-colors duration-500 rounded-xl"></div>
               
-              <div className="relative z-10 monarch-card-glow-rose">
+              {/* Section content with enhanced opacity for better readability */}
+              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-xs border border-rose-500/30">
                 <ReferralSection />
               </div>
             </div>

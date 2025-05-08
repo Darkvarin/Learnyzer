@@ -315,23 +315,60 @@
 
 /* Shadow/glow effects */
 .shadow-glow-cyan {
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+.shadow-glow-blue {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.shadow-glow-purple {
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
 }
 
 .shadow-glow-amber {
-  box-shadow: 0 0 15px rgba(251, 191, 36, 0.15);
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
 }
 
 .shadow-glow-emerald {
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+}
+
+.shadow-glow-rose {
+  box-shadow: 0 0 15px rgba(244, 63, 94, 0.2);
 }
 
 .shadow-glow-sm {
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
 }
 
 .shadow-glow-xs {
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+
+/* Energy bar styles for different sections */
+.monarch-energy-bar {
+  background: linear-gradient(to bottom, transparent, rgba(6, 182, 212, 0.5), transparent);
+}
+
+.monarch-energy-bar-blue {
+  background: linear-gradient(to bottom, transparent, rgba(59, 130, 246, 0.5), transparent);
+}
+
+.monarch-energy-bar-purple {
+  background: linear-gradient(to bottom, transparent, rgba(139, 92, 246, 0.5), transparent);
+}
+
+.monarch-energy-bar-amber {
+  background: linear-gradient(to bottom, transparent, rgba(251, 191, 36, 0.5), transparent);
+}
+
+.monarch-energy-bar-emerald {
+  background: linear-gradient(to bottom, transparent, rgba(16, 185, 129, 0.5), transparent);
+}
+
+.monarch-energy-bar-rose {
+  background: linear-gradient(to bottom, transparent, rgba(244, 63, 94, 0.5), transparent);
 }
 
 .animate-slow-spin {
