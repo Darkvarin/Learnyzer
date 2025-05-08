@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Compass, Menu, X, Github, MessageCircle, Facebook, Twitter, Youtube, Instagram, Check } from "lucide-react";
+import { SupportChatbot } from "@/components/support/support-chatbot";
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
@@ -92,6 +93,9 @@ export default function HomePage() {
             />
           </div>
         </div>
+        
+        {/* Support Chatbot for authenticated users */}
+        <SupportChatbot />
       </div>
     );
   }
@@ -1122,6 +1126,9 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+      
+      {/* Support Chatbot */}
+      <SupportChatbot />
     </div>
   );
 }
