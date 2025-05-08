@@ -74,10 +74,10 @@ export default function Dashboard() {
               <div className="absolute -bottom-3 -right-3 w-12 h-12 solo-rune-corner-br"></div>
               
               {/* Power glow effect on hover */}
-              <div className="absolute inset-0 bg-cyan-900/30 group-hover:bg-cyan-800/40 transition-colors duration-500 rounded-xl"></div>
+              <div className="absolute inset-0 bg-cyan-900/50 group-hover:bg-cyan-800/60 transition-colors duration-500 rounded-xl"></div>
               
               {/* Section content with enhanced opacity for better readability */}
-              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-cyan border border-cyan-500/30">
+              <div className="relative z-10 bg-black/90 rounded-xl shadow-glow-cyan border border-cyan-500/30">
                 <UserProfileCard />
               </div>
             </div>
@@ -91,10 +91,10 @@ export default function Dashboard() {
               <div className="absolute -top-2 right-4 w-8 h-8 monarch-insignia opacity-60"></div>
               
               {/* Power background with improved opacity */}
-              <div className="absolute inset-0 bg-blue-900/30 group-hover:bg-blue-800/40 transition-colors duration-500 rounded-xl"></div>
+              <div className="absolute inset-0 bg-blue-900/50 group-hover:bg-blue-800/60 transition-colors duration-500 rounded-xl"></div>
               
               {/* Section content with enhanced opacity for better readability */}
-              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-cyan border border-blue-500/30">
+              <div className="relative z-10 bg-black/90 rounded-xl shadow-glow-cyan border border-blue-500/30">
                 <CoursesSection />
               </div>
             </div>
@@ -108,10 +108,10 @@ export default function Dashboard() {
               <div className="absolute -top-2 -right-2 w-24 h-24 battle-runes opacity-40"></div>
               
               {/* Improved background opacity */}
-              <div className="absolute inset-0 bg-purple-900/30 group-hover:bg-purple-800/40 transition-colors duration-500 rounded-xl"></div>
+              <div className="absolute inset-0 bg-purple-900/50 group-hover:bg-purple-800/60 transition-colors duration-500 rounded-xl"></div>
               
               {/* Section content with enhanced opacity for better readability */}
-              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-sm border border-purple-500/30">
+              <div className="relative z-10 bg-black/90 rounded-xl shadow-glow-sm border border-purple-500/30">
                 <BattleZoneSection />
               </div>
             </div>
@@ -128,10 +128,10 @@ export default function Dashboard() {
               <div className="absolute -top-3 -right-3 w-10 h-10 streak-rune"></div>
               
               {/* Improved background opacity */}
-              <div className="absolute inset-0 bg-amber-900/30 group-hover:bg-amber-800/40 transition-colors duration-500 rounded-xl"></div>
+              <div className="absolute inset-0 bg-amber-900/50 group-hover:bg-amber-800/60 transition-colors duration-500 rounded-xl"></div>
               
               {/* Section content with enhanced opacity for better readability */}
-              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-amber border border-amber-500/30">
+              <div className="relative z-10 bg-black/90 rounded-xl shadow-glow-amber border border-amber-500/30">
                 <StreakSection />
               </div>
             </div>
@@ -145,10 +145,10 @@ export default function Dashboard() {
               <div className="absolute top-0 right-0 w-12 h-12 rank-insignia"></div>
               
               {/* Improved background opacity */}
-              <div className="absolute inset-0 bg-emerald-900/30 group-hover:bg-emerald-800/40 transition-colors duration-500 rounded-xl"></div>
+              <div className="absolute inset-0 bg-emerald-900/50 group-hover:bg-emerald-800/60 transition-colors duration-500 rounded-xl"></div>
               
               {/* Section content with enhanced opacity for better readability */}
-              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-emerald border border-emerald-500/30"> 
+              <div className="relative z-10 bg-black/90 rounded-xl shadow-glow-emerald border border-emerald-500/30"> 
                 <RankSection />
               </div>
             </div>
@@ -162,10 +162,10 @@ export default function Dashboard() {
               <div className="absolute -bottom-3 -right-3 w-10 h-10 summon-rune"></div>
               
               {/* Improved background opacity */}
-              <div className="absolute inset-0 bg-rose-900/30 group-hover:bg-rose-800/40 transition-colors duration-500 rounded-xl"></div>
+              <div className="absolute inset-0 bg-rose-900/50 group-hover:bg-rose-800/60 transition-colors duration-500 rounded-xl"></div>
               
               {/* Section content with enhanced opacity for better readability */}
-              <div className="relative z-10 bg-black/70 rounded-xl shadow-glow-xs border border-rose-500/30">
+              <div className="relative z-10 bg-black/90 rounded-xl shadow-glow-xs border border-rose-500/30">
                 <ReferralSection />
               </div>
             </div>
