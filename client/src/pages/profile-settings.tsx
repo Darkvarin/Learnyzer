@@ -672,7 +672,7 @@ export default function ProfileSettings() {
                           control={notificationForm.control}
                           name="emailNotifications"
                           render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-purple-500/20 p-4 bg-black/50">
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-purple-500/20 p-4 bg-black/90">
                               <div className="space-y-0.5">
                                 <FormLabel className="text-base text-purple-300 font-gaming">EMAIL NOTIFICATIONS</FormLabel>
                                 <FormDescription className="text-gray-400">
@@ -694,7 +694,7 @@ export default function ProfileSettings() {
                           control={notificationForm.control}
                           name="battleReminders"
                           render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-purple-500/20 p-4 bg-black/50">
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-purple-500/20 p-4 bg-black/90">
                               <div className="space-y-0.5">
                                 <FormLabel className="text-base text-purple-300 font-gaming">BATTLE REMINDERS</FormLabel>
                                 <FormDescription className="text-gray-400">
@@ -716,7 +716,7 @@ export default function ProfileSettings() {
                           control={notificationForm.control}
                           name="streakReminders"
                           render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-purple-500/20 p-4 bg-black/50">
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-purple-500/20 p-4 bg-black/90">
                               <div className="space-y-0.5">
                                 <FormLabel className="text-base text-purple-300 font-gaming">STREAK REMINDERS</FormLabel>
                                 <FormDescription className="text-gray-400">
@@ -738,7 +738,7 @@ export default function ProfileSettings() {
                           control={notificationForm.control}
                           name="newContentAlerts"
                           render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-purple-500/20 p-4 bg-black/50">
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-purple-500/20 p-4 bg-black/90">
                               <div className="space-y-0.5">
                                 <FormLabel className="text-base text-purple-300 font-gaming">NEW CONTENT ALERTS</FormLabel>
                                 <FormDescription className="text-gray-400">
@@ -760,7 +760,7 @@ export default function ProfileSettings() {
                           control={notificationForm.control}
                           name="marketingEmails"
                           render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-purple-500/20 p-4 bg-black/50">
+                            <FormItem className="flex flex-row items-center justify-between rounded-lg border border-purple-500/20 p-4 bg-black/90">
                               <div className="space-y-0.5">
                                 <FormLabel className="text-base text-purple-300 font-gaming">MARKETING EMAILS</FormLabel>
                                 <FormDescription className="text-gray-400">
