@@ -34,7 +34,7 @@ export default function HomePage() {
 
   // For non-authenticated users, show landing page
   return (
-    <div className="min-h-screen futuristic-bg relative">
+    <div className="min-h-screen futuristic-bg relative solo-page">
       {/* Cyberpunk-style background elements */}
       <div className="absolute inset-0 cyber-grid z-0"></div>
       
