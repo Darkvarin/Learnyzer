@@ -13,10 +13,10 @@ export default function Dashboard() {
       {/* Cyberpunk-style background elements from home page */}
       <div className="absolute inset-0 cyber-grid z-0"></div>
       
-      {/* Animated glowing orbs from home page */}
-      <div className="absolute top-1/4 left-1/5 w-72 h-72 rounded-full bg-purple-500/20 filter blur-[80px] animate-pulse-glow z-0"></div>
-      <div className="absolute bottom-1/4 right-1/5 w-96 h-96 rounded-full bg-blue-500/20 filter blur-[100px] animate-pulse-glow z-0" style={{animationDelay: '1s'}}></div>
-      <div className="absolute top-2/3 left-1/3 w-64 h-64 rounded-full bg-purple-800/20 filter blur-[70px] animate-pulse-glow z-0" style={{animationDelay: '2s'}}></div>
+      {/* Animated glowing orbs from home page - increased size and opacity to improve visibility */}
+      <div className="absolute top-1/4 left-1/5 w-96 h-96 rounded-full bg-purple-500/30 filter blur-[80px] animate-pulse-glow z-0"></div>
+      <div className="absolute bottom-1/4 right-1/5 w-[32rem] h-[32rem] rounded-full bg-blue-500/30 filter blur-[100px] animate-pulse-glow z-0" style={{animationDelay: '1s'}}></div>
+      <div className="absolute top-2/3 left-1/3 w-80 h-80 rounded-full bg-purple-800/30 filter blur-[70px] animate-pulse-glow z-0" style={{animationDelay: '2s'}}></div>
       
       {/* Scanning line effect from home page */}
       <div className="fixed inset-0 h-screen pointer-events-none z-10">
@@ -57,8 +57,8 @@ export default function Dashboard() {
           <path d="M80,0 L80,100" stroke="rgba(125, 39, 255, 0.2)" strokeWidth="0.1" fill="none" />
         </svg>
         
-        {/* Solo Leveling rune patterns */}
-        <div className="absolute inset-0 solo-grid opacity-10"></div>
+        {/* Solo Leveling rune patterns - match home page opacity exactly */}
+        <div className="absolute inset-0 solo-grid opacity-[0.1]"></div>
         
         {/* Solo Leveling corner decorations */}
         <div className="absolute top-20 right-20 w-40 h-40 border-t-2 border-r-2 border-cyan-500/20"></div>
@@ -68,7 +68,7 @@ export default function Dashboard() {
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 pt-28 pb-20 md:pb-6 relative z-10">
+      <main className="flex-1 container mx-auto px-4 pt-20 pb-16 md:pb-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-8">
