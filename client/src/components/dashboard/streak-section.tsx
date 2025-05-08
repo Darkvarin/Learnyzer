@@ -47,18 +47,19 @@ export function StreakSection() {
   const weekdays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   return (
-    <div className="bg-background/70 rounded-xl overflow-hidden border border-amber-500/30 shadow-glow-amber relative">
+    <div className="bg-background/90 rounded-xl overflow-hidden">
       <div className="p-6 relative">
-        {/* Solo Leveling corner accents - amber theme for streaks */}
-        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-amber-500/70"></div>
-        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-amber-500/70"></div>
+        {/* Home page style corner accents */}
+        <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-amber-500/40"></div>
+        <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-primary/40"></div>
         
-        {/* Solo Leveling energy lines */}
-        <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-amber-400/60 to-transparent"></div>
-        <div className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-amber-400/60 to-transparent"></div>
+        {/* Home page style energy lines */}
+        <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-amber-500/40 to-transparent"></div>
+        <div className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-amber-500/40 to-transparent"></div>
         
-        {/* Solo Leveling rune mark */}
-        <div className="absolute -top-2 -right-2 w-16 h-16 streak-rune-mark opacity-50 z-0"></div>
+        {/* Home page style energy glow */}
+        <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-40 h-40 rounded-full bg-amber-500/5 filter blur-3xl"></div>
+        <div className="absolute right-1/4 bottom-0 w-32 h-32 rounded-full bg-primary/5 filter blur-xl"></div>
         
         <div className="flex justify-between items-center mb-4 relative z-10">
           <h2 className="text-xl font-bold font-gaming bg-clip-text text-transparent bg-gradient-to-r from-amber-400 to-white" style={{
@@ -84,7 +85,7 @@ export function StreakSection() {
           
           {isLoading ? (
             Array(7).fill(0).map((_, i) => (
-              <Skeleton key={i} className="w-11 h-11 rounded-sm" />
+              <Skeleton key={i} className="w-11 h-11 rounded-md" />
             ))
           ) : (
             weekdays.map((day, idx) => {
@@ -100,16 +101,16 @@ export function StreakSection() {
                     ${isCurrent ? 'text-white' : ''} 
                     ${isFuture ? 'text-gray-500' : ''}`}
                 >
-                  {/* Solo Leveling hex frame for day indicator */}
-                  <div className={`absolute inset-0 hex-clip-sm overflow-hidden ${
+                  {/* Home page style day indicators */}
+                  <div className={`absolute inset-0 rounded-md overflow-hidden border ${
                     isCompleted 
-                      ? 'border-2 border-amber-500 bg-amber-900/20' 
+                      ? 'border-amber-500/60 bg-amber-500/10' 
                       : isCurrent 
-                        ? 'border-2 border-amber-400 bg-background/80 shadow-glow-sm shadow-amber-500/30' 
-                        : 'border border-gray-700/50 bg-background/30'
+                        ? 'border-amber-400/60 bg-background/80 shadow-[0_0_10px_rgba(245,158,11,0.15)]' 
+                        : 'border-gray-700/40 bg-background/40'
                   }`}></div>
                   
-                  {/* Day label with Solo Leveling styling */}
+                  {/* Day label with home page style */}
                   <span className={`relative z-10 font-gaming text-sm ${
                     isCompleted 
                       ? 'text-amber-400' 
@@ -118,18 +119,18 @@ export function StreakSection() {
                         : 'text-gray-500'
                   }`}>{day}</span>
                   
-                  {/* Completed day indicator with Solo Leveling glow */}
+                  {/* Completed day indicator */}
                   {isCompleted && (
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-amber-500 rounded-sm flex items-center justify-center shadow-glow-xs shadow-amber-500/50">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3 h-3 fill-white">
+                    <div className="absolute right-1 bottom-1 w-3 h-3 rounded-full bg-amber-500 flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-2 h-2 fill-white">
                         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                       </svg>
                     </div>
                   )}
                   
-                  {/* Current day indicator with pulsing effect */}
+                  {/* Current day indicator with subtle glow */}
                   {isCurrent && (
-                    <div className="absolute inset-0 streaking-day-pulse"></div>
+                    <div className="absolute inset-0 rounded-md bg-gradient-to-r from-amber-500/0 via-amber-500/10 to-amber-500/0 animate-pulse"></div>
                   )}
                 </div>
               );
@@ -137,10 +138,13 @@ export function StreakSection() {
           )}
         </div>
         
-        <div className="relative bg-background/60 p-5 rounded-lg border border-amber-500/30 overflow-hidden">
-          {/* Solo Leveling corner accents */}
-          <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-amber-500/60"></div>
-          <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-amber-500/60"></div>
+        <div className="relative glassmorphism p-5 rounded-lg border border-amber-500/20 overflow-hidden">
+          {/* Home page style corner accents */}
+          <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-amber-500/40"></div>
+          <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-amber-500/40"></div>
+          
+          {/* Home page style glow effect */}
+          <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-20 h-20 rounded-full bg-amber-500/5 filter blur-lg"></div>
           
           <div className="flex justify-between items-center relative z-10">
             <div>
@@ -148,9 +152,9 @@ export function StreakSection() {
               <p className="text-xs text-amber-400/60 mt-1">Check in daily to earn streak rewards</p>
             </div>
             <div className="w-12 h-12 relative">
-              {/* Solo Leveling hex icon for rewards */}
-              <div className="absolute inset-0 hex-clip bg-gradient-to-br from-amber-950/30 to-background/50 border border-amber-500/50 overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0 reward-energy-pulse opacity-30"></div>
+              {/* Home page style rounded icon */}
+              <div className="absolute inset-0 rounded-md bg-background/80 border border-amber-500/40 overflow-hidden flex items-center justify-center">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-amber-500/10"></div>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-amber-500 relative z-10">
                   <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>
                 </svg>
@@ -172,12 +176,16 @@ export function StreakSection() {
                 </div>
                 
                 {(streak?.days || 0) >= 7 && (
-                  <div className="bg-gradient-to-r from-amber-950/20 to-amber-900/10 p-4 rounded-sm mb-4 border border-amber-500/30 relative overflow-hidden">
-                    {/* Solo Leveling energy pulse for special rewards */}
-                    <div className="absolute inset-0 streak-freeze-pulse opacity-10"></div>
+                  <div className="bg-background/80 p-4 rounded-md mb-4 border border-amber-500/20 relative overflow-hidden">
+                    {/* Home page style corner accents */}
+                    <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-amber-500/30"></div>
+                    <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-amber-500/30"></div>
+                    
+                    {/* Home page style glow */}
+                    <div className="absolute top-1/2 right-0 -translate-y-1/2 w-16 h-16 rounded-full bg-amber-500/5 filter blur-lg"></div>
                     
                     <div className="flex items-start relative z-10">
-                      <div className="w-8 h-8 hex-clip bg-gradient-to-br from-amber-900/40 to-background/50 border border-amber-500/50 flex items-center justify-center mr-3">
+                      <div className="w-8 h-8 rounded-md bg-background/60 border border-amber-500/30 flex items-center justify-center mr-3">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-amber-500">
                           <path d="M2 12h10M12 2v10M22 12h-10M12 22v-10"/>
                         </svg>
@@ -201,19 +209,22 @@ export function StreakSection() {
           </div>
           
           <Button 
-            className={`w-full mt-2 font-bold py-2 rounded-sm transition-all duration-300 relative overflow-hidden group
+            className={`w-full mt-4 transition-all duration-300 relative overflow-hidden group
               ${claimingReward 
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50' 
+                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' 
                 : !streak?.canClaimReward || isLoading || claimRewardMutation.isPending
-                  ? 'bg-background/50 text-gray-500 border border-gray-700/50 cursor-not-allowed'
-                  : 'bg-background hover:bg-amber-950 border border-amber-500/50 hover:border-amber-400/70 text-amber-400 hover:text-amber-300 shadow-glow-sm shadow-amber-500/20'
+                  ? 'bg-background/50 text-gray-500 border border-gray-700/30 cursor-not-allowed'
+                  : 'bg-background/80 hover:bg-amber-950/80 border border-amber-500/40 hover:border-amber-400/60 text-amber-400 hover:text-amber-300'
               }`}
             onClick={handleClaimReward}
             disabled={isLoading || !streak?.canClaimReward || claimRewardMutation.isPending || claimingReward}
           >
-            {/* Solo Leveling button energy effect */}
+            {/* Home page style button hover effect */}
             {streak?.canClaimReward && !claimingReward && !claimRewardMutation.isPending && !isLoading && (
-              <div className="absolute inset-0 streak-button-energy opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <>
+                <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              </>
             )}
             
             {claimingReward ? (
