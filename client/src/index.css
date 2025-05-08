@@ -1052,6 +1052,10 @@
   opacity: 0.8;
 }
 
+.hex-clip-container {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
 /* Solo Leveling + Cybernetic theme elements */
 .solo-leveling-card {
   background: rgba(13, 12, 19, 0.8);

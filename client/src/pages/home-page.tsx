@@ -49,113 +49,129 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 h-[2px] cyber-scan-line"></div>
       </div>
       
-      {/* Header with glassmorphism */}
+      {/* Header with Solo Leveling aesthetic */}
       <header className="fixed top-0 left-0 right-0 z-50 glassmorphism border-b border-primary/20">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo with futuristic effect */}
+            {/* Logo with Solo Leveling effect */}
             <Link href="/" className="flex items-center">
               <div className="relative w-12 h-12 mr-3">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary to-purple-600 rounded-xl animate-pulse opacity-70 blur-sm"></div>
-                <div className="absolute inset-0.5 bg-gradient-to-br from-primary to-purple-800 rounded-lg flex items-center justify-center">
+                {/* Hexagonal clip container for logo */}
+                <div className="absolute inset-0 hex-clip-container bg-gradient-to-br from-primary to-purple-600 opacity-80"></div>
+                {/* Energy pulse effect */}
+                <div className="absolute inset-[-4px] hex-clip-container bg-gradient-to-br from-primary/40 to-purple-600/40 animate-pulse-slow"></div>
+                <div className="absolute inset-1 hex-clip-container bg-gradient-to-br from-primary to-purple-800 flex items-center justify-center">
                   <Brain className="h-6 w-6 text-white futuristic-glow" />
                 </div>
               </div>
               <div className="relative">
-                <span className="text-3xl font-gaming tracking-wide text-white">LearnityX</span>
+                <span className="text-3xl font-bold font-gaming tracking-wide text-white shadow-glow-xs">LearnityX</span>
                 <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
               </div>
             </Link>
 
-            {/* Desktop Nav with hover effects */}
+            {/* Desktop Nav with Solo Leveling hover effects */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-300 hover:text-white transition-all relative group">
+              <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming">
                 Features
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
               </a>
-              <a href="#pricing" className="text-gray-300 hover:text-white transition-all relative group">
+              <a href="#pricing" className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming">
                 Pricing
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
               </a>
-              <a href="#how-it-works" className="text-gray-300 hover:text-white transition-all relative group">
+              <a href="#how-it-works" className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming">
                 How it Works
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
               </a>
-              <a href="#faq" className="text-gray-300 hover:text-white transition-all relative group">
+              <a href="#faq" className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming">
                 FAQs
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
               </a>
               <Button 
                 onClick={() => user ? navigate("/dashboard") : navigate("/auth")}
-                className="relative overflow-hidden group bg-transparent border border-primary hover:bg-primary/20 transition-all duration-300"
+                className="relative overflow-hidden group bg-transparent border border-cyan-500/50 hover:bg-cyan-950/50 transition-all duration-300"
               >
-                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/40 to-purple-600/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                <span className="relative z-10 flex items-center">
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-950/50 to-cyan-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <span className="relative z-10 flex items-center font-gaming tracking-wide text-cyan-100">
                   {user ? "Dashboard" : "Get Started"}
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </span>
               </Button>
             </nav>
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button with Solo Leveling style */}
             <button 
-              className="md:hidden relative flex items-center justify-center w-10 h-10 animated-gradient-border group"
+              className="md:hidden relative flex items-center justify-center w-10 h-10 hex-clip-container group"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              <span className="absolute inset-0.5 rounded-md bg-background"></span>
+              <span className="absolute inset-0 bg-cyan-950/80 z-0"></span>
+              <span className="absolute inset-0 border border-cyan-500/30 z-0"></span>
+              <span className="absolute inset-[-3px] border-2 border-cyan-500/20 z-0 hex-clip-container opacity-0 group-hover:opacity-100 transition-opacity"></span>
               {mobileMenuOpen ? (
-                <X className="h-5 w-5 text-white relative z-10" />
+                <X className="h-5 w-5 text-cyan-300 relative z-10 shadow-glow-xs" />
               ) : (
-                <Menu className="h-5 w-5 text-white relative z-10" />
+                <Menu className="h-5 w-5 text-cyan-300 relative z-10 shadow-glow-xs" />
               )}
             </button>
           </div>
         </div>
 
-        {/* Mobile menu */}
-        <div className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} glassmorphism border-b border-primary/20 py-6`}>
+        {/* Mobile menu with Solo Leveling style */}
+        <div className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} glassmorphism border-b border-cyan-500/20 py-6`}>
           <nav className="container mx-auto px-4 flex flex-col space-y-5">
             <a 
               href="#features" 
-              className="px-4 py-2 text-gray-300 hover:text-white transition-colors relative"
+              className="px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-primary/50 rounded-r-md"></span>
-              Features
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
+              <span className="relative">Features</span>
+              <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
             </a>
             <a 
               href="#pricing" 
-              className="px-4 py-2 text-gray-300 hover:text-white transition-colors relative"
+              className="px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-primary/50 rounded-r-md"></span>
-              Pricing
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
+              <span className="relative">Pricing</span>
+              <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
             </a>
             <a 
               href="#how-it-works" 
-              className="px-4 py-2 text-gray-300 hover:text-white transition-colors relative"
+              className="px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-primary/50 rounded-r-md"></span>
-              How it Works
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
+              <span className="relative">How it Works</span>
+              <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
             </a>
             <a 
               href="#faq" 
-              className="px-4 py-2 text-gray-300 hover:text-white transition-colors relative"
+              className="px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-primary/50 rounded-r-md"></span>
-              FAQs
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
+              <span className="relative">FAQs</span>
+              <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
             </a>
             <Button 
               onClick={() => {
                 setMobileMenuOpen(false);
                 user ? navigate("/dashboard") : navigate("/auth");
               }}
-              className="w-full animated-gradient-border relative overflow-hidden"
+              className="w-full relative overflow-hidden group border border-cyan-500/30 bg-black/90"
             >
-              <span className="absolute inset-0.5 bg-background/95 rounded-md backdrop-blur-md"></span>
-              <span className="relative z-10">{user ? "Dashboard" : "Get Started"}</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-cyan-950/70 to-cyan-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md"></span>
+              <span className="relative z-10 py-2 flex items-center justify-center font-gaming tracking-wide text-cyan-100">
+                {user ? "Dashboard" : "GET STARTED"}
+                <ArrowRight className="ml-2 h-4 w-4 text-cyan-300" />
+              </span>
             </Button>
           </nav>
         </div>
