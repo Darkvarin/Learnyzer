@@ -348,6 +348,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
   
   const showAIToast = (message: AIUpdateMessage) => {
     let title = "";
+    let variant = "level"; // Default to level variant for AI messages
     
     // Set title based on message type and specific AI feature
     if (message.type === 'ai_insight_generated') {
@@ -374,15 +375,44 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
     toast({
       title: title,
       description: message.message,
-      variant: "default"
+      variant: variant as any
     });
   };
   
   const showNotificationToast = (message: NotificationMessage) => {
+    // Map severity to our variants with Solo Leveling theme
+    let variant = "default";
+    if (message.severity === 'error') {
+      variant = "destructive";
+    } else if (message.title.toLowerCase().includes('achievement') || message.message.toLowerCase().includes('achievement')) {
+      variant = "achievement";
+    } else if (
+      message.title.toLowerCase().includes('level') || 
+      message.title.toLowerCase().includes('xp') || 
+      message.message.toLowerCase().includes('level') ||
+      message.message.toLowerCase().includes('xp')
+    ) {
+      variant = "level";
+    } else if (
+      message.title.toLowerCase().includes('reward') || 
+      message.message.toLowerCase().includes('reward') ||
+      message.title.toLowerCase().includes('claim') ||
+      message.message.toLowerCase().includes('claim')
+    ) {
+      variant = "reward";
+    } else if (
+      message.title.toLowerCase().includes('rank') || 
+      message.message.toLowerCase().includes('rank') ||
+      message.title.toLowerCase().includes('promo') ||
+      message.message.toLowerCase().includes('promo')
+    ) {
+      variant = "rank";
+    }
+    
     toast({
       title: message.title,
       description: message.message,
-      variant: message.severity === 'error' ? 'destructive' : 'default'
+      variant: variant as any
     });
   };
   

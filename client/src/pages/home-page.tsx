@@ -5,14 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Compass, Menu, X, Github, MessageCircle, Facebook, Twitter, Youtube, Instagram, Check } from "lucide-react";
+import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Compass, Menu, X, Github, MessageCircle, Facebook, Twitter, Youtube, Instagram, Check, BellRing, Shield, Zap } from "lucide-react";
 import { SupportChatbot } from "@/components/support/support-chatbot";
+import { useRealTime } from "@/contexts/real-time-context";
+import { useToast } from "@/hooks/use-toast";
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
   const [, navigate] = useLocation();
   const [scrollY, setScrollY] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { sendNotification } = useRealTime();
+  const { toast } = useToast();
 
   // Handle scroll animation effects
   useEffect(() => {
@@ -259,6 +263,92 @@ export default function HomePage() {
                   <span className="text-sm text-primary">Gamified Learning</span>
                 </div>
               </div>
+              
+              {/* Test notification buttons only visible when user is logged in */}
+              {user && (
+                <div className="mt-12 flex flex-wrap gap-3 justify-center lg:justify-start">
+                  <div className="text-sm text-primary/80 mb-2 w-full">Test our new notification system:</div>
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="border-primary/40 bg-primary/5"
+                    onClick={() => {
+                      toast({
+                        title: "Level Up!",
+                        description: "You've reached level 10! New features unlocked.",
+                        variant: "level"
+                      });
+                    }}
+                  >
+                    <Zap className="mr-2 h-4 w-4" />
+                    Level Up
+                  </Button>
+                  
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="border-primary/40 bg-primary/5"
+                    onClick={() => {
+                      toast({
+                        title: "Rank Promoted!",
+                        description: "You've been promoted from Silver to Gold! Keep up the good work.",
+                        variant: "rank"
+                      });
+                    }}
+                  >
+                    <Trophy className="mr-2 h-4 w-4" />
+                    Rank Up
+                  </Button>
+                  
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="border-primary/40 bg-primary/5"
+                    onClick={() => {
+                      toast({
+                        title: "Achievement Unlocked!",
+                        description: "Problem Solver: Complete 10 practice exercises in a row",
+                        variant: "achievement"
+                      });
+                    }}
+                  >
+                    <Star className="mr-2 h-4 w-4" />
+                    Achievement
+                  </Button>
+                  
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="border-primary/40 bg-primary/5"
+                    onClick={() => {
+                      toast({
+                        title: "Reward Claimed!",
+                        description: "You've claimed your 7-day streak reward: Golden Profile Frame",
+                        variant: "reward"
+                      });
+                    }}
+                  >
+                    <Shield className="mr-2 h-4 w-4" />
+                    Reward
+                  </Button>
+                  
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="border-primary/40 bg-primary/5"
+                    onClick={() => {
+                      toast({
+                        title: "Error Detected",
+                        description: "Could not connect to AI service. Please try again later.",
+                        variant: "destructive"
+                      });
+                    }}
+                  >
+                    <BellRing className="mr-2 h-4 w-4" />
+                    Error
+                  </Button>
+                </div>
+              )}
             </motion.div>
             
             <motion.div 
