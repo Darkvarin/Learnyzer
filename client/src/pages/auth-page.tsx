@@ -385,8 +385,8 @@ export default function AuthPage() {
                 Level Up
                 <div className="absolute -left-3 -top-3 w-6 h-6 border-l-2 border-t-2 border-cyan-500/40"></div>
               </span>
-              <span className="block relative">
-                Your Learning!
+              <span className="block relative text-white font-gaming text-glow">
+                <span className="relative z-10 inline-block">Your Learning!</span>
                 <div className="absolute -right-4 -bottom-1 w-10 h-10 border-r-2 border-b-2 border-cyan-500/40"></div>
               </span>
             </h1>
