@@ -312,22 +312,19 @@ export default function HomePage() {
                 </Button>
               </div>
               
-              {/* Stats with futuristic styling */}
-              <div className="mt-12 grid grid-cols-3 gap-4">
-                <div className="relative">
-                  <div className="absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-primary/60"></div>
-                  <div className="text-3xl font-gaming text-white">10K+</div>
-                  <div className="text-sm text-gray-400">Active Students</div>
+              {/* Tech decorations in place of stats */}
+              <div className="mt-12 flex space-x-4 justify-center lg:justify-start">
+                <div className="bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-5 py-2 inline-flex items-center">
+                  <div className="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse"></div>
+                  <span className="text-sm text-primary">AI-Powered</span>
                 </div>
-                <div className="relative">
-                  <div className="absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-primary/60"></div>
-                  <div className="text-3xl font-gaming text-white">500+</div>
-                  <div className="text-sm text-gray-400">Courses</div>
+                <div className="bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-5 py-2 inline-flex items-center">
+                  <div className="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse" style={{animationDelay: '1s'}}></div>
+                  <span className="text-sm text-primary">Voice Interaction</span>
                 </div>
-                <div className="relative">
-                  <div className="absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-primary/60"></div>
-                  <div className="text-3xl font-gaming text-white">98%</div>
-                  <div className="text-sm text-gray-400">Success Rate</div>
+                <div className="bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-5 py-2 inline-flex items-center">
+                  <div className="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse" style={{animationDelay: '2s'}}></div>
+                  <span className="text-sm text-primary">Gamified Learning</span>
                 </div>
               </div>
             </motion.div>
