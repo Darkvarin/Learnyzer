@@ -5,6 +5,124 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Futuristic Background Elements */
+.cyber-grid {
+  background-image: 
+    linear-gradient(to right, rgba(66, 65, 77, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(66, 65, 77, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.cyber-radial {
+  background-image: radial-gradient(circle at center, rgba(125, 39, 255, 0.15) 0%, transparent 70%);
+}
+
+.cyber-dots {
+  background-image: radial-gradient(rgba(125, 39, 255, 0.2) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; filter: blur(10px); }
+  50% { opacity: 0.8; filter: blur(20px); }
+}
+
+@keyframes cyber-scan {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.cyber-scan-line {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(125, 39, 255, 0.2) 20%, 
+    rgba(59, 130, 246, 0.3) 50%, 
+    rgba(125, 39, 255, 0.2) 80%, 
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: cyber-scan 4s linear infinite;
+}
+
+.futuristic-glow {
+  filter: drop-shadow(0 0 8px rgba(125, 39, 255, 0.5));
+}
+
+.animated-gradient-border {
+  position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.animated-gradient-border::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, 
+    rgba(125, 39, 255, 0.5), 
+    rgba(59, 130, 246, 0.5), 
+    rgba(249, 115, 22, 0.5), 
+    rgba(125, 39, 255, 0.5)
+  );
+  background-size: 400% 400%;
+  z-index: -1;
+  border-radius: 0.6rem;
+  animation: border-animation 4s linear infinite;
+}
+
+@keyframes border-animation {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 400% 50%; }
+}
+
+.neumorph-card {
+  background: rgba(17, 17, 27, 0.7);
+  box-shadow: 
+    -5px -5px 10px rgba(255, 255, 255, 0.05),
+    5px 5px 15px rgba(0, 0, 0, 0.5),
+    inset -5px -5px 10px rgba(255, 255, 255, 0.05),
+    inset 5px 5px 15px rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.glassmorphism {
+  background: rgba(13, 13, 27, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  border: 1px solid rgba(125, 39, 255, 0.1);
+}
+
+.futuristic-bg {
+  background-image: 
+    radial-gradient(circle at 40% 20%, rgba(125, 39, 255, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 30%),
+    linear-gradient(to right, rgba(13, 13, 27, 0.9), rgba(20, 20, 40, 0.9));
+}
+
+/* Floating animation for elements */
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.float-slow {
+  animation: float 10s ease-in-out infinite;
+}
+
 /* Custom animations for voice interactions */
 @keyframes sound-wave1 {
   0%, 100% { height: 4px; }

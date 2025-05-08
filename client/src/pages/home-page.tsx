@@ -98,77 +98,117 @@ export default function HomePage() {
 
   // For non-authenticated users, show landing page
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/10">
+    <div className="min-h-screen futuristic-bg relative">
+      {/* Cyberpunk-style background elements */}
+      <div className="absolute inset-0 cyber-grid z-0"></div>
+      
+      {/* Animated glowing orbs */}
+      <div className="absolute top-1/4 left-1/5 w-72 h-72 rounded-full bg-purple-500/20 filter blur-[80px] animate-pulse-glow z-0"></div>
+      <div className="absolute bottom-1/4 right-1/5 w-96 h-96 rounded-full bg-blue-500/20 filter blur-[100px] animate-pulse-glow z-0" style={{animationDelay: '1s'}}></div>
+      <div className="absolute top-2/3 left-1/3 w-64 h-64 rounded-full bg-purple-800/20 filter blur-[70px] animate-pulse-glow z-0" style={{animationDelay: '2s'}}></div>
+      
+      {/* Scanning line effect */}
+      <div className="fixed inset-0 h-screen pointer-events-none z-10">
+        <div className="absolute top-0 left-0 right-0 h-[2px] cyber-scan-line"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] cyber-scan-line"></div>
+      </div>
+      
+      {/* Header with glassmorphism */}
+      <header className="fixed top-0 left-0 right-0 z-50 glassmorphism border-b border-primary/20">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
+            {/* Logo with futuristic effect */}
             <Link href="/" className="flex items-center">
-              <div className="relative w-10 h-10 mr-2 bg-gradient-to-br from-primary to-purple-700 rounded-lg flex items-center justify-center">
-                <Brain className="h-6 w-6 text-white" />
-                <div className="absolute -inset-0.5 rounded-lg bg-primary/20 blur-sm opacity-70"></div>
+              <div className="relative w-12 h-12 mr-3">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary to-purple-600 rounded-xl animate-pulse opacity-70 blur-sm"></div>
+                <div className="absolute inset-0.5 bg-gradient-to-br from-primary to-purple-800 rounded-lg flex items-center justify-center">
+                  <Brain className="h-6 w-6 text-white futuristic-glow" />
+                </div>
               </div>
-              <span className="text-2xl font-gaming tracking-wide text-white">LearnityX</span>
+              <div className="relative">
+                <span className="text-3xl font-gaming tracking-wide text-white">LearnityX</span>
+                <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+              </div>
             </Link>
 
-            {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-              <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
-              <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">How it Works</a>
-              <a href="#faq" className="text-gray-300 hover:text-white transition-colors">FAQs</a>
+            {/* Desktop Nav with hover effects */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-gray-300 hover:text-white transition-all relative group">
+                Features
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+              </a>
+              <a href="#pricing" className="text-gray-300 hover:text-white transition-all relative group">
+                Pricing
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+              </a>
+              <a href="#how-it-works" className="text-gray-300 hover:text-white transition-all relative group">
+                How it Works
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+              </a>
+              <a href="#faq" className="text-gray-300 hover:text-white transition-all relative group">
+                FAQs
+                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+              </a>
               <Button 
                 onClick={() => navigate("/auth")}
-                className="bg-primary hover:bg-primary/90"
+                className="relative overflow-hidden group bg-transparent border border-primary hover:bg-primary/20 transition-all duration-300"
               >
-                Get Started
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/40 to-purple-600/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <span className="relative z-10 flex items-center">
+                  Get Started
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </span>
               </Button>
             </nav>
 
             {/* Mobile menu button */}
             <button 
-              className="md:hidden flex items-center justify-center w-10 h-10 rounded-md bg-primary/10 hover:bg-primary/20 transition-colors"
+              className="md:hidden relative flex items-center justify-center w-10 h-10 animated-gradient-border group"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
+              <span className="absolute inset-0.5 rounded-md bg-background"></span>
               {mobileMenuOpen ? (
-                <X className="h-6 w-6 text-white" />
+                <X className="h-5 w-5 text-white relative z-10" />
               ) : (
-                <Menu className="h-6 w-6 text-white" />
+                <Menu className="h-5 w-5 text-white relative z-10" />
               )}
             </button>
           </div>
         </div>
 
         {/* Mobile menu */}
-        <div className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} bg-background/95 backdrop-blur-md border-b border-primary/10 py-4`}>
-          <nav className="container mx-auto px-4 flex flex-col space-y-4">
+        <div className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} glassmorphism border-b border-primary/20 py-6`}>
+          <nav className="container mx-auto px-4 flex flex-col space-y-5">
             <a 
               href="#features" 
-              className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+              className="px-4 py-2 text-gray-300 hover:text-white transition-colors relative"
               onClick={() => setMobileMenuOpen(false)}
             >
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-primary/50 rounded-r-md"></span>
               Features
             </a>
             <a 
               href="#pricing" 
-              className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+              className="px-4 py-2 text-gray-300 hover:text-white transition-colors relative"
               onClick={() => setMobileMenuOpen(false)}
             >
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-primary/50 rounded-r-md"></span>
               Pricing
             </a>
             <a 
               href="#how-it-works" 
-              className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+              className="px-4 py-2 text-gray-300 hover:text-white transition-colors relative"
               onClick={() => setMobileMenuOpen(false)}
             >
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-primary/50 rounded-r-md"></span>
               How it Works
             </a>
             <a 
               href="#faq" 
-              className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+              className="px-4 py-2 text-gray-300 hover:text-white transition-colors relative"
               onClick={() => setMobileMenuOpen(false)}
             >
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-primary/50 rounded-r-md"></span>
               FAQs
             </a>
             <Button 
@@ -176,35 +216,39 @@ export default function HomePage() {
                 setMobileMenuOpen(false);
                 navigate("/auth");
               }}
-              className="w-full"
+              className="w-full animated-gradient-border relative overflow-hidden"
             >
-              Get Started
+              <span className="absolute inset-0.5 bg-background/95 rounded-md backdrop-blur-md"></span>
+              <span className="relative z-10">Get Started</span>
             </Button>
           </nav>
         </div>
       </header>
 
-      {/* Hero Section - with padding to account for fixed header */}
-      <section className="relative pt-32 md:pt-40 pb-20 overflow-hidden bg-gradient-to-br from-background/80 to-background">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.2 }}
-          transition={{ duration: 1 }}
-          className="absolute inset-0 z-0"
-          style={{
-            backgroundImage: "radial-gradient(circle at center, var(--primary) 0, transparent 70%)",
-            opacity: 0.1
-          }}
-        />
-
-        {/* Hero background with abstract elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full filter blur-3xl"></div>
-          <div className="absolute bottom-1/3 right-1/3 w-64 h-64 bg-purple-500/5 rounded-full filter blur-3xl"></div>
-          <div className="absolute top-1/2 right-1/4 w-80 h-80 bg-blue-500/5 rounded-full filter blur-3xl"></div>
+      {/* Hero Section - with futuristic styling */}
+      <section className="relative pt-32 md:pt-36 pb-20">
+        {/* Hero background with cyberpunk elements */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {/* Abstract geometric shapes */}
+          <div className="absolute -right-20 top-1/4 w-64 h-64 border border-primary/30 rounded-full"></div>
+          <div className="absolute -right-40 top-1/4 w-96 h-96 border border-purple-500/20 rounded-full"></div>
+          <div className="absolute -left-20 bottom-1/4 w-80 h-80 border border-blue-500/20 rounded-full"></div>
           
-          {/* Grid pattern overlay */}
-          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          {/* Tech circuit lines */}
+          <svg className="absolute top-0 left-0 w-full h-full opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M0,0 L30,10 L70,10 L100,0" stroke="rgba(125, 39, 255, 0.5)" strokeWidth="0.2" fill="none" />
+            <path d="M0,20 L40,30 L60,30 L100,20" stroke="rgba(125, 39, 255, 0.3)" strokeWidth="0.2" fill="none" />
+            <path d="M0,40 L35,50 L65,50 L100,40" stroke="rgba(59, 130, 246, 0.3)" strokeWidth="0.2" fill="none" />
+            <path d="M0,60 L30,70 L70,70 L100,60" stroke="rgba(59, 130, 246, 0.4)" strokeWidth="0.2" fill="none" />
+            <path d="M0,80 L25,90 L75,90 L100,80" stroke="rgba(125, 39, 255, 0.3)" strokeWidth="0.2" fill="none" />
+            <path d="M20,0 L20,100" stroke="rgba(125, 39, 255, 0.2)" strokeWidth="0.1" fill="none" />
+            <path d="M40,0 L40,100" stroke="rgba(59, 130, 246, 0.2)" strokeWidth="0.1" fill="none" />
+            <path d="M60,0 L60,100" stroke="rgba(59, 130, 246, 0.2)" strokeWidth="0.1" fill="none" />
+            <path d="M80,0 L80,100" stroke="rgba(125, 39, 255, 0.2)" strokeWidth="0.1" fill="none" />
+          </svg>
+          
+          {/* Dots pattern overlay */}
+          <div className="absolute inset-0 cyber-dots opacity-10"></div>
         </div>
         
         <div className="container px-4 mx-auto relative z-10">
@@ -215,31 +259,76 @@ export default function HomePage() {
               transition={{ duration: 0.6 }}
               className="lg:w-1/2 text-center lg:text-left"
             >
-              <h1 className="text-4xl md:text-6xl font-gaming gaming-text mb-6">
-                <span className="block">Level Up Your</span>
-                <span className="block text-primary">Learning Journey</span>
-              </h1>
-              <p className="text-xl mb-8 opacity-80 max-w-xl">
-                India's first AI-powered educational platform with gamification elements to make learning engaging, interactive, and rewarding.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              {/* Hero text with futuristic styling */}
+              <div className="relative inline-block">
+                <div className="absolute -left-6 top-6 w-4 h-20 border-l-2 border-t-2 border-primary/60"></div>
+                <div className="mb-2 font-mono tracking-wider text-primary/80">FUTURE OF EDUCATION</div>
+                <h1 className="text-4xl md:text-7xl font-gaming mb-2 relative">
+                  <span className="block text-white relative z-10">Level Up <span className="relative">
+                    Your
+                    <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-blue-500"></div>
+                  </span></span>
+                  <span className="block gradient-text relative z-10" style={{
+                    background: "linear-gradient(90deg, #7d27ff, #3b82f6, #7d27ff)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundSize: "200% auto",
+                    animation: "gradient-animation 3s linear infinite"
+                  }}>Learning Journey</span>
+                </h1>
+              </div>
+              
+              <div className="mt-8 relative">
+                <div className="absolute left-0 top-0 w-1 h-full bg-primary/30"></div>
+                <p className="text-xl pl-4 mb-8 text-gray-300 max-w-xl leading-relaxed">
+                  India's first AI-powered educational platform with advanced gamification. Experience the future of learning with voice-interactive AI tutors, real-time battles, and a complete ranking system.
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start mt-10">
                 <Button 
                   onClick={() => navigate("/auth")}
-                  className="game-button py-6 px-8 text-lg"
+                  className="animated-gradient-border py-6 px-10 text-lg relative overflow-hidden group"
                 >
-                  Get Started
-                  <ArrowRight className="ml-2" />
+                  <span className="absolute inset-0.5 bg-background/95 rounded-md overflow-hidden">
+                    <span className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                  </span>
+                  <span className="relative z-10 flex items-center font-medium">
+                    Get Started
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
+                  </span>
                 </Button>
+                
                 <Button 
                   variant="outline" 
-                  className="game-button-secondary border-primary/50 py-6 px-8 text-lg"
+                  className="relative border border-primary/40 hover:border-primary/60 py-6 px-8 text-lg bg-transparent overflow-hidden group transition-all duration-300"
                   onClick={() => {
                     const featuresSection = document.getElementById('features');
                     featuresSection?.scrollIntoView({ behavior: 'smooth' });
                   }}
                 >
-                  Explore Features
+                  <span className="absolute inset-0 bg-gradient-to-r from-primary/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                  <span className="relative z-10">Explore Features</span>
                 </Button>
+              </div>
+              
+              {/* Stats with futuristic styling */}
+              <div className="mt-12 grid grid-cols-3 gap-4">
+                <div className="relative">
+                  <div className="absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-primary/60"></div>
+                  <div className="text-3xl font-gaming text-white">10K+</div>
+                  <div className="text-sm text-gray-400">Active Students</div>
+                </div>
+                <div className="relative">
+                  <div className="absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-primary/60"></div>
+                  <div className="text-3xl font-gaming text-white">500+</div>
+                  <div className="text-sm text-gray-400">Courses</div>
+                </div>
+                <div className="relative">
+                  <div className="absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-primary/60"></div>
+                  <div className="text-3xl font-gaming text-white">98%</div>
+                  <div className="text-sm text-gray-400">Success Rate</div>
+                </div>
               </div>
             </motion.div>
             
@@ -247,31 +336,73 @@ export default function HomePage() {
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="lg:w-1/2 rounded-xl overflow-hidden bg-primary/5 border border-primary/20 backdrop-blur-sm"
+              className="lg:w-1/2"
             >
-              <div className="p-6 pb-0">
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-gradient-to-br from-primary/30 to-primary/5 flex items-center justify-center">
-                  <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
-                  <div className="text-center p-6">
-                    <h3 className="text-2xl font-gaming gaming-text mb-3">Interactive AI Tutor</h3>
-                    <p className="opacity-80">Engage with our advanced AI tutor for personalized learning</p>
-                    <div className="mt-8 grid grid-cols-2 gap-3">
-                      <div className="bg-background/30 backdrop-blur-sm rounded-lg p-3 border border-primary/20">
-                        <Brain className="h-6 w-6 mb-2 text-primary" />
-                        <div className="text-sm">Voice interaction</div>
+              {/* 3D-looking futuristic showcase */}
+              <div className="neumorph-card p-1 relative">
+                <div className="absolute top-0 left-0 w-full h-1 cyber-scan-line"></div>
+                <div className="absolute -top-5 -right-5 w-10 h-10">
+                  <div className="absolute top-0 right-0 w-full h-full border-t-2 border-r-2 border-primary/40 rounded-tr-lg"></div>
+                </div>
+                <div className="absolute -bottom-5 -left-5 w-10 h-10">
+                  <div className="absolute bottom-0 left-0 w-full h-full border-b-2 border-l-2 border-primary/40 rounded-bl-lg"></div>
+                </div>
+                
+                <div className="glassmorphism p-8 relative overflow-hidden">
+                  {/* Animated scanning effect */}
+                  <div className="absolute inset-0 cyber-dots opacity-10"></div>
+                  
+                  {/* AI Tutor preview */}
+                  <div className="mb-8 text-center">
+                    <div className="inline-block mb-3 neumorph-card p-3 px-5 bg-primary/10 rounded-full text-sm font-medium text-primary">REVOLUTIONARY AI-POWERED LEARNING</div>
+                    <h2 className="text-3xl font-gaming mb-4">AI Tutor with Voice Interaction</h2>
+                    <p className="text-gray-400 mb-6">Experience personalized learning with our advanced AI tutors</p>
+                  </div>
+                  
+                  {/* Interactive Tech Features */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="animated-gradient-border p-[1px] rounded-lg">
+                      <div className="bg-background/95 rounded-lg p-4 h-full">
+                        <Brain className="h-8 w-8 mb-3 text-primary" />
+                        <h3 className="text-lg font-semibold mb-1">Voice Interaction</h3>
+                        <p className="text-sm text-gray-400">Speak naturally with your AI tutor for an immersive learning experience</p>
                       </div>
-                      <div className="bg-background/30 backdrop-blur-sm rounded-lg p-3 border border-primary/20">
-                        <Compass className="h-6 w-6 mb-2 text-primary" />
-                        <div className="text-sm">Smart navigation</div>
+                    </div>
+                    
+                    <div className="animated-gradient-border p-[1px] rounded-lg">
+                      <div className="bg-background/95 rounded-lg p-4 h-full">
+                        <Compass className="h-8 w-8 mb-3 text-primary" />
+                        <h3 className="text-lg font-semibold mb-1">Adaptive Learning</h3>
+                        <p className="text-sm text-gray-400">AI identifies your weak points and adapts content in real-time</p>
                       </div>
-                      <div className="bg-background/30 backdrop-blur-sm rounded-lg p-3 border border-primary/20">
-                        <ShieldCheck className="h-6 w-6 mb-2 text-primary" />
-                        <div className="text-sm">Verified content</div>
+                    </div>
+                    
+                    <div className="animated-gradient-border p-[1px] rounded-lg">
+                      <div className="bg-background/95 rounded-lg p-4 h-full">
+                        <ShieldCheck className="h-8 w-8 mb-3 text-primary" />
+                        <h3 className="text-lg font-semibold mb-1">Verified Content</h3>
+                        <p className="text-sm text-gray-400">All material is aligned with standard curriculum requirements</p>
                       </div>
-                      <div className="bg-background/30 backdrop-blur-sm rounded-lg p-3 border border-primary/20">
-                        <Star className="h-6 w-6 mb-2 text-primary" />
-                        <div className="text-sm">Progress tracking</div>
+                    </div>
+                    
+                    <div className="animated-gradient-border p-[1px] rounded-lg">
+                      <div className="bg-background/95 rounded-lg p-4 h-full">
+                        <Star className="h-8 w-8 mb-3 text-primary" />
+                        <h3 className="text-lg font-semibold mb-1">Real-time Feedback</h3>
+                        <p className="text-sm text-gray-400">Get instant analyses of your performance and improvement areas</p>
                       </div>
+                    </div>
+                  </div>
+                  
+                  {/* AI Voice Interaction Visual */}
+                  <div className="mt-8 flex items-center justify-center">
+                    <div className="flex items-end gap-1 px-4 py-3 rounded-full bg-background/50 border border-primary/20">
+                      <div className="w-1 bg-primary rounded-full animate-sound-wave1 h-3"></div>
+                      <div className="w-1 bg-primary rounded-full animate-sound-wave2 h-5"></div>
+                      <div className="w-1 bg-primary rounded-full animate-sound-wave3 h-4"></div>
+                      <div className="w-1 bg-primary rounded-full animate-sound-wave1 h-6"></div>
+                      <div className="w-1 bg-primary rounded-full animate-sound-wave2 h-3"></div>
+                      <span className="ml-3 text-sm text-primary">AI Tutor is speaking...</span>
                     </div>
                   </div>
                 </div>
@@ -281,77 +412,290 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20 bg-secondary/5">
-        <div className="container px-4 mx-auto">
-          <div className="text-center mb-16">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: scrollY > 100 ? 1 : 0, y: scrollY > 100 ? 0 : 20 }}
-              transition={{ duration: 0.5 }}
-              className="text-3xl md:text-4xl font-gaming gaming-text mb-4"
-            >
-              Game-Changing Features
-            </motion.h2>
+      {/* Features Section with hexagonal cyberpunk styling */}
+      <section id="features" className="py-28 relative overflow-hidden">
+        {/* Cyberpunk background elements */}
+        <div className="absolute inset-0 cyber-grid z-0 opacity-30"></div>
+        <div className="absolute top-0 left-0 right-0 h-px cyber-scan-line"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-px cyber-scan-line"></div>
+        
+        {/* Diagonal glowing lines */}
+        <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <line x1="0" y1="15" x2="100" y2="85" stroke="rgba(125, 39, 255, 0.1)" strokeWidth="0.2" />
+          <line x1="0" y1="50" x2="100" y2="50" stroke="rgba(125, 39, 255, 0.08)" strokeWidth="0.1" />
+          <line x1="0" y1="85" x2="100" y2="15" stroke="rgba(59, 130, 246, 0.1)" strokeWidth="0.2" />
+        </svg>
+        
+        <div className="container px-4 mx-auto relative z-10">
+          <div className="text-center mb-20 relative">
+            {/* Futuristic heading decoration */}
+            <div className="inline-block relative">
+              <div className="absolute -top-4 -left-6 w-12 h-12">
+                <div className="absolute top-0 left-0 w-full h-full border-t-2 border-l-2 border-primary/30"></div>
+              </div>
+              <div className="absolute -bottom-4 -right-6 w-12 h-12">
+                <div className="absolute bottom-0 right-0 w-full h-full border-b-2 border-r-2 border-primary/30"></div>
+              </div>
+              
+              <motion.h2 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: scrollY > 400 ? 1 : 0, y: scrollY > 400 ? 0 : 20 }}
+                transition={{ duration: 0.5 }}
+                className="text-3xl md:text-5xl font-gaming mb-2 relative px-6"
+              >
+                <span className="relative z-10">
+                  Revolutionary Features
+                  <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+                </span>
+              </motion.h2>
+            </div>
+            
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: scrollY > 100 ? 1 : 0, y: scrollY > 100 ? 0 : 20 }}
+              animate={{ opacity: scrollY > 400 ? 1 : 0, y: scrollY > 400 ? 0 : 20 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-xl opacity-80 max-w-2xl mx-auto"
+              className="text-xl text-gray-300 max-w-2xl mx-auto mt-6"
             >
-              LearnityX combines cutting-edge AI technology with gamification to revolutionize education
+              LearnityX combines advanced AI technology with immersive gamification to create the next generation of education
             </motion.p>
           </div>
 
+          {/* Hexagonal feature grid with futuristic styling */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard 
-              title="AI-Powered Tutor"
-              description="Get personalized assistance 24/7 with our intelligent AI tutor that adapts to your learning style."
-              icon={<Brain className="h-8 w-8 text-primary" />}
-              scrollY={scrollY}
-              threshold={150}
-              delay={0}
-            />
-            <FeatureCard 
-              title="Battle Zone Challenges"
-              description="Compete in 1v1, 2v2, 3v3, or 4v4 real-time academic battles and earn rank points."
-              icon={<Sword className="h-8 w-8 text-primary" />}
-              scrollY={scrollY}
-              threshold={150}
-              delay={0.1}
-            />
-            <FeatureCard 
-              title="Complete Rank System"
-              description="Climb from Bronze to Grandmaster with a comprehensive ranking system that reflects your progress."
-              icon={<Trophy className="h-8 w-8 text-primary" />}
-              scrollY={scrollY}
-              threshold={150}
-              delay={0.2}
-            />
-            <FeatureCard 
-              title="Daily Streak Rewards"
-              description="Maintain your learning streak and earn increasing rewards for consistent practice."
-              icon={<Calendar className="h-8 w-8 text-primary" />}
-              scrollY={scrollY}
-              threshold={250}
-              delay={0}
-            />
-            <FeatureCard 
-              title="Comprehensive Curriculum"
-              description="Access content from 3rd grade to 12th grade, as well as competitive exams like JEE, NEET, UPSC, and CLAT."
-              icon={<Book className="h-8 w-8 text-primary" />}
-              scrollY={scrollY}
-              threshold={250}
-              delay={0.1}
-            />
-            <FeatureCard 
-              title="Performance Analytics"
-              description="Track your progress with detailed analytics and AI-generated insights to improve your study strategies."
-              icon={<Star className="h-8 w-8 text-primary" />}
-              scrollY={scrollY}
-              threshold={250}
-              delay={0.2}
-            />
+            {/* AI Tutor */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: scrollY > 450 ? 1 : 0, y: scrollY > 450 ? 0 : 30 }}
+              transition={{ duration: 0.5, delay: 0 }}
+              className="group"
+            >
+              <div className="neumorph-card h-full relative overflow-hidden group hover:transform hover:scale-[1.02] transition-all duration-300">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="p-8">
+                  <div className="mb-6 relative">
+                    {/* Hexagon icon background */}
+                    <div className="absolute inset-0 bg-primary/10 transform rotate-45 scale-[1.4] rounded-xl"></div>
+                    <div className="relative z-10 flex items-center justify-center p-4">
+                      <Brain className="h-10 w-10 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">AI-Powered Tutor</h3>
+                  <p className="text-gray-300">
+                    Experience personalized learning with our voice-interactive AI tutors that adapt to your learning style 
+                    and provide real-time feedback on your progress.
+                  </p>
+                  <div className="mt-6 space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Natural voice conversation</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Whiteboard visualizations</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Adaptive difficulty</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+            
+            {/* Battle Zone */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: scrollY > 450 ? 1 : 0, y: scrollY > 450 ? 0 : 30 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="group"
+            >
+              <div className="neumorph-card h-full relative overflow-hidden hover:transform hover:scale-[1.02] transition-all duration-300">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="p-8">
+                  <div className="mb-6 relative">
+                    <div className="absolute inset-0 bg-primary/10 transform rotate-45 scale-[1.4] rounded-xl"></div>
+                    <div className="relative z-10 flex items-center justify-center p-4">
+                      <Sword className="h-10 w-10 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">Battle Zone Challenges</h3>
+                  <p className="text-gray-300">
+                    Compete in 1v1, 2v2, 3v3, or 4v4 real-time academic battles, solve problems under 
+                    pressure and earn rank points to climb the leaderboard.
+                  </p>
+                  <div className="mt-6 space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Real-time competitions</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Team vs team modes</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>AI-judged responses</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+            
+            {/* Ranking System */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: scrollY > 450 ? 1 : 0, y: scrollY > 450 ? 0 : 30 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="group"
+            >
+              <div className="neumorph-card h-full relative overflow-hidden hover:transform hover:scale-[1.02] transition-all duration-300">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="p-8">
+                  <div className="mb-6 relative">
+                    <div className="absolute inset-0 bg-primary/10 transform rotate-45 scale-[1.4] rounded-xl"></div>
+                    <div className="relative z-10 flex items-center justify-center p-4">
+                      <Trophy className="h-10 w-10 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">Complete Rank System</h3>
+                  <p className="text-gray-300">
+                    Climb from Bronze to Grandmaster with a comprehensive ranking system that reflects your 
+                    academic progress and competitive performance.
+                  </p>
+                  <div className="mt-6 space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>8 rank tiers</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Visible progression</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Exclusive rank rewards</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+            
+            {/* Streak System */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: scrollY > 550 ? 1 : 0, y: scrollY > 550 ? 0 : 30 }}
+              transition={{ duration: 0.5, delay: 0 }}
+              className="group"
+            >
+              <div className="neumorph-card h-full relative overflow-hidden hover:transform hover:scale-[1.02] transition-all duration-300">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="p-8">
+                  <div className="mb-6 relative">
+                    <div className="absolute inset-0 bg-primary/10 transform rotate-45 scale-[1.4] rounded-xl"></div>
+                    <div className="relative z-10 flex items-center justify-center p-4">
+                      <Calendar className="h-10 w-10 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">Daily Streak Rewards</h3>
+                  <p className="text-gray-300">
+                    Maintain your learning streak to earn increasing rewards and unlock 
+                    special content for consistent practice and engagement.
+                  </p>
+                  <div className="mt-6 space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Daily check-in rewards</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Streak freeze protection</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Milestone bonuses</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+            
+            {/* Curriculum */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: scrollY > 550 ? 1 : 0, y: scrollY > 550 ? 0 : 30 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="group"
+            >
+              <div className="neumorph-card h-full relative overflow-hidden hover:transform hover:scale-[1.02] transition-all duration-300">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="p-8">
+                  <div className="mb-6 relative">
+                    <div className="absolute inset-0 bg-primary/10 transform rotate-45 scale-[1.4] rounded-xl"></div>
+                    <div className="relative z-10 flex items-center justify-center p-4">
+                      <Book className="h-10 w-10 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">Comprehensive Curriculum</h3>
+                  <p className="text-gray-300">
+                    Access content from 3rd grade through 12th grade, plus competitive exam preparation for 
+                    JEE, NEET, UPSC, CLAT and more.
+                  </p>
+                  <div className="mt-6 space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>All major Indian boards</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Grade-specific content</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Exam-focused modules</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+            
+            {/* Analytics */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: scrollY > 550 ? 1 : 0, y: scrollY > 550 ? 0 : 30 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="group"
+            >
+              <div className="neumorph-card h-full relative overflow-hidden hover:transform hover:scale-[1.02] transition-all duration-300">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="p-8">
+                  <div className="mb-6 relative">
+                    <div className="absolute inset-0 bg-primary/10 transform rotate-45 scale-[1.4] rounded-xl"></div>
+                    <div className="relative z-10 flex items-center justify-center p-4">
+                      <Star className="h-10 w-10 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">Performance Analytics</h3>
+                  <p className="text-gray-300">
+                    Track your progress with detailed analytics and AI-generated insights to identify 
+                    strengths, weaknesses and optimize your study strategy.
+                  </p>
+                  <div className="mt-6 space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Interactive visualizations</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>AI-powered recommendations</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                      <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                      <span>Progress trend analysis</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
