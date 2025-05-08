@@ -310,58 +310,110 @@ export default function AiTutor() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-dark text-white">
+    <div className="min-h-screen flex flex-col solo-bg relative overflow-hidden">
+      {/* Solo Leveling background elements */}
+      <div className="absolute inset-0 solo-grid z-0 opacity-30"></div>
+      
+      {/* Solo Leveling corner decorations */}
+      <div className="absolute top-24 right-4 w-32 h-32 solo-corner-tr z-0"></div>
+      <div className="absolute bottom-4 left-4 w-32 h-32 solo-corner-bl z-0"></div>
+      
+      {/* Fixed scan line effect */}
+      <div className="fixed inset-0 h-screen pointer-events-none z-[1]">
+        <div className="absolute top-0 left-0 right-0 h-[2px] solo-scan-line"></div>
+      </div>
+      
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6">
-        <h1 className="text-2xl font-bold font-gaming mb-6">AI Tutor</h1>
+      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 relative z-10">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-1 h-10 bg-gradient-to-b from-cyan-500/70 via-cyan-600/50 to-primary/20"></div>
+          <h1 className="text-3xl font-gaming gaming-text text-glow">
+            <span className="gradient-text" style={{
+              background: "linear-gradient(90deg, #06b6d4, #7d27ff, #06b6d4)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundSize: "200% auto",
+              animation: "gradient-animation 3s linear infinite"
+            }}>AI Tutor</span>
+          </h1>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Left sidebar with AI tutor info */}
           <div className="md:col-span-1">
-            <div className="bg-dark-surface rounded-xl border border-dark-border p-6 h-full">
+            <div className="bg-background/50 rounded-xl border border-cyan-500/30 p-6 h-full monarch-card-glow relative">
+              {/* Solo Leveling corner decorations */}
+              <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-cyan-500/60"></div>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-cyan-500/60"></div>
+              
               {isLoadingTutor ? (
                 <div className="space-y-4 flex flex-col items-center">
-                  <Skeleton className="w-32 h-32 rounded-full" />
-                  <Skeleton className="h-6 w-24" />
-                  <Skeleton className="h-4 w-36" />
-                  <Skeleton className="h-24 w-full mt-4" />
+                  <Skeleton className="w-32 h-32 rounded-full bg-cyan-500/10" />
+                  <Skeleton className="h-6 w-24 bg-cyan-500/10" />
+                  <Skeleton className="h-4 w-36 bg-primary/10" />
+                  <Skeleton className="h-24 w-full mt-4 bg-cyan-500/10" />
                 </div>
               ) : (
                 <div className="flex flex-col items-center">
                   <div className="relative w-32 h-32">
-                    <img 
-                      src={aiTutor?.image || "/ai-tutor-placeholder.svg"} 
-                      alt={aiTutor?.name || "AI Tutor"} 
-                      className="w-full h-full rounded-full border-4 border-primary-600 p-1 bg-dark-card object-cover"
-                    />
-                    <div className="absolute -bottom-2 right-0 bg-green-500 rounded-full p-1 border-2 border-dark-surface">
-                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    {/* Solo Leveling energy ring around avatar */}
+                    <div className="absolute inset-0 monarch-insignia opacity-70"></div>
+                    
+                    {/* AI tutor image with Solo Leveling frame */}
+                    <div className="absolute inset-0 rounded-full overflow-hidden p-1 bg-gradient-to-br from-cyan-500/50 via-primary/40 to-cyan-500/50">
+                      <img 
+                        src={aiTutor?.image || "/ai-tutor-placeholder.svg"} 
+                        alt={aiTutor?.name || "AI Tutor"} 
+                        className="w-full h-full rounded-full object-cover p-0.5 bg-background"
+                      />
+                    </div>
+                    
+                    {/* Status indicator with Solo Leveling glow */}
+                    <div className="absolute -bottom-2 right-0 bg-cyan-500/80 rounded-full p-1 border-2 border-background shadow-glow">
+                      <div className="w-3 h-3 rounded-full bg-cyan-500 animate-pulse"></div>
                     </div>
                   </div>
                   
-                  <h2 className="text-xl font-bold mt-4 font-gaming">{aiTutor?.name || "AI Tutor"}</h2>
-                  <p className="text-sm text-gray-400 mt-1 text-center mb-6">{aiTutor?.specialty || "Your Personal Learning Assistant"}</p>
+                  <h2 className="text-xl font-bold mt-5 font-gaming text-glow">
+                    {aiTutor?.name || "AI Tutor"}
+                  </h2>
+                  <p className="text-sm text-cyan-200/70 mt-1 text-center mb-6 border-b border-cyan-500/20 pb-2">
+                    {aiTutor?.specialty || "Your Personal Learning Assistant"}
+                  </p>
                   
-                  <div className="w-full bg-dark-card rounded-lg p-4 text-sm">
-                    <h3 className="font-semibold mb-2">About Me</h3>
-                    <p className="text-gray-400 text-sm">
+                  <div className="w-full bg-background/60 rounded-lg p-5 text-sm border border-cyan-500/20 monarch-card-glow relative">
+                    {/* Solo Leveling corner accents */}
+                    <div className="absolute top-0 left-0 w-2 h-8 border-l-2 border-t-2 border-cyan-500/30"></div>
+                    <div className="absolute bottom-0 right-0 w-2 h-8 border-r-2 border-b-2 border-primary/30"></div>
+                    
+                    <h3 className="font-semibold mb-2 font-gaming text-cyan-200">About</h3>
+                    <p className="text-cyan-100/80 text-sm">
                       {aiTutor?.description || "I'm your AI learning companion, here to help you master any subject through personalized guidance and support."}
                     </p>
                     
-                    <h3 className="font-semibold mt-4 mb-2">Specialties</h3>
-                    <ul className="space-y-2">
-                      <li className="flex items-center gap-2 text-gray-300">
-                        <GraduationCap className="h-4 w-4 text-primary-400" />
+                    <h3 className="font-semibold mt-4 mb-2 font-gaming text-cyan-200">Specialties</h3>
+                    <ul className="space-y-3">
+                      <li className="flex items-center gap-3 text-white/90">
+                        <div className="bg-cyan-500/10 p-1.5 rounded relative">
+                          <GraduationCap className="h-4 w-4 text-cyan-400" />
+                          <div className="absolute inset-0 bg-cyan-500/5 animate-pulse rounded"></div>
+                        </div>
                         <span>{aiTutor?.subjects?.[0] || "Personalized explanations"}</span>
                       </li>
-                      <li className="flex items-center gap-2 text-gray-300">
-                        <Book className="h-4 w-4 text-primary-400" />
+                      <li className="flex items-center gap-3 text-white/90">
+                        <div className="bg-primary/10 p-1.5 rounded relative">
+                          <Book className="h-4 w-4 text-primary-400" />
+                          <div className="absolute inset-0 bg-primary/5 animate-pulse rounded"></div>
+                        </div>
                         <span>{aiTutor?.subjects?.[1] || "Study material creation"}</span>
                       </li>
-                      <li className="flex items-center gap-2 text-gray-300">
-                        <FileCheck className="h-4 w-4 text-primary-400" />
+                      <li className="flex items-center gap-3 text-white/90">
+                        <div className="bg-cyan-500/10 p-1.5 rounded relative">
+                          <FileCheck className="h-4 w-4 text-cyan-400" />
+                          <div className="absolute inset-0 bg-cyan-500/5 animate-pulse rounded"></div>
+                        </div>
                         <span>{aiTutor?.subjects?.[2] || "Progress tracking"}</span>
                       </li>
                     </ul>
@@ -371,14 +423,24 @@ export default function AiTutor() {
                     <Button 
                       size="icon" 
                       onClick={handleVoiceInteraction}
-                      className="bg-primary-600 hover:bg-primary-500 text-white"
+                      className="bg-cyan-500/80 hover:bg-cyan-500 text-white relative overflow-hidden"
                     >
-                      <Mic className="h-4 w-4" />
+                      {/* Solo Leveling button effect */}
+                      <div className="absolute inset-0 cyan-aura opacity-0 hover:opacity-30 transition-opacity duration-200"></div>
+                      <Mic className="h-4 w-4 relative z-10" />
                     </Button>
-                    <Button size="icon" variant="outline" className="bg-dark-card hover:bg-dark-hover text-white">
+                    <Button 
+                      size="icon" 
+                      variant="outline" 
+                      className="bg-background/60 hover:bg-background/80 text-white border-cyan-500/30 hover:border-cyan-500/50"
+                    >
                       <MessageSquare className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" variant="outline" className="bg-dark-card hover:bg-dark-hover text-white">
+                    <Button 
+                      size="icon" 
+                      variant="outline" 
+                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50"
+                    >
                       <Settings2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -389,26 +451,48 @@ export default function AiTutor() {
           
           {/* Main chat area */}
           <div className="md:col-span-3 flex flex-col">
-            <div className="bg-dark-surface rounded-xl border border-dark-border p-6 flex-1 flex flex-col">
+            <div className="bg-background/50 rounded-xl border border-primary/30 p-6 flex-1 flex flex-col monarch-card-glow relative">
+              {/* Solo Leveling corner decorations */}
+              <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-primary/60"></div>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-primary/60"></div>
+
               <Tabs defaultValue="whiteboard" value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <div className="flex items-center justify-between mb-4">
-                  <TabsList className="grid grid-cols-2 w-auto">
-                    <TabsTrigger value="whiteboard" className="text-sm px-4">
+                  <TabsList className="grid grid-cols-2 w-auto bg-background/30 border border-primary/20 p-1">
+                    <TabsTrigger 
+                      value="whiteboard" 
+                      className="text-sm px-4 data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=active]:shadow-glow relative overflow-hidden"
+                    >
+                      {/* Solo Leveling active tab effect */}
+                      <div className="absolute inset-0 primary-aura opacity-0 group-data-[state=active]:opacity-20"></div>
                       <PenTool className="h-4 w-4 mr-2" />
-                      Teaching Session
+                      <span className="relative z-10">Teaching Session</span>
                     </TabsTrigger>
-                    <TabsTrigger value="performance" className="text-sm px-4">
+                    <TabsTrigger 
+                      value="performance" 
+                      className="text-sm px-4 data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=active]:shadow-glow relative overflow-hidden"
+                    >
+                      {/* Solo Leveling active tab effect */}
+                      <div className="absolute inset-0 primary-aura opacity-0 group-data-[state=active]:opacity-20"></div>
                       <BarChart4 className="h-4 w-4 mr-2" />
-                      Progress
+                      <span className="relative z-10">Progress</span>
                     </TabsTrigger>
                   </TabsList>
                   
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" className="bg-dark-card hover:bg-dark-hover">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50"
+                    >
                       <HelpCircle className="h-4 w-4 mr-2" />
                       Help
                     </Button>
-                    <Button variant="outline" size="sm" className="bg-dark-card hover:bg-dark-hover">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50"
+                    >
                       New Session
                     </Button>
                   </div>

@@ -194,8 +194,14 @@ export default function AITools() {
               };
               const mappedColor = colorMap[toolColor] || 'cyan';
               
+              // Safety check for tool properties with additional type safety
+              const toolId = tool.id ?? 0;
+              const toolName = tool.name ?? "AI Tool";
+              const toolDescription = tool.description ?? "Powerful AI-powered educational tool";
+              const toolCategory = tool.category ?? "Study Tool";
+              
               return (
-                <Card key={tool.id} className={`bg-background/50 border-${mappedColor}-500/30 overflow-hidden flex flex-col relative monarch-card-glow-${mappedColor === 'primary' ? 'purple' : mappedColor} group hover:bg-background/60 transition-all duration-300`}>
+                <Card key={toolId} className={`bg-background/50 border-${mappedColor}-500/30 overflow-hidden flex flex-col relative monarch-card-glow-${mappedColor === 'primary' ? 'purple' : mappedColor} group hover:bg-background/60 transition-all duration-300`}>
                   {/* Solo Leveling corner decorations */}
                   <div className={`absolute -top-1 -left-1 w-3 h-3 border-t border-l border-${mappedColor}-500/60`}></div>
                   <div className={`absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-${mappedColor}-500/60`}></div>
@@ -212,12 +218,12 @@ export default function AITools() {
                           
                           {/* Icon with Solo Leveling glow */}
                           <div className={`text-${mappedColor}-400 solo-icon`}>
-                            {getToolIcon(tool.name)}
+                            {getToolIcon(toolName)}
                           </div>
                         </div>
                         <div>
-                          <CardTitle className="text-lg text-white">{tool.name}</CardTitle>
-                          <CardDescription className={`text-${mappedColor}-200/70`}>{tool.category || 'Study Tool'}</CardDescription>
+                          <CardTitle className="text-lg text-white">{toolName}</CardTitle>
+                          <CardDescription className={`text-${mappedColor}-200/70`}>{toolCategory}</CardDescription>
                         </div>
                       </div>
                       <Badge className={`bg-${mappedColor}-500/10 text-${mappedColor}-300 hover:bg-${mappedColor}-500/20 border border-${mappedColor}-500/30`}>
@@ -226,10 +232,10 @@ export default function AITools() {
                     </div>
                   </CardHeader>
                   <CardContent className="pb-4 flex-grow">
-                    <p className={`text-${mappedColor}-100/80 text-sm`}>{tool.description}</p>
+                    <p className={`text-${mappedColor}-100/80 text-sm`}>{toolDescription}</p>
                   </CardContent>
                   <CardFooter className="pt-0">
-                    <Link href={getToolPath(tool.name)} className="w-full group">
+                    <Link href={getToolPath(toolName)} className="w-full group">
                       <Button 
                         className={`w-full bg-${mappedColor}-500/80 hover:bg-${mappedColor}-500 text-white transform transition-all duration-300 
                           hover:translate-y-[-2px] relative overflow-hidden border border-${mappedColor}-400/20`}
