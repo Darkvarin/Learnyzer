@@ -111,7 +111,7 @@ export default function HomePage() {
             >
               <span className="absolute inset-0 bg-cyan-950/80 z-0"></span>
               <span className="absolute inset-0 border border-cyan-500/30 z-0"></span>
-              <span className="absolute inset-[-3px] border-2 border-cyan-500/20 z-0 hex-clip-container opacity-0 group-hover:opacity-100 transition-opacity"></span>
+              <span className="absolute inset-[-3px] border-2 border-cyan-500/20 z-0 opacity-0 group-hover:opacity-100 transition-opacity"></span>
               {mobileMenuOpen ? (
                 <X className="h-5 w-5 text-cyan-300 relative z-10 shadow-glow-xs" />
               ) : (
