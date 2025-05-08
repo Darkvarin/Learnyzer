@@ -1013,6 +1013,385 @@
   left: 30px;
 }
 
+/* Solo Leveling specific styling */
+.solo-bg {
+  background-color: #080b13;
+  background-image: linear-gradient(to bottom, #05071a 0%, #0c1426 100%);
+}
+
+.solo-grid {
+  background-image: 
+    linear-gradient(to right, rgba(6, 182, 212, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Energy flow lines for Solo Leveling */
+.energy-flow-horizontal {
+  position: absolute;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(6, 182, 212, 0.1) 20%, 
+    rgba(6, 182, 212, 0.4) 50%,
+    rgba(6, 182, 212, 0.1) 80%, 
+    transparent 100%);
+  animation: flow-horizontal 8s infinite linear;
+}
+
+.energy-flow-vertical {
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(180deg, 
+    transparent 0%, 
+    rgba(147, 51, 234, 0.1) 20%, 
+    rgba(147, 51, 234, 0.4) 50%,
+    rgba(147, 51, 234, 0.1) 80%, 
+    transparent 100%);
+  animation: flow-vertical 8s infinite linear;
+}
+
+@keyframes flow-horizontal {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes flow-vertical {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* Solo Leveling corner elements */
+.solo-corner-tr {
+  background-image: radial-gradient(circle at top right, rgba(6, 182, 212, 0.2), transparent 70%);
+  border-top: 2px solid rgba(6, 182, 212, 0.3);
+  border-right: 2px solid rgba(6, 182, 212, 0.3);
+  border-top-right-radius: 20px;
+}
+
+.solo-corner-bl {
+  background-image: radial-gradient(circle at bottom left, rgba(147, 51, 234, 0.2), transparent 70%);
+  border-bottom: 2px solid rgba(147, 51, 234, 0.3);
+  border-left: 2px solid rgba(147, 51, 234, 0.3);
+  border-bottom-left-radius: 20px;
+}
+
+/* Animated power pulse */
+@keyframes power-pulse {
+  0% { opacity: 0.3; transform: scale(0.95); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+  100% { opacity: 0.3; transform: scale(0.95); }
+}
+
+.animate-power-pulse {
+  animation: power-pulse 4s infinite ease-in-out;
+}
+
+/* Radial pulse effect */
+.radial-pulse {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+  animation: pulse-fade 5s infinite alternate ease-in-out;
+}
+
+@keyframes pulse-fade {
+  0% { opacity: 0.1; transform: scale(0.9); }
+  100% { opacity: 0.3; transform: scale(1.1); }
+}
+
+/* Solo Leveling scan lines */
+.solo-scan-line {
+  background: linear-gradient(to right, 
+    transparent 0%, 
+    rgba(6, 182, 212, 0.5) 50%, 
+    transparent 100%);
+  animation: scan-top 5s infinite linear;
+  box-shadow: 0 0 10px 1px rgba(6, 182, 212, 0.5);
+}
+
+.solo-scan-line-reverse {
+  background: linear-gradient(to left, 
+    transparent 0%, 
+    rgba(147, 51, 234, 0.5) 50%, 
+    transparent 100%);
+  animation: scan-bottom 7s infinite linear;
+  box-shadow: 0 0 10px 1px rgba(147, 51, 234, 0.5);
+}
+
+@keyframes scan-top {
+  0% { transform: translateY(0vh); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes scan-bottom {
+  0% { transform: translateY(100vh); }
+  100% { transform: translateY(0vh); }
+}
+
+/* Hexagonal cell grid for Solo Leveling monarch pattern */
+.hex-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 30px);
+  grid-template-rows: repeat(3, 35px);
+  transform: rotate(30deg);
+}
+
+.hex-cell {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  margin: 2px;
+  background-color: transparent;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  animation: hex-pulse 3s infinite alternate;
+}
+
+@keyframes hex-pulse {
+  0% { border-color: rgba(6, 182, 212, 0.2); }
+  100% { border-color: rgba(6, 182, 212, 0.6); }
+}
+
+/* Shadow particles effect */
+.shadow-particles {
+  background-image: radial-gradient(circle, rgba(147, 51, 234, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  animation: particles-fade 8s infinite alternate ease-in-out;
+}
+
+@keyframes particles-fade {
+  0% { opacity: 0.1; background-size: 15px 15px; }
+  100% { opacity: 0.4; background-size: 25px 25px; }
+}
+
+/* Shadow Monarch card styling */
+.monarch-section {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.monarch-section:hover {
+  transform: translateY(-2px);
+}
+
+/* Different energy bar colors for each section */
+.monarch-energy-bar {
+  background: linear-gradient(to bottom, #06b6d4, transparent);
+  box-shadow: 0 0 10px #06b6d4;
+  animation: energy-pulse 2s infinite alternate;
+}
+
+.monarch-energy-bar-blue {
+  background: linear-gradient(to bottom, #3b82f6, transparent);
+  box-shadow: 0 0 10px #3b82f6;
+  animation: energy-pulse 2s infinite alternate;
+}
+
+.monarch-energy-bar-purple {
+  background: linear-gradient(to bottom, #a855f7, transparent);
+  box-shadow: 0 0 10px #a855f7;
+  animation: energy-pulse 2s infinite alternate;
+}
+
+.monarch-energy-bar-amber {
+  background: linear-gradient(to bottom, #f59e0b, transparent);
+  box-shadow: 0 0 10px #f59e0b;
+  animation: energy-pulse 2s infinite alternate;
+}
+
+.monarch-energy-bar-emerald {
+  background: linear-gradient(to bottom, #10b981, transparent);
+  box-shadow: 0 0 10px #10b981;
+  animation: energy-pulse 2s infinite alternate;
+}
+
+.monarch-energy-bar-rose {
+  background: linear-gradient(to bottom, #e11d48, transparent);
+  box-shadow: 0 0 10px #e11d48;
+  animation: energy-pulse 2s infinite alternate;
+}
+
+@keyframes energy-pulse {
+  0% { opacity: 0.5; height: 60%; }
+  100% { opacity: 0.9; height: 80%; }
+}
+
+/* Solo Leveling runic corners */
+.solo-rune-corner-tl {
+  position: absolute;
+  border-top: 2px solid #06b6d4;
+  border-left: 2px solid #06b6d4;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+}
+
+.solo-rune-corner-tr {
+  position: absolute;
+  border-top: 2px solid #06b6d4;
+  border-right: 2px solid #06b6d4;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+}
+
+.solo-rune-corner-bl {
+  position: absolute;
+  border-bottom: 2px solid #7c3aed;
+  border-left: 2px solid #7c3aed;
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+}
+
+.solo-rune-corner-br {
+  position: absolute;
+  border-bottom: 2px solid #7c3aed;
+  border-right: 2px solid #7c3aed;
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+}
+
+/* Solo Leveling card glow effects */
+.monarch-card-glow {
+  box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.2),
+              0 0 15px rgba(6, 182, 212, 0.15);
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.monarch-card-glow:hover {
+  box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.4),
+              0 0 20px rgba(6, 182, 212, 0.3);
+}
+
+.monarch-card-glow-blue {
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2),
+              0 0 15px rgba(59, 130, 246, 0.15);
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.monarch-card-glow-blue:hover {
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4),
+              0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.monarch-card-glow-purple {
+  box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.2),
+              0 0 15px rgba(168, 85, 247, 0.15);
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.monarch-card-glow-purple:hover {
+  box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.4),
+              0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+.monarch-card-glow-amber {
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.2),
+              0 0 15px rgba(245, 158, 11, 0.15);
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.monarch-card-glow-amber:hover {
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.4),
+              0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+.monarch-card-glow-emerald {
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2),
+              0 0 15px rgba(16, 185, 129, 0.15);
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.monarch-card-glow-emerald:hover {
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.4),
+              0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.monarch-card-glow-rose {
+  box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.2),
+              0 0 15px rgba(225, 29, 72, 0.15);
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.monarch-card-glow-rose:hover {
+  box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.4),
+              0 0 20px rgba(225, 29, 72, 0.3);
+}
+
+/* Solo Leveling special effects */
+.monarch-insignia {
+  background-image: conic-gradient(
+    from 0deg, 
+    transparent 0deg, 
+    rgba(59, 130, 246, 0.5) 10deg, 
+    transparent 20deg,
+    transparent 160deg,
+    rgba(59, 130, 246, 0.5) 170deg,
+    transparent 180deg,
+    transparent 340deg,
+    rgba(59, 130, 246, 0.5) 350deg,
+    transparent 360deg
+  );
+  border-radius: 50%;
+  animation: rotate-slow 10s linear infinite;
+}
+
+.battle-runes {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.3) 10%, transparent 70%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  animation: rune-pulse 3s infinite alternate;
+}
+
+.streak-rune {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.3) 10%, transparent 70%);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  animation: rune-pulse 3s infinite alternate;
+}
+
+.rank-insignia {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 10%, transparent 70%);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  animation: rune-pulse 3s infinite alternate;
+}
+
+.summon-rune {
+  background: radial-gradient(circle, rgba(225, 29, 72, 0.3) 10%, transparent 70%);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  animation: rune-pulse 3s infinite alternate;
+}
+
+.battle-aura {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, transparent 100%);
+  border-radius: 0.5rem;
+}
+
+.streak-aura {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, transparent 100%);
+  border-radius: 0.5rem;
+}
+
+.rank-aura {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%);
+  border-radius: 0.5rem;
+}
+
+.summon-aura {
+  background: linear-gradient(135deg, rgba(225, 29, 72, 0.1) 0%, transparent 100%);
+  border-radius: 0.5rem;
+}
+
+@keyframes rune-pulse {
+  0% { opacity: 0.3; transform: scale(0.9); }
+  100% { opacity: 0.7; transform: scale(1.1); }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 @keyframes border-animation {
   0% {
     background-position: 0% 50%;
