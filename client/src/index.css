@@ -910,6 +910,66 @@
   animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/* Solo Leveling tabs styling */
+.solo-leveling-tabs {
+  background-color: rgba(13, 12, 19, 0.6);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  padding: 4px;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.solo-leveling-tabs::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, 
+    transparent 0%, 
+    rgba(6, 182, 212, 0.2) 20%, 
+    rgba(6, 182, 212, 0.4) 50%, 
+    rgba(6, 182, 212, 0.2) 80%, 
+    transparent 100%
+  );
+}
+
+.solo-leveling-tab {
+  background-color: transparent !important;
+  border: none;
+  position: relative;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-gaming);
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.solo-leveling-tab[data-state="active"] {
+  color: rgb(6, 182, 212);
+  background-color: rgba(6, 182, 212, 0.05) !important;
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+}
+
+.solo-leveling-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background-color: rgba(6, 182, 212, 0.5);
+  transition: height 0.3s ease;
+  opacity: 0;
+}
+
+.solo-leveling-tab[data-state="active"]::before {
+  height: 100%;
+  opacity: 1;
+}
+
 @keyframes border-animation {
   0% {
     background-position: 0% 50%;

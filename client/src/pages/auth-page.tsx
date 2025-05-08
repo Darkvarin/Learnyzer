@@ -131,12 +131,14 @@ export default function AuthPage() {
               </CardDescription>
             </CardHeader>
             <Tabs defaultValue="login" value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2 mb-4 cyberpunk-tabs">
-                <TabsTrigger value="login" className="relative overflow-hidden cyberpunk-tab">
+              <TabsList className="grid w-full grid-cols-2 mb-4 solo-leveling-tabs">
+                <TabsTrigger value="login" className="relative overflow-hidden solo-leveling-tab">
                   <span className="relative z-10">Login</span>
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-cyan-500/70 transform scale-x-0 transition-transform duration-300 group-data-[state=active]:scale-x-100"></div>
                 </TabsTrigger>
-                <TabsTrigger value="register" className="relative overflow-hidden cyberpunk-tab">
+                <TabsTrigger value="register" className="relative overflow-hidden solo-leveling-tab">
                   <span className="relative z-10">Register</span>
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-cyan-500/70 transform scale-x-0 transition-transform duration-300 group-data-[state=active]:scale-x-100"></div>
                 </TabsTrigger>
               </TabsList>
 
@@ -354,77 +356,96 @@ export default function AuthPage() {
         </div>
       </div>
 
-      {/* Right side - Hero section */}
+      {/* Right side - Hero section with Solo Leveling style */}
       <div className="flex-1 relative z-10 p-8 flex flex-col justify-center items-center overflow-hidden">
-        {/* Cyberpunk elements for hero side */}
-        <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl"></div>
-        <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-purple-500/10 blur-3xl"></div>
+        {/* Solo Leveling + Cyberpunk background elements */}
+        <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl"></div>
+        <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-primary/10 blur-3xl"></div>
         
-        {/* Circuit board pattern */}
-        <div className="absolute inset-0 cyber-dots opacity-20"></div>
+        {/* Solo Leveling corner decorations */}
+        <div className="absolute top-10 right-10 w-40 h-40 border-t-2 border-r-2 border-cyan-500/30 rounded-tr-lg"></div>
+        <div className="absolute bottom-10 left-10 w-40 h-40 border-b-2 border-l-2 border-primary/30 rounded-bl-lg"></div>
+        
+        {/* Circuit board pattern with lower opacity */}
+        <div className="absolute inset-0 cyber-dots opacity-10"></div>
         
         {/* Features container */}
         <div className="max-w-md space-y-8 relative backdrop-blur-sm">
           <div className="relative">
-            <div className="absolute -top-6 left-0 w-20 h-1 bg-gradient-to-r from-primary to-transparent"></div>
-            <div className="absolute -top-3 left-0 w-10 h-1 bg-gradient-to-r from-primary to-transparent"></div>
+            <div className="absolute -top-6 left-0 w-20 h-1 bg-gradient-to-r from-cyan-500 to-transparent"></div>
+            <div className="absolute -top-3 left-0 w-10 h-1 bg-gradient-to-r from-cyan-500 to-transparent"></div>
             <h1 className="text-5xl font-gaming gaming-text mb-2">
-              <span className="block gradient-text" style={{
-                background: "linear-gradient(90deg, #7d27ff, #3b82f6, #7d27ff)",
+              <span className="block gradient-text relative" style={{
+                background: "linear-gradient(90deg, #06b6d4, #7d27ff, #06b6d4)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundSize: "200% auto",
                 animation: "gradient-animation 3s linear infinite"
-              }}>Level Up</span>
-              <span className="block">Your Learning!</span>
+              }}>
+                Level Up
+                <div className="absolute -left-3 -top-3 w-6 h-6 border-l-2 border-t-2 border-cyan-500/40"></div>
+              </span>
+              <span className="block relative">
+                Your Learning!
+                <div className="absolute -right-4 -bottom-1 w-10 h-10 border-r-2 border-b-2 border-cyan-500/40"></div>
+              </span>
             </h1>
-            <p className="text-gray-300 mt-4 italic border-l-2 border-primary/50 pl-4">
-              India's first AI-powered educational platform with advanced gamification
+            <p className="text-cyan-100/80 mt-4 border-l-2 border-cyan-500/50 pl-4">
+              India's premier AI-powered educational platform with Solo Leveling gamification
             </p>
           </div>
           
           <div className="space-y-6 mt-10">
-            <div className="feature-card neumorph-card p-4 transition-transform hover:translate-x-1 hover:translate-y-1 border border-primary/20">
+            <div className="feature-card solo-feature-card p-4 transition-transform hover:translate-y-[-2px] border border-cyan-500/20 relative">
+              <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-cyan-500/60"></div>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-cyan-500/60"></div>
+              
               <div className="flex items-center">
                 <div className="relative mr-4">
-                  <div className="absolute inset-0 bg-primary/30 rounded-xl animate-pulse blur-sm"></div>
-                  <div className="w-14 h-14 bg-background/80 rounded-xl flex items-center justify-center border border-primary/30 relative z-10">
-                    <Brain className="h-7 w-7 text-primary" />
+                  <div className="absolute inset-0 bg-cyan-500/20 rounded-xl animate-pulse blur-sm"></div>
+                  <div className="w-14 h-14 bg-background/80 rounded-xl flex items-center justify-center border border-cyan-500/30 relative z-10">
+                    <Brain className="h-7 w-7 text-cyan-400 solo-icon" />
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">AI-Powered Tutor</h3>
-                  <p className="text-sm text-gray-300">Voice-interactive teaching with whiteboard visualization</p>
+                  <h3 className="text-lg font-bold text-cyan-100">AI-Powered Tutor</h3>
+                  <p className="text-sm text-cyan-100/70">Voice-interactive teaching with whiteboard visualization</p>
                 </div>
               </div>
             </div>
             
-            <div className="feature-card neumorph-card p-4 transition-transform hover:translate-x-1 hover:translate-y-1 border border-primary/20">
+            <div className="feature-card solo-feature-card p-4 transition-transform hover:translate-y-[-2px] border border-fuchsia-500/20 relative">
+              <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-fuchsia-500/60"></div>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-fuchsia-500/60"></div>
+              
               <div className="flex items-center">
                 <div className="relative mr-4">
-                  <div className="absolute inset-0 bg-primary/30 rounded-xl animate-pulse blur-sm"></div>
-                  <div className="w-14 h-14 bg-background/80 rounded-xl flex items-center justify-center border border-primary/30 relative z-10">
-                    <Sword className="h-7 w-7 text-primary" />
+                  <div className="absolute inset-0 bg-fuchsia-500/20 rounded-xl animate-pulse blur-sm"></div>
+                  <div className="w-14 h-14 bg-background/80 rounded-xl flex items-center justify-center border border-fuchsia-500/30 relative z-10">
+                    <Sword className="h-7 w-7 text-fuchsia-400 solo-icon" />
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">Battle Zone</h3>
-                  <p className="text-sm text-gray-300">Real-time competitive 1v1, 2v2, 3v3, or 4v4 matches</p>
+                  <h3 className="text-lg font-bold text-fuchsia-100">Battle Zone</h3>
+                  <p className="text-sm text-fuchsia-100/70">Real-time competitive 1v1, 2v2, 3v3, or 4v4 matches</p>
                 </div>
               </div>
             </div>
             
-            <div className="feature-card neumorph-card p-4 transition-transform hover:translate-x-1 hover:translate-y-1 border border-primary/20">
+            <div className="feature-card solo-feature-card p-4 transition-transform hover:translate-y-[-2px] border border-amber-500/20 relative">
+              <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-amber-500/60"></div>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-amber-500/60"></div>
+              
               <div className="flex items-center">
                 <div className="relative mr-4">
-                  <div className="absolute inset-0 bg-primary/30 rounded-xl animate-pulse blur-sm"></div>
-                  <div className="w-14 h-14 bg-background/80 rounded-xl flex items-center justify-center border border-primary/30 relative z-10">
-                    <Trophy className="h-7 w-7 text-primary" />
+                  <div className="absolute inset-0 bg-amber-500/20 rounded-xl animate-pulse blur-sm"></div>
+                  <div className="w-14 h-14 bg-background/80 rounded-xl flex items-center justify-center border border-amber-500/30 relative z-10">
+                    <Trophy className="h-7 w-7 text-amber-400 solo-icon" />
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">Rank Up System</h3>
-                  <p className="text-sm text-gray-300">Progress from Bronze to Grandmaster with achievements</p>
+                  <h3 className="text-lg font-bold text-amber-100">Rank Up System</h3>
+                  <p className="text-sm text-amber-100/70">Progress from Bronze to Grandmaster with achievements</p>
                 </div>
               </div>
             </div>
