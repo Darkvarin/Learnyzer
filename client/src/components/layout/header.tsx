@@ -9,10 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCallback, useState, useEffect } from "react";
-import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { useMobile } from "@/hooks/use-mobile";
-import { Brain, MenuIcon, ChevronDown, User, LogOut, Zap } from "lucide-react";
+import { Brain, Menu, X, ChevronDown, User, LogOut, Zap } from "lucide-react";
 
 export function Header() {
   const { user, setUser } = useUser();
@@ -47,17 +47,15 @@ export function Header() {
   }, []);
 
   const [, navigate] = useLocation();
+  const { logoutMutation } = useAuth();
 
   const handleLogout = useCallback(async () => {
     try {
-      await apiRequest("POST", "/api/auth/logout", {});
-      setUser(null);
-      toast({
-        title: "Logged out successfully",
-        description: "You have been logged out of your account.",
-      });
+      await logoutMutation.mutateAsync();
       // Redirect to homepage after logout
       navigate("/");
+      // Force a page reload to ensure all components update their state
+      window.location.reload();
     } catch (error) {
       toast({
         title: "Logout failed",
@@ -65,7 +63,7 @@ export function Header() {
         variant: "destructive",
       });
     }
-  }, [setUser, toast, navigate]);
+  }, [logoutMutation, navigate, toast]);
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'glassmorphism backdrop-blur-md border-b border-primary/20' : 'bg-transparent'}`}>
