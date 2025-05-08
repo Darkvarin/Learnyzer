@@ -146,17 +146,32 @@ export default function BattleZone() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-white solo-page relative overflow-hidden">
-      {/* Solo Leveling background elements */}
-      <div className="absolute inset-0 solo-grid z-0 opacity-30"></div>
+    <div className="min-h-screen flex flex-col futuristic-bg relative overflow-hidden">
+      {/* Modern cyberpunk grid background with subtle Solo Leveling accents */}
+      <div className="absolute inset-0 cyber-grid z-0 opacity-20"></div>
       
-      {/* Solo Leveling corner decorations */}
-      <div className="absolute top-24 right-4 w-32 h-32 solo-corner-tr z-0"></div>
-      <div className="absolute bottom-4 left-4 w-32 h-32 solo-corner-bl z-0"></div>
+      {/* Minimal energy flow line - subtle Solo Leveling accent */}
+      <div className="absolute h-full w-full overflow-hidden z-0">
+        <div className="energy-flow-horizontal top-2/3 opacity-30"></div>
+      </div>
       
-      {/* Fixed scan line effect */}
-      <div className="fixed inset-0 h-screen pointer-events-none z-[1]">
-        <div className="absolute top-0 left-0 right-0 h-[2px] solo-scan-line"></div>
+      {/* Cyberpunk corner elements from home page */}
+      <div className="absolute top-24 right-20 w-40 h-40 border-t-2 border-r-2 border-purple-500/20 z-0"></div>
+      <div className="absolute bottom-20 left-20 w-40 h-40 border-b-2 border-l-2 border-cyan-500/20 z-0"></div>
+      
+      {/* Circuit lines from home page - tech aesthetic */}
+      <svg className="absolute top-0 left-0 w-full h-full opacity-[0.07] z-0" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="M0,30 L40,40 L60,40 L100,30" stroke="rgba(125, 39, 255, 0.3)" strokeWidth="0.2" fill="none" />
+        <path d="M0,60 L30,70 L70,70 L100,60" stroke="rgba(6, 182, 212, 0.4)" strokeWidth="0.2" fill="none" />
+        <path d="M25,0 L25,100" stroke="rgba(125, 39, 255, 0.2)" strokeWidth="0.1" fill="none" />
+        <path d="M75,0 L75,100" stroke="rgba(6, 182, 212, 0.2)" strokeWidth="0.1" fill="none" />
+      </svg>
+      
+      {/* Solo Leveling hex pattern - reduced but maintained for battle theme */}
+      <div className="absolute top-40 right-10 z-0 opacity-30">
+        <div className="hex-grid">
+          <div className="hex-cell"></div>
+        </div>
       </div>
       
       <Header />
@@ -320,13 +335,16 @@ export default function BattleZone() {
                   ))
                 ) : battles?.active && battles.active.length > 0 ? (
                   battles.active.map((battle) => (
-                    <div key={battle.id} className="battle-card rounded-lg p-4 transform transition-transform hover:scale-[1.01] relative bg-background border border-cyan-500/20 overflow-hidden group">
-                      {/* Solo Leveling corner decorations */}
-                      <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-cyan-500/60 opacity-70 group-hover:opacity-100 transition-opacity"></div>
-                      <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-cyan-500/60 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+                    <div key={battle.id} className="battle-card glassmorphism rounded-lg p-4 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                      {/* Cyberpunk corner decorations with subtle Solo Leveling influence */}
+                      <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-purple-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-purple-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
                       
-                      {/* Solo Leveling energy glow */}
-                      <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/5 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      {/* Subtle energy glow effect */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/5 via-transparent to-cyan-500/5 opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+                      
+                      {/* Battle energy pulse - only visible on hover */}
+                      <div className="absolute -right-10 top-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-purple-500/10 filter blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
                         <div>
@@ -455,20 +473,25 @@ export default function BattleZone() {
                   </div>
                 ) : battles?.upcoming && battles.upcoming.length > 0 ? (
                   battles.upcoming.map((battle) => (
-                    <div key={battle.id} className="battle-card rounded-lg p-4">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div key={battle.id} className="battle-card glassmorphism rounded-lg p-4 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                      {/* Cyberpunk corner decorations with subtle Solo Leveling influence */}
+                      <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-amber-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-amber-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+                      
+                      {/* Subtle calendar reminder glow */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/5 via-transparent to-warning-500/5 opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+                      
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
                         <div>
-                          <div className="flex items-center space-x-2">
-                            <div className={`w-10 h-10 bg-gradient-to-br ${
-                              battle.type.includes('1v1') 
-                                ? 'from-warning-600 to-danger-600' 
-                                : 'from-primary-600 to-info-600'
-                            } rounded-md flex items-center justify-center opacity-80`}>
-                              <Calendar className="h-5 w-5" />
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 relative flex items-center justify-center">
+                              {/* Calendar icon with cyberpunk styling */}
+                              <div className="absolute inset-0 rounded-md border border-amber-500/40 bg-gradient-to-br from-transparent to-amber-900/20 overflow-hidden flex items-center justify-center"></div>
+                              <Calendar className="h-5 w-5 text-amber-400 relative z-10" />
                             </div>
                             <div>
-                              <h3 className="font-bold font-gaming">{battle.title}</h3>
-                              <p className="text-xs text-gray-400">{battle.type} · {battle.duration} mins · Starts in {battle.startsIn}</p>
+                              <h3 className="font-bold font-gaming text-white">{battle.title}</h3>
+                              <p className="text-xs text-amber-400/80">{battle.type} · {battle.duration} mins · Starts in {battle.startsIn}</p>
                             </div>
                           </div>
                         </div>
@@ -545,12 +568,21 @@ export default function BattleZone() {
                   </div>
                 ) : battles?.past && battles.past.length > 0 ? (
                   battles.past.map((battle) => (
-                    <div key={battle.id} className="battle-card rounded-lg p-4">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div key={battle.id} className="battle-card glassmorphism rounded-lg p-4 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                      {/* Subtle cyberpunk corner decorations */}
+                      <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-gray-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-gray-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+                      
+                      {/* Very subtle history glow */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-gray-500/5 via-transparent to-gray-500/5 opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+                      
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
                         <div>
-                          <div className="flex items-center space-x-2">
-                            <div className={`w-10 h-10 bg-gradient-to-br from-dark-surface to-gray-700 rounded-md flex items-center justify-center opacity-80`}>
-                              <History className="h-5 w-5 text-gray-400" />
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 relative flex items-center justify-center">
+                              {/* History icon with subtle styling */}
+                              <div className="absolute inset-0 rounded-md border border-gray-500/30 bg-gradient-to-br from-transparent to-gray-800/20 overflow-hidden flex items-center justify-center"></div>
+                              <History className="h-5 w-5 text-gray-400 relative z-10" />
                             </div>
                             <div>
                               <h3 className="font-bold font-gaming text-gray-300">{battle.title}</h3>
