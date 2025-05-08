@@ -112,20 +112,21 @@ export default function AuthPage() {
         <div className="absolute bottom-0 left-0 right-0 h-[2px] cyber-scan-line"></div>
       </div>
       
-      {/* Left side - Auth form */}
+      {/* Left side - Auth form with Solo Leveling style */}
       <div className="flex-1 flex items-center justify-center p-8 z-20 relative">
         <div className="w-full max-w-md">
-          <Card className="w-full neumorph-card border-primary/20 backdrop-blur-sm">
-            <div className="absolute -right-3 -top-3 w-20 h-20 border border-primary/30 rounded-full opacity-30"></div>
-            <div className="absolute -left-5 -bottom-5 w-28 h-28 border border-blue-500/20 rounded-full opacity-30"></div>
+          <Card className="w-full solo-leveling-card border-primary/20 backdrop-blur-sm">
+            {/* Solo Leveling hexagonal corners */}
+            <div className="absolute -top-3 -right-3 w-32 h-32 solo-leveling-corner-tr"></div>
+            <div className="absolute -bottom-3 -left-3 w-32 h-32 solo-leveling-corner-bl"></div>
             
             <CardHeader className="text-center relative">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
-              <CardTitle className="text-3xl font-gaming gaming-text mb-2 relative inline-block">
+              <CardTitle className="text-3xl font-gaming gaming-text mb-2 relative inline-block hex-title">
                 LearnityX
                 <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
               </CardTitle>
-              <CardDescription className="relative z-10">
+              <CardDescription className="relative z-10 text-cyan-300/90">
                 Your AI-powered companion for academic excellence
               </CardDescription>
             </CardHeader>
@@ -148,13 +149,13 @@ export default function AuthPage() {
                         name="username"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-primary-foreground/90 flex items-center">
-                              <div className="w-1 h-4 bg-primary/50 mr-2"></div>
+                            <FormLabel className="text-cyan-300/90 flex items-center">
+                              <div className="w-1 h-4 bg-cyan-500/50 mr-2"></div>
                               Username
                             </FormLabel>
                             <FormControl>
                               <Input 
-                                className="cyber-input bg-background/40 border-primary/30 focus:border-primary transition-colors" 
+                                className="solo-leveling-input bg-background/40 border-primary/30 focus:border-cyan-500 transition-colors" 
                                 placeholder="Enter your username" 
                                 {...field} 
                               />
