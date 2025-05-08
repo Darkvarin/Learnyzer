@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Compass } from "lucide-react";
+import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Compass, Menu, X, Github, MessageCircle, Facebook, Twitter, Youtube, Instagram, Check } from "lucide-react";
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
   const [, navigate] = useLocation();
   const [scrollY, setScrollY] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Handle scroll animation effects
   useEffect(() => {
@@ -98,8 +99,93 @@ export default function HomePage() {
   // For non-authenticated users, show landing page
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden bg-gradient-to-br from-background/80 to-background">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/10">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            {/* Logo */}
+            <Link href="/" className="flex items-center">
+              <div className="relative w-10 h-10 mr-2 bg-gradient-to-br from-primary to-purple-700 rounded-lg flex items-center justify-center">
+                <Brain className="h-6 w-6 text-white" />
+                <div className="absolute -inset-0.5 rounded-lg bg-primary/20 blur-sm opacity-70"></div>
+              </div>
+              <span className="text-2xl font-gaming tracking-wide text-white">LearnityX</span>
+            </Link>
+
+            {/* Desktop Nav */}
+            <nav className="hidden md:flex items-center space-x-6">
+              <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
+              <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
+              <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">How it Works</a>
+              <a href="#faq" className="text-gray-300 hover:text-white transition-colors">FAQs</a>
+              <Button 
+                onClick={() => navigate("/auth")}
+                className="bg-primary hover:bg-primary/90"
+              >
+                Get Started
+              </Button>
+            </nav>
+
+            {/* Mobile menu button */}
+            <button 
+              className="md:hidden flex items-center justify-center w-10 h-10 rounded-md bg-primary/10 hover:bg-primary/20 transition-colors"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6 text-white" />
+              ) : (
+                <Menu className="h-6 w-6 text-white" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        <div className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} bg-background/95 backdrop-blur-md border-b border-primary/10 py-4`}>
+          <nav className="container mx-auto px-4 flex flex-col space-y-4">
+            <a 
+              href="#features" 
+              className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Features
+            </a>
+            <a 
+              href="#pricing" 
+              className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Pricing
+            </a>
+            <a 
+              href="#how-it-works" 
+              className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              How it Works
+            </a>
+            <a 
+              href="#faq" 
+              className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              FAQs
+            </a>
+            <Button 
+              onClick={() => {
+                setMobileMenuOpen(false);
+                navigate("/auth");
+              }}
+              className="w-full"
+            >
+              Get Started
+            </Button>
+          </nav>
+        </div>
+      </header>
+
+      {/* Hero Section - with padding to account for fixed header */}
+      <section className="relative pt-32 md:pt-40 pb-20 overflow-hidden bg-gradient-to-br from-background/80 to-background">
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.2 }}
@@ -110,6 +196,16 @@ export default function HomePage() {
             opacity: 0.1
           }}
         />
+
+        {/* Hero background with abstract elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full filter blur-3xl"></div>
+          <div className="absolute bottom-1/3 right-1/3 w-64 h-64 bg-purple-500/5 rounded-full filter blur-3xl"></div>
+          <div className="absolute top-1/2 right-1/4 w-80 h-80 bg-blue-500/5 rounded-full filter blur-3xl"></div>
+          
+          {/* Grid pattern overlay */}
+          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        </div>
         
         <div className="container px-4 mx-auto relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-12">
@@ -260,12 +356,390 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 bg-gradient-to-br from-background/90 to-background">
+        <div className="container px-4 mx-auto">
+          <div className="text-center mb-16">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 400 ? 1 : 0, y: scrollY > 400 ? 0 : 20 }}
+              transition={{ duration: 0.5 }}
+              className="text-3xl md:text-4xl font-gaming gaming-text mb-4"
+            >
+              How LearnityX Works
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 400 ? 1 : 0, y: scrollY > 400 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-xl opacity-80 max-w-2xl mx-auto"
+            >
+              Four simple steps to revolutionize your learning experience
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 450 ? 1 : 0, y: scrollY > 450 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0 }}
+              className="relative"
+            >
+              <div className="absolute -left-4 top-0 w-12 h-12 rounded-full bg-primary/20 backdrop-blur flex items-center justify-center font-gaming text-2xl text-primary z-10">1</div>
+              <Card className="border-primary/10 bg-card/50 backdrop-blur-sm h-full pt-8 relative">
+                <div className="absolute top-0 right-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-primary/30 to-transparent opacity-50 hidden lg:block"></div>
+                <CardContent>
+                  <h3 className="text-xl font-bold mb-3">Create Your Profile</h3>
+                  <p className="text-gray-400">Sign up and set your grade, subjects, and learning goals to get a personalized experience.</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 450 ? 1 : 0, y: scrollY > 450 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="relative"
+            >
+              <div className="absolute -left-4 top-0 w-12 h-12 rounded-full bg-primary/20 backdrop-blur flex items-center justify-center font-gaming text-2xl text-primary z-10">2</div>
+              <Card className="border-primary/10 bg-card/50 backdrop-blur-sm h-full pt-8 relative">
+                <div className="absolute top-0 right-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-primary/30 to-transparent opacity-50 hidden lg:block"></div>
+                <CardContent>
+                  <h3 className="text-xl font-bold mb-3">Explore Curriculum</h3>
+                  <p className="text-gray-400">Access grade-specific courses and materials tailored to your educational needs.</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 450 ? 1 : 0, y: scrollY > 450 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="absolute -left-4 top-0 w-12 h-12 rounded-full bg-primary/20 backdrop-blur flex items-center justify-center font-gaming text-2xl text-primary z-10">3</div>
+              <Card className="border-primary/10 bg-card/50 backdrop-blur-sm h-full pt-8 relative">
+                <div className="absolute top-0 right-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-primary/30 to-transparent opacity-50 hidden lg:block"></div>
+                <CardContent>
+                  <h3 className="text-xl font-bold mb-3">Learn with AI</h3>
+                  <p className="text-gray-400">Engage with our AI tutor for personalized assistance and practice with interactive tools.</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 450 ? 1 : 0, y: scrollY > 450 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="relative"
+            >
+              <div className="absolute -left-4 top-0 w-12 h-12 rounded-full bg-primary/20 backdrop-blur flex items-center justify-center font-gaming text-2xl text-primary z-10">4</div>
+              <Card className="border-primary/10 bg-card/50 backdrop-blur-sm h-full pt-8">
+                <CardContent>
+                  <h3 className="text-xl font-bold mb-3">Track Progress</h3>
+                  <p className="text-gray-400">Monitor your achievements, compete in battles, and climb the ranks as you improve.</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 bg-secondary/5">
+        <div className="container px-4 mx-auto">
+          <div className="text-center mb-16">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 700 ? 1 : 0, y: scrollY > 700 ? 0 : 20 }}
+              transition={{ duration: 0.5 }}
+              className="text-3xl md:text-4xl font-gaming gaming-text mb-4"
+            >
+              Flexible Pricing Plans
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 700 ? 1 : 0, y: scrollY > 700 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-xl opacity-80 max-w-2xl mx-auto"
+            >
+              Choose the plan that best suits your educational needs
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {/* Free Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0 }}
+            >
+              <Card className="border-primary/10 bg-card h-full overflow-hidden relative">
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+                <CardContent className="p-6">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold opacity-70">Basic</h3>
+                    <div className="flex items-end mt-2">
+                      <span className="text-4xl font-gaming">Free</span>
+                      <span className="text-gray-400 ml-2 mb-1">forever</span>
+                    </div>
+                  </div>
+                  <div className="py-4 border-y border-border">
+                    <ul className="space-y-3">
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">Limited access to course content</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">Basic AI assistance</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">5 battle participations per month</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">Standard rank progression</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="mt-6">
+                    <Button 
+                      onClick={() => navigate("/auth")}
+                      className="w-full"
+                    >
+                      Get Started
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Premium Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Card className="border border-primary/30 bg-card h-full overflow-hidden relative transform scale-105 shadow-lg shadow-primary/10">
+                <div className="absolute inset-0 bg-primary/5"></div>
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">MOST POPULAR</div>
+                <CardContent className="p-6 relative">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold opacity-70">Premium</h3>
+                    <div className="flex items-end mt-2">
+                      <span className="text-4xl font-gaming">₹499</span>
+                      <span className="text-gray-400 ml-2 mb-1">per month</span>
+                    </div>
+                  </div>
+                  <div className="py-4 border-y border-border/50">
+                    <ul className="space-y-3">
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">Full access to all course content</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">Advanced AI tutoring & tools</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">Unlimited battle participations</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">Accelerated rank progression</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">Performance analytics</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="mt-6">
+                    <Button 
+                      onClick={() => navigate("/auth")}
+                      className="w-full bg-primary hover:bg-primary/90"
+                    >
+                      Get Premium
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Enterprise Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Card className="border-primary/10 bg-card h-full overflow-hidden relative">
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+                <CardContent className="p-6">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold opacity-70">School</h3>
+                    <div className="flex items-end mt-2">
+                      <span className="text-4xl font-gaming">Custom</span>
+                      <span className="text-gray-400 ml-2 mb-1">per school</span>
+                    </div>
+                  </div>
+                  <div className="py-4 border-y border-border">
+                    <ul className="space-y-3">
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">Bulk student accounts</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">School administrator dashboard</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">Custom curriculum integration</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-4 w-4 text-primary" />
+                        </div>
+                        <span className="opacity-90">School-wide analytics & reporting</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="mt-6">
+                    <Button 
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => navigate("/auth")}
+                    >
+                      Contact Sales
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-20 bg-background">
+        <div className="container px-4 mx-auto">
+          <div className="text-center mb-16">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 1000 ? 1 : 0, y: scrollY > 1000 ? 0 : 20 }}
+              transition={{ duration: 0.5 }}
+              className="text-3xl md:text-4xl font-gaming gaming-text mb-4"
+            >
+              Frequently Asked Questions
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 1000 ? 1 : 0, y: scrollY > 1000 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-xl opacity-80 max-w-2xl mx-auto"
+            >
+              Get answers to common questions about LearnityX
+            </motion.p>
+          </div>
+
+          <div className="max-w-3xl mx-auto space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 1050 ? 1 : 0, y: scrollY > 1050 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0 }}
+            >
+              <Card className="border-primary/10 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-3">How does LearnityX adapt to my learning style?</h3>
+                  <p className="text-gray-400">
+                    LearnityX uses advanced AI to analyze your learning patterns, strengths, and areas for improvement. The AI tutor adjusts its teaching approach based on your responses, progress, and preferences to provide a truly personalized learning experience.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 1100 ? 1 : 0, y: scrollY > 1100 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Card className="border-primary/10 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-3">What educational boards and syllabi are covered?</h3>
+                  <p className="text-gray-400">
+                    LearnityX covers the major Indian educational boards including CBSE, ICSE, and state boards. Our content spans from 3rd to 12th grade and includes preparation for competitive exams like JEE, NEET, UPSC, and CLAT.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 1150 ? 1 : 0, y: scrollY > 1150 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Card className="border-primary/10 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-3">How do the Battle Zones work?</h3>
+                  <p className="text-gray-400">
+                    Battle Zones are real-time academic competitions where you can challenge other students in 1v1, 2v2, 3v3, or 4v4 formats. Each battle focuses on specific subjects or topics, and your performance earns you rank points that help you climb from Bronze to Grandmaster ranks.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 1200 ? 1 : 0, y: scrollY > 1200 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <Card className="border-primary/10 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-3">Can parents track their child's progress?</h3>
+                  <p className="text-gray-400">
+                    Yes, parents can access a dedicated dashboard to monitor their child's learning progress, achievements, time spent, and areas of improvement. The dashboard provides actionable insights and recommendations to support your child's educational journey.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-primary/10 to-background">
         <div className="container px-4 mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: scrollY > 500 ? 1 : 0, y: scrollY > 500 ? 0 : 20 }}
+            animate={{ opacity: scrollY > 1300 ? 1 : 0, y: scrollY > 1300 ? 0 : 20 }}
             transition={{ duration: 0.6 }}
             className="text-center max-w-3xl mx-auto"
           >
