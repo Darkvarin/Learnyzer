@@ -75,13 +75,24 @@ export default function AITools() {
     blue: 'cyan'
   };
   
+  // Define a mapping between tools and categories for filtering
+  const toolCategoryMap: Record<string, string> = {
+    "Study Notes Generator": "study",
+    "Answer Checker": "assessment",
+    "Flashcard Creator": "study",
+    "Performance Analytics": "performance",
+    "AI Tutor": "assessment"
+  };
+  
   // Filter tools by search query and category
   const filteredTools = aiTools.filter((tool) => {
     const matchesSearch = 
       tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
       (tool.description && tool.description.toLowerCase().includes(searchQuery.toLowerCase()));
     
-    const matchesCategory = categoryFilter === "all" || tool.category === categoryFilter;
+    // Get the tool's category from our mapping or use a default
+    const toolCategory = toolCategoryMap[tool.name] || "study";
+    const matchesCategory = categoryFilter === "all" || toolCategory === categoryFilter;
     
     return matchesSearch && matchesCategory;
   });
@@ -183,31 +194,51 @@ export default function AITools() {
         ) : filteredTools.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTools.map((tool: any) => {
+              // Get the tool's color or default to cyan
               const toolColor = tool.color || 'cyan';
-              const colorMap = {
-                primary: 'primary',
-                success: 'emerald',
-                warning: 'amber',
-                purple: 'fuchsia',
-                danger: 'rose',
-                blue: 'cyan'
+              
+              // Define a safe color mapping
+              const safeColorMap: Record<string, string> = {
+                'primary': 'primary',
+                'success': 'emerald',
+                'warning': 'amber',
+                'purple': 'fuchsia',
+                'danger': 'rose',
+                'blue': 'cyan',
+                'cyan': 'cyan'
               };
-              const mappedColor = colorMap[toolColor] || 'cyan';
+              
+              // Map the tool color to a Tailwind color or default to cyan
+              const mappedColor = safeColorMap[toolColor] || 'cyan';
               
               // Safety check for tool properties with additional type safety
               const toolId = tool.id ?? 0;
               const toolName = tool.name ?? "AI Tool";
               const toolDescription = tool.description ?? "Powerful AI-powered educational tool";
-              const toolCategory = tool.category ?? "Study Tool";
+              
+              // Get the tool's category using our mapping
+              const rawCategory = toolCategoryMap[tool.name] || "study";
+              
+              // Convert category ID to display name
+              const categoryDisplayMap: Record<string, string> = {
+                "study": "Study Tool",
+                "assessment": "Assessment Tool",
+                "performance": "Performance Analysis",
+                "preparation": "Exam Preparation"
+              };
+              const toolCategory = categoryDisplayMap[rawCategory] || "Study Tool";
               
               return (
-                <Card key={toolId} className={`bg-background/50 border-${mappedColor}-500/30 overflow-hidden flex flex-col relative monarch-card-glow-${mappedColor === 'primary' ? 'purple' : mappedColor} group hover:bg-background/60 transition-all duration-300`}>
-                  {/* Solo Leveling corner decorations */}
-                  <div className={`absolute -top-1 -left-1 w-3 h-3 border-t border-l border-${mappedColor}-500/60`}></div>
-                  <div className={`absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-${mappedColor}-500/60`}></div>
+                <Card key={toolId} className={`glassmorphism border-${mappedColor}-500/30 overflow-hidden flex flex-col relative group hover:translate-y-[-2px] transition-all duration-300`}>
+                  {/* Cyberpunk corner decorations with subtle Solo Leveling influence */}
+                  <div className={`absolute top-0 left-0 w-6 h-6 border-t border-l border-${mappedColor}-500/30 opacity-70 group-hover:opacity-100 transition-opacity`}></div>
+                  <div className={`absolute bottom-0 right-0 w-6 h-6 border-b border-r border-${mappedColor}-500/30 opacity-70 group-hover:opacity-100 transition-opacity`}></div>
                   
-                  {/* Power aura on hover */}
-                  <div className={`absolute inset-0 ${mappedColor}-aura opacity-0 group-hover:opacity-30 transition-opacity duration-500`}></div>
+                  {/* Subtle tool energy glow */}
+                  <div className={`absolute inset-0 bg-gradient-to-tr from-${mappedColor}-500/5 via-transparent to-${mappedColor}-500/5 opacity-0 group-hover:opacity-40 transition-opacity duration-300`}></div>
+                  
+                  {/* Tool energy pulse - only visible on hover */}
+                  <div className={`absolute -right-10 top-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-${mappedColor}-500/10 filter blur-xl opacity-0 group-hover:opacity-100 transition-opacity`}></div>
                   
                   <CardHeader className="pb-2 relative">
                     <div className="flex items-start justify-between">
@@ -253,27 +284,26 @@ export default function AITools() {
             })}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-16 text-center monarch-card-glow p-8 rounded-xl">
-            {/* Solo Leveling accent elements */}
-            <div className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-cyan-500/40 z-10"></div>
-            <div className="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-primary/40 z-10"></div>
+          <div className="flex flex-col items-center justify-center py-16 text-center glassmorphism p-8 rounded-xl relative">
+            {/* Cyberpunk corner decorations */}
+            <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-cyan-500/30 opacity-70 transition-opacity"></div>
+            <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-cyan-500/30 opacity-70 transition-opacity"></div>
             
             <div className="bg-background/60 p-5 rounded-full mb-4 border border-cyan-500/20">
-              <Search className="h-8 w-8 text-cyan-400 solo-icon" />
+              <Search className="h-8 w-8 text-cyan-400" />
             </div>
-            <h3 className="text-xl font-gaming mb-2 text-glow">No Tools Found</h3>
+            <h3 className="text-xl font-medium mb-2">No Tools Found</h3>
             <p className="text-cyan-100/70 max-w-md border-l-2 border-cyan-500/30 pl-4 text-left mx-auto">
               We couldn't find any AI tools matching your criteria. Try adjusting your filters or search term.
             </p>
             <Button 
-              className="mt-6 bg-cyan-500/80 hover:bg-cyan-500 text-white hover:translate-y-[-2px] transition-all duration-300 relative overflow-hidden border border-cyan-400/20"
+              className="mt-6 bg-cyan-500/80 hover:bg-cyan-500 text-white hover:translate-y-[-2px] transition-all duration-300 border border-cyan-400/20"
               onClick={() => {
                 setSearchQuery("");
                 setCategoryFilter("all");
               }}
             >
-              <div className="absolute inset-0 cyan-aura opacity-0 hover:opacity-30 transition-opacity duration-200"></div>
-              <span className="relative z-10">Clear Filters</span>
+              Clear Filters
             </Button>
           </div>
         )}
@@ -295,14 +325,14 @@ export default function AITools() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="bg-background/30 border-fuchsia-500/30 relative monarch-card-glow-fuchsia group">
-              {/* Solo Leveling corner decorations */}
-              <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-fuchsia-500/60"></div>
-              <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-fuchsia-500/60"></div>
+            <Card className="glassmorphism border-fuchsia-500/30 relative group opacity-90">
+              {/* Cyberpunk corner decorations */}
+              <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-fuchsia-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
+              <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-fuchsia-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
               
-              {/* Locked state overlay */}
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] z-10 flex items-center justify-center">
-                <div className="text-fuchsia-300/90 font-gaming text-2xl text-glow">Coming Soon</div>
+              {/* Locked state overlay with reduced intensity */}
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px] z-10 flex items-center justify-center">
+                <div className="text-fuchsia-300/90 font-gaming text-xl">Coming Soon</div>
               </div>
               
               <CardHeader>
