@@ -1231,7 +1231,9 @@ export const storage = {
    * Get all AI tools
    */
   async getAllAITools() {
-    return await db.query.aiTools.findMany();
+    const tools = await db.query.aiTools.findMany();
+    // Filter out the Flashcard Creator tool as it's now moved to Coming Soon
+    return tools.filter(tool => tool.name !== "Flashcard Creator");
   },
   
   /**

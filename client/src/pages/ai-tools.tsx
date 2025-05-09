@@ -86,6 +86,9 @@ export default function AITools() {
   
   // Filter tools by search query and category
   const filteredTools = aiTools.filter((tool) => {
+    // Additional filter to ensure Flashcard Creator is not shown in the active tools
+    if (tool.name === "Flashcard Creator") return false;
+    
     const matchesSearch = 
       tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
       (tool.description && tool.description.toLowerCase().includes(searchQuery.toLowerCase()));
