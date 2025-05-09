@@ -161,20 +161,20 @@ export default function LeaderboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Fetch global leaderboard data
+  // Fetch Indian leaderboard data
   const { 
-    data: globalLeaderboardResponse, 
-    isLoading: isGlobalLoading 
+    data: indianLeaderboardResponse, 
+    isLoading: isIndianLoading 
   } = useQuery({
     queryKey: ['/api/leaderboard'],
     // Using the real backend data from API
   });
   
   // Extract and transform the data for display
-  const globalLeaderboardData = useMemo(() => {
-    if (!globalLeaderboardResponse?.leaderboard) return [];
+  const indianLeaderboardData = useMemo(() => {
+    if (!indianLeaderboardResponse?.leaderboard) return [];
     
-    return globalLeaderboardResponse.leaderboard.map((user: any) => ({
+    return indianLeaderboardResponse.leaderboard.map((user: any) => ({
       id: user.id,
       name: user.name,
       profileImage: user.profileImage || '',
@@ -184,7 +184,7 @@ export default function LeaderboardPage() {
       streak: user.streakDays || 0,
       rank: user.rank
     }));
-  }, [globalLeaderboardResponse]);
+  }, [indianLeaderboardResponse]);
 
   // Fetch friends leaderboard data
   const { 
@@ -223,7 +223,7 @@ export default function LeaderboardPage() {
     rank: string;
   };
 
-  const filteredGlobalData = globalLeaderboardData.filter((student: StudentData) => 
+  const filteredIndianData = indianLeaderboardData.filter((student: StudentData) => 
     student.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
     (selectedCategory === 'all' || student.grade === selectedCategory)
   );
@@ -234,13 +234,13 @@ export default function LeaderboardPage() {
   );
 
   // Unique categories for filtering - use Array.from to handle iteration properly
-  const categories = ['all', ...Array.from(new Set(globalLeaderboardData.map((item: StudentData) => item.grade)))];
+  const categories = ['all', ...Array.from(new Set(indianLeaderboardData.map((item: StudentData) => item.grade)))];
 
   return (
     <div className="container max-w-6xl mx-auto pt-4 pb-16">
       <PageHeader
-        title="Leaderboard"
-        description="Compete with students across India and rise to the top of the rankings."
+        title="Indian Leaderboard"
+        description="Compete with students across India and rise to the top of the national rankings."
         icon={<BarChart3 className="h-6 w-6 text-purple-400" />}
       />
 
@@ -275,11 +275,11 @@ export default function LeaderboardPage() {
           </div>
         </div>
 
-        <Tabs defaultValue="global" className="w-full">
+        <Tabs defaultValue="indian" className="w-full">
           <div className="flex justify-between items-center mb-4">
             <TabsList className="bg-[#0C101F]/90 border border-purple-500/20">
-              <TabsTrigger value="global" className="data-[state=active]:bg-purple-500/20">
-                Global Rankings
+              <TabsTrigger value="indian" className="data-[state=active]:bg-purple-500/20">
+                Indian Rankings
               </TabsTrigger>
               <TabsTrigger value="friends" className="data-[state=active]:bg-purple-500/20">
                 <Users className="h-4 w-4 mr-2" /> Friends
@@ -287,8 +287,8 @@ export default function LeaderboardPage() {
             </TabsList>
           </div>
           
-          <TabsContent value="global" className="mt-0">
-            <LeaderboardTable data={filteredGlobalData} isLoading={isGlobalLoading} />
+          <TabsContent value="indian" className="mt-0">
+            <LeaderboardTable data={filteredIndianData} isLoading={isIndianLoading} />
           </TabsContent>
           
           <TabsContent value="friends" className="mt-0">
