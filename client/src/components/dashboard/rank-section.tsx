@@ -15,11 +15,11 @@ export function RankSection() {
   ];
   
   return (
-    <div className="bg-background/70 rounded-xl overflow-hidden border border-emerald-500/30 shadow-glow-emerald relative">
-      <div className="p-4 relative">
+    <div className="bg-background/70 rounded-xl overflow-hidden border border-emerald-500/30 shadow-glow-emerald">
+      <div className="p-5 relative">
         {/* Solo Leveling corner accents - emerald theme for rank */}
-        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-emerald-500/70"></div>
-        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-emerald-500/70"></div>
+        <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-emerald-500/70"></div>
+        <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-emerald-500/70"></div>
         
         {/* Solo Leveling energy lines */}
         <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent"></div>
@@ -28,21 +28,21 @@ export function RankSection() {
         {/* Solo Leveling rank mark - smaller */}
         <div className="absolute -top-2 -right-2 w-12 h-12 rank-power-mark opacity-40 z-0"></div>
         
-        <h2 className="text-lg font-bold font-gaming bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-white relative z-10" style={{
+        <h2 className="text-xl font-bold font-gaming bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-white relative z-10 mb-4" style={{
           textShadow: "0 0 10px rgba(16, 185, 129, 0.3)"
         }}>Rank Progress</h2>
         
-        <div className="relative mt-6 z-10">
+        <div className="relative z-10 mb-4">
           {isLoading ? (
             <>
-              <div className="flex justify-between mb-2">
-                <Skeleton className="h-5 w-16" />
-                <Skeleton className="h-5 w-16" />
+              <div className="flex justify-between mb-3">
+                <Skeleton className="h-6 w-24" />
+                <Skeleton className="h-6 w-24" />
               </div>
-              <Skeleton className="h-3 w-full rounded-full mb-2" />
+              <Skeleton className="h-4 w-full rounded-full mb-3" />
               <div className="flex justify-between">
-                <Skeleton className="h-4 w-14" />
-                <Skeleton className="h-4 w-14" />
+                <Skeleton className="h-5 w-16" />
+                <Skeleton className="h-5 w-16" />
               </div>
             </>
           ) : rankData ? (
@@ -50,24 +50,34 @@ export function RankSection() {
               {/* Solo Leveling energy pulse beneath progress bar */}
               <div className="absolute inset-0 rank-energy-pulse opacity-40"></div>
               
+              <div className="flex justify-between mb-2">
+                <p className="text-emerald-400 font-bold font-gaming text-base">{rankData.currentRank}</p>
+                <p className="text-emerald-400/80 font-bold font-gaming text-base">{rankData.nextRank}</p>
+              </div>
+              
               <RankProgressBar 
                 currentRank={rankData.currentRank}
                 currentPoints={rankData.currentRankPoints}
                 nextRankPoints={rankData.nextRankPoints}
               />
+              
+              <div className="flex justify-between mt-1">
+                <p className="text-emerald-400/70 font-gaming text-sm">{rankData.currentRankPoints} RP</p>
+                <p className="text-emerald-400/70 font-gaming text-sm">{rankData.nextRankPoints} RP</p>
+              </div>
             </div>
           ) : null}
         </div>
         
-        <div className="mt-4">
-          <div className="text-xs font-gaming text-emerald-400 mb-2 border-l-2 border-emerald-500/50 pl-2">RANK TIERS</div>
+        <div className="mt-5">
+          <div className="text-sm font-gaming text-emerald-400 mb-3 border-l-2 border-emerald-500/50 pl-2">RANK TIERS</div>
           
-          <div className="flex items-center justify-between gap-1 mt-2 overflow-x-auto py-1 no-scrollbar">
+          <div className="flex items-center justify-between gap-x-1 mt-2 overflow-x-auto py-1 no-scrollbar">
             {isLoading ? (
               Array(9).fill(0).map((_, i) => (
                 <div key={i} className="flex flex-col items-center flex-shrink-0">
-                  <Skeleton className="w-8 h-8 rounded-sm" />
-                  <Skeleton className="w-10 h-3 mt-1" />
+                  <Skeleton className="w-10 h-10 rounded-sm" />
+                  <Skeleton className="w-12 h-3 mt-1" />
                 </div>
               ))
             ) : (
@@ -77,9 +87,9 @@ export function RankSection() {
                 
                 return (
                   <div key={idx} className="flex flex-col items-center group flex-shrink-0">
-                    {/* Solo Leveling rank badge with hex clip-path - smaller size */}
+                    {/* Solo Leveling rank badge with hex clip-path */}
                     <div 
-                      className={`relative w-8 h-8 transition-all duration-300 ${
+                      className={`relative w-10 h-10 transition-all duration-300 ${
                         isCurrentTier ? 'scale-110' : 'opacity-70 group-hover:opacity-100'
                       }`}
                     >
@@ -113,8 +123,8 @@ export function RankSection() {
                       </div>
                       
                       {/* Medal icon with Solo Leveling styling */}
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background/40 w-6 h-6 rounded-full border border-emerald-500/30 flex items-center justify-center z-10">
-                        <Medal className={`${getRankColor(tier)}`} size={12} />
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background/40 w-8 h-8 rounded-full border border-emerald-500/30 flex items-center justify-center z-10">
+                        <Medal className={`${getRankColor(tier)}`} size={14} />
                       </div>
                       
                       {/* Current tier indicator with pulsing effect */}
@@ -122,7 +132,7 @@ export function RankSection() {
                         <div className="absolute inset-0 rank-pulse-effect"></div>
                       )}
                     </div>
-                    <span className={`text-[10px] font-medium mt-1 font-gaming transition-colors ${
+                    <span className={`text-xs font-medium mt-1 font-gaming transition-colors ${
                       isCurrentTier 
                         ? `${tier.toLowerCase()}-rank-text` 
                         : 'text-gray-400 group-hover:text-gray-300'
@@ -137,15 +147,15 @@ export function RankSection() {
         </div>
         
         {rankData && (
-          <div className="mt-3 pt-2 border-t border-emerald-500/20 relative">
-            <div className="flex justify-between text-sm">
-              <div className="inline-flex items-center gap-1">
-                <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-gaming px-1.5 py-0.5 rounded">BATTLES</span>
-                <p className="font-bold font-gaming text-emerald-400 text-xs">{formatNumber(rankData.battlesWon || 0)}</p>
+          <div className="mt-4 pt-3 border-t border-emerald-500/20 relative">
+            <div className="flex justify-between">
+              <div className="inline-flex items-center gap-1.5">
+                <span className="bg-emerald-500/20 text-emerald-400 text-xs font-gaming px-2 py-0.5 rounded">BATTLES</span>
+                <p className="font-bold font-gaming text-emerald-400 text-sm">{formatNumber(rankData.battlesWon || 0)}</p>
               </div>
-              <div className="inline-flex items-center gap-1">
-                <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-gaming px-1.5 py-0.5 rounded">WIN RATE</span>
-                <p className="font-bold font-gaming text-emerald-400 text-xs">{rankData.winRate || '0%'}</p>
+              <div className="inline-flex items-center gap-1.5">
+                <span className="bg-emerald-500/20 text-emerald-400 text-xs font-gaming px-2 py-0.5 rounded">WIN RATE</span>
+                <p className="font-bold font-gaming text-emerald-400 text-sm">{rankData.winRate || '0%'}</p>
               </div>
             </div>
           </div>
