@@ -212,7 +212,7 @@ export default function BattleZone() {
                         placeholder="e.g. Physics Challenge"
                         value={battleTitle}
                         onChange={(e) => setBattleTitle(e.target.value)}
-                        className="bg-dark-card border-dark-border"
+                        className="bg-background/40 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20"
                       />
                     </div>
                     
@@ -222,10 +222,10 @@ export default function BattleZone() {
                         value={battleType}
                         onValueChange={setBattleType}
                       >
-                        <SelectTrigger className="bg-dark-card border-dark-border">
+                        <SelectTrigger className="bg-background/40 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20">
                           <SelectValue placeholder="Select battle type" />
                         </SelectTrigger>
-                        <SelectContent className="bg-dark-surface border-dark-border">
+                        <SelectContent className="bg-background/90 backdrop-blur-sm border border-cyan-500/30 shadow-glow">
                           <SelectItem value="1v1">1v1 Battle</SelectItem>
                           <SelectItem value="2v2">2v2 Team Battle</SelectItem>
                           <SelectItem value="3v3">3v3 Team Battle</SelectItem>
@@ -240,10 +240,10 @@ export default function BattleZone() {
                         value={battleDuration}
                         onValueChange={setBattleDuration}
                       >
-                        <SelectTrigger className="bg-dark-card border-dark-border">
+                        <SelectTrigger className="bg-background/40 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20">
                           <SelectValue placeholder="Select duration" />
                         </SelectTrigger>
-                        <SelectContent className="bg-dark-surface border-dark-border">
+                        <SelectContent className="bg-background/90 backdrop-blur-sm border border-cyan-500/30 shadow-glow">
                           <SelectItem value="10">10 minutes</SelectItem>
                           <SelectItem value="20">20 minutes</SelectItem>
                           <SelectItem value="30">30 minutes</SelectItem>
@@ -259,7 +259,7 @@ export default function BattleZone() {
                         placeholder="e.g. Mechanics, Electromagnetism"
                         value={battleTopics}
                         onChange={(e) => setBattleTopics(e.target.value)}
-                        className="bg-dark-card border-dark-border"
+                        className="bg-background/40 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20"
                       />
                     </div>
                   </div>
@@ -268,15 +268,16 @@ export default function BattleZone() {
                     <Button 
                       variant="outline" 
                       onClick={() => setCreateDialogOpen(false)}
-                      className="bg-dark-card border-dark-border"
+                      className="bg-background/40 border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-500/50"
                     >
                       Cancel
                     </Button>
                     <Button 
-                      className="bg-gradient-to-r from-warning-600 to-danger-600 hover:from-warning-500 hover:to-danger-500"
+                      className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 border border-cyan-500/30 shadow-glow"
                       onClick={handleCreateBattle}
                       disabled={createBattleMutation.isPending}
                     >
+                      <Sword className="h-4 w-4 mr-2" />
                       Create Battle
                     </Button>
                   </DialogFooter>
@@ -285,10 +286,19 @@ export default function BattleZone() {
             </div>
             
             <Tabs defaultValue="active" className="w-full">
-              <TabsList className="bg-dark-card border border-dark-border w-full justify-start mb-6">
-                <TabsTrigger value="active" className="data-[state=active]:bg-primary-600">Active Battles</TabsTrigger>
-                <TabsTrigger value="upcoming" className="data-[state=active]:bg-primary-600">Upcoming</TabsTrigger>
-                <TabsTrigger value="past" className="data-[state=active]:bg-primary-600">Past Battles</TabsTrigger>
+              <TabsList className="bg-background/40 border border-cyan-500/30 w-full justify-start mb-6">
+                <TabsTrigger value="active" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
+                  <Sword className="h-4 w-4 mr-2" />
+                  Active Battles
+                </TabsTrigger>
+                <TabsTrigger value="upcoming" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Upcoming
+                </TabsTrigger>
+                <TabsTrigger value="past" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
+                  <History className="h-4 w-4 mr-2" />
+                  Past Battles
+                </TabsTrigger>
               </TabsList>
               
               {/* Active Battles */}
@@ -427,7 +437,7 @@ export default function BattleZone() {
                             <Button 
                               size="sm" 
                               variant="outline" 
-                              className="bg-dark-card border-dark-border"
+                              className="bg-background/40 border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-cyan-400"
                               onClick={() => handleViewBattle(battle)}
                             >
                               <Eye className="h-3 w-3 mr-1" />
@@ -447,8 +457,9 @@ export default function BattleZone() {
                     <p className="text-sm mb-4">Create a battle and invite others to join!</p>
                     <Button 
                       onClick={() => setCreateDialogOpen(true)}
-                      className="bg-gradient-to-r from-warning-600 to-danger-600 hover:from-warning-500 hover:to-danger-500"
+                      className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 border border-cyan-500/30 shadow-glow"
                     >
+                      <Sword className="h-4 w-4 mr-2" />
                       Create Your First Battle
                     </Button>
                   </div>
@@ -489,7 +500,7 @@ export default function BattleZone() {
                         <div className="flex items-center space-x-2">
                           <Button 
                             variant="outline" 
-                            className="bg-dark-card border-dark-border text-sm"
+                            className="bg-background/40 border-amber-500/30 hover:bg-amber-500/10 hover:border-amber-500/50 text-amber-400 text-sm"
                             onClick={() => handleViewBattle(battle)}
                           >
                             <Eye className="h-3 w-3 mr-1" />
@@ -589,7 +600,7 @@ export default function BattleZone() {
                           )}
                           <Button 
                             variant="outline" 
-                            className="bg-dark-card border-dark-border text-sm"
+                            className="bg-background/40 border-gray-500/30 hover:bg-gray-500/10 hover:border-gray-500/50 text-gray-400 text-sm"
                             onClick={() => handleViewBattle(battle)}
                           >
                             <Eye className="h-3 w-3 mr-1" />
