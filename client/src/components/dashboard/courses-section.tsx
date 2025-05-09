@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getProgressColor, getSubjectIcon, formatTimeSince } from "@/lib/utils";
@@ -25,14 +24,10 @@ export function CoursesSection() {
         <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-40 h-40 rounded-full bg-blue-500/5 filter blur-3xl"></div>
         <div className="absolute right-1/4 bottom-0 w-32 h-32 rounded-full bg-primary/5 filter blur-xl"></div>
         
-        <div className="flex justify-between items-center mb-6 relative z-10">
+        <div className="mb-6 relative z-10">
           <h2 className="text-xl font-bold font-gaming bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-white" style={{
             textShadow: "0 0 10px rgba(6, 182, 212, 0.3)"
-          }}>Continue Learning</h2>
-          <Link href="/courses" className="text-blue-500 hover:text-blue-400 transition-colors duration-300 text-sm flex items-center group">
-            See All
-            <span className="ml-1 transform group-hover:translate-x-1 transition-transform duration-300">→</span>
-          </Link>
+          }}>Learning Content</h2>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -152,14 +147,8 @@ export function CoursesSection() {
                 <div className="w-16 h-16 mb-3 rounded-full bg-background/80 border border-blue-500/40 flex items-center justify-center">
                   <i className="ri-book-open-line text-3xl text-blue-500/80"></i>
                 </div>
-                <p className="text-blue-400/90 font-gaming mb-2">No courses in progress yet</p>
-                <p className="text-sm text-gray-400 max-w-md mb-6">Start your learning journey by browsing available courses</p>
-                <Link href="/courses">
-                  <Button className="bg-background/80 hover:bg-blue-950/80 border border-blue-500/40 hover:border-blue-400/60 text-blue-400 hover:text-blue-300 transition-all duration-300 group">
-                    <span>Browse Courses</span>
-                    <span className="ml-2 transform group-hover:translate-x-1 transition-transform duration-300">→</span>
-                  </Button>
-                </Link>
+                <p className="text-blue-400/90 font-gaming mb-2">Learning content will be available soon</p>
+                <p className="text-sm text-gray-400 max-w-md mb-4">Content is currently being prepared for your journey</p>
               </div>
             </div>
           )}

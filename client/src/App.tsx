@@ -9,7 +9,6 @@ import { RealTimeProvider } from "@/contexts/real-time-context";
 import { ProtectedRoute } from "@/components/protected-route";
 
 import Dashboard from "@/pages/dashboard";
-import Courses from "@/pages/courses";
 import BattleZone from "@/pages/battle-zone";
 import AiTools from "@/pages/ai-tools";
 
@@ -34,7 +33,6 @@ function App() {
               <Switch>
                 <Route path="/" component={HomePage} />
                 <ProtectedRoute path="/dashboard" component={Dashboard} />
-                <ProtectedRoute path="/courses" component={Courses} />
                 <ProtectedRoute path="/battle-zone" component={BattleZone} />
                 <ProtectedRoute path="/ai-tools" component={AiTools} />
                 <ProtectedRoute path="/ai-tools/study-notes" component={StudyNotesGenerator} />

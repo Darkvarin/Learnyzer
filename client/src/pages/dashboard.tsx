@@ -173,29 +173,8 @@ export default function Dashboard() {
           </div>
         </div>
         
-        {/* Three Column Layout for Main Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Courses Section */}
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/0 via-blue-500/10 to-blue-500/0 group-hover:from-blue-500/0 group-hover:via-blue-500/20 group-hover:to-blue-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-            
-            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-blue-500/20 rounded-xl transition-all duration-300 hover:border-blue-500/40 h-full">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-500/0 via-blue-500/40 to-blue-500/0"></div>
-              
-              <div className="p-5">
-                <div className="flex items-center mb-4">
-                  <BookOpen className="h-5 w-5 text-blue-400 mr-2" />
-                  <h3 className="font-bold text-white/90">My Courses</h3>
-                  <div className="h-1.5 w-1.5 rounded-full bg-blue-400 ml-2 animate-pulse"></div>
-                </div>
-                
-                <div className="relative">
-                  <CoursesSection />
-                </div>
-              </div>
-            </div>
-          </div>
-          
+        {/* Two Column Layout for Main Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Battle Zone Section */}
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-purple-500/0 group-hover:from-purple-500/0 group-hover:via-purple-500/20 group-hover:to-purple-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
@@ -217,7 +196,7 @@ export default function Dashboard() {
             </div>
           </div>
           
-          {/* Combined Rank & Streak Section */}
+          {/* Wellness & Streaks Section */}
           <div className="space-y-6">
             {/* Wellness Breaks */}
             <div className="relative group">

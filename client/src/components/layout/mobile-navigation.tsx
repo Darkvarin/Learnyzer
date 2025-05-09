@@ -24,12 +24,6 @@ export function MobileNavigation() {
           label="Dashboard"
         />
         <MobileNavLink 
-          href="/courses" 
-          isActive={location === '/courses'} 
-          icon={<BookOpen className="h-5 w-5" />}
-          label="Courses"
-        />
-        <MobileNavLink 
           href="/battle-zone" 
           isActive={location === '/battle-zone'}
           icon={<Sword className="h-5 w-5" />} 
