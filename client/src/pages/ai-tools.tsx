@@ -43,7 +43,7 @@ export default function AITools() {
     const iconMap: Record<string, React.ReactNode> = {
       "Study Notes Generator": <BookText className="h-6 w-6" />,
       "Answer Checker": <FileCheck className="h-6 w-6" />,
-      "Flashcard Creator": <FlaskConical className="h-6 w-6" />,
+      // "Flashcard Creator": <FlaskConical className="h-6 w-6" />,
       "Performance Analytics": <BarChart className="h-6 w-6" />,
       "AI Tutor": <Brain className="h-6 w-6" />
     };
@@ -56,7 +56,7 @@ export default function AITools() {
     const pathMap: Record<string, string> = {
       "Study Notes Generator": "/ai-tools/study-notes",
       "Answer Checker": "/ai-tools/answer-checker",
-      "Flashcard Creator": "/ai-tools/flashcards",
+      // "Flashcard Creator": "/ai-tools/flashcards",
       "Performance Analytics": "/ai-tools/performance",
       "AI Tutor": "/ai-tutor"
     };
@@ -79,7 +79,7 @@ export default function AITools() {
   const toolCategoryMap: Record<string, string> = {
     "Study Notes Generator": "study",
     "Answer Checker": "assessment",
-    "Flashcard Creator": "study",
+    // "Flashcard Creator": "study",
     "Performance Analytics": "performance",
     "AI Tutor": "assessment"
   };
