@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Medal, BarChart3, Search, ChevronUp, ChevronDown, Users } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -163,69 +163,78 @@ export default function LeaderboardPage() {
 
   // Fetch global leaderboard data
   const { 
-    data: globalLeaderboardData = [], 
+    data: globalLeaderboardResponse, 
     isLoading: isGlobalLoading 
   } = useQuery({
-    queryKey: ['/api/leaderboard/global'],
-    // This would connect to real backend data in a production environment
-    queryFn: async () => {
-      // Mock data for development
-      return Array(30).fill(0).map((_, idx) => ({
-        id: idx + 1,
-        name: ['Raj Kumar', 'Priya Singh', 'Ananya Patel', 'Arjun Sharma', 'Kavya Reddy', 'Vikram Khanna', 'Aisha Kapoor', 'Rohan Gupta', 'Divya Malhotra', 'Sanjay Chopra'][idx % 10],
-        profileImage: '',
-        grade: ['Class 10', 'Class 11', 'Class 12', 'IIT-JEE', 'NEET', 'UPSC', 'Class 9'][idx % 7],
-        level: Math.floor(Math.random() * 30) + 1,
-        xp: Math.floor(Math.random() * 100000),
-        streak: Math.floor(Math.random() * 60),
-        rank: 
-          idx % 25 < 5 ? 'Bronze ' + ((idx % 5) + 1) :
-          idx % 25 < 10 ? 'Silver ' + ((idx % 5) + 1) :
-          idx % 25 < 15 ? 'Gold ' + ((idx % 5) + 1) :
-          idx % 25 < 20 ? 'Platinum ' + ((idx % 5) + 1) :
-          'Diamond ' + ((idx % 5) + 1)
-      }));
-    }
+    queryKey: ['/api/leaderboard'],
+    // Using the real backend data from API
   });
+  
+  // Extract and transform the data for display
+  const globalLeaderboardData = useMemo(() => {
+    if (!globalLeaderboardResponse?.leaderboard) return [];
+    
+    return globalLeaderboardResponse.leaderboard.map((user: any) => ({
+      id: user.id,
+      name: user.name,
+      profileImage: user.profileImage || '',
+      grade: user.grade || '',
+      level: user.level,
+      xp: user.currentXp || 0,
+      streak: user.streakDays || 0,
+      rank: user.rank
+    }));
+  }, [globalLeaderboardResponse]);
 
   // Fetch friends leaderboard data
   const { 
-    data: friendsLeaderboardData = [], 
+    data: friendsLeaderboardResponse, 
     isLoading: isFriendsLoading 
   } = useQuery({
     queryKey: ['/api/leaderboard/friends'],
-    // This would connect to real backend data in a production environment
-    queryFn: async () => {
-      // Mock data for development
-      return Array(8).fill(0).map((_, idx) => ({
-        id: idx + 1,
-        name: ['Raj Kumar', 'Priya Singh', 'Ananya Patel', 'Arjun Sharma', 'Kavya Reddy', 'Vikram Khanna', 'Aisha Kapoor', 'Rohan Gupta'][idx % 8],
-        profileImage: '',
-        grade: ['Class 10', 'Class 11', 'Class 12', 'IIT-JEE', 'NEET', 'UPSC', 'Class 9'][idx % 7],
-        level: Math.floor(Math.random() * 20) + 1,
-        xp: Math.floor(Math.random() * 50000),
-        streak: Math.floor(Math.random() * 30),
-        rank: 
-          idx % 20 < 5 ? 'Bronze ' + ((idx % 5) + 1) :
-          idx % 20 < 10 ? 'Silver ' + ((idx % 5) + 1) :
-          idx % 20 < 15 ? 'Gold ' + ((idx % 5) + 1) :
-          'Platinum ' + ((idx % 5) + 1)
-      }));
-    }
+    // Using the real backend data from API
   });
+  
+  // Extract and transform the data for display
+  const friendsLeaderboardData = useMemo(() => {
+    if (!friendsLeaderboardResponse?.leaderboard) return [];
+    
+    return friendsLeaderboardResponse.leaderboard.map((user: any) => ({
+      id: user.id,
+      name: user.name,
+      profileImage: user.profileImage || '',
+      grade: user.grade || '',
+      level: user.level,
+      xp: user.currentXp || 0,
+      streak: user.streakDays || 0,
+      rank: user.rank
+    }));
+  }, [friendsLeaderboardResponse]);
 
-  const filteredGlobalData = globalLeaderboardData.filter(student => 
+  // Create type for student data
+  type StudentData = {
+    id: number;
+    name: string;
+    profileImage: string;
+    grade: string;
+    level: number;
+    xp: number;
+    streak: number;
+    rank: string;
+  };
+
+  const filteredGlobalData = globalLeaderboardData.filter((student: StudentData) => 
     student.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
     (selectedCategory === 'all' || student.grade === selectedCategory)
   );
 
-  const filteredFriendsData = friendsLeaderboardData.filter(student =>
+  const filteredFriendsData = friendsLeaderboardData.filter((student: StudentData) =>
     student.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
     (selectedCategory === 'all' || student.grade === selectedCategory)
   );
 
-  // Unique categories for filtering
-  const categories = ['all', ...new Set(globalLeaderboardData.map(item => item.grade))];
+  // Unique categories for filtering - use Array.from to handle iteration properly
+  const categories = ['all', ...Array.from(new Set(globalLeaderboardData.map((item: StudentData) => item.grade)))];
 
   return (
     <div className="container max-w-6xl mx-auto pt-4 pb-16">
