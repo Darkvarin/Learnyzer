@@ -181,81 +181,23 @@ export default function HomePage() {
       <section className="relative pt-32 md:pt-36 pb-20">
         {/* Background with Indian educational theme */}
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {/* Educational-themed background with competitive exams */}
+          {/* Dark overlay for better readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-black via-dark-900 to-black opacity-90"></div>
           
-          {/* Indian competitive exams SVG background */}
-          <svg className="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
-            {/* Books and study materials */}
-            <g fill="rgba(6, 182, 212, 0.4)">
-              <path d="M100,400 L200,400 L200,450 L100,450 Z" />
-              <path d="M220,400 L320,400 L320,460 L220,460 Z" />
-              <path d="M340,400 L430,400 L430,455 L340,455 Z" />
-              <path d="M450,400 L530,400 L530,458 L450,458 Z" />
-            </g>
-            
-            {/* Exam acronyms - JEE, NEET, UPSC, CLAT, etc. */}
-            <text x="150" y="150" fontFamily="sans-serif" fontSize="30" fill="rgba(125, 39, 255, 0.4)">JEE</text>
-            <text x="250" y="200" fontFamily="sans-serif" fontSize="30" fill="rgba(6, 182, 212, 0.4)">NEET</text>
-            <text x="350" y="150" fontFamily="sans-serif" fontSize="30" fill="rgba(125, 39, 255, 0.4)">UPSC</text>
-            <text x="450" y="200" fontFamily="sans-serif" fontSize="30" fill="rgba(6, 182, 212, 0.4)">CLAT</text>
-            <text x="550" y="150" fontFamily="sans-serif" fontSize="30" fill="rgba(125, 39, 255, 0.4)">CAT</text>
-            <text x="650" y="200" fontFamily="sans-serif" fontSize="30" fill="rgba(6, 182, 212, 0.4)">GATE</text>
-            <text x="750" y="150" fontFamily="sans-serif" fontSize="30" fill="rgba(125, 39, 255, 0.4)">SSC</text>
-            
-            {/* Chemistry structures */}
-            <g fill="none" stroke="rgba(6, 182, 212, 0.3)" strokeWidth="2">
-              <circle cx="150" cy="250" r="20" />
-              <circle cx="180" cy="280" r="20" />
-              <circle cx="120" cy="280" r="20" />
-              <line x1="150" y1="230" x2="150" y2="270" />
-              <line x1="165" y1="265" x2="135" y2="265" />
-            </g>
-            
-            {/* Math equations and symbols */}
-            <text x="600" y="280" fontFamily="sans-serif" fontSize="20" fill="rgba(125, 39, 255, 0.4)">y = mx + c</text>
-            <text x="700" y="320" fontFamily="sans-serif" fontSize="20" fill="rgba(6, 182, 212, 0.4)">E = mc²</text>
-            <text x="500" y="350" fontFamily="sans-serif" fontSize="20" fill="rgba(125, 39, 255, 0.4)">∫ f(x) dx</text>
-            <text x="350" y="320" fontFamily="sans-serif" fontSize="20" fill="rgba(6, 182, 212, 0.4)">∑ n²</text>
-            
-            {/* Physics diagrams */}
-            <g fill="none" stroke="rgba(125, 39, 255, 0.3)" strokeWidth="2">
-              <line x1="800" y1="300" x2="900" y2="300" />
-              <line x1="850" y1="300" x2="850" y2="350" />
-              <circle cx="850" cy="270" r="30" />
-            </g>
-            
-            {/* Geography/Map outline of India (simplified) */}
-            <path d="M750,100 C780,120 800,150 810,200 C820,250 830,280 850,300 C870,320 880,350 870,380 C860,410 840,430 810,440 C780,450 750,440 720,420 C690,400 670,380 650,350 C630,320 620,290 630,260 C640,230 660,210 690,200 C720,190 740,150 750,100 Z" 
-              fill="none" stroke="rgba(6, 182, 212, 0.3)" strokeWidth="3" />
-          </svg>
-          
-          {/* Modern tech elements - Glowing circles for tech-education */}
-          <div className="absolute -right-20 top-1/4 w-64 h-64 rounded-full" style={{
-            border: "1px solid rgba(6, 182, 212, 0.3)",
-            boxShadow: "0 0 15px rgba(6, 182, 212, 0.1)"
-          }}></div>
-          <div className="absolute -right-40 top-1/4 w-96 h-96 rounded-full" style={{
-            border: "1px solid rgba(125, 39, 255, 0.2)",
-            boxShadow: "0 0 20px rgba(125, 39, 255, 0.05)"
-          }}></div>
+          {/* Indian educational background image */}
+          <div 
+            className="absolute inset-0 bg-center bg-cover opacity-50" 
+            style={{ 
+              backgroundImage: "url('/images/indian-education-bg.svg')",
+              backgroundSize: "cover", 
+              backgroundPosition: "center",
+              backgroundBlendMode: "luminosity"
+            }}
+          ></div>
           
           {/* Energy lines suggesting advancement and technology */}
           <div className="absolute top-0 right-1/4 w-[1px] h-full bg-gradient-to-b from-transparent via-cyan-500/30 to-transparent"></div>
           <div className="absolute top-0 left-1/3 w-[1px] h-full bg-gradient-to-b from-transparent via-primary/20 to-transparent"></div>
-          
-          {/* Tech circuit lines with educational elements */}
-          <svg className="absolute top-0 left-0 w-full h-full opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M0,0 L30,10 L70,10 L100,0" stroke="rgba(6, 182, 212, 0.5)" strokeWidth="0.2" fill="none" />
-            <path d="M0,20 L40,30 L60,30 L100,20" stroke="rgba(125, 39, 255, 0.3)" strokeWidth="0.2" fill="none" />
-            <path d="M0,40 L35,50 L65,50 L100,40" stroke="rgba(6, 182, 212, 0.3)" strokeWidth="0.2" fill="none" />
-            <path d="M0,60 L30,70 L70,70 L100,60" stroke="rgba(6, 182, 212, 0.4)" strokeWidth="0.2" fill="none" />
-            <path d="M0,80 L25,90 L75,90 L100,80" stroke="rgba(125, 39, 255, 0.3)" strokeWidth="0.2" fill="none" />
-            <path d="M20,0 L20,100" stroke="rgba(125, 39, 255, 0.2)" strokeWidth="0.1" fill="none" />
-            <path d="M40,0 L40,100" stroke="rgba(6, 182, 212, 0.2)" strokeWidth="0.1" fill="none" />
-            <path d="M60,0 L60,100" stroke="rgba(6, 182, 212, 0.2)" strokeWidth="0.1" fill="none" />
-            <path d="M80,0 L80,100" stroke="rgba(125, 39, 255, 0.2)" strokeWidth="0.1" fill="none" />
-          </svg>
           
           {/* Corner decorations */}
           <div className="absolute top-20 right-20 w-40 h-40 border-t-2 border-r-2 border-cyan-500/20"></div>
