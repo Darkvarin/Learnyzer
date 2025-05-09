@@ -101,7 +101,7 @@ export default function AnswerChecker() {
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6">
+      <main className="flex-1 container mx-auto px-4 pt-24 pb-20 md:pb-6">
         <div className="flex items-center gap-2 mb-6">
           <Link href="/ai-tools">
             <Button variant="outline" size="icon" className="h-8 w-8">
@@ -114,7 +114,10 @@ export default function AnswerChecker() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Left column - Tool info */}
           <div className="md:col-span-1">
-            <Card className="bg-dark-surface border-dark-border h-full">
+            <Card className="bg-background/60 border border-cyan-500/30 h-full relative overflow-hidden backdrop-blur-sm">
+              {/* Corner decorations */}
+              <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/60"></div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/60"></div>
               <CardHeader>
                 <div className="w-12 h-12 bg-green-600/20 rounded-lg flex items-center justify-center mb-4">
                   <FileCheck className="text-green-400 h-6 w-6" />
@@ -168,7 +171,10 @@ export default function AnswerChecker() {
           
           {/* Right column - Answer Checker */}
           <div className="md:col-span-2">
-            <Card className="bg-dark-surface border-dark-border">
+            <Card className="bg-background/60 border border-cyan-500/30 relative overflow-hidden backdrop-blur-sm">
+              {/* Corner decorations */}
+              <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/60"></div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/60"></div>
               <CardHeader>
                 <CardTitle>Check Your Answer</CardTitle>
                 <CardDescription>
@@ -189,10 +195,10 @@ export default function AnswerChecker() {
                           Subject
                         </label>
                         <Select value={subject} onValueChange={setSubject}>
-                          <SelectTrigger className="bg-dark-card border-dark-border">
+                          <SelectTrigger className="bg-background/60 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20">
                             <SelectValue placeholder="Select a subject" />
                           </SelectTrigger>
-                          <SelectContent className="bg-dark-card border-dark-border">
+                          <SelectContent className="bg-background/95 border-cyan-500/30">
                             <SelectItem value="mathematics">Mathematics</SelectItem>
                             <SelectItem value="physics">Physics</SelectItem>
                             <SelectItem value="chemistry">Chemistry</SelectItem>
@@ -215,7 +221,7 @@ export default function AnswerChecker() {
                           placeholder="Enter the question you're answering..."
                           value={question}
                           onChange={(e) => setQuestion(e.target.value)}
-                          className="bg-dark-card border-dark-border min-h-[100px]"
+                          className="bg-background/60 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20 min-h-[100px]"
                           required
                         />
                       </div>
@@ -229,7 +235,7 @@ export default function AnswerChecker() {
                           placeholder="Enter your answer here..."
                           value={answer}
                           onChange={(e) => setAnswer(e.target.value)}
-                          className="bg-dark-card border-dark-border min-h-[150px]"
+                          className="bg-background/60 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20 min-h-[150px]"
                           required
                         />
                       </div>
@@ -237,7 +243,7 @@ export default function AnswerChecker() {
                       <div className="pt-4">
                         <Button
                           type="submit"
-                          className="w-full bg-green-600 hover:bg-green-500 text-white"
+                          className="w-full bg-cyan-500/80 hover:bg-cyan-500 text-white transform transition-all duration-300 hover:translate-y-[-2px] relative overflow-hidden border border-cyan-400/20"
                           disabled={checkAnswerMutation.isPending}
                         >
                           {checkAnswerMutation.isPending ? (
