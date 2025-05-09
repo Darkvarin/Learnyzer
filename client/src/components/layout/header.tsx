@@ -26,7 +26,6 @@ export function Header() {
   useEffect(() => {
     const path = window.location.pathname;
     if (path.includes("/dashboard")) setActiveLink("dashboard");
-    else if (path.includes("/courses")) setActiveLink("courses");
     else if (path.includes("/battle-zone")) setActiveLink("battle-zone");
     else if (path.includes("/ai-tutor")) setActiveLink("ai-tutor");
     else if (path.includes("/ai-tools")) setActiveLink("ai-tools");
@@ -142,13 +141,6 @@ export function Header() {
                   setActive={() => setActiveLink("dashboard")}
                 >
                   Dashboard
-                </NavLink>
-                <NavLink 
-                  href="/courses" 
-                  active={activeLink === "courses"}
-                  setActive={() => setActiveLink("courses")}
-                >
-                  Courses
                 </NavLink>
                 <NavLink 
                   href="/battle-zone" 

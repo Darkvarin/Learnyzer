@@ -175,22 +175,22 @@ export default function Dashboard() {
         
         {/* Two Column Layout for Main Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Battle Zone Section */}
+          {/* Rank Section */}
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-purple-500/0 group-hover:from-purple-500/0 group-hover:via-purple-500/20 group-hover:to-purple-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 group-hover:from-emerald-500/0 group-hover:via-emerald-500/20 group-hover:to-emerald-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
             
-            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-purple-500/20 rounded-xl transition-all duration-300 hover:border-purple-500/40 h-full">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-purple-500/0 via-purple-500/40 to-purple-500/0"></div>
+            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-emerald-500/20 rounded-xl transition-all duration-300 hover:border-emerald-500/40 h-full">
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500/0 via-emerald-500/40 to-emerald-500/0"></div>
               
               <div className="p-5">
                 <div className="flex items-center mb-4">
-                  <Zap className="h-5 w-5 text-purple-400 mr-2" />
-                  <h3 className="font-bold text-white/90">Battle Zone</h3>
-                  <div className="h-1.5 w-1.5 rounded-full bg-purple-400 ml-2 animate-pulse"></div>
+                  <Award className="h-5 w-5 text-emerald-400 mr-2" />
+                  <h3 className="font-bold text-white/90">Rank Progress</h3>
+                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 ml-2 animate-pulse"></div>
                 </div>
                 
                 <div className="relative">
-                  <BattleZoneSection />
+                  <RankSection />
                 </div>
               </div>
             </div>
@@ -244,22 +244,22 @@ export default function Dashboard() {
         
         {/* Bottom Two Column Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          {/* Rank Section */}
+          {/* Battle Zone Section */}
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 group-hover:from-emerald-500/0 group-hover:via-emerald-500/20 group-hover:to-emerald-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-purple-500/0 group-hover:from-purple-500/0 group-hover:via-purple-500/20 group-hover:to-purple-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
             
-            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-emerald-500/20 rounded-xl transition-all duration-300 hover:border-emerald-500/40">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500/0 via-emerald-500/40 to-emerald-500/0"></div>
+            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-purple-500/20 rounded-xl transition-all duration-300 hover:border-purple-500/40">
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-purple-500/0 via-purple-500/40 to-purple-500/0"></div>
               
               <div className="p-5">
                 <div className="flex items-center mb-4">
-                  <Award className="h-5 w-5 text-emerald-400 mr-2" />
-                  <h3 className="font-bold text-white/90">Rank Progress</h3>
-                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 ml-2 animate-pulse"></div>
+                  <Zap className="h-5 w-5 text-purple-400 mr-2" />
+                  <h3 className="font-bold text-white/90">Battle Zone</h3>
+                  <div className="h-1.5 w-1.5 rounded-full bg-purple-400 ml-2 animate-pulse"></div>
                 </div>
                 
                 <div className="relative">
-                  <RankSection />
+                  <BattleZoneSection />
                 </div>
               </div>
             </div>
