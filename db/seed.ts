@@ -110,10 +110,6 @@ async function seed() {
     console.log("Seeding course categories...");
     const courseCategories = [
       {
-        name: "School (Classes 3-12)",
-        description: "Curriculum for elementary to high school students following CBSE, ICSE, and state boards"
-      },
-      {
         name: "Engineering Entrance",
         description: "Preparation material for JEE Main, JEE Advanced, and other engineering entrance exams"
       },
@@ -130,8 +126,8 @@ async function seed() {
         description: "Preparation material for CLAT and other law entrance exams"
       },
       {
-        name: "Higher Education",
-        description: "University-level courses for various degree programs"
+        name: "Central University Entrance",
+        description: "Preparation material for CUET and other university entrance exams"
       }
     ];
     
