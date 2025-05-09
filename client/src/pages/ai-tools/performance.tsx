@@ -41,7 +41,7 @@ export default function PerformanceAnalytics() {
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6">
+      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 pt-24">
         <div className="flex items-center gap-4 mb-6">
           <Link href="/ai-tools">
             <Button variant="ghost" size="icon" className="h-9 w-9">
