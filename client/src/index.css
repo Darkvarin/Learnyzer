@@ -1548,6 +1548,69 @@
   animation: digital-pulse 3s ease-in-out infinite;
 }
 
+/* Pulse width animation for nav elements */
+.animate-pulse-width {
+  animation: pulse-width 3s ease-in-out infinite;
+}
+
+@keyframes pulse-width {
+  0%, 100% { width: 70%; opacity: 0.5; left: 15%; }
+  50% { width: 100%; opacity: 0.9; left: 0; }
+}
+
+/* High-tech scanline effect for cyberpunk styling */
+.scanline {
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 0.5%,
+    transparent 1%
+  );
+  background-size: 100% 8px;
+  animation: scanline 10s linear infinite;
+}
+
+@keyframes scanline {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100%; }
+}
+
+/* Digital noise background */
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+/* Holographic glow effect */
+.holographic-glow {
+  position: relative;
+}
+
+.holographic-glow::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: inherit;
+  background: linear-gradient(45deg, 
+    rgba(14, 165, 233, 0) 0%, 
+    rgba(14, 165, 233, 0.6) 30%, 
+    rgba(124, 58, 237, 0.6) 70%, 
+    rgba(14, 165, 233, 0) 100%
+  );
+  filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.holographic-glow:hover::before {
+  opacity: 1;
+}
+
 .animate-power-pulse {
   animation: power-pulse 4s infinite ease-in-out;
 }

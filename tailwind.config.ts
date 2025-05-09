@@ -126,10 +126,32 @@ export default {
             height: "0",
           },
         },
+        "floating": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "digital-float": {
+          "0%, 100%": { transform: "translateY(0) rotate(0)" },
+          "33%": { transform: "translateY(-3px) rotate(1deg)" },
+          "66%": { transform: "translateY(2px) rotate(-1deg)" },
+        },
+        "glow-intense": {
+          "0%, 100%": { 
+            boxShadow: "0 0 5px rgba(14, 165, 233, 0.7), 0 0 10px rgba(14, 165, 233, 0.5)",
+            opacity: 0.9
+          },
+          "50%": { 
+            boxShadow: "0 0 10px rgba(14, 165, 233, 1), 0 0 20px rgba(14, 165, 233, 0.8), 0 0 30px rgba(14, 165, 233, 0.4)",
+            opacity: 1
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "floating": "floating 6s ease-in-out infinite",
+        "digital-float": "digital-float 10s ease infinite",
+        "glow-intense": "glow-intense 3s ease-in-out infinite",
       },
       backgroundImage: {
         'gradient-conic': 'conic-gradient(var(--tw-gradient-stops))',
@@ -146,5 +168,37 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [
+    require("tailwindcss-animate"), 
+    require("@tailwindcss/typography"),
+    function ({ addUtilities }) {
+      const newUtilities = {
+        '.perspective-400': {
+          perspective: '400px',
+        },
+        '.perspective-800': {
+          perspective: '800px',
+        },
+        '.perspective-1200': {
+          perspective: '1200px',
+        },
+        '.preserve-3d': {
+          transformStyle: 'preserve-3d',
+        },
+        '.rotate-y-10': {
+          transform: 'rotateY(10deg)',
+        },
+        '.rotate-y-neg-10': {
+          transform: 'rotateY(-10deg)',
+        },
+        '.translate-z-5': {
+          transform: 'translateZ(5px)',
+        },
+        '.translate-z-10': {
+          transform: 'translateZ(10px)',
+        },
+      }
+      addUtilities(newUtilities)
+    },
+  ],
 } satisfies Config;

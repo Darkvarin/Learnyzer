@@ -20,6 +20,7 @@ export function Header() {
   const isMobile = useMobile();
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeLink, setActiveLink] = useState("");
+  const [hoverEffect, setHoverEffect] = useState(false);
 
   // Determine active link based on current path
   useEffect(() => {
@@ -64,43 +65,74 @@ export function Header() {
       });
     }
   }, [logoutMutation, navigate, toast]);
+  
+  // Trigger hover effects periodically for ambient animation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHoverEffect(true);
+      setTimeout(() => setHoverEffect(false), 1000);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'backdrop-blur-xl' : 'bg-transparent'} h-[70px]`}>
-      {/* Enhanced Cyberpunk Background Elements */}
-      <div className="absolute inset-0 z-[-1] bg-black/80 backdrop-blur-lg"></div>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'backdrop-blur-xl' : ''} h-[80px]`}>
+      {/* Holographic Background */}
+      <div className="absolute inset-0 z-[-2] bg-gradient-to-r from-black via-blue-950/90 to-black"></div>
+      
+      {/* Active Scan Effect - Horizontal Line */}
+      <div 
+        className="absolute h-[2px] z-[-1] left-0 right-0" 
+        style={{
+          top: `${Math.sin(Date.now() / 2000) * 30 + 35}px`,
+          background: 'linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.8), transparent)',
+          boxShadow: '0 0 20px 5px rgba(14, 165, 233, 0.5)',
+          opacity: 0.7
+        }}
+      ></div>
+      
+      {/* Animated Cyber Grid */}
+      <div className="absolute inset-0 z-[-1] cyber-circuit-pattern opacity-20 animate-data-stream"></div>
+      
+      {/* Digital Noise Overlay */}
+      <div className="absolute inset-0 z-[-1] bg-noise opacity-5"></div>
+      
+      {/* Glowing Border when scrolled */}
       {isScrolled && (
-        <div className="absolute inset-0 z-[-1] border-b-2 border-cyan-500/40 shadow-[0_4px_12px_-5px_rgba(14,165,233,0.5)]"></div>
+        <div className="absolute inset-x-0 bottom-0 h-[3px] z-10">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-cyan-500 to-blue-600/0 animate-digital-pulse"></div>
+          <div className="absolute inset-0 blur-[8px] bg-gradient-to-r from-blue-600/0 via-cyan-400 to-blue-600/0 animate-digital-pulse"></div>
+        </div>
       )}
       
-      {/* Enhanced Scan line effects */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-800/50 via-cyan-500/70 to-blue-800/50"></div>
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-800/50 via-cyan-500/70 to-blue-800/50"></div>
-
-      {/* Digital circuit patterns */}
-      <div className="absolute inset-0 cyber-data-pattern opacity-10 z-[-1]"></div>
-      
-      {/* Enhanced Cyberpunk corner decorations */}
-      <div className="absolute top-0 left-0 w-20 h-20 z-10 pointer-events-none">
-        <div className="absolute top-2 left-2 w-10 h-10" style={{
-          clipPath: "polygon(0 0, 100% 0, 100% 20%, 20% 20%, 20% 100%, 0 100%)",
-          border: "2px solid rgba(14, 165, 233, 0.5)",
-          borderRadius: "2px",
-          boxShadow: "0 0 8px rgba(14, 165, 233, 0.3)"
-        }}></div>
-      </div>
-      <div className="absolute top-0 right-0 w-20 h-20 z-10 pointer-events-none">
-        <div className="absolute top-2 right-2 w-10 h-10" style={{
-          clipPath: "polygon(0 0, 100% 0, 100% 100%, 80% 100%, 80% 20%, 0 20%)",
-          border: "2px solid rgba(14, 165, 233, 0.5)",
-          borderRadius: "2px",
-          boxShadow: "0 0 8px rgba(14, 165, 233, 0.3)"
-        }}></div>
+      {/* Vibrant Corner Decorations */}
+      <div className="absolute top-0 left-0 w-24 h-24 opacity-70 pointer-events-none">
+        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0L60 0L60 6L6 6L6 60L0 60L0 0Z" fill="rgba(14, 165, 233, 0.8)" className="animate-cyber-flicker"/>
+          <path d="M0 0L40 0L40 3L3 3L3 40L0 40L0 0Z" fill="rgba(124, 58, 237, 0.8)" className="animate-cyber-flicker" style={{animationDelay: '0.5s'}}/>
+          <circle cx="70" cy="10" r="2" fill="rgba(14, 165, 233, 0.9)" className="animate-glow-pulse"/>
+          <circle cx="80" cy="20" r="1.5" fill="rgba(124, 58, 237, 0.9)" className="animate-glow-pulse" style={{animationDelay: '0.7s'}}/>
+        </svg>
       </div>
       
-      {/* Energy Node Points */}
-      <div className="absolute top-2 left-1/4 w-1.5 h-1.5 rounded-full bg-cyan-500/80 animate-glow-pulse"></div>
-      <div className="absolute top-2 right-1/4 w-1.5 h-1.5 rounded-full bg-blue-500/80 animate-glow-pulse" style={{animationDelay: '1s'}}></div>
+      <div className="absolute top-0 right-0 w-24 h-24 opacity-70 pointer-events-none">
+        <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 0L40 0L40 6L94 6L94 60L100 60L100 0Z" fill="rgba(14, 165, 233, 0.8)" className="animate-cyber-flicker"/>
+          <path d="M100 0L60 0L60 3L97 3L97 40L100 40L100 0Z" fill="rgba(124, 58, 237, 0.8)" className="animate-cyber-flicker" style={{animationDelay: '0.5s'}}/>
+          <circle cx="30" cy="10" r="2" fill="rgba(14, 165, 233, 0.9)" className="animate-glow-pulse"/>
+          <circle cx="20" cy="20" r="1.5" fill="rgba(124, 58, 237, 0.9)" className="animate-glow-pulse" style={{animationDelay: '0.7s'}}/>
+        </svg>
+      </div>
+      
+      {/* Digital Data Nodes along edges */}
+      <div className="absolute top-[10px] left-[40%] w-2 h-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 animate-glow-pulse shadow-[0_0_10px_rgba(14,165,233,0.8)]"></div>
+      <div className="absolute top-[15px] left-[60%] w-1.5 h-1.5 rounded-full bg-gradient-to-r from-purple-500 to-fuchsia-500 animate-glow-pulse shadow-[0_0_8px_rgba(124,58,237,0.8)]" style={{animationDelay: '0.8s'}}></div>
+      <div className="absolute bottom-[10px] left-[20%] w-1.5 h-1.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 animate-glow-pulse shadow-[0_0_8px_rgba(14,165,233,0.8)]" style={{animationDelay: '1.2s'}}></div>
+      <div className="absolute bottom-[12px] left-[80%] w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-fuchsia-500 animate-glow-pulse shadow-[0_0_10px_rgba(124,58,237,0.8)]" style={{animationDelay: '0.4s'}}></div>
+      
+      {/* Scanline Effect */}
+      <div className="absolute inset-0 z-[2] scanline opacity-10 pointer-events-none"></div>
       
       <div className="container mx-auto px-4 py-3 h-full">
         <div className="flex items-center justify-between h-full">
@@ -273,7 +305,7 @@ export function Header() {
   );
 }
 
-// Custom navigation link with Enhanced Cyberpunk styling
+// Futuristic Holographic NavLink for cyberpunk styling
 function NavLink({ 
   href, 
   children, 
@@ -289,55 +321,73 @@ function NavLink({
     <Link 
       href={href} 
       onClick={setActive}
-      className={`relative px-4 py-2 mx-1 group overflow-hidden ${active ? 'text-white' : 'text-cyan-300/70 hover:text-white'} transition-colors`}
+      className={`relative px-5 py-2 mx-1 group perspective-800 ${
+        active ? 'text-white' : 'text-cyan-300/80 hover:text-white'
+      }`}
     >
-      {/* Text content */}
-      <span className="relative z-10 font-gaming text-sm" style={{
-        textShadow: active ? "0 0 5px rgba(14, 165, 233, 0.7)" : "none",
-        letterSpacing: "0.5px"
-      }}>{children}</span>
-      
-      {/* Active state background with Enhanced Cyberpunk styling */}
-      {active && (
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-950/50 to-blue-900/40 rounded-md overflow-hidden border border-cyan-500/40 shadow-[0_0_8px_rgba(14,165,233,0.3)]">
-          {/* Digital circuit corners */}
-          <div className="absolute top-0 left-0 w-2 h-2" style={{
-            clipPath: "polygon(0 0, 100% 0, 0 100%)",
-            background: "rgba(14, 165, 233, 0.5)"
-          }}></div>
-          <div className="absolute bottom-0 right-0 w-2 h-2" style={{
-            clipPath: "polygon(100% 100%, 0 100%, 100% 0)",
-            background: "rgba(14, 165, 233, 0.5)"
-          }}></div>
-          
-          {/* Digital energy nodes */}
-          <div className="absolute top-1 right-2 w-1 h-1 rounded-full bg-cyan-500/80 animate-glow-pulse"></div>
-          <div className="absolute bottom-1 left-2 w-1 h-1 rounded-full bg-blue-500/80 animate-glow-pulse" style={{animationDelay: '0.8s'}}></div>
-          
-          {/* Cyberpunk circuit pattern */}
-          <div className="absolute inset-0 cyber-data-pattern opacity-10"></div>
+      {/* Main container with 3D effects */}
+      <div className={`relative transition-all duration-300 transform ${
+        active ? 'scale-105' : 'group-hover:scale-105'
+      }`}>
+        {/* Text content with holographic glow */}
+        <span 
+          className="relative z-20 font-gaming tracking-wider text-sm inline-block" 
+          style={{
+            textShadow: active 
+              ? "0 0 5px rgba(14, 165, 233, 0.9), 0 0 10px rgba(124, 58, 237, 0.5)"
+              : "0 0 2px rgba(14, 165, 233, 0.3)",
+            letterSpacing: "1px",
+            transform: active ? "translateZ(5px)" : "",
+            transition: "transform 0.3s ease, text-shadow 0.3s ease"
+          }}
+        >
+          {children}
+        </span>
+        
+        {/* Active state holographic container */}
+        {active && (
+          <>
+            {/* Holographic background */}
+            <div className="absolute inset-0 z-0 rounded-md overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-blue-950/40 to-black/50"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/5 to-purple-500/5"></div>
+              
+              {/* Glowing border */}
+              <div className="absolute inset-0 border border-cyan-500/50 rounded-md"></div>
+              <div className="absolute inset-[-1px] border border-purple-500/30 rounded-md animate-digital-pulse"></div>
+              
+              {/* Digital scan line */}
+              <div className="absolute h-[1px] left-0 right-0 bg-gradient-to-r from-transparent via-cyan-400/90 to-transparent animate-pulse-width"></div>
+              
+              {/* Circuit pattern */}
+              <div className="absolute inset-0 cyber-circuit-pattern opacity-10"></div>
+            </div>
+            
+            {/* High-tech corner elements */}
+            <div className="absolute left-0 top-0 w-2 h-2 border-l-2 border-t-2 border-cyan-500/70"></div>
+            <div className="absolute right-0 top-0 w-2 h-2 border-r-2 border-t-2 border-purple-500/70"></div>
+            <div className="absolute left-0 bottom-0 w-2 h-2 border-l-2 border-b-2 border-cyan-500/70"></div>
+            <div className="absolute right-0 bottom-0 w-2 h-2 border-r-2 border-b-2 border-purple-500/70"></div>
+            
+            {/* Animated data points */}
+            <span className="absolute w-1 h-1 rounded-full bg-cyan-400 top-0 right-[6px] animate-glow-pulse"></span>
+            <span className="absolute w-1 h-1 rounded-full bg-purple-400 bottom-0 left-[6px] animate-glow-pulse" style={{animationDelay: '0.5s'}}></span>
+          </>
+        )}
+        
+        {/* Hover effects */}
+        <div className={`absolute bottom-0 left-0 right-0 h-[2px] transform transition-all duration-300 overflow-hidden ${
+          active ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+        }`}>
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500 to-cyan-500/0 animate-pulse-width"></div>
         </div>
-      )}
-      
-      {/* Enhanced hover effect - glowing circuit border */}
-      <div className="absolute -bottom-[1px] left-0 right-0">
-        <div className={`h-[2px] bg-gradient-to-r from-cyan-900/60 via-cyan-500/80 to-cyan-900/60 transform transition-all duration-300 ${
-          active ? 'w-full shadow-[0_0_8px_rgba(14,165,233,0.5)]' : 'w-0 group-hover:w-full'
-        }`}></div>
-      </div>
-      
-      {/* Top accent line on hover */}
-      <div className="absolute -top-[1px] left-1/4 right-1/4">
-        <div className={`h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent transform transition-all duration-300 ${
-          active ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-        }`}></div>
-      </div>
-      
-      {/* Digital readout line on hover */}
-      <div className="absolute top-0 bottom-0 right-0 w-[1px]">
-        <div className={`h-full bg-gradient-to-b from-cyan-900/0 via-cyan-500/40 to-cyan-900/0 transform transition-all duration-300 ${
-          active ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-        }`}></div>
+        
+        {/* Hover glow effect */}
+        <div className={`absolute -inset-[2px] z-[-1] rounded-md transition-opacity duration-300 ${
+          active ? 'opacity-100' : 'opacity-0 group-hover:opacity-70'
+        }`}>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-cyan-500/30 to-blue-600/0 rounded-md blur-[4px]"></div>
+        </div>
       </div>
     </Link>
   );
