@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import PageHeader from '@/components/layout/page-header';
+// Import PageHeader as a relative path since it might not be properly aliased
+import PageHeader from '../components/layout/page-header';
 
 function LeaderboardTable({ data, isLoading }: { data: any[]; isLoading: boolean }) {
   const [sortField, setSortField] = useState('rank');
@@ -237,19 +238,7 @@ export default function LeaderboardPage() {
     rank: string;
   };
 
-  // Type for API response
-  interface LeaderboardResponse {
-    leaderboard: Array<{
-      id: number;
-      name: string;
-      profileImage: string | null;
-      grade: string | null;
-      level: number;
-      currentXp: number;
-      streakDays: number;
-      rank: string;
-    }>;
-  }
+  // Student data type declaration used above
 
   const filteredIndianData = indianLeaderboardData.filter((student: StudentData) => 
     student.name.toLowerCase().includes(searchQuery.toLowerCase()) &&

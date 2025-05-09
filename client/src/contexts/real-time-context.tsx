@@ -124,6 +124,66 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<NotificationMessage[]>([]);
   const socketRef = useRef<WebSocket | null>(null);
 
+  // Function to create a WebSocket and attach event handlers
+  const createWebSocketConnection = (wsUrl: string, userId: number) => {
+    const ws = new WebSocket(wsUrl);
+    
+    ws.onopen = () => {
+      console.log('Real-time WebSocket connection established');
+      setConnected(true);
+      setReconnecting(false);
+      
+      // Send authentication message
+      ws.send(JSON.stringify({
+        type: 'auth',
+        userId: userId,
+        timestamp: new Date().toISOString()
+      }));
+    };
+    
+    ws.onmessage = (event: MessageEvent) => {
+      try {
+        const data: RealTimeUpdateMessage = JSON.parse(event.data);
+        
+        // Ignore messages not meant for this user
+        if ('userId' in data && data.userId !== userId) return;
+        
+        // Process the message based on its type
+        processMessage(data);
+      } catch (error) {
+        console.error('Error processing real-time message:', error);
+      }
+    };
+    
+    ws.onerror = (error) => {
+      console.error('Real-time WebSocket error:', error);
+    };
+    
+    // Handle connection close and trigger reconnection
+    ws.onclose = () => {
+      console.log('Real-time WebSocket connection closed');
+      setConnected(false);
+      
+      // Don't attempt to reconnect if the user has logged out
+      if (!userId) return;
+      
+      // Set reconnecting state and attempt to reconnect after a delay
+      setReconnecting(true);
+      
+      // Use a timeout to handle reconnection
+      setTimeout(() => {
+        console.log('Attempting to reconnect to real-time service...');
+        // Only try to reconnect if we're still in CLOSED state
+        if (socketRef.current === ws || socketRef.current === null || 
+            socketRef.current.readyState === WebSocket.CLOSED) {
+          socketRef.current = createWebSocketConnection(wsUrl, userId);
+        }
+      }, 3000);
+    };
+    
+    return ws;
+  };
+
   // Setup WebSocket connection
   useEffect(() => {
     if (!user) {
@@ -133,6 +193,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
         socketRef.current = null;
       }
       setConnected(false);
+      setReconnecting(false);
       return;
     }
 
@@ -140,124 +201,14 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/ws`;
     
-    socketRef.current = new WebSocket(wsUrl);
+    // Create initial connection
+    socketRef.current = createWebSocketConnection(wsUrl, user.id);
     
-    socketRef.current.onopen = () => {
-      console.log('Real-time WebSocket connection established');
-      setConnected(true);
-      
-      // Send authentication message
-      if (socketRef.current && user) {
-        socketRef.current.send(JSON.stringify({
-          type: 'auth',
-          userId: user.id,
-          timestamp: new Date().toISOString()
-        }));
-      }
-    };
-    
-    socketRef.current.onclose = () => {
-      console.log('Real-time WebSocket connection closed');
-      setConnected(false);
-      
-      // Attempt to reconnect after a delay if user is still logged in
-      if (user) {
-        // Set reconnecting state to true when we start the reconnection process
-        setReconnecting(true);
-        
-        setTimeout(() => {
-          console.log('Attempting to reconnect to real-time service...');
-          // Re-establish connection if the component is still mounted
-          if (socketRef.current === null || socketRef.current.readyState === WebSocket.CLOSED) {
-            const newWs = new WebSocket(wsUrl);
-            socketRef.current = newWs;
-            
-            newWs.onopen = () => {
-              console.log('Real-time WebSocket reconnected');
-              setConnected(true);
-              setReconnecting(false); // Reset reconnecting state on successful connection
-              
-              // Re-authenticate
-              newWs.send(JSON.stringify({
-                type: 'auth',
-                userId: user.id,
-                timestamp: new Date().toISOString()
-              }));
-              
-              // Send a notification about reconnection
-              sendNotification({
-                title: 'Connection Restored',
-                message: 'Your connection to LearnityX has been restored.',
-                severity: 'info'
-              });
-            };
-            
-            // Set up the event handlers for the new connection
-            // Create a new onmessage handler instead of copying the reference which could cause memory leaks
-            newWs.onmessage = (event: MessageEvent) => {
-              try {
-                const data: RealTimeUpdateMessage = JSON.parse(event.data);
-                
-                // Ignore messages not meant for this user
-                if ('userId' in data && data.userId !== user.id) return;
-                
-                // Process the message based on its type
-                processMessage(data);
-                
-              } catch (error) {
-                console.error('Error processing real-time message:', error);
-              }
-            };
-            
-            // Create a new onerror handler
-            newWs.onerror = (error) => {
-              console.error('Real-time WebSocket error:', error);
-            };
-            newWs.onclose = () => {
-              console.log('Real-time WebSocket reconnection failed');
-              setReconnecting(false); // Reset reconnecting state if we failed to reconnect
-              // Don't chain to the original onclose handler to avoid circular reference
-              // Just reimplement the necessary part of the reconnection logic
-              if (user) {
-                setTimeout(() => {
-                  console.log('Attempting to reconnect to real-time service again...');
-                  if (socketRef.current === null || socketRef.current.readyState === WebSocket.CLOSED) {
-                    // Try to reconnect again...
-                    // The code will eventually retry automatically
-                  }
-                }, 5000); // Increased timeout to avoid too frequent reconnection attempts
-              }
-            };
-          } else {
-            // If we're already reconnected, reset the state
-            setReconnecting(false);
-          }
-        }, 3000); // Wait 3 seconds before attempting to reconnect
-      }
-    };
-    
-    socketRef.current.onerror = (error) => {
-      console.error('Real-time WebSocket error:', error);
-    };
-    
-    socketRef.current.onmessage = (event: MessageEvent) => {
-      try {
-        const data: RealTimeUpdateMessage = JSON.parse(event.data);
-        
-        // Ignore messages not meant for this user
-        if ('userId' in data && data.userId !== user.id) return;
-        
-        // Process the message based on its type
-        processMessage(data);
-        
-      } catch (error) {
-        console.error('Error processing real-time message:', error);
-      }
-    };
-    
+    // Cleanup on unmount
     return () => {
       if (socketRef.current) {
         socketRef.current.close();
+        socketRef.current = null;
       }
     };
   }, [user]);
@@ -334,8 +285,10 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
         break;
 
       default:
-        if ('type' in message) {
-          console.log('Unhandled real-time message type:', message.type);
+        // Type assertion to make sure TypeScript recognizes 'type' property
+        const typedMessage = message as { type?: string };
+        if (typedMessage.type) {
+          console.log('Unhandled real-time message type:', typedMessage.type);
         } else {
           console.log('Unknown message format received:', message);
         }
