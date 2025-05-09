@@ -18,69 +18,117 @@ export default function Dashboard() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden bg-[#080B14]">
-      {/* Modern futuristic background */}
-      <div className="absolute inset-0 bg-gradient-radial from-blue-950/30 via-[#080B14] to-[#080B14] z-0"></div>
+    <div className="min-h-screen flex flex-col relative overflow-hidden futuristic-bg">
+      {/* Modern cyberpunk grid background with subtle Solo Leveling accents */}
+      <div className="absolute inset-0 cyber-grid z-0 opacity-20"></div>
       
-      {/* Subtle geometric shapes for futuristic feel */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-b from-indigo-500/5 to-transparent opacity-50 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-t from-purple-500/5 to-transparent opacity-40 rounded-full blur-3xl"></div>
+      {/* Educational-themed background with competitive exams - subtler version */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {/* Dark overlay for better readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-dark-900 to-black opacity-90"></div>
+        
+        {/* Indian educational background image */}
+        <div 
+          className="absolute inset-0 bg-center bg-cover opacity-30" 
+          style={{ 
+            backgroundImage: "url('/images/indian-education-bg.svg')",
+            backgroundSize: "cover", 
+            backgroundPosition: "center",
+            backgroundBlendMode: "luminosity"
+          }}
+        ></div>
+      </div>
       
-      {/* Dynamic light patterns */}
-      <div className="absolute top-1/4 right-1/4 w-[200px] h-[200px] bg-cyan-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
+      {/* Animated glowing orbs */}
+      <div className="absolute top-1/4 left-1/5 w-72 h-72 rounded-full bg-purple-500/10 filter blur-[80px] animate-pulse-glow z-0"></div>
+      <div className="absolute bottom-1/4 right-1/5 w-96 h-96 rounded-full bg-blue-500/10 filter blur-[100px] animate-pulse-glow z-0" style={{animationDelay: '1s'}}></div>
       
-      {/* Futuristic grid lines */}
-      <div className="absolute inset-0 z-0 opacity-[0.03] tech-pattern"></div>
+      {/* Minimal energy flow line - subtle Solo Leveling accent */}
+      <div className="absolute h-full w-full overflow-hidden z-0">
+        <div className="energy-flow-horizontal top-2/3 opacity-30"></div>
+      </div>
       
-      {/* Decorative elements */}
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
-      <div className="absolute top-10 right-10 w-[260px] h-[260px] border-t-[1px] border-r-[1px] border-indigo-500/10 rounded-tr-3xl"></div>
+      {/* Cyberpunk corner elements from home page */}
+      <div className="absolute top-24 right-20 w-40 h-40 border-t-2 border-r-2 border-purple-500/20 z-0"></div>
+      <div className="absolute bottom-20 left-20 w-40 h-40 border-b-2 border-l-2 border-cyan-500/20 z-0"></div>
+      
+      {/* Circuit lines - tech aesthetic */}
+      <svg className="absolute top-0 left-0 w-full h-full opacity-[0.07] z-0" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="M0,30 L40,40 L60,40 L100,30" stroke="rgba(125, 39, 255, 0.3)" strokeWidth="0.2" fill="none" />
+        <path d="M0,60 L30,70 L70,70 L100,60" stroke="rgba(6, 182, 212, 0.4)" strokeWidth="0.2" fill="none" />
+        <path d="M25,0 L25,100" stroke="rgba(125, 39, 255, 0.2)" strokeWidth="0.1" fill="none" />
+        <path d="M75,0 L75,100" stroke="rgba(6, 182, 212, 0.2)" strokeWidth="0.1" fill="none" />
+      </svg>
+      
+      {/* Solo Leveling hex pattern - reduced but maintained for theme consistency */}
+      <div className="absolute top-40 right-10 z-0 opacity-30">
+        <div className="hex-grid">
+          <div className="hex-cell"></div>
+        </div>
+      </div>
       
       <Header />
       <MobileNavigation />
       
       <main className="flex-1 container mx-auto px-4 pt-20 pb-16 md:pb-6 relative z-10">
-        {/* Welcome message with futuristic style */}
-        <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400 tracking-tight">
-            Welcome{user ? `, ${user.name}` : ''}
-          </h1>
-          <p className="text-gray-400 mt-2">
-            Your AI-enhanced educational platform
+        {/* Welcome message with Solo Leveling inspiration */}
+        <div className="mb-8 relative">
+          <div className="mb-1 font-mono tracking-wider text-primary/80">STUDENT DASHBOARD</div>
+          <div className="relative">
+            <h1 className="text-2xl md:text-4xl font-gaming mb-2 text-white">
+              Welcome<span className="relative ml-2">
+                {user ? user.name : ''}
+                <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-blue-500"></div>
+              </span>
+            </h1>
+            <div className="absolute -left-4 top-2 w-2 h-12 border-l-2 border-t-2 border-primary/60"></div>
+          </div>
+          
+          <p className="text-gray-300 mt-4 pl-4 border-l border-primary/30">
+            Your AI-enhanced educational journey awaits. Track your progress, engage in battles, and level up your learning.
           </p>
         </div>
         
-        {/* Profile Card and Learning Performance - Full Width */}
+        {/* Profile Card with Solo Leveling & Education Theme */}
         <div className="mb-7">
           <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 via-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-1000 rounded-xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-1000 rounded-xl"></div>
               
-            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-indigo-500/20 rounded-xl transition-all duration-300 hover:border-indigo-500/40">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-indigo-500/0 via-indigo-500/60 to-indigo-500/0"></div>
-              <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
+            <div className="relative overflow-hidden glassmorphism border border-primary/30 rounded-xl transition-all duration-300 hover:border-primary/50 solo-leveling-card">
+              {/* Solo Leveling inspired hexagonal frame with glowing edges */}
+              <div className="absolute -top-2 -right-2 w-24 h-24 solo-leveling-corner-tr opacity-60"></div>
+              <div className="absolute -bottom-2 -left-2 w-24 h-24 solo-leveling-corner-bl opacity-60"></div>
+              
+              {/* Accent lines similar to homepage */}
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-primary/0 via-primary/60 to-primary/0"></div>
+              <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
               
               <UserProfileCard />
             </div>
           </div>
         </div>
         
-        {/* Learning Analytics Stats Section */}
+        {/* Learning Analytics Stats Section - Solo Leveling Style */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-7">
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/0 via-blue-500/10 to-blue-500/0 group-hover:from-blue-500/0 group-hover:via-blue-500/20 group-hover:to-blue-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/0 via-primary/10 to-primary/0 group-hover:from-primary/0 group-hover:via-primary/30 group-hover:to-primary/0 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
             
-            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-blue-500/20 p-4 rounded-xl transition-all duration-300 hover:border-blue-500/40">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-500/0 via-blue-500/40 to-blue-500/0"></div>
+            <div className="relative overflow-hidden glassmorphism border border-primary/30 p-4 rounded-lg transition-all duration-300 hover:border-primary/50">
+              {/* Solo Leveling inspired corner accents */}
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-[1px] border-r-[1px] border-primary/60 rounded-tr-lg"></div>
+              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-[1px] border-l-[1px] border-primary/30 rounded-bl-lg"></div>
               
               <div className="flex items-center mb-2">
-                <Trophy className="h-5 w-5 text-blue-400 mr-2" />
-                <h3 className="font-medium text-white/90">Level</h3>
+                <div className="bg-primary/20 p-1.5 rounded mr-2">
+                  <Trophy className="h-4 w-4 text-primary/90" />
+                </div>
+                <h3 className="font-gaming text-white/90 tracking-wide">Level</h3>
               </div>
               
-              <p className="text-2xl font-bold text-white">{userStats?.level || 0}</p>
+              <p className="text-2xl font-bold font-gaming text-white">{userStats?.level || 0}</p>
               
-              <div className="h-1 w-full bg-gray-800/50 mt-2 rounded overflow-hidden">
-                <div className="h-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-l animate-pulse-width" 
+              <div className="h-2 w-full bg-gray-800/50 mt-2 rounded-lg overflow-hidden">
+                <div className="h-2 bg-gradient-to-r from-primary to-purple-500 rounded-l animate-pulse-width" 
                   style={{
                     width: userStats ? 
                       `${(userStats.currentXp / userStats.nextLevelXp) * 100}%` : '0%'
@@ -88,7 +136,7 @@ export default function Dashboard() {
                 </div>
               </div>
               
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 mt-1 font-mono">
                 {userStats ? 
                   `${userStats.currentXp} / ${userStats.nextLevelXp} XP` : 
                   '0 / 1000 XP'}
@@ -97,76 +145,88 @@ export default function Dashboard() {
           </div>
           
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 group-hover:from-emerald-500/0 group-hover:via-emerald-500/20 group-hover:to-emerald-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 group-hover:from-emerald-500/0 group-hover:via-emerald-500/30 group-hover:to-emerald-500/0 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
             
-            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-emerald-500/20 p-4 rounded-xl transition-all duration-300 hover:border-emerald-500/40">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500/0 via-emerald-500/40 to-emerald-500/0"></div>
+            <div className="relative overflow-hidden glassmorphism border border-emerald-500/30 p-4 rounded-lg transition-all duration-300 hover:border-emerald-500/50">
+              {/* Solo Leveling inspired corner accents */}
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-[1px] border-r-[1px] border-emerald-500/60 rounded-tr-lg"></div>
+              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-[1px] border-l-[1px] border-emerald-500/30 rounded-bl-lg"></div>
               
               <div className="flex items-center mb-2">
-                <Award className="h-5 w-5 text-emerald-400 mr-2" />
-                <h3 className="font-medium text-white/90">Rank</h3>
+                <div className="bg-emerald-500/20 p-1.5 rounded mr-2">
+                  <Award className="h-4 w-4 text-emerald-400/90" />
+                </div>
+                <h3 className="font-gaming text-white/90 tracking-wide">Rank</h3>
               </div>
               
-              <p className="text-2xl font-bold text-white">{userStats?.rank || 'Bronze I'}</p>
+              <p className="text-2xl font-bold font-gaming text-white">{userStats?.rank || 'Bronze I'}</p>
               
-              <div className="h-1 w-full bg-gray-800/50 mt-2 rounded">
-                <div className="h-1 bg-gradient-to-r from-emerald-500 to-green-400 rounded-l shimmer-effect" 
+              <div className="h-2 w-full bg-gray-800/50 mt-2 rounded-lg">
+                <div className="h-2 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-l shimmer-effect" 
                   style={{width: '35%'}}>
                 </div>
               </div>
               
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 mt-1 font-mono">
                 {userStats?.rankPoints || 0} points
               </p>
             </div>
           </div>
           
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/0 via-amber-500/10 to-amber-500/0 group-hover:from-amber-500/0 group-hover:via-amber-500/20 group-hover:to-amber-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500/0 via-amber-500/10 to-amber-500/0 group-hover:from-amber-500/0 group-hover:via-amber-500/30 group-hover:to-amber-500/0 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
             
-            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-amber-500/20 p-4 rounded-xl transition-all duration-300 hover:border-amber-500/40">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-amber-500/0 via-amber-500/40 to-amber-500/0"></div>
+            <div className="relative overflow-hidden glassmorphism border border-amber-500/30 p-4 rounded-lg transition-all duration-300 hover:border-amber-500/50">
+              {/* Solo Leveling inspired corner accents */}
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-[1px] border-r-[1px] border-amber-500/60 rounded-tr-lg"></div>
+              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-[1px] border-l-[1px] border-amber-500/30 rounded-bl-lg"></div>
               
               <div className="flex items-center mb-2">
-                <Zap className="h-5 w-5 text-amber-400 mr-2" />
-                <h3 className="font-medium text-white/90">Streak</h3>
+                <div className="bg-amber-500/20 p-1.5 rounded mr-2">
+                  <Zap className="h-4 w-4 text-amber-400/90" />
+                </div>
+                <h3 className="font-gaming text-white/90 tracking-wide">Streak</h3>
               </div>
               
-              <p className="text-2xl font-bold text-white">{userStats?.streakDays || 0} Days</p>
+              <p className="text-2xl font-bold font-gaming text-white">{userStats?.streakDays || 0} Days</p>
               
-              <div className="h-1 w-full bg-gray-800/50 mt-2 rounded">
-                <div className="h-1 bg-gradient-to-r from-amber-500 to-yellow-400 rounded-l" 
+              <div className="h-2 w-full bg-gray-800/50 mt-2 rounded-lg">
+                <div className="h-2 bg-gradient-to-r from-amber-500 to-yellow-400 rounded-l" 
                   style={{width: userStats?.streakDays ? `${Math.min(userStats.streakDays * 10, 100)}%` : '0%'}}>
                 </div>
               </div>
               
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 mt-1 font-mono">
                 Keep learning daily
               </p>
             </div>
           </div>
           
           <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-purple-500/0 group-hover:from-purple-500/0 group-hover:via-purple-500/20 group-hover:to-purple-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-purple-500/0 group-hover:from-purple-500/0 group-hover:via-purple-500/30 group-hover:to-purple-500/0 rounded-lg blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
             
-            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-purple-500/20 p-4 rounded-xl transition-all duration-300 hover:border-purple-500/40">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-purple-500/0 via-purple-500/40 to-purple-500/0"></div>
+            <div className="relative overflow-hidden glassmorphism border border-purple-500/30 p-4 rounded-lg transition-all duration-300 hover:border-purple-500/50">
+              {/* Solo Leveling inspired corner accents */}
+              <div className="absolute top-0 right-0 w-8 h-8 border-t-[1px] border-r-[1px] border-purple-500/60 rounded-tr-lg"></div>
+              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-[1px] border-l-[1px] border-purple-500/30 rounded-bl-lg"></div>
               
               <div className="flex items-center mb-2">
-                <Target className="h-5 w-5 text-purple-400 mr-2" />
-                <h3 className="font-medium text-white/90">Accuracy</h3>
+                <div className="bg-purple-500/20 p-1.5 rounded mr-2">
+                  <Target className="h-4 w-4 text-purple-400/90" />
+                </div>
+                <h3 className="font-gaming text-white/90 tracking-wide">Accuracy</h3>
               </div>
               
-              <p className="text-2xl font-bold text-white">{userStats?.accuracy || '0%'}</p>
+              <p className="text-2xl font-bold font-gaming text-white">{userStats?.accuracy || '0%'}</p>
               
-              <div className="h-1 w-full bg-gray-800/50 mt-2 rounded">
-                <div className="h-1 bg-gradient-to-r from-purple-500 to-pink-400 rounded-l" 
+              <div className="h-2 w-full bg-gray-800/50 mt-2 rounded-lg">
+                <div className="h-2 bg-gradient-to-r from-purple-500 to-pink-400 rounded-l" 
                   style={{width: userStats?.accuracy ? 
                     `${parseInt(userStats.accuracy.replace('%', ''))}%` : '0%'}}>
                 </div>
               </div>
               
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 mt-1 font-mono">
                 Answer accuracy rate
               </p>
             </div>
