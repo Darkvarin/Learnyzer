@@ -233,18 +233,42 @@ export default function Dashboard() {
           </div>
         </div>
         
-        {/* Dashboard Content */}
+        {/* Dashboard Content - Top Section */}
         <div className="grid grid-cols-12 gap-6">
-          {/* Rank Section - adjusted width to fit content */}
-          <div className="col-span-12 md:col-span-5 relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 group-hover:from-emerald-500/0 group-hover:via-emerald-500/20 group-hover:to-emerald-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+          {/* Left Column */}
+          <div className="col-span-12 md:col-span-5 space-y-6">
+            {/* Rank Section */}
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 group-hover:from-emerald-500/0 group-hover:via-emerald-500/20 group-hover:to-emerald-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+              
+              <div className="relative overflow-hidden glassmorphism border border-emerald-500/20 rounded-xl transition-all duration-300 hover:border-emerald-500/40">
+                <RankSection />
+              </div>
+            </div>
             
-            <div className="relative overflow-hidden glassmorphism border border-emerald-500/20 rounded-xl transition-all duration-300 hover:border-emerald-500/40">
-              <RankSection />
+            {/* Referral Section */}
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 group-hover:from-rose-500/0 group-hover:via-rose-500/20 group-hover:to-rose-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+              
+              <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-rose-500/20 rounded-xl transition-all duration-300 hover:border-rose-500/40">
+                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-rose-500/0 via-rose-500/40 to-rose-500/0"></div>
+                
+                <div className="p-5">
+                  <div className="flex items-center mb-4">
+                    <Users className="h-5 w-5 text-rose-400 mr-2" />
+                    <h3 className="font-bold text-white/90">Referrals</h3>
+                    <div className="h-1.5 w-1.5 rounded-full bg-rose-400 ml-2 animate-pulse"></div>
+                  </div>
+                  
+                  <div className="relative">
+                    <ReferralSection />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           
-          {/* Wellness & Streaks Section - rest of width */}
+          {/* Wellness & Streaks Section - right column */}
           <div className="space-y-6 col-span-12 md:col-span-7">
             {/* Wellness Breaks */}
             <div className="relative group">
@@ -290,9 +314,8 @@ export default function Dashboard() {
           </div>
         </div>
         
-        {/* Bottom Two Column Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          {/* Battle Zone Section */}
+        {/* Battle Zone - Full Width */}
+        <div className="mt-6">
           <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-purple-500/0 group-hover:from-purple-500/0 group-hover:via-purple-500/20 group-hover:to-purple-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
             
@@ -308,27 +331,6 @@ export default function Dashboard() {
                 
                 <div className="relative">
                   <BattleZoneSection />
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Referral Section */}
-          <div className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 group-hover:from-rose-500/0 group-hover:via-rose-500/20 group-hover:to-rose-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-            
-            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-rose-500/20 rounded-xl transition-all duration-300 hover:border-rose-500/40">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-rose-500/0 via-rose-500/40 to-rose-500/0"></div>
-              
-              <div className="p-5">
-                <div className="flex items-center mb-4">
-                  <Users className="h-5 w-5 text-rose-400 mr-2" />
-                  <h3 className="font-bold text-white/90">Referrals</h3>
-                  <div className="h-1.5 w-1.5 rounded-full bg-rose-400 ml-2 animate-pulse"></div>
-                </div>
-                
-                <div className="relative">
-                  <ReferralSection />
                 </div>
               </div>
             </div>
