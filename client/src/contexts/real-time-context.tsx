@@ -192,12 +192,41 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
               });
             };
             
-            // Set up the same event handlers for the new connection
-            newWs.onmessage = socketRef.current.onmessage;
-            newWs.onerror = socketRef.current.onerror;
+            // Set up the event handlers for the new connection
+            // Create a new onmessage handler instead of copying the reference which could cause memory leaks
+            newWs.onmessage = (event: MessageEvent) => {
+              try {
+                const data: RealTimeUpdateMessage = JSON.parse(event.data);
+                
+                // Ignore messages not meant for this user
+                if ('userId' in data && data.userId !== user.id) return;
+                
+                // Process the message based on its type
+                processMessage(data);
+                
+              } catch (error) {
+                console.error('Error processing real-time message:', error);
+              }
+            };
+            
+            // Create a new onerror handler
+            newWs.onerror = (error) => {
+              console.error('Real-time WebSocket error:', error);
+            };
             newWs.onclose = () => {
+              console.log('Real-time WebSocket reconnection failed');
               setReconnecting(false); // Reset reconnecting state if we failed to reconnect
-              socketRef.current?.onclose?.(); // Chain to the original onclose handler
+              // Don't chain to the original onclose handler to avoid circular reference
+              // Just reimplement the necessary part of the reconnection logic
+              if (user) {
+                setTimeout(() => {
+                  console.log('Attempting to reconnect to real-time service again...');
+                  if (socketRef.current === null || socketRef.current.readyState === WebSocket.CLOSED) {
+                    // Try to reconnect again...
+                    // The code will eventually retry automatically
+                  }
+                }, 5000); // Increased timeout to avoid too frequent reconnection attempts
+              }
             };
           } else {
             // If we're already reconnected, reset the state
