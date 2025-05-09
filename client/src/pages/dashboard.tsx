@@ -233,31 +233,19 @@ export default function Dashboard() {
           </div>
         </div>
         
-        {/* Two Column Layout for Main Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Rank Section */}
-          <div className="relative group">
+        {/* Multi-Column Layout for Dashboard Content */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Rank Section - 1/3 width */}
+          <div className="relative group md:col-span-1">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 group-hover:from-emerald-500/0 group-hover:via-emerald-500/20 group-hover:to-emerald-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
             
-            <div className="relative overflow-hidden bg-[#0C101F]/90 backdrop-blur-sm border border-emerald-500/20 rounded-xl transition-all duration-300 hover:border-emerald-500/40 h-full">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-emerald-500/0 via-emerald-500/40 to-emerald-500/0"></div>
-              
-              <div className="p-5">
-                <div className="flex items-center mb-4">
-                  <Award className="h-5 w-5 text-emerald-400 mr-2" />
-                  <h3 className="font-bold text-white/90">Rank Progress</h3>
-                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 ml-2 animate-pulse"></div>
-                </div>
-                
-                <div className="relative">
-                  <RankSection />
-                </div>
-              </div>
+            <div className="relative overflow-hidden glassmorphism border border-emerald-500/20 rounded-xl transition-all duration-300 hover:border-emerald-500/40 h-full">
+              <RankSection />
             </div>
           </div>
           
-          {/* Wellness & Streaks Section */}
-          <div className="space-y-6">
+          {/* Wellness & Streaks Section - 2/3 width */}
+          <div className="space-y-6 md:col-span-2">
             {/* Wellness Breaks */}
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-cyan-500/0 group-hover:from-cyan-500/0 group-hover:via-cyan-500/20 group-hover:to-cyan-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
