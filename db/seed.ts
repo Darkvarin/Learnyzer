@@ -238,138 +238,141 @@ async function seed() {
         ])
       },
       {
-        title: "Science for Class 4",
-        description: "Explore the natural world through topics like plants, animals, matter, energy, and the environment.",
-        subject: "Science",
-        examType: "School",
-        coverImage: "https://images.unsplash.com/photo-1532094349884-543019a69b2f?ixlib=rb-4.0.3",
-        chapters: 9,
-        targetGrade: "4",
-        difficulty: "Beginner",
-        chapterDetails: JSON.stringify([
-          { title: "Chapter 1: Plants", description: "Parts of plants, photosynthesis, and plant adaptations." },
-          { title: "Chapter 2: Animals", description: "Animal habitats, adaptations, and life cycles." },
-          { title: "Chapter 3: Human Body", description: "Body systems and their functions." },
-          { title: "Chapter 4: Food and Nutrition", description: "Food groups, balanced diet, and digestion." },
-          { title: "Chapter 5: Matter and Materials", description: "Properties of matter and common materials." },
-          { title: "Chapter 6: Force and Energy", description: "Different types of forces and energy forms." },
-          { title: "Chapter 7: Light and Sound", description: "Properties and behavior of light and sound." },
-          { title: "Chapter 8: Earth and Space", description: "Earth's features, day and night, and seasons." },
-          { title: "Chapter 9: Environment and Conservation", description: "Protecting our environment and natural resources." }
-        ])
-      },
-      {
-        title: "Social Studies for Class 5",
-        description: "Learn about India's geography, history, and culture through engaging lessons and activities.",
-        subject: "Social Studies",
-        examType: "School",
-        coverImage: "https://images.unsplash.com/photo-1594394489098-acef21cbfb86?ixlib=rb-4.0.3",
-        chapters: 8,
-        targetGrade: "5",
-        difficulty: "Beginner",
-        chapterDetails: JSON.stringify([
-          { title: "Chapter 1: India - Physical Features", description: "Mountains, rivers, plains, and plateaus of India." },
-          { title: "Chapter 2: Climate of India", description: "Different climate zones and seasons in India." },
-          { title: "Chapter 3: Natural Vegetation and Wildlife", description: "Forests, wildlife, and conservation efforts." },
-          { title: "Chapter 4: Early Civilizations", description: "Indus Valley Civilization and early settlements." },
-          { title: "Chapter 5: Ancient India", description: "Mauryan and Gupta Empires and their contributions." },
-          { title: "Chapter 6: Medieval India", description: "Delhi Sultanate and Mughal Empire." },
-          { title: "Chapter 7: British Rule in India", description: "Colonization and the freedom struggle." },
-          { title: "Chapter 8: Independent India", description: "India after independence and major developments." }
-        ])
-      },
-      
-      // Middle School (6-8) Courses
-      {
-        title: "Mathematics for Class 6",
-        description: "Advance your mathematical skills with integers, algebra, geometry, and data handling concepts.",
-        subject: "Mathematics",
-        examType: "School",
-        coverImage: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3",
+        title: "Human Physiology for NEET",
+        description: "Detailed study of human organ systems, their functions, and related disorders for NEET preparation.",
+        subject: "Biology",
+        examType: "NEET",
+        coverImage: "https://images.unsplash.com/photo-1576086213369-97a306d36557?ixlib=rb-4.0.3",
         chapters: 10,
-        targetGrade: "6",
-        difficulty: "Intermediate",
-        chapterDetails: JSON.stringify([
-          { title: "Chapter 1: Knowing Our Numbers", description: "Large numbers, estimation, and number operations." },
-          { title: "Chapter 2: Whole Numbers", description: "Properties of whole numbers and operations." },
-          { title: "Chapter 3: Integers", description: "Introduction to negative numbers and operations with integers." },
-          { title: "Chapter 4: Fractions and Decimals", description: "Advanced operations with fractions and decimals." },
-          { title: "Chapter 5: Introduction to Algebra", description: "Variables, expressions, and simple equations." },
-          { title: "Chapter 6: Ratio and Proportion", description: "Understanding ratios and solving proportion problems." },
-          { title: "Chapter 7: Geometry", description: "Lines, angles, triangles, and quadrilaterals." },
-          { title: "Chapter 8: Mensuration", description: "Perimeter and area of 2D shapes." },
-          { title: "Chapter 9: Data Handling", description: "Collection, organization, and representation of data." },
-          { title: "Chapter 10: Practical Geometry", description: "Constructing geometric figures using tools." }
-        ])
-      },
-      {
-        title: "Science for Class 7",
-        description: "Deepen your understanding of scientific concepts through nutrition, motion, heat, acids, and more.",
-        subject: "Science",
-        examType: "School",
-        coverImage: "https://images.unsplash.com/photo-1532094349884-543019a69b2f?ixlib=rb-4.0.3",
-        chapters: 10,
-        targetGrade: "7",
-        difficulty: "Intermediate",
-        chapterDetails: JSON.stringify([
-          { title: "Chapter 1: Nutrition in Plants and Animals", description: "Photosynthesis, nutrients, and digestion." },
-          { title: "Chapter 2: Fibre to Fabric", description: "Natural and synthetic fibres and fabric production." },
-          { title: "Chapter 3: Heat and Temperature", description: "Heat transfer, expansion, and contraction." },
-          { title: "Chapter 4: Acids, Bases, and Salts", description: "Properties and indicators of acids and bases." },
-          { title: "Chapter 5: Physical and Chemical Changes", description: "Distinguishing between physical and chemical changes." },
-          { title: "Chapter 6: Weather and Climate", description: "Factors affecting weather and climate patterns." },
-          { title: "Chapter 7: Motion and Time", description: "Speed, distance, time, and graphical representations." },
-          { title: "Chapter 8: Electric Current and Circuits", description: "Simple electric circuits and components." },
-          { title: "Chapter 9: Light", description: "Reflection, mirrors, and lenses." },
-          { title: "Chapter 10: Reproduction in Plants", description: "Sexual and asexual reproduction in plants." }
-        ])
-      },
-      {
-        title: "Social Science for Class 8",
-        description: "Explore Indian history, geography, civics, and economics through comprehensive lessons.",
-        subject: "Social Science",
-        examType: "School",
-        coverImage: "https://images.unsplash.com/photo-1594394489098-acef21cbfb86?ixlib=rb-4.0.3",
-        chapters: 12,
-        targetGrade: "8",
-        difficulty: "Intermediate",
-        chapterDetails: JSON.stringify([
-          { title: "Chapter 1: The Indian Constitution", description: "Key features and fundamental rights." },
-          { title: "Chapter 2: Parliamentary Government", description: "Structure and functioning of Indian democracy." },
-          { title: "Chapter 3: Judiciary", description: "Indian judicial system and its functions." },
-          { title: "Chapter 4: Modern Period in Indian History", description: "British colonization and its impact." },
-          { title: "Chapter 5: Freedom Struggle", description: "Key movements and leaders in India's independence struggle." },
-          { title: "Chapter 6: Resources", description: "Types of resources and their conservation." },
-          { title: "Chapter 7: Industries", description: "Types of industries and their importance in economy." },
-          { title: "Chapter 8: Human Resources", description: "Population, migration, and human development." },
-          { title: "Chapter 9: Rise of Nationalism", description: "Nationalism in Europe and its influence on India." },
-          { title: "Chapter 10: Agriculture", description: "Farming practices, crops, and agricultural challenges." },
-          { title: "Chapter 11: Urbanization", description: "Growth of cities and related issues." },
-          { title: "Chapter 12: Public Facilities", description: "Water, sanitation, and public infrastructure." }
-        ])
-      },
-      
-      // High School (9-10) Courses
-      {
-        title: "Mathematics for Class 9",
-        description: "Master algebraic equations, coordinate geometry, statistics, and more complex mathematical concepts.",
-        subject: "Mathematics",
-        examType: "School",
-        coverImage: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3",
-        chapters: 10,
-        targetGrade: "9",
+        targetGrade: "11-12",
         difficulty: "Advanced",
         chapterDetails: JSON.stringify([
-          { title: "Chapter 1: Number Systems", description: "Real numbers, irrational numbers, and operations." },
-          { title: "Chapter 2: Polynomials", description: "Algebraic expressions, factorization, and identities." },
-          { title: "Chapter 3: Coordinate Geometry", description: "Cartesian system and plotting points." },
-          { title: "Chapter 4: Linear Equations", description: "Solving linear equations in two variables." },
-          { title: "Chapter 5: Triangles", description: "Congruence, similarity, and properties of triangles." },
-          { title: "Chapter 6: Quadrilaterals", description: "Properties of parallelograms and special quadrilaterals." },
-          { title: "Chapter 7: Circles", description: "Properties of circles, chords, and arcs." },
-          { title: "Chapter 8: Surface Areas and Volumes", description: "Formulas for 3D shapes and solving problems." },
-          { title: "Chapter 9: Statistics", description: "Measures of central tendency and graphical representation." },
-          { title: "Chapter 10: Probability", description: "Basic probability concepts and experimental probability." }
+          { title: "Chapter 1: Digestive System", description: "Organs, digestive processes, and associated disorders." },
+          { title: "Chapter 2: Respiratory System", description: "Mechanism of breathing, gas exchange, and respiratory disorders." },
+          { title: "Chapter 3: Circulatory System", description: "Heart structure, blood vessels, and cardiac cycle." },
+          { title: "Chapter 4: Blood and Immunity", description: "Blood components, blood groups, and immune responses." },
+          { title: "Chapter 5: Excretory System", description: "Kidney structure, urine formation, and renal disorders." },
+          { title: "Chapter 6: Nervous System", description: "Neurons, central and peripheral nervous systems." },
+          { title: "Chapter 7: Endocrine System", description: "Hormones, their functions, and endocrine disorders." },
+          { title: "Chapter 8: Reproductive System", description: "Male and female reproductive organs, gametogenesis, and fertilization." },
+          { title: "Chapter 9: Musculoskeletal System", description: "Muscles, bones, joints, and movement mechanisms." },
+          { title: "Chapter 10: Common Human Diseases", description: "Pathophysiology of common diseases for NEET preparation." }
+        ])
+      },
+      {
+        title: "Cell Biology for NEET",
+        description: "In-depth study of cell structure, function, and molecular processes essential for NEET biology.",
+        subject: "Biology",
+        examType: "NEET",
+        coverImage: "https://images.unsplash.com/photo-1576086213369-97a306d36557?ixlib=rb-4.0.3",
+        chapters: 8,
+        targetGrade: "11-12",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Cell Theory and Cell Types", description: "Prokaryotic and eukaryotic cell differences." },
+          { title: "Chapter 2: Cell Membrane and Transport", description: "Membrane structure and transport mechanisms." },
+          { title: "Chapter 3: Cell Organelles", description: "Structure and functions of mitochondria, ER, Golgi, etc." },
+          { title: "Chapter 4: Cell Cycle", description: "Phases of cell cycle, mitosis, and meiosis." },
+          { title: "Chapter 5: DNA Replication", description: "Mechanism and enzymes involved in DNA replication." },
+          { title: "Chapter 6: Protein Synthesis", description: "Transcription, translation, and genetic code." },
+          { title: "Chapter 7: Cell Signaling", description: "Signal transduction pathways and cellular communication." },
+          { title: "Chapter 8: Practice Questions", description: "Previous years' NEET questions and problem-solving approaches." }
+        ])
+      },
+      
+      // UPSC Courses
+      {
+        title: "Indian Polity for UPSC",
+        description: "Comprehensive coverage of Indian Constitution, governance systems, and political dynamics for UPSC CSE.",
+        subject: "Polity",
+        examType: "UPSC",
+        coverImage: "https://images.unsplash.com/photo-1574546105514-ab1118741ba2?ixlib=rb-4.0.3",
+        chapters: 12,
+        targetGrade: "Undergraduate",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Making of the Indian Constitution", description: "Constituent Assembly and constitutional development." },
+          { title: "Chapter 2: Fundamental Rights", description: "Articles 12-35, restrictions, and landmark judgments." },
+          { title: "Chapter 3: Directive Principles and Fundamental Duties", description: "Articles 36-51, implementation, and relevance." },
+          { title: "Chapter 4: Executive Branch", description: "President, Prime Minister, Council of Ministers, and their powers." },
+          { title: "Chapter 5: Legislature", description: "Parliament, Lok Sabha, Rajya Sabha, and legislative procedures." },
+          { title: "Chapter 6: Judiciary", description: "Supreme Court, High Courts, and judicial review." },
+          { title: "Chapter 7: Federal Structure", description: "Centre-state relations, Article 370, and special provisions." },
+          { title: "Chapter 8: Local Governance", description: "Panchayati Raj, municipalities, and 73rd/74th amendments." },
+          { title: "Chapter 9: Constitutional Bodies", description: "CAG, Election Commission, UPSC, and other bodies." },
+          { title: "Chapter 10: Emergency Provisions", description: "National, state, and financial emergencies." },
+          { title: "Chapter 11: Constitutional Amendments", description: "Amendment procedure and major amendments." },
+          { title: "Chapter 12: Previous Year Questions", description: "UPSC CSE question analysis and answer strategies." }
+        ])
+      },
+      {
+        title: "Modern Indian History for UPSC",
+        description: "Detailed analysis of Indian freedom struggle, socio-religious movements, and post-independence developments.",
+        subject: "History",
+        examType: "UPSC",
+        coverImage: "https://images.unsplash.com/photo-1585152002465-43c1f0e14505?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "Undergraduate",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: European Colonization", description: "Arrival of European powers and establishment of British rule." },
+          { title: "Chapter 2: Socio-Religious Reform Movements", description: "Brahmo Samaj, Arya Samaj, Ramakrishna Mission, etc." },
+          { title: "Chapter 3: Early Indian Nationalism", description: "Formation of Congress, moderates, and extremists." },
+          { title: "Chapter 4: Gandhian Era", description: "Non-cooperation, Civil Disobedience, and Quit India movements." },
+          { title: "Chapter 5: Revolutionary Movements", description: "Bhagat Singh, Subhas Chandra Bose, and other revolutionaries." },
+          { title: "Chapter 6: Partition and Independence", description: "Events leading to partition and challenges after independence." },
+          { title: "Chapter 7: Integration of Princely States", description: "Accession and reorganization of states." },
+          { title: "Chapter 8: Major Post-Independence Events", description: "Indo-Pak wars, Emergency, economic liberalization." },
+          { title: "Chapter 9: Cultural and Literary Movements", description: "Arts, literature, and cultural developments in modern India." },
+          { title: "Chapter 10: Previous Year Questions", description: "UPSC CSE question analysis and answer frameworks." }
+        ])
+      },
+      {
+        title: "Legal Reasoning for CLAT",
+        description: "Master legal aptitude, reasoning, and case law analysis for the Common Law Admission Test.",
+        subject: "Law",
+        examType: "CLAT",
+        coverImage: "https://images.unsplash.com/photo-1589391886645-d51941baf7fb?ixlib=rb-4.0.3",
+        chapters: 12,
+        targetGrade: "Undergraduate",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Introduction to Legal Reasoning", description: "Logical reasoning in the legal context." },
+          { title: "Chapter 2: Legal Maxims and Principles", description: "Essential Latin maxims and fundamental principles." },
+          { title: "Chapter 3: Constitutional Law Principles", description: "Key provisions and landmark judgments." },
+          { title: "Chapter 4: Contract Law", description: "Essential elements and case analysis." },
+          { title: "Chapter 5: Tort Law", description: "Liability, negligence, and relevant cases." },
+          { title: "Chapter 6: Criminal Law Principles", description: "IPC essentials, actus reus, and mens rea concepts." },
+          { title: "Chapter 7: Family Law", description: "Marriage, divorce, inheritance, and succession." },
+          { title: "Chapter 8: Property Law", description: "Ownership, possession, and transfer principles." },
+          { title: "Chapter 9: Case Analysis and Facts", description: "Interpretation of scenarios and fact patterns." },
+          { title: "Chapter 10: Legal Problem Solving", description: "Applying legal principles to complex situations." },
+          { title: "Chapter 11: Mock Tests", description: "Practice tests with detailed explanations." },
+          { title: "Chapter 12: Previous Year Papers", description: "Analysis of CLAT patterns and common topics." }
+        ])
+      },
+      
+      // CUET Courses
+      {
+        title: "CUET General Test Preparation",
+        description: "Comprehensive preparation for Common University Entrance Test covering language, general awareness, and reasoning.",
+        subject: "General Test",
+        examType: "CUET",
+        coverImage: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "12",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Verbal Ability", description: "Reading comprehension, grammar, and vocabulary building." },
+          { title: "Chapter 2: Logical and Analytical Reasoning", description: "Syllogisms, coding-decoding, and analytical puzzles." },
+          { title: "Chapter 3: Quantitative Aptitude", description: "Number system, algebra, and data interpretation." },
+          { title: "Chapter 4: General Knowledge", description: "Current affairs, history, geography, and economics." },
+          { title: "Chapter 5: General Science", description: "Basic concepts from physics, chemistry, and biology." },
+          { title: "Chapter 6: Mental Ability", description: "Series completion, analogies, and pattern recognition." },
+          { title: "Chapter 7: Current Affairs and General Awareness", description: "Latest events, awards, and national developments." },
+          { title: "Chapter 8: Critical Thinking", description: "Assumptions, arguments, and evaluating statements." },
+          { title: "Chapter 9: Decision Making", description: "Situation analysis and optimal solutions." },
+          { title: "Chapter 10: Mock Tests and Previous Papers", description: "Practice with actual CUET patterns and time management." }
         ])
       },
       {
