@@ -235,17 +235,17 @@ export default function Dashboard() {
         
         {/* Dashboard Content */}
         <div className="grid grid-cols-12 gap-6">
-          {/* Rank Section - limited height, no vertical stretch */}
-          <div className="col-span-12 md:col-span-4 relative group">
+          {/* Rank Section - adjusted width to fit content */}
+          <div className="col-span-12 md:col-span-5 relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 group-hover:from-emerald-500/0 group-hover:via-emerald-500/20 group-hover:to-emerald-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>
             
-            <div className="relative overflow-hidden glassmorphism border border-emerald-500/20 rounded-xl transition-all duration-300 hover:border-emerald-500/40 max-h-fit">
+            <div className="relative overflow-hidden glassmorphism border border-emerald-500/20 rounded-xl transition-all duration-300 hover:border-emerald-500/40">
               <RankSection />
             </div>
           </div>
           
           {/* Wellness & Streaks Section - rest of width */}
-          <div className="space-y-6 col-span-12 md:col-span-8">
+          <div className="space-y-6 col-span-12 md:col-span-7">
             {/* Wellness Breaks */}
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-cyan-500/0 group-hover:from-cyan-500/0 group-hover:via-cyan-500/20 group-hover:to-cyan-500/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-1000"></div>

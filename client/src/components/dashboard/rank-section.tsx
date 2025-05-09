@@ -72,12 +72,12 @@ export function RankSection() {
         <div className="mt-5">
           <div className="text-sm font-gaming text-emerald-400 mb-3 border-l-2 border-emerald-500/50 pl-2">RANK TIERS</div>
           
-          <div className="flex items-center justify-between gap-x-1 mt-2 overflow-x-auto py-1 no-scrollbar">
+          <div className="grid grid-cols-3 gap-4 mt-2 py-1">
             {isLoading ? (
               Array(9).fill(0).map((_, i) => (
-                <div key={i} className="flex flex-col items-center flex-shrink-0">
-                  <Skeleton className="w-10 h-10 rounded-sm" />
-                  <Skeleton className="w-12 h-3 mt-1" />
+                <div key={i} className="flex flex-col items-center">
+                  <Skeleton className="w-12 h-12 rounded-sm" />
+                  <Skeleton className="w-14 h-3 mt-1" />
                 </div>
               ))
             ) : (
@@ -86,10 +86,10 @@ export function RankSection() {
                 const tierClass = tier.toLowerCase();
                 
                 return (
-                  <div key={idx} className="flex flex-col items-center group flex-shrink-0">
+                  <div key={idx} className="flex flex-col items-center group">
                     {/* Solo Leveling rank badge with hex clip-path */}
                     <div 
-                      className={`relative w-10 h-10 transition-all duration-300 ${
+                      className={`relative w-12 h-12 transition-all duration-300 ${
                         isCurrentTier ? 'scale-110' : 'opacity-70 group-hover:opacity-100'
                       }`}
                     >
@@ -123,8 +123,8 @@ export function RankSection() {
                       </div>
                       
                       {/* Medal icon with Solo Leveling styling */}
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background/40 w-8 h-8 rounded-full border border-emerald-500/30 flex items-center justify-center z-10">
-                        <Medal className={`${getRankColor(tier)}`} size={14} />
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background/40 w-9 h-9 rounded-full border border-emerald-500/30 flex items-center justify-center z-10">
+                        <Medal className={`${getRankColor(tier)}`} size={16} />
                       </div>
                       
                       {/* Current tier indicator with pulsing effect */}
