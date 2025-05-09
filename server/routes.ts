@@ -185,11 +185,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   function broadcastToBattle(battleId: string, message: any) {
     const battlePrefix = `battle_${battleId}_user_`;
     
-    for (const [key, connection] of connections.entries()) {
+    // Use Array.from to properly handle iterating through Map
+    Array.from(connections.entries()).forEach(([key, connection]) => {
       if (key.startsWith(battlePrefix) && connection.readyState === WebSocket.OPEN) {
         connection.send(JSON.stringify(message));
       }
-    }
+    });
   }
   
   // Helper function to send a message to a specific user
@@ -206,11 +207,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Helper function to broadcast a message to all connected users
   function broadcastToAll(message: any) {
-    for (const [key, connection] of connections.entries()) {
+    // Use Array.from to properly handle iterating through Map
+    Array.from(connections.entries()).forEach(([key, connection]) => {
       if (connection.readyState === WebSocket.OPEN) {
         connection.send(JSON.stringify(message));
       }
-    }
+    });
   }
   
   // Export the broadcast functions for use throughout the application

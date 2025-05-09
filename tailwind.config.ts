@@ -138,11 +138,11 @@ export default {
         "glow-intense": {
           "0%, 100%": { 
             boxShadow: "0 0 5px rgba(14, 165, 233, 0.7), 0 0 10px rgba(14, 165, 233, 0.5)",
-            opacity: 0.9
+            opacity: "0.9" // Convert to string to fix type error
           },
           "50%": { 
             boxShadow: "0 0 10px rgba(14, 165, 233, 1), 0 0 20px rgba(14, 165, 233, 0.8), 0 0 30px rgba(14, 165, 233, 0.4)",
-            opacity: 1
+            opacity: "1" // Convert to string to fix type error
           },
         },
         "pulse-width": {

@@ -161,20 +161,34 @@ export default function LeaderboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
+  // Create type for API response
+  interface LeaderboardResponse {
+    leaderboard: Array<{
+      id: number;
+      name: string;
+      profileImage: string | null;
+      grade: string | null;
+      level: number;
+      currentXp: number;
+      streakDays: number;
+      rank: string;
+    }>;
+  }
+
   // Fetch Indian leaderboard data
   const { 
     data: indianLeaderboardResponse, 
     isLoading: isIndianLoading 
-  } = useQuery({
+  } = useQuery<LeaderboardResponse>({
     queryKey: ['/api/leaderboard'],
     // Using the real backend data from API
   });
   
   // Extract and transform the data for display
-  const indianLeaderboardData = useMemo(() => {
+  const indianLeaderboardData = useMemo((): StudentData[] => {
     if (!indianLeaderboardResponse?.leaderboard) return [];
     
-    return indianLeaderboardResponse.leaderboard.map((user: any) => ({
+    return indianLeaderboardResponse.leaderboard.map((user) => ({
       id: user.id,
       name: user.name,
       profileImage: user.profileImage || '',
@@ -190,16 +204,16 @@ export default function LeaderboardPage() {
   const { 
     data: friendsLeaderboardResponse, 
     isLoading: isFriendsLoading 
-  } = useQuery({
+  } = useQuery<LeaderboardResponse>({
     queryKey: ['/api/leaderboard/friends'],
     // Using the real backend data from API
   });
   
   // Extract and transform the data for display
-  const friendsLeaderboardData = useMemo(() => {
+  const friendsLeaderboardData = useMemo((): StudentData[] => {
     if (!friendsLeaderboardResponse?.leaderboard) return [];
     
-    return friendsLeaderboardResponse.leaderboard.map((user: any) => ({
+    return friendsLeaderboardResponse.leaderboard.map((user) => ({
       id: user.id,
       name: user.name,
       profileImage: user.profileImage || '',
@@ -223,6 +237,20 @@ export default function LeaderboardPage() {
     rank: string;
   };
 
+  // Type for API response
+  interface LeaderboardResponse {
+    leaderboard: Array<{
+      id: number;
+      name: string;
+      profileImage: string | null;
+      grade: string | null;
+      level: number;
+      currentXp: number;
+      streakDays: number;
+      rank: string;
+    }>;
+  }
+
   const filteredIndianData = indianLeaderboardData.filter((student: StudentData) => 
     student.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
     (selectedCategory === 'all' || student.grade === selectedCategory)
@@ -234,7 +262,7 @@ export default function LeaderboardPage() {
   );
 
   // Unique categories for filtering - use Array.from to handle iteration properly
-  const categories = ['all', ...Array.from(new Set(indianLeaderboardData.map((item: StudentData) => item.grade)))];
+  const categories = ['all', ...Array.from(new Set(indianLeaderboardData.map((item: StudentData) => item.grade).filter(Boolean)))];
 
   return (
     <div className="container max-w-6xl mx-auto pt-4 pb-16">

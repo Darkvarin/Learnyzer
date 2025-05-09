@@ -4,8 +4,18 @@ import { RankProgressBar } from "@/components/rank-progress-bar";
 import { formatNumber, getRankColor } from "@/lib/utils";
 import { Medal } from "lucide-react";
 
+// Define proper types for rank data
+interface RankData {
+  currentRank: string;
+  nextRank: string;
+  currentRankPoints: number;
+  nextRankPoints: number;
+  battlesWon: number;
+  winRate: string;
+}
+
 export function RankSection() {
-  const { data: rankData, isLoading } = useQuery({
+  const { data: rankData, isLoading } = useQuery<RankData>({
     queryKey: ['/api/user/rank'],
   });
 
