@@ -223,7 +223,7 @@ export default function StudyNotesGenerator() {
                             placeholder="e.g. Biology, History"
                             value={subject}
                             onChange={(e) => setSubject(e.target.value)}
-                            className="bg-dark-card border-dark-border"
+                            className="bg-background/60 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20"
                             required
                           />
                         </div>
@@ -235,10 +235,10 @@ export default function StudyNotesGenerator() {
                             Note Style
                           </label>
                           <Select value={style} onValueChange={setStyle}>
-                            <SelectTrigger className="bg-dark-card border-dark-border">
+                            <SelectTrigger className="bg-background/60 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20">
                               <SelectValue placeholder="Select a style" />
                             </SelectTrigger>
-                            <SelectContent className="bg-dark-card border-dark-border">
+                            <SelectContent className="bg-background/95 border-cyan-500/30">
                               <SelectItem value="concise">Concise & Direct</SelectItem>
                               <SelectItem value="detailed">Detailed & Thorough</SelectItem>
                               <SelectItem value="visual">Visual & Diagram-heavy</SelectItem>
@@ -253,10 +253,10 @@ export default function StudyNotesGenerator() {
                             Education Level
                           </label>
                           <Select value={level} onValueChange={setLevel}>
-                            <SelectTrigger className="bg-dark-card border-dark-border">
+                            <SelectTrigger className="bg-background/60 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20">
                               <SelectValue placeholder="Select a level" />
                             </SelectTrigger>
-                            <SelectContent className="bg-dark-card border-dark-border">
+                            <SelectContent className="bg-background/95 border-cyan-500/30">
                               <SelectItem value="elementary">Elementary School</SelectItem>
                               <SelectItem value="middle_school">Middle School</SelectItem>
                               <SelectItem value="high_school">High School</SelectItem>
@@ -270,7 +270,7 @@ export default function StudyNotesGenerator() {
                       <div className="pt-4">
                         <Button
                           type="submit"
-                          className="w-full bg-primary-600 hover:bg-primary-500 text-white"
+                          className="w-full bg-cyan-500/80 hover:bg-cyan-500 text-white transform transition-all duration-300 hover:translate-y-[-2px] relative overflow-hidden border border-cyan-400/20"
                           disabled={generateNotesMutation.isPending}
                         >
                           {generateNotesMutation.isPending ? (
@@ -292,7 +292,10 @@ export default function StudyNotesGenerator() {
                   <TabsContent value="result" className="space-y-4">
                     {generatedNotes ? (
                       <>
-                        <div className="bg-dark-card border border-dark-border rounded-lg p-4 min-h-[300px] max-h-[500px] overflow-y-auto whitespace-pre-line">
+                        <div className="bg-background/60 border border-cyan-500/30 rounded-lg p-4 min-h-[300px] max-h-[500px] overflow-y-auto whitespace-pre-line text-white/90 relative">
+                          {/* Corner decorations */}
+                          <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/60"></div>
+                          <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/60"></div>
                           {generatedNotes}
                         </div>
                         
@@ -300,23 +303,23 @@ export default function StudyNotesGenerator() {
                           <Button
                             variant="outline"
                             onClick={handleReset}
-                            className="bg-dark-card border-dark-border"
+                            className="bg-background/60 border-cyan-500/30 hover:bg-cyan-500/10 text-white/90 transition-colors"
                           >
                             Create New Notes
                           </Button>
                           <Button
                             variant="outline"
                             onClick={handleCopyToClipboard}
-                            className="bg-dark-card border-dark-border"
+                            className="bg-background/60 border-cyan-500/30 hover:bg-cyan-500/10 text-white/90 transition-colors"
                           >
-                            <Copy className="mr-2 h-4 w-4" />
+                            <Copy className="mr-2 h-4 w-4 text-cyan-400" />
                             Copy to Clipboard
                           </Button>
                           <Button
                             variant="outline"
-                            className="bg-dark-card border-dark-border"
+                            className="bg-background/60 border-cyan-500/30 hover:bg-cyan-500/10 text-white/90 transition-colors"
                           >
-                            <FileDown className="mr-2 h-4 w-4" />
+                            <FileDown className="mr-2 h-4 w-4 text-cyan-400" />
                             Download as PDF
                           </Button>
                         </div>
