@@ -265,7 +265,10 @@ export default function AnswerChecker() {
                   <TabsContent value="result" className="space-y-4">
                     {feedback ? (
                       <>
-                        <div className="bg-dark-card border border-dark-border rounded-lg p-6">
+                        <div className="bg-background/60 border border-cyan-500/30 rounded-lg p-6 relative">
+                          {/* Corner decorations */}
+                          <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/60"></div>
+                          <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/60"></div>
                           <div className="flex flex-col items-center mb-6">
                             <h3 className="text-xl font-bold mb-2">Your Score</h3>
                             <div className={`text-4xl font-bold ${getScoreColor(feedback.score)}`}>
@@ -282,7 +285,7 @@ export default function AnswerChecker() {
                                 <AlertCircle className="h-4 w-4 mr-2 text-blue-400" />
                                 Question
                               </h4>
-                              <div className="bg-dark-surface p-3 rounded-lg text-gray-300">
+                              <div className="bg-background/40 border border-cyan-500/20 p-3 rounded-lg text-white/80">
                                 {question}
                               </div>
                             </div>
@@ -292,7 +295,7 @@ export default function AnswerChecker() {
                                 <ThumbsUp className={`h-4 w-4 mr-2 ${feedback.score >= 70 ? 'text-green-400' : 'text-gray-400'}`} />
                                 Your Answer
                               </h4>
-                              <div className="bg-dark-surface p-3 rounded-lg text-gray-300">
+                              <div className="bg-background/40 border border-cyan-500/20 p-3 rounded-lg text-white/80">
                                 {answer}
                               </div>
                             </div>
@@ -302,14 +305,14 @@ export default function AnswerChecker() {
                                 <Sparkles className="h-4 w-4 mr-2 text-yellow-400" />
                                 Correct Answer
                               </h4>
-                              <div className="bg-green-900/20 border border-green-900/30 p-3 rounded-lg text-gray-300">
+                              <div className="bg-green-900/20 border border-green-500/30 p-3 rounded-lg text-white/80">
                                 {feedback.correctAnswer}
                               </div>
                             </div>
                             
                             <div>
                               <h4 className="text-md font-semibold mb-2">Feedback</h4>
-                              <div className="bg-dark-surface p-3 rounded-lg text-gray-300">
+                              <div className="bg-background/40 border border-cyan-500/20 p-3 rounded-lg text-white/80">
                                 {feedback.feedback}
                               </div>
                             </div>
@@ -318,9 +321,9 @@ export default function AnswerChecker() {
                               <h4 className="text-md font-semibold mb-2">Areas for Improvement</h4>
                               <ul className="space-y-2">
                                 {feedback.improvements.map((improvement, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 bg-dark-surface p-3 rounded-lg">
+                                  <li key={idx} className="flex items-start gap-2 bg-background/40 border border-yellow-500/20 p-3 rounded-lg">
                                     <AlertCircle className="h-4 w-4 text-yellow-400 mt-0.5 flex-shrink-0" />
-                                    <span className="text-gray-300">{improvement}</span>
+                                    <span className="text-white/80">{improvement}</span>
                                   </li>
                                 ))}
                               </ul>
@@ -332,7 +335,7 @@ export default function AnswerChecker() {
                           <Button
                             variant="outline"
                             onClick={handleReset}
-                            className="bg-dark-card border-dark-border"
+                            className="bg-background/60 border-cyan-500/30 hover:bg-cyan-500/10 text-white/90 transition-colors"
                           >
                             Check Another Answer
                           </Button>
