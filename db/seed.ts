@@ -146,8 +146,8 @@ async function seed() {
     // Seed Courses
     console.log("Seeding courses...");
     
-    // Grade 3-5 Elementary Courses
-    const elementaryCoursesGrade3to5 = [
+    // Entrance Exam Courses
+    const entranceExamCourses = [
       {
         title: "Mathematics for Class 3",
         description: "Learn foundational mathematics concepts including addition, subtraction, multiplication, and basic fractions.",
@@ -570,10 +570,10 @@ async function seed() {
     
     if (!existingDetailedCourse) {
       // Insert detailed courses with grade targeting
-      for (const course of elementaryCoursesGrade3to5) {
+      for (const course of entranceExamCourses) {
         await db.insert(schema.courses).values(course);
       }
-      console.log(`✅ Added ${elementaryCoursesGrade3to5.length} courses with detailed chapter information`);
+      console.log(`✅ Added ${entranceExamCourses.length} courses with detailed chapter information`);
     } else {
       console.log("⏩ Detailed courses already exist, skipping...");
     }
