@@ -91,11 +91,23 @@ export default function StudyNotesGenerator() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-dark text-white">
+    <div className="min-h-screen flex flex-col relative overflow-hidden futuristic-bg">
+      {/* Modern cyberpunk grid background with subtle Solo Leveling accents */}
+      <div className="absolute inset-0 cyber-grid z-0 opacity-20"></div>
+      
+      {/* Animated glowing orbs */}
+      <div className="absolute top-1/4 left-1/5 w-72 h-72 rounded-full bg-purple-500/10 filter blur-[80px] animate-pulse-glow z-0"></div>
+      <div className="absolute bottom-1/4 right-1/5 w-96 h-96 rounded-full bg-blue-500/10 filter blur-[100px] animate-pulse-glow z-0" style={{animationDelay: '1s'}}></div>
+      
+      {/* Minimal energy flow line - subtle Solo Leveling accent */}
+      <div className="absolute h-full w-full overflow-hidden z-0">
+        <div className="energy-flow-horizontal top-2/3 opacity-30"></div>
+      </div>
+      
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6">
+      <main className="flex-1 container mx-auto px-4 pt-24 pb-20 md:pb-6 relative z-10">
         <div className="flex items-center gap-2 mb-6">
           <Link href="/ai-tools">
             <Button variant="outline" size="icon" className="h-8 w-8">
@@ -108,13 +120,19 @@ export default function StudyNotesGenerator() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Left column - Tool info */}
           <div className="md:col-span-1">
-            <Card className="bg-dark-surface border-dark-border h-full">
+            <Card className="glassmorphism border-cyan-500/30 h-full relative">
+              {/* Corner decorations */}
+              <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-cyan-500/30 opacity-70"></div>
+              <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-cyan-500/30 opacity-70"></div>
+              
               <CardHeader>
-                <div className="w-12 h-12 bg-primary-600/20 rounded-lg flex items-center justify-center mb-4">
-                  <BookText className="text-primary-400 h-6 w-6" />
+                <div className="w-12 h-12 bg-cyan-500/10 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
+                  {/* Animated glow effect */}
+                  <div className="absolute inset-0 bg-cyan-500/5 animate-pulse"></div>
+                  <BookText className="text-cyan-400 h-6 w-6 relative z-10" />
                 </div>
-                <CardTitle>Study Notes Generator</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-white">Study Notes Generator</CardTitle>
+                <CardDescription className="text-cyan-200/70">
                   Create personalized notes from any study material
                 </CardDescription>
               </CardHeader>
@@ -161,10 +179,14 @@ export default function StudyNotesGenerator() {
           
           {/* Right column - Generator */}
           <div className="md:col-span-2">
-            <Card className="bg-dark-surface border-dark-border">
+            <Card className="glassmorphism border-primary/30 relative">
+              {/* Corner decorations */}
+              <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-primary/30 opacity-70"></div>
+              <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-primary/30 opacity-70"></div>
+              
               <CardHeader>
-                <CardTitle>Generate Your Study Notes</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-white">Generate Your Study Notes</CardTitle>
+                <CardDescription className="text-primary-200/70">
                   Customize and create study materials tailored to your learning style
                 </CardDescription>
               </CardHeader>
@@ -187,7 +209,7 @@ export default function StudyNotesGenerator() {
                             placeholder="e.g. Photosynthesis, French Revolution"
                             value={topic}
                             onChange={(e) => setTopic(e.target.value)}
-                            className="bg-dark-card border-dark-border"
+                            className="bg-background/60 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20"
                             required
                           />
                         </div>

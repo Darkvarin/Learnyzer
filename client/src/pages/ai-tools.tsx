@@ -101,23 +101,27 @@ export default function AITools() {
   });
   
   return (
-    <div className="min-h-screen flex flex-col solo-bg relative overflow-hidden solo-page">
-      {/* Solo Leveling background elements */}
-      <div className="absolute inset-0 solo-grid z-0 opacity-30"></div>
+    <div className="min-h-screen flex flex-col relative overflow-hidden futuristic-bg">
+      {/* Modern cyberpunk grid background with subtle Solo Leveling accents */}
+      <div className="absolute inset-0 cyber-grid z-0 opacity-20"></div>
+      
+      {/* Animated glowing orbs */}
+      <div className="absolute top-1/4 left-1/5 w-72 h-72 rounded-full bg-purple-500/10 filter blur-[80px] animate-pulse-glow z-0"></div>
+      <div className="absolute bottom-1/4 right-1/5 w-96 h-96 rounded-full bg-blue-500/10 filter blur-[100px] animate-pulse-glow z-0" style={{animationDelay: '1s'}}></div>
+      
+      {/* Minimal energy flow line - subtle Solo Leveling accent */}
+      <div className="absolute h-full w-full overflow-hidden z-0">
+        <div className="energy-flow-horizontal top-2/3 opacity-30"></div>
+      </div>
       
       {/* Solo Leveling corner decorations */}
       <div className="absolute top-24 right-4 w-32 h-32 solo-corner-tr z-0"></div>
       <div className="absolute bottom-4 left-4 w-32 h-32 solo-corner-bl z-0"></div>
       
-      {/* Fixed scan line effect */}
-      <div className="fixed inset-0 h-screen pointer-events-none z-[1]">
-        <div className="absolute top-0 left-0 right-0 h-[2px] solo-scan-line"></div>
-      </div>
-      
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 relative z-10">
+      <main className="flex-1 container mx-auto px-4 pt-24 pb-20 md:pb-6 relative z-10">
         <div className="relative monarch-card-glow p-6 rounded-xl mb-8">
           {/* Solo Leveling accent elements */}
           <div className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-cyan-500/40 z-10"></div>
