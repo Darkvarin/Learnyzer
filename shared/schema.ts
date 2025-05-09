@@ -178,6 +178,28 @@ export const streakGoals = pgTable("streak_goals", {
   createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
+// Wellness Preferences Table
+export const wellnessPreferences = pgTable("wellness_preferences", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  eyeStrain: boolean("eye_strain").default(true).notNull(),
+  posture: boolean("posture").default(true).notNull(),
+  hydration: boolean("hydration").default(true).notNull(),
+  movement: boolean("movement").default(true).notNull(),
+  breathing: boolean("breathing").default(true).notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Wellness Breaks Table
+export const wellnessBreaks = pgTable("wellness_breaks", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  breakId: text("break_id").notNull(),
+  breakType: text("break_type").notNull(),
+  duration: integer("duration").notNull(),
+  completedAt: timestamp("completed_at").defaultNow().notNull(),
+});
+
 // User Daily Streak Goals Table
 export const userStreakGoals = pgTable("user_streak_goals", {
   id: serial("id").primaryKey(),
@@ -200,7 +222,9 @@ export const usersRelations = relations(users, ({ many }) => ({
   userAchievements: many(userAchievements),
   referralsGiven: many(referrals, { relationName: "referralsGiven" }),
   referralsReceived: many(referrals, { relationName: "referralsReceived" }),
-  userStreakGoals: many(userStreakGoals)
+  userStreakGoals: many(userStreakGoals),
+  wellnessPreferences: many(wellnessPreferences),
+  wellnessBreaks: many(wellnessBreaks)
 }));
 
 export const coursesRelations = relations(courses, ({ many }) => ({
@@ -268,6 +292,14 @@ export const userStreakGoalsRelations = relations(userStreakGoals, ({ one }) => 
   streakGoal: one(streakGoals, { fields: [userStreakGoals.streakGoalId], references: [streakGoals.id] })
 }));
 
+export const wellnessPreferencesRelations = relations(wellnessPreferences, ({ one }) => ({
+  user: one(users, { fields: [wellnessPreferences.userId], references: [users.id] })
+}));
+
+export const wellnessBreaksRelations = relations(wellnessBreaks, ({ one }) => ({
+  user: one(users, { fields: [wellnessBreaks.userId], references: [users.id] })
+}));
+
 // Schemas for validation
 
 export const insertUserSchema = createInsertSchema(users, {
@@ -316,3 +348,5 @@ export type UserAchievement = typeof userAchievements.$inferSelect;
 export type Referral = typeof referrals.$inferSelect;
 export type StreakGoal = typeof streakGoals.$inferSelect;
 export type UserStreakGoal = typeof userStreakGoals.$inferSelect;
+export type WellnessPreference = typeof wellnessPreferences.$inferSelect;
+export type WellnessBreak = typeof wellnessBreaks.$inferSelect;

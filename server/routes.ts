@@ -9,6 +9,7 @@ import { courseService } from "./services/course-service";
 import { battleService } from "./services/battle-service";
 import { notificationService } from "./services/notification-service";
 import { supportService } from "./services/support-service";
+import { wellnessService } from "./services/wellness-service";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up enhanced authentication with improved security and database session storage

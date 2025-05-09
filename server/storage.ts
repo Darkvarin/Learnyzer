@@ -36,6 +36,137 @@ function getXpForLevel(level: number): number {
 }
 
 export const storage = {
+  /**
+   * Get user wellness preferences
+   */
+  async getUserWellnessPreferences(userId: number) {
+    const preferences = await db.query.wellnessPreferences.findFirst({
+      where: eq(schema.wellnessPreferences.userId, userId)
+    });
+    
+    // Return default preferences if none are set
+    if (!preferences) {
+      return {
+        eyeStrain: true,
+        posture: true,
+        hydration: true,
+        movement: true,
+        breathing: true
+      };
+    }
+    
+    return {
+      eyeStrain: preferences.eyeStrain,
+      posture: preferences.posture,
+      hydration: preferences.hydration,
+      movement: preferences.movement,
+      breathing: preferences.breathing
+    };
+  },
+  
+  /**
+   * Save user wellness preferences
+   */
+  async saveUserWellnessPreferences(userId: number, preferences: {
+    eyeStrain: boolean;
+    posture: boolean;
+    hydration: boolean;
+    movement: boolean;
+    breathing: boolean;
+  }) {
+    // Check if preferences already exist
+    const existingPreferences = await db.query.wellnessPreferences.findFirst({
+      where: eq(schema.wellnessPreferences.userId, userId)
+    });
+    
+    if (existingPreferences) {
+      // Update existing preferences
+      await db.update(schema.wellnessPreferences)
+        .set({
+          eyeStrain: preferences.eyeStrain,
+          posture: preferences.posture,
+          hydration: preferences.hydration,
+          movement: preferences.movement,
+          breathing: preferences.breathing,
+          updatedAt: new Date()
+        })
+        .where(eq(schema.wellnessPreferences.userId, userId));
+    } else {
+      // Insert new preferences
+      await db.insert(schema.wellnessPreferences).values({
+        userId,
+        eyeStrain: preferences.eyeStrain,
+        posture: preferences.posture,
+        hydration: preferences.hydration,
+        movement: preferences.movement,
+        breathing: preferences.breathing
+      });
+    }
+    
+    return true;
+  },
+  
+  /**
+   * Log a completed wellness break
+   */
+  async logWellnessBreak(userId: number, breakData: {
+    breakId: string;
+    breakType: string;
+    duration: number;
+    completedAt: Date;
+  }) {
+    await db.insert(schema.wellnessBreaks).values({
+      userId,
+      breakId: breakData.breakId,
+      breakType: breakData.breakType,
+      duration: breakData.duration,
+      completedAt: breakData.completedAt
+    });
+    
+    return true;
+  },
+  
+  /**
+   * Get wellness break history
+   */
+  async getWellnessBreakHistory(userId: number) {
+    const breaks = await db.query.wellnessBreaks.findMany({
+      where: eq(schema.wellnessBreaks.userId, userId),
+      orderBy: [desc(schema.wellnessBreaks.completedAt)]
+    });
+    
+    return breaks;
+  },
+  
+  /**
+   * Get wellness stats
+   */
+  async getUserWellnessStats(userId: number) {
+    const breaks = await db.query.wellnessBreaks.findMany({
+      where: eq(schema.wellnessBreaks.userId, userId)
+    });
+    
+    const totalBreakTime = breaks.reduce((total, b) => total + b.duration, 0);
+    const breaksByType = breaks.reduce((acc: Record<string, number>, b) => {
+      acc[b.breakType] = (acc[b.breakType] || 0) + 1;
+      return acc;
+    }, {});
+    
+    // Get recent breaks (last 7 days)
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    
+    const recentBreaks = breaks.filter(b => 
+      new Date(b.completedAt) > oneWeekAgo
+    );
+    
+    return {
+      totalBreaks: breaks.length,
+      totalBreakSeconds: totalBreakTime,
+      breaksByType,
+      recentBreaksCount: recentBreaks.length
+    };
+  },
   // User-related functions
   
   /**
