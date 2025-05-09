@@ -70,28 +70,52 @@ export default function HomePage() {
               </div>
             </Link>
 
-            {/* Desktop Nav with Solo Leveling hover effects */}
+            {/* Desktop Nav with Solo Leveling hover effects and smooth scrolling */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming">
+              <button 
+                onClick={() => {
+                  const featuresSection = document.getElementById('features');
+                  featuresSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming bg-transparent border-none"
+              >
                 Features
                 <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
                 <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
-              </a>
-              <a href="#pricing" className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming">
+              </button>
+              <button 
+                onClick={() => {
+                  const pricingSection = document.getElementById('pricing');
+                  pricingSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming bg-transparent border-none"
+              >
                 Pricing
                 <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
                 <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
-              </a>
-              <a href="#how-it-works" className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming">
+              </button>
+              <button 
+                onClick={() => {
+                  const howItWorksSection = document.getElementById('how-it-works');
+                  howItWorksSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming bg-transparent border-none"
+              >
                 How it Works
                 <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
                 <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
-              </a>
-              <a href="#faq" className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming">
+              </button>
+              <button 
+                onClick={() => {
+                  const faqSection = document.getElementById('faq');
+                  faqSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming bg-transparent border-none"
+              >
                 FAQs
                 <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
                 <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
-              </a>
+              </button>
               <Button 
                 onClick={() => user ? navigate("/dashboard") : navigate("/auth")}
                 className="relative overflow-hidden group bg-transparent border border-cyan-500/50 hover:bg-cyan-950/50 transition-all duration-300"
@@ -121,45 +145,57 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Mobile menu with Solo Leveling style */}
+        {/* Mobile menu with Solo Leveling style and smooth scrolling */}
         <div className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} glassmorphism border-b border-cyan-500/20 py-6`}>
           <nav className="container mx-auto px-4 flex flex-col space-y-5">
-            <a 
-              href="#features" 
-              className="px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming"
-              onClick={() => setMobileMenuOpen(false)}
+            <button 
+              className="text-left px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming bg-transparent border-none"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                const featuresSection = document.getElementById('features');
+                featuresSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
               <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
               <span className="relative">Features</span>
               <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
-            </a>
-            <a 
-              href="#pricing" 
-              className="px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming"
-              onClick={() => setMobileMenuOpen(false)}
+            </button>
+            <button 
+              className="text-left px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming bg-transparent border-none"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                const pricingSection = document.getElementById('pricing');
+                pricingSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
               <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
               <span className="relative">Pricing</span>
               <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
-            </a>
-            <a 
-              href="#how-it-works" 
-              className="px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming"
-              onClick={() => setMobileMenuOpen(false)}
+            </button>
+            <button 
+              className="text-left px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming bg-transparent border-none"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                const howItWorksSection = document.getElementById('how-it-works');
+                howItWorksSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
               <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
               <span className="relative">How it Works</span>
               <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
-            </a>
-            <a 
-              href="#faq" 
-              className="px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming"
-              onClick={() => setMobileMenuOpen(false)}
+            </button>
+            <button 
+              className="text-left px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming bg-transparent border-none"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                const faqSection = document.getElementById('faq');
+                faqSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
               <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
               <span className="relative">FAQs</span>
               <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
-            </a>
+            </button>
             <Button 
               onClick={() => {
                 setMobileMenuOpen(false);
