@@ -82,6 +82,14 @@ interface NotificationMessage extends RealTimeMessage {
   severity: 'info' | 'success' | 'warning' | 'error';
 }
 
+// Events related to leaderboard updates
+interface LeaderboardUpdateMessage extends RealTimeMessage {
+  type: 'leaderboard_update';
+  userIds: number[];
+  updateType: 'rank' | 'xp' | 'streak' | 'position';
+  message: string;
+}
+
 // Union type of all message types
 type RealTimeUpdateMessage = 
   | ProgressUpdateMessage
@@ -91,7 +99,8 @@ type RealTimeUpdateMessage =
   | AchievementMessage
   | ReferralMessage
   | AIUpdateMessage
-  | NotificationMessage;
+  | NotificationMessage
+  | LeaderboardUpdateMessage;
 
 // Context interface
 interface RealTimeContextType {
@@ -286,6 +295,15 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
         showNotificationToast(notificationMsg);
         break;
         
+      case 'leaderboard_update':
+        // Handle leaderboard updates by invalidating the appropriate queries
+        const leaderboardMsg = message as LeaderboardUpdateMessage;
+        queryClient.invalidateQueries({ queryKey: ['/api/leaderboard'] });
+        
+        // Show a toast notification about the leaderboard update
+        showLeaderboardToast(leaderboardMsg);
+        break;
+
       default:
         if ('type' in message) {
           console.log('Unhandled real-time message type:', message.type);
@@ -379,6 +397,49 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
     });
   };
   
+  const showLeaderboardToast = (message: LeaderboardUpdateMessage) => {
+    let title: string;
+    let description: string;
+    
+    // Set toast title and description based on update type
+    switch (message.updateType) {
+      case 'rank':
+        title = "Leaderboard Ranks Updated";
+        description = message.message || "Some players have changed ranks. Check the leaderboard!";
+        break;
+      case 'xp':
+        title = "Leaderboard XP Updated";
+        description = message.message || "XP changes have affected the leaderboard standings!";
+        break;
+      case 'streak':
+        title = "Streak Leaders Changed";
+        description = message.message || "Streak leaders have changed positions on the leaderboard!";
+        break;
+      case 'position':
+        title = "Leaderboard Positions Changed";
+        description = message.message || "There have been changes to the leaderboard rankings!";
+        break;
+      default:
+        title = "Leaderboard Updated";
+        description = message.message || "The leaderboard has been updated with new information!";
+    }
+    
+    toast({
+      title: title,
+      description: description,
+      variant: "rank" // Using rank variant for leaderboard updates
+    });
+    
+    // Also invalidate specific query keys based on update type
+    if (message.updateType === 'rank') {
+      queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/ranks'] });
+    } else if (message.updateType === 'xp') {
+      queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/xp'] });
+    } else if (message.updateType === 'streak') {
+      queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/streaks'] });
+    }
+  };
+
   const showNotificationToast = (message: NotificationMessage) => {
     // Map severity to our variants with Solo Leveling theme
     let variant = "default";
