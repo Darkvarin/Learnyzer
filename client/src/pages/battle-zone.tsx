@@ -194,7 +194,7 @@ export default function BattleZone() {
                     Create Battle
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-background/90 backdrop-blur-sm border border-cyan-500/30 shadow-glow relative overflow-hidden">
+                <DialogContent className="!fixed !top-1/2 !left-1/2 !transform !-translate-x-1/2 !-translate-y-1/2 bg-background/90 backdrop-blur-sm border border-cyan-500/30 shadow-glow overflow-hidden max-w-md w-full mx-auto max-h-[90vh] overflow-y-auto p-4 sm:p-6">
                   {/* Corner decorations */}
                   <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/60"></div>
                   <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/60"></div>
@@ -264,16 +264,16 @@ export default function BattleZone() {
                     </div>
                   </div>
                   
-                  <DialogFooter>
+                  <DialogFooter className="flex flex-col sm:flex-row mt-4 gap-2 sm:gap-0">
                     <Button 
                       variant="outline" 
                       onClick={() => setCreateDialogOpen(false)}
-                      className="bg-background/40 border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-500/50"
+                      className="bg-background/40 border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-500/50 w-full sm:w-auto"
                     >
                       Cancel
                     </Button>
                     <Button 
-                      className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 border border-cyan-500/30 shadow-glow"
+                      className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 border border-cyan-500/30 shadow-glow w-full sm:w-auto"
                       onClick={handleCreateBattle}
                       disabled={createBattleMutation.isPending}
                     >
