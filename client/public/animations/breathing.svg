@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <style>
+    .lungs {
+      animation: breathe 8s infinite ease-in-out;
+      transform-origin: center;
+    }
+    .lungs-inner {
+      animation: breathe-inner 8s infinite ease-in-out;
+      transform-origin: center;
+    }
+    .breath-circle-1 {
+      animation: breathe-circle 8s infinite ease-in-out;
+      transform-origin: center;
+      opacity: 0.2;
+    }
+    .breath-circle-2 {
+      animation: breathe-circle 8s infinite ease-in-out;
+      transform-origin: center;
+      opacity: 0.15;
+      animation-delay: 0.2s;
+    }
+    .breath-circle-3 {
+      animation: breathe-circle 8s infinite ease-in-out;
+      transform-origin: center;
+      opacity: 0.1;
+      animation-delay: 0.4s;
+    }
+    .breath-instruction {
+      animation: text-fade 8s infinite ease-in-out;
+    }
+    .count-number {
+      animation: count-fade 8s infinite steps(1);
+    }
+    .energy-flow {
+      animation: energy-pulse 8s infinite ease-in-out;
+    }
+    
+    @keyframes breathe {
+      0%, 50% { transform: scale(1); }
+      25% { transform: scale(1.2); }
+      75% { transform: scale(0.9); }
+    }
+    
+    @keyframes breathe-inner {
+      0%, 50% { transform: scale(1); opacity: 0.7; }
+      25% { transform: scale(1.1); opacity: 1; }
+      75% { transform: scale(0.9); opacity: 0.5; }
+    }
+    
+    @keyframes breathe-circle {
+      0%, 50%, 100% { transform: scale(0.8); opacity: 0; }
+      25% { transform: scale(1.2); opacity: 0.3; }
+    }
+    
+    @keyframes text-fade {
+      0%, 45% { opacity: 1; }
+      50%, 95% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+    
+    @keyframes count-fade {
+      0%, 12.5% { opacity: 1; }
+      12.5%, 100% { opacity: 0; }
+    }
+    
+    @keyframes energy-pulse {
+      0%, 50% { stroke-opacity: 0.3; }
+      25% { stroke-opacity: 0.7; }
+      75% { stroke-opacity: 0.1; }
+    }
+  </style>
+  
+  <!-- Background circle -->
+  <circle cx="120" cy="120" r="110" fill="#131313" stroke="#8a56ff" stroke-width="2" stroke-opacity="0.3"/>
+  
+  <!-- Breath circles -->
+  <circle class="breath-circle-1" cx="120" cy="120" r="90" fill="#8a56ff" fill-opacity="0.1" />
+  <circle class="breath-circle-2" cx="120" cy="120" r="75" fill="#8a56ff" fill-opacity="0.1" />
+  <circle class="breath-circle-3" cx="120" cy="120" r="60" fill="#8a56ff" fill-opacity="0.1" />
+  
+  <!-- Lungs outline -->
+  <g class="lungs">
+    <!-- Left lung -->
+    <path d="M100,80 C80,80 70,100 75,120 C80,140 90,160 100,170 C110,160 115,140 115,120 C115,100 110,80 100,80" fill="none" stroke="#8a56ff" stroke-width="2" />
+    
+    <!-- Right lung -->
+    <path d="M140,80 C160,80 170,100 165,120 C160,140 150,160 140,170 C130,160 125,140 125,120 C125,100 130,80 140,80" fill="none" stroke="#8a56ff" stroke-width="2" />
+    
+    <!-- Trachea -->
+    <line x1="120" y1="80" x2="120" y2="60" stroke="#8a56ff" stroke-width="2" />
+    
+    <!-- Bronchi -->
+    <line x1="120" y1="80" x2="100" y2="90" stroke="#8a56ff" stroke-width="2" />
+    <line x1="120" y1="80" x2="140" y2="90" stroke="#8a56ff" stroke-width="2" />
+  </g>
+  
+  <!-- Lungs inner structure -->
+  <g class="lungs-inner">
+    <!-- Left lung inner details -->
+    <path d="M100,90 C90,95 85,105 87,120 C90,135 95,150 100,160" fill="none" stroke="#8a56ff" stroke-width="1" stroke-opacity="0.7" />
+    <path d="M90,100 C85,110 85,130 90,145" fill="none" stroke="#8a56ff" stroke-width="1" stroke-opacity="0.7" />
+    <path d="M100,100 C105,110 110,130 105,150" fill="none" stroke="#8a56ff" stroke-width="1" stroke-opacity="0.7" />
+    
+    <!-- Right lung inner details -->
+    <path d="M140,90 C150,95 155,105 153,120 C150,135 145,150 140,160" fill="none" stroke="#8a56ff" stroke-width="1" stroke-opacity="0.7" />
+    <path d="M150,100 C155,110 155,130 150,145" fill="none" stroke="#8a56ff" stroke-width="1" stroke-opacity="0.7" />
+    <path d="M140,100 C135,110 130,130 135,150" fill="none" stroke="#8a56ff" stroke-width="1" stroke-opacity="0.7" />
+  </g>
+  
+  <!-- Energy flow paths -->
+  <path class="energy-flow" d="M60,120 C80,100 100,90 120,85 C140,90 160,100 180,120" fill="none" stroke="#8a56ff" stroke-width="1.5" stroke-dasharray="4 2" />
+  <path class="energy-flow" d="M60,140 C80,160 100,170 120,175 C140,170 160,160 180,140" fill="none" stroke="#8a56ff" stroke-width="1.5" stroke-dasharray="4 2" />
+  
+  <!-- Breath instructions -->
+  <text class="breath-instruction" x="120" y="35" font-family="Arial, sans-serif" font-size="14" fill="#8a56ff" text-anchor="middle">Breathe In</text>
+  <text class="breath-instruction" x="120" y="205" font-family="Arial, sans-serif" font-size="14" fill="#8a56ff" text-anchor="middle" opacity="0.3">Breathe Out</text>
+  
+  <!-- Breath counter/timer -->
+  <text x="120" y="225" font-family="Arial, sans-serif" font-size="12" fill="#8a56ff" text-anchor="middle">Deep Breathing</text>
+  
+  <!-- Count numbers - will appear sequentially -->
+  <g class="count-number" style="animation-delay: 0s;">
+    <text x="50" y="120" font-family="Arial, sans-serif" font-size="24" fill="#8a56ff" text-anchor="middle">1</text>
+  </g>
+  <g class="count-number" style="animation-delay: 8s;">
+    <text x="50" y="120" font-family="Arial, sans-serif" font-size="24" fill="#8a56ff" text-anchor="middle">2</text>
+  </g>
+  <g class="count-number" style="animation-delay: 16s;">
+    <text x="50" y="120" font-family="Arial, sans-serif" font-size="24" fill="#8a56ff" text-anchor="middle">3</text>
+  </g>
+  <g class="count-number" style="animation-delay: 24s;">
+    <text x="50" y="120" font-family="Arial, sans-serif" font-size="24" fill="#8a56ff" text-anchor="middle">4</text>
+  </g>
+  <g class="count-number" style="animation-delay: 32s;">
+    <text x="50" y="120" font-family="Arial, sans-serif" font-size="24" fill="#8a56ff" text-anchor="middle">5</text>
+  </g>
+</svg>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <style>
+    .figure-1 {
+      animation: stretch-1 10s infinite ease-in-out;
+      transform-origin: center;
+    }
+    .figure-2 {
+      animation: stretch-2 10s infinite ease-in-out;
+      animation-delay: 3s;
+      transform-origin: center;
+      opacity: 0;
+    }
+    .figure-3 {
+      animation: stretch-3 10s infinite ease-in-out;
+      animation-delay: 6s;
+      transform-origin: center;
+      opacity: 0;
+    }
+    .stretch-line {
+      animation: line-pulse 3s infinite ease-in-out;
+    }
+    .energy-glow {
+      animation: glow-pulse 5s infinite alternate ease-in-out;
+    }
+    
+    @keyframes stretch-1 {
+      0%, 30%, 100% { opacity: 1; }
+      31%, 99% { opacity: 0; }
+    }
+    
+    @keyframes stretch-2 {
+      0%, 29%, 70%, 100% { opacity: 0; }
+      30%, 69% { opacity: 1; }
+    }
+    
+    @keyframes stretch-3 {
+      0%, 69%, 100% { opacity: 0; }
+      70%, 99% { opacity: 1; }
+    }
+    
+    @keyframes line-pulse {
+      0%, 100% { stroke-opacity: 0.6; stroke-width: 1; }
+      50% { stroke-opacity: 1; stroke-width: 2; }
+    }
+    
+    @keyframes glow-pulse {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.7; }
+    }
+  </style>
+  
+  <!-- Background circle -->
+  <circle cx="120" cy="120" r="110" fill="#131313" stroke="#8a56ff" stroke-width="2" stroke-opacity="0.3"/>
+  
+  <!-- Stretch position 1: Arms overhead -->
+  <g class="figure-1">
+    <!-- Body -->
+    <line x1="120" y1="90" x2="120" y2="150" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Head -->
+    <circle cx="120" cy="75" r="15" fill="#1a1a1a" stroke="#8a56ff" stroke-width="2" />
+    
+    <!-- Arms stretched upward -->
+    <path d="M120,100 L100,85 L90,60" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    <path d="M120,100 L140,85 L150,60" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Legs -->
+    <path d="M120,150 L100,190" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    <path d="M120,150 L140,190" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Stretch direction lines -->
+    <line class="stretch-line" x1="90" y1="60" x2="80" y2="45" stroke="#8a56ff" stroke-width="1.5" stroke-dasharray="3 2" />
+    <line class="stretch-line" x1="150" y1="60" x2="160" y2="45" stroke="#8a56ff" stroke-width="1.5" stroke-dasharray="3 2" />
+    
+    <!-- Energy glow -->
+    <circle class="energy-glow" cx="120" cy="140" r="30" fill="#8a56ff" fill-opacity="0.2" />
+  </g>
+  
+  <!-- Stretch position 2: Side stretch -->
+  <g class="figure-2">
+    <!-- Body bent to side -->
+    <path d="M120,90 C130,110 135,130 120,150" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Head -->
+    <circle cx="120" cy="75" r="15" fill="#1a1a1a" stroke="#8a56ff" stroke-width="2" />
+    
+    <!-- Arms stretched to sides -->
+    <path d="M125,100 L160,105 L180,95" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    <path d="M125,100 L100,115 L80,110" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Legs -->
+    <path d="M120,150 L100,190" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    <path d="M120,150 L140,190" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Stretch direction lines -->
+    <line class="stretch-line" x1="180" y1="95" x2="190" y2="90" stroke="#8a56ff" stroke-width="1.5" stroke-dasharray="3 2" />
+    
+    <!-- Energy glow -->
+    <circle class="energy-glow" cx="150" cy="100" r="30" fill="#8a56ff" fill-opacity="0.2" />
+  </g>
+  
+  <!-- Stretch position 3: Forward bend -->
+  <g class="figure-3">
+    <!-- Body bent forward -->
+    <path d="M120,90 C120,110 120,130 120,150" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Head -->
+    <circle cx="120" cy="75" r="15" fill="#1a1a1a" stroke="#8a56ff" stroke-width="2" />
+    
+    <!-- Arms stretched down -->
+    <path d="M120,100 L110,120 L100,140" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    <path d="M120,100 L130,120 L140,140" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Legs bent slightly -->
+    <path d="M120,150 C115,160 105,170 100,190" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    <path d="M120,150 C125,160 135,170 140,190" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Stretch direction lines -->
+    <line class="stretch-line" x1="100" y1="140" x2="90" y2="150" stroke="#8a56ff" stroke-width="1.5" stroke-dasharray="3 2" />
+    <line class="stretch-line" x1="140" y1="140" x2="150" y2="150" stroke="#8a56ff" stroke-width="1.5" stroke-dasharray="3 2" />
+    
+    <!-- Energy glow -->
+    <circle class="energy-glow" cx="120" cy="120" r="35" fill="#8a56ff" fill-opacity="0.2" />
+  </g>
+  
+  <!-- Chair reference -->
+  <rect x="100" y="190" width="40" height="5" fill="#8a56ff" fill-opacity="0.3" />
+  
+  <!-- Counter/timer -->
+  <text class="stretch-counter" x="120" y="35" font-family="Arial, sans-serif" font-size="16" fill="#8a56ff" text-anchor="middle">Desk Stretches</text>
+  
+  <!-- Instructions -->
+  <text x="120" y="215" font-family="Arial, sans-serif" font-size="12" fill="#8a56ff" text-anchor="middle">Stand up & stretch for 60 seconds</text>
+</svg>

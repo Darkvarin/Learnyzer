@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <style>
+    .spine-correct {
+      animation: spine-pulse 3s infinite ease-in-out;
+    }
+    .spine-incorrect {
+      animation: fade-pulse 5s infinite ease-in-out;
+    }
+    .arrows {
+      animation: arrow-pulse 4s infinite ease-in-out;
+    }
+    .person-shift {
+      animation: person-move 5s infinite alternate ease-in-out;
+    }
+    .head-shift {
+      animation: head-adjust 5s infinite alternate ease-in-out;
+    }
+    .highlight-pulse {
+      animation: highlight-fade 3s infinite ease-in-out;
+    }
+    
+    @keyframes spine-pulse {
+      0%, 100% { stroke-width: 3; stroke-opacity: 0.9; }
+      50% { stroke-width: 4; stroke-opacity: 1; }
+    }
+    
+    @keyframes fade-pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.2; }
+    }
+    
+    @keyframes arrow-pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    
+    @keyframes person-move {
+      0% { transform: translateY(5px) rotate(4deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+    
+    @keyframes head-adjust {
+      0% { transform: translateY(5px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+    
+    @keyframes highlight-fade {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+  </style>
+  
+  <!-- Background circle -->
+  <circle cx="120" cy="120" r="110" fill="#131313" stroke="#8a56ff" stroke-width="2" stroke-opacity="0.3"/>
+  
+  <!-- Person with incorrect posture (faded) -->
+  <g class="spine-incorrect" opacity="0.3">
+    <g class="person-shift" transform-origin="120 160">
+      <!-- Body -->
+      <path d="M120,70 C110,100 105,130 105,160" fill="none" stroke="#ff5656" stroke-width="3" stroke-linecap="round" />
+      
+      <!-- Head -->
+      <g class="head-shift" transform-origin="120 65">
+        <circle cx="120" cy="55" r="18" fill="#1a1a1a" stroke="#ff5656" stroke-width="2" />
+        <!-- Face details -->
+        <path d="M113,55 C114,57 126,57 127,55" fill="none" stroke="#ff5656" stroke-width="1.5" />
+        <circle cx="114" cy="51" r="2" fill="#ff5656" />
+        <circle cx="126" cy="51" r="2" fill="#ff5656" />
+      </g>
+      
+      <!-- Arms -->
+      <path d="M105,100 L85,120" fill="none" stroke="#ff5656" stroke-width="3" stroke-linecap="round" />
+      <path d="M105,100 L125,120" fill="none" stroke="#ff5656" stroke-width="3" stroke-linecap="round" />
+      
+      <!-- Legs -->
+      <path d="M105,160 L95,190" fill="none" stroke="#ff5656" stroke-width="3" stroke-linecap="round" />
+      <path d="M105,160 L115,190" fill="none" stroke="#ff5656" stroke-width="3" stroke-linecap="round" />
+    </g>
+    
+    <!-- Chair -->
+    <rect x="85" y="160" width="40" height="5" fill="#ff5656" fill-opacity="0.3" rx="2" />
+    <rect x="90" y="165" width="5" height="20" fill="#ff5656" fill-opacity="0.3" />
+    <rect x="115" y="165" width="5" height="20" fill="#ff5656" fill-opacity="0.3" />
+  </g>
+  
+  <!-- Person with correct posture -->
+  <g>
+    <!-- Body with straight spine -->
+    <path class="spine-correct" d="M120,70 C120,100 120,130 120,160" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Head -->
+    <circle cx="120" cy="55" r="18" fill="#1a1a1a" stroke="#8a56ff" stroke-width="2" />
+    <!-- Face details -->
+    <path d="M113,55 C114,57 126,57 127,55" fill="none" stroke="#8a56ff" stroke-width="1.5" />
+    <circle cx="114" cy="51" r="2" fill="#8a56ff" />
+    <circle cx="126" cy="51" r="2" fill="#8a56ff" />
+    
+    <!-- Arms -->
+    <path d="M120,100 L100,120" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    <path d="M120,100 L140,120" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Legs -->
+    <path d="M120,160 L110,190" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    <path d="M120,160 L130,190" fill="none" stroke="#8a56ff" stroke-width="3" stroke-linecap="round" />
+    
+    <!-- Chair -->
+    <rect x="100" y="160" width="40" height="5" fill="#8a56ff" fill-opacity="0.5" rx="2" />
+    <rect x="105" y="165" width="5" height="20" fill="#8a56ff" fill-opacity="0.5" />
+    <rect x="130" y="165" width="5" height="20" fill="#8a56ff" fill-opacity="0.5" />
+  </g>
+  
+  <!-- Monitor -->
+  <rect x="165" y="60" width="40" height="30" fill="none" stroke="#8a56ff" stroke-width="2" rx="2" />
+  <rect x="175" y="90" width="20" height="5" fill="none" stroke="#8a56ff" stroke-width="2" />
+  <rect x="180" y="95" width="10" height="5" fill="none" stroke="#8a56ff" stroke-width="2" />
+  
+  <!-- Alignment arrows and guidelines -->
+  <g class="arrows" opacity="0.8">
+    <!-- Eye level to monitor -->
+    <line x1="120" y1="55" x2="185" y2="75" stroke="#8a56ff" stroke-width="1.5" stroke-dasharray="4 2" />
+    <polygon points="182,75 188,75 185,71" fill="#8a56ff" />
+    
+    <!-- Vertical alignment guide -->
+    <line x1="120" y1="20" x2="120" y2="190" stroke="#8a56ff" stroke-width="1" stroke-dasharray="5 3" />
+  </g>
+  
+  <!-- Highlight zones -->
+  <g class="highlight-pulse">
+    <circle cx="120" cy="55" r="25" fill="#8a56ff" fill-opacity="0.2" />
+    <rect x="100" y="90" width="40" height="40" rx="20" fill="#8a56ff" fill-opacity="0.2" />
+    <rect x="100" y="140" width="40" height="40" rx="20" fill="#8a56ff" fill-opacity="0.2" />
+  </g>
+  
+  <!-- Posture text -->
+  <text x="120" y="220" font-family="Arial, sans-serif" font-size="16" fill="#8a56ff" text-anchor="middle">Perfect Posture</text>
+</svg>
