@@ -137,19 +137,15 @@ export function RankSection() {
         </div>
         
         {rankData && (
-          <div className="mt-4 pt-3 border-t border-emerald-500/20 relative">
-            {/* Solo Leveling diagonal accent lines */}
-            <div className="absolute top-0 left-0 w-6 h-[1px] bg-emerald-500/60 transform -rotate-45 origin-top-left"></div>
-            <div className="absolute top-0 right-0 w-6 h-[1px] bg-emerald-500/60 transform rotate-45 origin-top-right"></div>
-            
+          <div className="mt-3 pt-2 border-t border-emerald-500/20 relative">
             <div className="flex justify-between text-sm">
-              <div className="inline-flex flex-col items-center px-3 py-1 rounded-lg bg-emerald-950/30 border border-emerald-500/20">
-                <span className="text-emerald-400/70 font-gaming text-[10px]">BATTLES</span>
-                <p className="font-bold font-gaming text-emerald-400 text-sm leading-tight">{formatNumber(rankData.battlesWon || 0)}</p>
+              <div className="inline-flex items-center gap-1">
+                <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-gaming px-1.5 py-0.5 rounded">BATTLES</span>
+                <p className="font-bold font-gaming text-emerald-400 text-xs">{formatNumber(rankData.battlesWon || 0)}</p>
               </div>
-              <div className="inline-flex flex-col items-center px-3 py-1 rounded-lg bg-emerald-950/30 border border-emerald-500/20">
-                <span className="text-emerald-400/70 font-gaming text-[10px]">WIN RATE</span>
-                <p className="font-bold font-gaming text-emerald-400 text-sm leading-tight">{rankData.winRate || '0%'}</p>
+              <div className="inline-flex items-center gap-1">
+                <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-gaming px-1.5 py-0.5 rounded">WIN RATE</span>
+                <p className="font-bold font-gaming text-emerald-400 text-xs">{rankData.winRate || '0%'}</p>
               </div>
             </div>
           </div>
