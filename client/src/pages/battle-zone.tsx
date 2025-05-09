@@ -146,33 +146,20 @@ export default function BattleZone() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col futuristic-bg relative overflow-hidden">
-      {/* Modern cyberpunk grid background with subtle Solo Leveling accents */}
-      <div className="absolute inset-0 cyber-grid z-0 opacity-20"></div>
+    <div className="min-h-screen flex flex-col bg-dark text-white relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/80 to-background"></div>
       
-      {/* Minimal energy flow line - subtle Solo Leveling accent */}
-      <div className="absolute h-full w-full overflow-hidden z-0">
-        <div className="energy-flow-horizontal top-2/3 opacity-30"></div>
-      </div>
+      {/* Grid overlay */}
+      <div className="absolute inset-0 bg-grid-small-white/[0.2]"></div>
       
-      {/* Cyberpunk corner elements from home page */}
-      <div className="absolute top-24 right-20 w-40 h-40 border-t-2 border-r-2 border-purple-500/20 z-0"></div>
-      <div className="absolute bottom-20 left-20 w-40 h-40 border-b-2 border-l-2 border-cyan-500/20 z-0"></div>
+      {/* Glow effects */}
+      <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl"></div>
+      <div className="absolute top-1/3 -left-20 h-60 w-60 rounded-full bg-cyan-500/10 blur-3xl"></div>
       
-      {/* Circuit lines from home page - tech aesthetic */}
-      <svg className="absolute top-0 left-0 w-full h-full opacity-[0.07] z-0" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path d="M0,30 L40,40 L60,40 L100,30" stroke="rgba(125, 39, 255, 0.3)" strokeWidth="0.2" fill="none" />
-        <path d="M0,60 L30,70 L70,70 L100,60" stroke="rgba(6, 182, 212, 0.4)" strokeWidth="0.2" fill="none" />
-        <path d="M25,0 L25,100" stroke="rgba(125, 39, 255, 0.2)" strokeWidth="0.1" fill="none" />
-        <path d="M75,0 L75,100" stroke="rgba(6, 182, 212, 0.2)" strokeWidth="0.1" fill="none" />
-      </svg>
-      
-      {/* Solo Leveling hex pattern - reduced but maintained for battle theme */}
-      <div className="absolute top-40 right-10 z-0 opacity-30">
-        <div className="hex-grid">
-          <div className="hex-cell"></div>
-        </div>
-      </div>
+      {/* Corner accents - top left and bottom right */}
+      <div className="absolute top-20 left-6 w-24 h-24 border-t border-l border-cyan-500/20"></div>
+      <div className="absolute bottom-10 right-6 w-24 h-24 border-b border-r border-cyan-500/20"></div>
       
       <Header />
       <MobileNavigation />
@@ -207,7 +194,10 @@ export default function BattleZone() {
                     Create Battle
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-dark-surface border-dark-border">
+                <DialogContent className="bg-background/90 backdrop-blur-sm border border-cyan-500/30 shadow-glow relative overflow-hidden">
+                  {/* Corner decorations */}
+                  <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/60"></div>
+                  <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/60"></div>
                   <DialogHeader>
                     <DialogTitle className="font-gaming">Create a New Battle</DialogTitle>
                     <DialogDescription>
