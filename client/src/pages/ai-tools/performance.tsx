@@ -57,7 +57,10 @@ export default function PerformanceAnalytics() {
         
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="flex-1">
-            <Card className="bg-dark-surface border-dark-border h-full">
+            <Card className="bg-background/60 border border-cyan-500/30 h-full relative overflow-hidden backdrop-blur-sm">
+              {/* Corner decorations */}
+              <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/60"></div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/60"></div>
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">Performance Overview</CardTitle>
                 <CardDescription>
@@ -89,7 +92,10 @@ export default function PerformanceAnalytics() {
           </div>
           
           <div className="w-full md:w-1/3">
-            <Card className="bg-dark-surface border-dark-border h-full">
+            <Card className="bg-background/60 border border-cyan-500/30 h-full relative overflow-hidden backdrop-blur-sm">
+              {/* Corner decorations */}
+              <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/60"></div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/60"></div>
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">Filters</CardTitle>
                 <CardDescription>
@@ -100,10 +106,10 @@ export default function PerformanceAnalytics() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Time Range</label>
                   <Select value={timeRange} onValueChange={setTimeRange}>
-                    <SelectTrigger className="bg-dark-card border-dark-border">
+                    <SelectTrigger className="bg-background/40 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20">
                       <SelectValue placeholder="Select time range" />
                     </SelectTrigger>
-                    <SelectContent className="bg-dark-card border-dark-border">
+                    <SelectContent className="bg-background/95 border-cyan-500/30">
                       <SelectItem value="week">Last Week</SelectItem>
                       <SelectItem value="month">Last Month</SelectItem>
                       <SelectItem value="quarter">Last 3 Months</SelectItem>
@@ -115,10 +121,10 @@ export default function PerformanceAnalytics() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Subject</label>
                   <Select value={subjectFilter} onValueChange={setSubjectFilter}>
-                    <SelectTrigger className="bg-dark-card border-dark-border">
+                    <SelectTrigger className="bg-background/40 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20">
                       <SelectValue placeholder="Select subject" />
                     </SelectTrigger>
-                    <SelectContent className="bg-dark-card border-dark-border">
+                    <SelectContent className="bg-background/95 border-cyan-500/30">
                       <SelectItem value="all">All Subjects</SelectItem>
                       <SelectItem value="mathematics">Mathematics</SelectItem>
                       <SelectItem value="science">Science</SelectItem>
@@ -134,20 +140,20 @@ export default function PerformanceAnalytics() {
         </div>
         
         <Tabs defaultValue="performance" className="space-y-4">
-          <TabsList className="bg-dark-card w-full justify-start overflow-x-auto">
-            <TabsTrigger value="performance" className="data-[state=active]:bg-primary/20">
+          <TabsList className="bg-background/40 border border-cyan-500/30 w-full justify-start overflow-x-auto">
+            <TabsTrigger value="performance" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
               <BarChart3 className="h-4 w-4 mr-2" />
               Performance
             </TabsTrigger>
-            <TabsTrigger value="time" className="data-[state=active]:bg-primary/20">
+            <TabsTrigger value="time" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
               <LineChart className="h-4 w-4 mr-2" />
               Time Analysis
             </TabsTrigger>
-            <TabsTrigger value="skills" className="data-[state=active]:bg-primary/20">
+            <TabsTrigger value="skills" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
               <PieChart className="h-4 w-4 mr-2" />
               Skills
             </TabsTrigger>
-            <TabsTrigger value="insights" className="data-[state=active]:bg-primary/20">
+            <TabsTrigger value="insights" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
               <Brain className="h-4 w-4 mr-2" />
               AI Insights
             </TabsTrigger>
