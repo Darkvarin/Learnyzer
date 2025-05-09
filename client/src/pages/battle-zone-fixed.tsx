@@ -150,7 +150,7 @@ export default function BattleZone() {
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6">
+      <main className="flex-1 container mx-auto px-4 pt-20 pb-20 md:pt-24 md:pb-6">
         {selectedBattle && battleDetail ? (
           <BattleDetail 
             battle={battleDetail}
