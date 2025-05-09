@@ -1,363 +1,373 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+import { useWellness } from "@/hooks/use-wellness";
+import { Clock, Eye, Droplets, Flame, DumbbellIcon, Wind, XCircle, CheckCircle2, AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
 
-interface WellnessBreak {
-  id: string;
-  type: "eye" | "posture" | "hydration" | "movement" | "breathing";
-  title: string;
-  description: string;
-  duration: number; // in seconds
-  animationSrc: string;
-  benefits: string[];
-}
-
-const wellnessBreaks: WellnessBreak[] = [
+// Animation components
+const AnimationTypes = [
   {
-    id: "eye-strain",
-    type: "eye",
-    title: "20-20-20 Eye Exercise",
-    description: "Every 20 minutes, look at something 20 feet away for 20 seconds to reduce eye strain.",
-    duration: 20,
-    animationSrc: "/animations/eye-exercise.svg",
-    benefits: ["Reduces eye strain", "Prevents dry eyes", "Improves focus"]
+    id: "eye-exercise",
+    name: "Eye Exercise",
+    type: "eyeStrain",
+    src: "/animations/eye-exercise.svg",
+    description: "Reduce eye strain with quick eye exercises",
+    duration: 60,
+    icon: Eye,
   },
   {
     id: "posture-check",
+    name: "Posture Check",
     type: "posture",
-    title: "Posture Reset",
-    description: "Straighten your back, align your neck, and position your screen at eye level.",
-    duration: 30,
-    animationSrc: "/animations/posture-check.svg",
-    benefits: ["Prevents back pain", "Improves breathing", "Reduces fatigue"]
+    src: "/animations/posture-check.svg",
+    description: "Improve your posture to prevent back pain",
+    duration: 45,
+    icon: Flame,
   },
   {
-    id: "hydration-reminder",
+    id: "hydration",
+    name: "Hydration Break",
     type: "hydration",
-    title: "Hydration Break",
-    description: "Take a moment to drink water and stay hydrated for optimal brain function.",
-    duration: 20,
-    animationSrc: "/animations/hydration.svg",
-    benefits: ["Improves concentration", "Prevents headaches", "Maintains energy levels"]
+    src: "/animations/hydration.svg",
+    description: "Stay hydrated for better focus and health",
+    duration: 30,
+    icon: Droplets,
   },
   {
     id: "desk-stretch",
+    name: "Desk Stretch",
     type: "movement",
-    title: "Quick Desk Stretch",
-    description: "Stand up and perform these simple stretches to relieve tension.",
-    duration: 60,
-    animationSrc: "/animations/desk-stretch.svg",
-    benefits: ["Reduces muscle tension", "Improves circulation", "Boosts energy"]
+    src: "/animations/desk-stretch.svg",
+    description: "Quick stretches to improve circulation",
+    duration: 90,
+    icon: DumbbellIcon,
   },
   {
-    id: "breathing-exercise",
+    id: "breathing",
+    name: "Deep Breathing",
     type: "breathing",
-    title: "Deep Breathing",
-    description: "Take 5 deep breaths, holding each for 4 seconds before exhaling slowly.",
-    duration: 45,
-    animationSrc: "/animations/breathing.svg",
-    benefits: ["Reduces stress", "Lowers heart rate", "Improves mental clarity"]
-  }
+    src: "/animations/breathing.svg",
+    description: "Reduce stress with deep breathing exercises",
+    duration: 120,
+    icon: Wind,
+  },
 ];
 
 interface BreaksRecommenderProps {
-  studyDuration?: number; // in minutes, how long the user has been studying
-  userPreferences?: {
-    eyeStrain?: boolean;
-    posture?: boolean;
-    hydration?: boolean;
-    movement?: boolean;
-    breathing?: boolean;
-  };
-  onBreakComplete?: () => void;
+  className?: string;
 }
 
-export function BreaksRecommender({ 
-  studyDuration = 0, 
-  userPreferences = {
-    eyeStrain: true,
-    posture: true,
-    hydration: true,
-    movement: true,
-    breathing: true
-  },
-  onBreakComplete
-}: BreaksRecommenderProps) {
-  const { toast } = useToast();
-  const [showBreakReminder, setShowBreakReminder] = useState(false);
-  const [currentBreak, setCurrentBreak] = useState<WellnessBreak | null>(null);
-  const [breakInProgress, setBreakInProgress] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(0);
-  const [progress, setProgress] = useState(0);
+export function BreaksRecommender({ className }: BreaksRecommenderProps) {
+  const { user } = useAuth();
+  const { 
+    preferences, 
+    savePreferences, 
+    logBreak, 
+    isLoggingBreak,
+    stats 
+  } = useWellness();
   
-  const logBreakMutation = useMutation({
-    mutationFn: async (breakData: { 
-      breakId: string,
-      breakType: string,
-      duration: number 
-    }) => {
-      return apiRequest("POST", "/api/wellness/breaks/log", breakData);
-    },
-    onSuccess: () => {
-      // Optionally handle successful logging
-    }
-  });
-
-  // Determine when to recommend a break based on study duration
+  const [showSettings, setShowSettings] = useState(false);
+  const [currentBreak, setCurrentBreak] = useState<typeof AnimationTypes[0] | null>(null);
+  const [secondsLeft, setSecondsLeft] = useState(0);
+  const [progress, setProgress] = useState(100);
+  const timerRef = useRef<number | null>(null);
+  
+  // Check if it's time to recommend a break
   useEffect(() => {
-    // Check every 20 minutes (1200 seconds)
-    const shouldRecommendBreak = studyDuration > 0 && studyDuration % 20 === 0;
+    const shouldRecommendBreak = () => {
+      // If no stats yet, recommend a break
+      if (!stats) return true;
+      
+      const lastBreakTime = new Date();
+      lastBreakTime.setHours(lastBreakTime.getHours() - 1);
+      
+      // If no breaks in the last hour, recommend a break
+      return stats.recentBreaksCount < 1;
+    };
     
-    if (shouldRecommendBreak && !showBreakReminder && !breakInProgress) {
-      // Choose a break type based on study duration and user preferences
-      const recommendedBreak = getRecommendedBreak();
-      if (recommendedBreak) {
-        setCurrentBreak(recommendedBreak);
-        setShowBreakReminder(true);
+    // Select a random active break type based on user preferences
+    const getRandomBreakType = () => {
+      const activeTypes = AnimationTypes.filter(
+        animation => preferences[animation.type as keyof typeof preferences]
+      );
+      
+      if (activeTypes.length === 0) return null;
+      
+      const randomIndex = Math.floor(Math.random() * activeTypes.length);
+      return activeTypes[randomIndex];
+    };
+    
+    // Set a break recommendation after 5 minutes (for demo purposes)
+    const recommendationTimeout = setTimeout(() => {
+      if (shouldRecommendBreak() && !currentBreak) {
+        const breakToRecommend = getRandomBreakType();
+        if (breakToRecommend) {
+          setCurrentBreak(breakToRecommend);
+          setSecondsLeft(breakToRecommend.duration);
+          setProgress(100);
+        }
       }
-    }
-  }, [studyDuration, showBreakReminder, breakInProgress]);
-
-  const getRecommendedBreak = (): WellnessBreak | null => {
-    // Filter breaks based on user preferences
-    const eligibleBreaks = wellnessBreaks.filter(breakItem => {
-      switch (breakItem.type) {
-        case 'eye': return userPreferences.eyeStrain;
-        case 'posture': return userPreferences.posture;
-        case 'hydration': return userPreferences.hydration;
-        case 'movement': return userPreferences.movement;
-        case 'breathing': return userPreferences.breathing;
-        default: return true;
-      }
-    });
-
-    if (eligibleBreaks.length === 0) return null;
-
-    // Custom logic for break selection based on study duration
-    if (studyDuration >= 60) {
-      // Prioritize movement breaks after an hour
-      const movementBreaks = eligibleBreaks.filter(b => b.type === 'movement');
-      if (movementBreaks.length > 0) {
-        return movementBreaks[Math.floor(Math.random() * movementBreaks.length)];
-      }
-    } else if (studyDuration >= 45) {
-      // Suggest breathing exercises after 45 minutes
-      const breathingBreaks = eligibleBreaks.filter(b => b.type === 'breathing');
-      if (breathingBreaks.length > 0) {
-        return breathingBreaks[Math.floor(Math.random() * breathingBreaks.length)];
-      }
-    } else if (studyDuration >= 30) {
-      // Suggest posture checks or hydration after 30 minutes
-      const postureOrHydration = eligibleBreaks.filter(b => ['posture', 'hydration'].includes(b.type));
-      if (postureOrHydration.length > 0) {
-        return postureOrHydration[Math.floor(Math.random() * postureOrHydration.length)];
-      }
-    } 
-
-    // Default: suggest a random break
-    return eligibleBreaks[Math.floor(Math.random() * eligibleBreaks.length)];
-  };
-
+    }, 300000); // 5 minutes (300,000 ms)
+    
+    return () => {
+      clearTimeout(recommendationTimeout);
+    };
+  }, [preferences, currentBreak, stats]);
+  
+  // Start the break timer
   const startBreak = () => {
     if (!currentBreak) return;
     
-    setBreakInProgress(true);
-    setShowBreakReminder(false);
-    setTimeRemaining(currentBreak.duration);
-    setProgress(0);
-    
-    toast({
-      title: "Wellness Break Started",
-      description: `Taking a ${currentBreak.duration} second ${currentBreak.title} break`,
-    });
-  };
-
-  const skipBreak = () => {
-    setShowBreakReminder(false);
-    setCurrentBreak(null);
-    
-    toast({
-      title: "Break Skipped",
-      description: "We'll remind you again later.",
-      variant: "default"
-    });
-  };
-
-  const completeBreak = () => {
-    if (currentBreak) {
-      // Log the completed break
-      logBreakMutation.mutate({
-        breakId: currentBreak.id,
-        breakType: currentBreak.type,
-        duration: currentBreak.duration
-      });
-      
-      toast({
-        title: "Break Completed",
-        description: "Great job! Your body and mind thank you.",
-      });
+    // Clear any existing timer
+    if (timerRef.current) {
+      window.clearInterval(timerRef.current);
     }
     
-    setBreakInProgress(false);
-    setCurrentBreak(null);
-    setTimeRemaining(0);
-    setProgress(100);
+    const totalDuration = currentBreak.duration;
+    setSecondsLeft(totalDuration);
     
-    if (onBreakComplete) {
-      onBreakComplete();
-    }
-  };
-
-  // Handle the break timer
-  useEffect(() => {
-    let timer: ReturnType<typeof setInterval>;
-    
-    if (breakInProgress && timeRemaining > 0) {
-      timer = setInterval(() => {
-        setTimeRemaining(prev => {
-          const newTime = prev - 1;
-          if (newTime <= 0) {
-            completeBreak();
-            clearInterval(timer);
-            return 0;
+    // Set up the timer to count down
+    timerRef.current = window.setInterval(() => {
+      setSecondsLeft(prev => {
+        if (prev <= 1) {
+          // When timer reaches 0, clear interval and mark as completed
+          if (timerRef.current) {
+            window.clearInterval(timerRef.current);
+            timerRef.current = null;
           }
-          return newTime;
-        });
-        
-        if (currentBreak) {
-          const newProgress = ((currentBreak.duration - timeRemaining + 1) / currentBreak.duration) * 100;
-          setProgress(newProgress);
+          
+          // Log the completed break
+          logBreak({
+            breakId: currentBreak.id,
+            breakType: currentBreak.type,
+            duration: totalDuration
+          });
+          
+          return 0;
         }
-      }, 1000);
+        
+        // Update progress percentage
+        const newSeconds = prev - 1;
+        const newProgress = (newSeconds / totalDuration) * 100;
+        setProgress(newProgress);
+        
+        return newSeconds;
+      });
+    }, 1000);
+  };
+  
+  // Skip the current break
+  const skipBreak = () => {
+    if (timerRef.current) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
     }
-    
-    return () => {
-      if (timer) clearInterval(timer);
-    };
-  }, [breakInProgress, timeRemaining]);
-
-  // Reminder modal
-  if (showBreakReminder && currentBreak) {
-    return (
-      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
-        <div className="bg-background/90 border border-purple-500/20 rounded-lg max-w-md w-full mx-4 overflow-hidden relative">
-          {/* Home page style corner accents */}
-          <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-purple-500/40"></div>
-          <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-purple-500/40"></div>
-          
-          {/* Home page style energy lines */}
-          <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-purple-500/40 to-transparent"></div>
-          <div className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-purple-500/40 to-transparent"></div>
-          
-          {/* Home page style energy glow */}
-          <div className="absolute left-1/3 top-1/2 -translate-y-1/2 w-40 h-40 rounded-full bg-purple-500/5 filter blur-3xl"></div>
-          
-          <div className="p-6 relative z-10">
-            <h3 className="text-xl font-gaming mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-white">Time for a Quick Break!</h3>
-            <p className="text-gray-300 mb-4">You've been studying for {studyDuration} minutes. Taking short breaks improves retention and focus.</p>
-            
-            <div className="flex items-center mb-4">
-              <div className="w-16 h-16 relative mr-4 overflow-hidden rounded-md bg-background/80 border border-purple-500/30 flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-500/10"></div>
-                <div className="relative z-10 flex items-center justify-center">
-                  {/* Placeholder for animation/icon - will be replaced with actual SVG */}
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 text-purple-500">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12" y2="16"></line>
-                  </svg>
-                </div>
-              </div>
-              
-              <div>
-                <h4 className="font-bold text-white">{currentBreak.title}</h4>
-                <p className="text-sm text-gray-400">{currentBreak.duration} seconds</p>
-              </div>
-            </div>
-            
-            <p className="text-sm text-gray-300 mb-6">{currentBreak.description}</p>
-            
-            <div className="flex flex-wrap gap-2 mb-6">
-              {currentBreak.benefits.map((benefit, idx) => (
-                <span key={idx} className="text-xs bg-purple-500/10 text-purple-300 rounded-full px-3 py-1 border border-purple-500/20">
-                  {benefit}
-                </span>
-              ))}
-            </div>
-            
-            <div className="flex space-x-3">
-              <Button 
-                className="flex-1 bg-background/80 hover:bg-purple-950/80 border border-purple-500/40 hover:border-purple-400/60 text-purple-400 hover:text-purple-300 transition-all duration-300"
-                onClick={skipBreak}
-              >
-                Later
-              </Button>
-              <Button 
-                className="flex-1 bg-background/80 hover:bg-purple-950/80 border border-purple-500/40 hover:border-purple-400/60 text-purple-400 hover:text-purple-300 transition-all duration-300"
-                onClick={startBreak}
-              >
-                Take Break Now
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    setCurrentBreak(null);
+  };
+  
+  // Handler for preference toggle
+  const handlePreferenceChange = (key: keyof typeof preferences, value: boolean) => {
+    savePreferences({
+      ...preferences,
+      [key]: value
+    });
+  };
+  
+  // Format seconds to MM:SS
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+  
+  if (!user) {
+    return <div>Please log in to use the wellness features</div>;
   }
-
-  // Break in progress
-  if (breakInProgress && currentBreak) {
-    return (
-      <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
-        <div className="bg-background/90 border border-purple-500/20 rounded-lg max-w-md w-full mx-4 overflow-hidden relative">
-          {/* Home page style corner accents */}
-          <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-purple-500/40"></div>
-          <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-purple-500/40"></div>
-          
-          {/* Home page style energy lines */}
-          <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-purple-500/40 to-transparent"></div>
-          <div className="absolute bottom-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-purple-500/40 to-transparent"></div>
-          
-          <div className="p-6 relative z-10">
-            <h3 className="text-xl font-gaming mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-white">{currentBreak.title}</h3>
+  
+  return (
+    <div className={cn("flex flex-col gap-4", className)}>
+      <Card className="relative overflow-hidden border-purple-600/20 bg-background/90 shadow-lg backdrop-blur-sm">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-700 via-blue-700 to-purple-700 opacity-80"></div>
+        
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-2xl font-bold text-foreground">
+              Wellness Breaks
+            </CardTitle>
             
-            <div className="mx-auto mb-8 w-56 h-56 relative overflow-hidden rounded-full bg-background/40 border border-purple-500/20 flex items-center justify-center">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-500/10"></div>
-              <div className="relative z-10 flex flex-col items-center justify-center">
-                {/* This will be replaced with the actual animation SVG */}
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-24 h-24 text-purple-400 animate-pulse">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="8" x2="12" y2="12"></line>
-                  <line x1="12" y1="16" x2="12" y2="16"></line>
-                </svg>
-                <div className="text-2xl font-gaming mt-4 text-white">{timeRemaining}s</div>
-              </div>
-            </div>
-            
-            <p className="text-sm text-gray-300 mb-4 text-center">{currentBreak.description}</p>
-            
-            <Progress value={progress} className="mb-6 h-2 bg-gray-800">
-              <div 
-                className="h-full bg-gradient-to-r from-purple-600 to-purple-400" 
-                style={{ width: `${progress}%` }}
-              />
-            </Progress>
-            
-            <Button 
-              className="w-full bg-background/80 hover:bg-purple-950/80 border border-purple-500/40 hover:border-purple-400/60 text-purple-400 hover:text-purple-300 transition-all duration-300"
-              onClick={completeBreak}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 gap-1 text-xs"
+              onClick={() => setShowSettings(!showSettings)}
             >
-              Complete Early
+              {showSettings ? "Hide Settings" : "Settings"}
             </Button>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  // No active modal - return null
-  return null;
+          <CardDescription>
+            Take regular breaks to maintain focus and reduce strain
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent>
+          <AnimatePresence mode="wait">
+            {showSettings ? (
+              <motion.div
+                key="settings"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-4"
+              >
+                <h3 className="text-sm font-medium">Enable/Disable Break Types</h3>
+                <div className="space-y-3">
+                  {AnimationTypes.map((animation) => (
+                    <div 
+                      key={animation.id}
+                      className="flex items-center justify-between rounded-lg border border-border/50 p-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-md bg-purple-950/30 p-2">
+                          <animation.icon className="h-5 w-5 text-purple-400" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-medium">{animation.name}</h4>
+                          <p className="text-xs text-muted-foreground">{animation.description}</p>
+                        </div>
+                      </div>
+                      <Switch 
+                        checked={preferences[animation.type as keyof typeof preferences]} 
+                        onCheckedChange={(checked) => 
+                          handlePreferenceChange(animation.type as keyof typeof preferences, checked)
+                        }
+                      />
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ) : currentBreak ? (
+              <motion.div
+                key="break"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col items-center gap-4"
+              >
+                <div className="rounded-lg bg-black/50 p-2 text-center">
+                  <Badge variant="secondary" className="mb-2 font-normal">
+                    {currentBreak.name}
+                  </Badge>
+                  <div className="relative aspect-square w-full max-w-[280px] overflow-hidden rounded-lg border border-border/50 bg-gradient-to-b from-background/80 to-background">
+                    <img 
+                      src={currentBreak.src} 
+                      alt={currentBreak.name} 
+                      className="h-full w-full" 
+                    />
+                  </div>
+                  
+                  <div className="mt-3 text-center">
+                    <div className="mb-2 text-2xl font-bold">{formatTime(secondsLeft)}</div>
+                    <Progress value={progress} className="h-2" />
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  {secondsLeft === currentBreak.duration ? (
+                    <Button 
+                      onClick={startBreak} 
+                      variant="default" 
+                      className="gap-2 bg-green-600 hover:bg-green-700"
+                    >
+                      <CheckCircle2 className="h-4 w-4" />
+                      Start Break
+                    </Button>
+                  ) : secondsLeft > 0 ? (
+                    <div className="text-sm text-muted-foreground">
+                      Break in progress...
+                    </div>
+                  ) : (
+                    <Button 
+                      variant="default" 
+                      className="gap-2 bg-purple-600 hover:bg-purple-700"
+                      disabled
+                    >
+                      <CheckCircle2 className="h-4 w-4" />
+                      Completed!
+                    </Button>
+                  )}
+                  
+                  <Button 
+                    onClick={skipBreak} 
+                    variant="ghost" 
+                    className="gap-2"
+                  >
+                    <XCircle className="h-4 w-4" />
+                    Skip
+                  </Button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="no-break"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col items-center justify-center gap-3 rounded-lg border border-border/50 bg-background/50 p-6 text-center"
+              >
+                <div className="rounded-full border border-border/50 bg-background/80 p-3">
+                  <Clock className="h-8 w-8 text-purple-400" />
+                </div>
+                <h3 className="text-lg font-semibold">No Active Breaks</h3>
+                <p className="text-sm text-muted-foreground">
+                  Breaks will be recommended based on your study time.
+                  We'll notify you when it's time to take a break.
+                </p>
+                <Button
+                  variant="outline"
+                  className="mt-2 border-purple-500/30 bg-purple-500/10"
+                  onClick={() => {
+                    const randomAnimation = AnimationTypes[Math.floor(Math.random() * AnimationTypes.length)];
+                    setCurrentBreak(randomAnimation);
+                    setSecondsLeft(randomAnimation.duration);
+                    setProgress(100);
+                  }}
+                >
+                  Take a break now
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </CardContent>
+        
+        {!showSettings && !currentBreak && stats && (
+          <CardFooter className="flex flex-col items-start gap-1 border-t border-border/30 bg-background/50 px-6 py-3">
+            <div className="flex w-full items-center justify-between text-sm">
+              <span className="text-muted-foreground">Breaks today:</span>
+              <Badge variant="outline" className="font-mono">
+                {stats.recentBreaksCount || 0}
+              </Badge>
+            </div>
+            <div className="flex w-full items-center justify-between text-sm">
+              <span className="text-muted-foreground">Total break time:</span>
+              <Badge variant="outline" className="font-mono">
+                {stats.totalBreakSeconds 
+                  ? `${Math.floor(stats.totalBreakSeconds / 60)} mins` 
+                  : "0 mins"}
+              </Badge>
+            </div>
+          </CardFooter>
+        )}
+      </Card>
+    </div>
+  );
 }

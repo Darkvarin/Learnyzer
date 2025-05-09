@@ -76,6 +76,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Support chatbot - available without authentication
   app.post("/api/support/chat", supportService.getChatResponse);
+  
+  // Wellness routes
+  app.get("/api/wellness/preferences", wellnessService.getWellnessPreferences);
+  app.post("/api/wellness/preferences", wellnessService.saveWellnessPreferences);
+  app.post("/api/wellness/breaks", wellnessService.logWellnessBreak);
+  app.get("/api/wellness/breaks/history", wellnessService.getWellnessBreakHistory);
+  app.get("/api/wellness/stats", wellnessService.getWellnessStats);
 
   const httpServer = createServer(app);
   

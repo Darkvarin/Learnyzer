@@ -6,6 +6,7 @@ import { BattleZoneSection } from "@/components/dashboard/battle-zone-section";
 import { StreakSection } from "@/components/dashboard/streak-section";
 import { RankSection } from "@/components/dashboard/rank-section";
 import { ReferralSection } from "@/components/dashboard/referral-section";
+import { BreaksRecommender } from "@/components/wellness/breaks-recommender";
 
 export default function Dashboard() {
   return (
