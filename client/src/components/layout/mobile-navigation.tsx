@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Home, LayoutDashboard, BookOpen, Sword, Brain, Cpu } from "lucide-react";
+import { Home, LayoutDashboard, BookOpen, Sword, Brain, Cpu, BarChart3 } from "lucide-react";
 
 export function MobileNavigation() {
   const [location] = useLocation();
@@ -10,7 +10,7 @@ export function MobileNavigation() {
       <div className="absolute top-0 left-0 right-0 h-px cyber-scan-line"></div>
       
       {/* Mobile navigation content */}
-      <div className="flex items-center justify-between px-3 py-2">
+      <div className="grid grid-cols-6 items-center justify-between px-3 py-2">
         <MobileNavLink 
           href="/" 
           isActive={location === '/'} 
@@ -40,6 +40,12 @@ export function MobileNavigation() {
           isActive={location === '/ai-tools'} 
           icon={<Cpu className="h-5 w-5" />}
           label="AI Tools"
+        />
+        <MobileNavLink 
+          href="/leaderboard" 
+          isActive={location === '/leaderboard'} 
+          icon={<BarChart3 className="h-5 w-5" />}
+          label="Ranks"
         />
       </div>
     </div>

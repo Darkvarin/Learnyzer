@@ -163,6 +163,13 @@ export function Header() {
                 >
                   AI Tools
                 </NavLink>
+                <NavLink 
+                  href="/leaderboard" 
+                  active={activeLink === "leaderboard"}
+                  setActive={() => setActiveLink("leaderboard")}
+                >
+                  Leaderboard
+                </NavLink>
               </nav>
             )}
             

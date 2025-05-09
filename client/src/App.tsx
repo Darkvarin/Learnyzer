@@ -16,6 +16,7 @@ import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 import CreateProfile from "@/pages/create-profile";
 import ProfileSettings from "@/pages/profile-settings";
+import LeaderboardPage from "@/pages/leaderboard";
 import HomePage from "./pages/home-page";
 import WebSocketTest from "./pages/websocket-test";
 import AiTutor from "./pages/ai-tutor";
@@ -42,6 +43,7 @@ function App() {
                 <ProtectedRoute path="/profile" component={ProfileSettings} />
                 <ProtectedRoute path="/create-profile" component={CreateProfile} />
                 <ProtectedRoute path="/websocket-test" component={WebSocketTest} />
+                <ProtectedRoute path="/leaderboard" component={LeaderboardPage} />
                 <Route path="/auth" component={AuthPage} />
                 <Route component={NotFound} />
               </Switch>

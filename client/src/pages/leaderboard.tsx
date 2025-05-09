@@ -1,0 +1,292 @@
+import { useState } from 'react';
+import { Medal, BarChart3, Search, ChevronUp, ChevronDown, Users } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import PageHeader from '@/components/layout/page-header';
+
+function LeaderboardTable({ data, isLoading }: { data: any[]; isLoading: boolean }) {
+  const [sortField, setSortField] = useState('rank');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
+  const toggleSort = (field: string) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const sortedData = [...data].sort((a, b) => {
+    if (sortDirection === 'asc') {
+      return a[sortField] > b[sortField] ? 1 : -1;
+    } else {
+      return a[sortField] < b[sortField] ? 1 : -1;
+    }
+  });
+
+  return (
+    <div className="rounded-xl overflow-hidden bg-[#0C101F]/90 border border-purple-500/20 shadow-lg">
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto">
+          <thead>
+            <tr className="bg-gradient-to-r from-purple-500/20 via-purple-500/10 to-purple-500/20 text-left">
+              <th className="px-4 py-3 font-medium text-white/80 text-sm">Rank</th>
+              <th className="px-4 py-3 font-medium text-white/80 text-sm">Student</th>
+              <th 
+                className="px-4 py-3 font-medium text-white/80 text-sm cursor-pointer"
+                onClick={() => toggleSort('level')}
+              >
+                <div className="flex items-center gap-2">
+                  Level
+                  {sortField === 'level' && (
+                    sortDirection === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+                  )}
+                </div>
+              </th>
+              <th 
+                className="px-4 py-3 font-medium text-white/80 text-sm cursor-pointer"
+                onClick={() => toggleSort('xp')}
+              >
+                <div className="flex items-center gap-2">
+                  XP
+                  {sortField === 'xp' && (
+                    sortDirection === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+                  )}
+                </div>
+              </th>
+              <th 
+                className="px-4 py-3 font-medium text-white/80 text-sm cursor-pointer"
+                onClick={() => toggleSort('streak')}
+              >
+                <div className="flex items-center gap-2">
+                  Streak
+                  {sortField === 'streak' && (
+                    sortDirection === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+                  )}
+                </div>
+              </th>
+              <th className="px-4 py-3 font-medium text-white/80 text-sm">Rank</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-purple-500/10">
+            {isLoading ? (
+              Array(10).fill(0).map((_, idx) => (
+                <tr key={idx} className="transition-colors hover:bg-purple-500/5">
+                  <td className="px-4 py-3"><Skeleton className="h-4 w-8" /></td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="h-8 w-8 rounded-full" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                  </td>
+                  <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
+                  <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
+                  <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
+                  <td className="px-4 py-3"><Skeleton className="h-4 w-16" /></td>
+                </tr>
+              ))
+            ) : (
+              sortedData.map((student, idx) => (
+                <tr key={idx} className="transition-colors hover:bg-purple-500/5">
+                  <td className="px-4 py-3 font-mono text-base font-bold">
+                    {idx < 3 ? (
+                      <div className={`inline-flex items-center justify-center h-8 w-8 rounded-full
+                        ${idx === 0 ? 'bg-amber-500/20 text-amber-400' : 
+                          idx === 1 ? 'bg-slate-500/20 text-slate-400' : 
+                          'bg-amber-900/20 text-amber-700'}
+                      `}>
+                        {idx + 1}
+                      </div>
+                    ) : (
+                      <span className="text-white/60 pl-3">{idx + 1}</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar>
+                        <AvatarImage src={student.profileImage} />
+                        <AvatarFallback className="bg-gradient-to-br from-purple-600/30 to-purple-400/10">
+                          {student.name.substring(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium text-white/90">{student.name}</p>
+                        <p className="text-xs text-white/60">{student.grade}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="inline-flex items-center px-2 py-1 rounded bg-purple-500/10 text-purple-400 text-sm">
+                      Lvl {student.level}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 font-mono text-cyan-400">{student.xp.toLocaleString()}</td>
+                  <td className="px-4 py-3">
+                    <div className="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-500/10 text-amber-400 text-sm">
+                      <span className="animate-pulse">●</span> {student.streak} days
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded 
+                      ${student.rank.toLowerCase().includes('bronze') ? 'bg-amber-900/20 text-amber-700' : 
+                        student.rank.toLowerCase().includes('silver') ? 'bg-slate-500/20 text-slate-400' :
+                        student.rank.toLowerCase().includes('gold') ? 'bg-amber-500/20 text-amber-400' :
+                        student.rank.toLowerCase().includes('platinum') ? 'bg-cyan-500/20 text-cyan-400' :
+                        student.rank.toLowerCase().includes('diamond') ? 'bg-blue-500/20 text-blue-400' :
+                        student.rank.toLowerCase().includes('heroic') ? 'bg-purple-500/20 text-purple-400' :
+                        student.rank.toLowerCase().includes('elite') ? 'bg-pink-500/20 text-pink-400' :
+                        student.rank.toLowerCase().includes('master') ? 'bg-red-500/20 text-red-400' :
+                        'bg-rose-500/20 text-rose-400'
+                      }`}
+                    >
+                      <Medal size={14} /> {student.rank}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+export default function LeaderboardPage() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  // Fetch global leaderboard data
+  const { 
+    data: globalLeaderboardData = [], 
+    isLoading: isGlobalLoading 
+  } = useQuery({
+    queryKey: ['/api/leaderboard/global'],
+    // This would connect to real backend data in a production environment
+    queryFn: async () => {
+      // Mock data for development
+      return Array(30).fill(0).map((_, idx) => ({
+        id: idx + 1,
+        name: ['Raj Kumar', 'Priya Singh', 'Ananya Patel', 'Arjun Sharma', 'Kavya Reddy', 'Vikram Khanna', 'Aisha Kapoor', 'Rohan Gupta', 'Divya Malhotra', 'Sanjay Chopra'][idx % 10],
+        profileImage: '',
+        grade: ['Class 10', 'Class 11', 'Class 12', 'IIT-JEE', 'NEET', 'UPSC', 'Class 9'][idx % 7],
+        level: Math.floor(Math.random() * 30) + 1,
+        xp: Math.floor(Math.random() * 100000),
+        streak: Math.floor(Math.random() * 60),
+        rank: 
+          idx % 25 < 5 ? 'Bronze ' + ((idx % 5) + 1) :
+          idx % 25 < 10 ? 'Silver ' + ((idx % 5) + 1) :
+          idx % 25 < 15 ? 'Gold ' + ((idx % 5) + 1) :
+          idx % 25 < 20 ? 'Platinum ' + ((idx % 5) + 1) :
+          'Diamond ' + ((idx % 5) + 1)
+      }));
+    }
+  });
+
+  // Fetch friends leaderboard data
+  const { 
+    data: friendsLeaderboardData = [], 
+    isLoading: isFriendsLoading 
+  } = useQuery({
+    queryKey: ['/api/leaderboard/friends'],
+    // This would connect to real backend data in a production environment
+    queryFn: async () => {
+      // Mock data for development
+      return Array(8).fill(0).map((_, idx) => ({
+        id: idx + 1,
+        name: ['Raj Kumar', 'Priya Singh', 'Ananya Patel', 'Arjun Sharma', 'Kavya Reddy', 'Vikram Khanna', 'Aisha Kapoor', 'Rohan Gupta'][idx % 8],
+        profileImage: '',
+        grade: ['Class 10', 'Class 11', 'Class 12', 'IIT-JEE', 'NEET', 'UPSC', 'Class 9'][idx % 7],
+        level: Math.floor(Math.random() * 20) + 1,
+        xp: Math.floor(Math.random() * 50000),
+        streak: Math.floor(Math.random() * 30),
+        rank: 
+          idx % 20 < 5 ? 'Bronze ' + ((idx % 5) + 1) :
+          idx % 20 < 10 ? 'Silver ' + ((idx % 5) + 1) :
+          idx % 20 < 15 ? 'Gold ' + ((idx % 5) + 1) :
+          'Platinum ' + ((idx % 5) + 1)
+      }));
+    }
+  });
+
+  const filteredGlobalData = globalLeaderboardData.filter(student => 
+    student.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    (selectedCategory === 'all' || student.grade === selectedCategory)
+  );
+
+  const filteredFriendsData = friendsLeaderboardData.filter(student =>
+    student.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    (selectedCategory === 'all' || student.grade === selectedCategory)
+  );
+
+  // Unique categories for filtering
+  const categories = ['all', ...new Set(globalLeaderboardData.map(item => item.grade))];
+
+  return (
+    <div className="container max-w-6xl mx-auto pt-4 pb-16">
+      <PageHeader
+        title="Leaderboard"
+        description="Compete with students across India and rise to the top of the rankings."
+        icon={<BarChart3 className="h-6 w-6 text-purple-400" />}
+      />
+
+      <div className="flex flex-col gap-6 mt-6">
+        {/* Search and Filter Controls */}
+        <div className="flex flex-col md:flex-row gap-4 justify-between">
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/40" />
+            <Input
+              className="pl-10 bg-[#0C101F]/90 border-purple-500/20"
+              placeholder="Search students..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category, idx) => (
+              <Button
+                key={idx}
+                variant={selectedCategory === category ? "default" : "outline"}
+                className={
+                  selectedCategory === category 
+                    ? "bg-purple-600 hover:bg-purple-700 text-white" 
+                    : "bg-[#0C101F]/90 border-purple-500/20 text-white/80 hover:text-white"
+                }
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category === 'all' ? 'All Categories' : category}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <Tabs defaultValue="global" className="w-full">
+          <div className="flex justify-between items-center mb-4">
+            <TabsList className="bg-[#0C101F]/90 border border-purple-500/20">
+              <TabsTrigger value="global" className="data-[state=active]:bg-purple-500/20">
+                Global Rankings
+              </TabsTrigger>
+              <TabsTrigger value="friends" className="data-[state=active]:bg-purple-500/20">
+                <Users className="h-4 w-4 mr-2" /> Friends
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          
+          <TabsContent value="global" className="mt-0">
+            <LeaderboardTable data={filteredGlobalData} isLoading={isGlobalLoading} />
+          </TabsContent>
+          
+          <TabsContent value="friends" className="mt-0">
+            <LeaderboardTable data={filteredFriendsData} isLoading={isFriendsLoading} />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}
