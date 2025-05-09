@@ -1,6 +1,7 @@
 import { db } from "./index";
 import * as schema from "@shared/schema";
 import { nanoid } from "nanoid";
+import { eq } from "drizzle-orm";
 
 async function seed() {
   try {
@@ -571,19 +572,45 @@ async function seed() {
       }
     ];
     
-    // Check if we have any detailed courses already (courses with targetGrade field)
-    const existingDetailedCourse = await db.query.courses.findFirst({
-      where: (courses, { isNotNull }) => isNotNull(courses.targetGrade)
-    });
+    // First, clean up any duplicate courses or school-type courses
+    console.log("Cleaning up existing courses...");
+    const allCourses = await db.query.courses.findMany();
     
-    if (!existingDetailedCourse) {
-      // Insert detailed courses with grade targeting
-      for (const course of entranceExamCourses) {
-        await db.insert(schema.courses).values(course);
+    // Delete school-type courses and track other courses to avoid duplicates
+    const existingTitles = new Set();
+    let deletedCount = 0;
+    
+    for (const course of allCourses) {
+      if (course.examType === "School") {
+        await db.delete(schema.courses).where(eq(schema.courses.id, course.id));
+        deletedCount++;
+      } else if (existingTitles.has(course.title)) {
+        // Remove duplicates - keep the first occurrence only
+        await db.delete(schema.courses).where(eq(schema.courses.id, course.id));
+        deletedCount++;
+      } else {
+        existingTitles.add(course.title);
       }
-      console.log(`✅ Added ${entranceExamCourses.length} courses with detailed chapter information`);
+    }
+    
+    if (deletedCount > 0) {
+      console.log(`🧹 Cleaned up ${deletedCount} courses (removed duplicates and School courses)`);
+    }
+    
+    // Now insert any entrance exam courses that don't already exist
+    let addedCount = 0;
+    for (const course of entranceExamCourses) {
+      if (!existingTitles.has(course.title)) {
+        await db.insert(schema.courses).values(course);
+        addedCount++;
+        existingTitles.add(course.title);
+      }
+    }
+    
+    if (addedCount > 0) {
+      console.log(`✅ Added ${addedCount} new entrance exam courses`);
     } else {
-      console.log("⏩ Detailed courses already exist, skipping...");
+      console.log("⏩ All entrance exam courses already exist, no additions needed");
     }
 
     // Seed Streak Goals
