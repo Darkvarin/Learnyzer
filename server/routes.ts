@@ -74,6 +74,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/notifications/achievement", notificationService.simulateAchievement);
   app.post("/api/notifications/xp", notificationService.simulateXpGained);
   app.post("/api/notifications/ai-tool", notificationService.simulateAiToolCompletion);
+  app.post("/api/notifications/leaderboard", notificationService.sendLeaderboardUpdate);
   
   // Support chatbot - available without authentication
   app.post("/api/support/chat", supportService.getChatResponse);
@@ -84,6 +85,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/wellness/breaks", wellnessService.logWellnessBreak);
   app.get("/api/wellness/breaks/history", wellnessService.getWellnessBreakHistory);
   app.get("/api/wellness/stats", wellnessService.getWellnessStats);
+  
+  // Leaderboard routes
+  app.get("/api/leaderboard", leaderboardService.getGlobalLeaderboard);
+  app.get("/api/leaderboard/friends", leaderboardService.getFriendsLeaderboard);
+  app.get("/api/leaderboard/position/:userId?", leaderboardService.getUserRankPosition);
 
   const httpServer = createServer(app);
   

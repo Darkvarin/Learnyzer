@@ -7,7 +7,66 @@ const requireAuth = (req: Request, res: Response, next: () => void) => {
   next();
 };
 
+// Helper function to get a default message for leaderboard updates
+function getDefaultLeaderboardMessage(updateType: string): string {
+  switch (updateType) {
+    case 'rank':
+      return 'The ranking leaderboard has been updated with new rank changes!';
+    case 'xp':
+      return 'XP gains have shifted the leaderboard positions!';
+    case 'streak':
+      return 'Streak champions have changed in the leaderboard!';
+    case 'position':
+      return 'Check the leaderboard for position changes!';
+    default:
+      return 'The leaderboard has been updated!';
+  }
+};
+
 export const notificationService = {
+  /**
+   * Send a leaderboard update notification to all users
+   */
+  async sendLeaderboardUpdate(req: Request, res: Response) {
+    requireAuth(req, () => {});
+    
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+    
+    const broadcastToAll = (global as any).broadcastToAll;
+    
+    if (!broadcastToAll) {
+      return res.status(500).json({ message: 'WebSocket service not available' });
+    }
+    
+    const { userIds = [], updateType = 'position', message } = req.body;
+    
+    // Validate parameters
+    if (!Array.isArray(userIds)) {
+      return res.status(400).json({ message: 'userIds must be an array' });
+    }
+    
+    if (!['rank', 'xp', 'streak', 'position'].includes(updateType)) {
+      return res.status(400).json({ message: 'Invalid updateType' });
+    }
+    
+    // Convert all userIds to numbers
+    const normalizedUserIds = userIds.map(id => Number(id));
+    
+    broadcastToAll({
+      type: 'leaderboard_update',
+      userIds: normalizedUserIds,
+      updateType,
+      message: message || getDefaultLeaderboardMessage(updateType),
+      timestamp: new Date().toISOString()
+    });
+    
+    return res.status(200).json({ 
+      message: 'Leaderboard update notification sent successfully',
+      affected_users: normalizedUserIds.length
+    });
+  },
   /**
    * Send a test notification to the current user
    */

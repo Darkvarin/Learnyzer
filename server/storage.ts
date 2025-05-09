@@ -330,6 +330,7 @@ export const storage = {
     
     // Send real-time update to user if WebSocket is available
     if ((global as any).sendToUser) {
+      // Send progress update to the specific user
       (global as any).sendToUser(userId, {
         type: 'progress_update',
         userId: userId,
@@ -340,6 +341,17 @@ export const storage = {
           `You gained ${xp} XP.`,
         timestamp: new Date().toISOString()
       });
+      
+      // Send leaderboard update to all users if user leveled up to notify of leaderboard changes
+      if (leveledUp && (global as any).broadcastToAll) {
+        (global as any).broadcastToAll({
+          type: 'leaderboard_update',
+          userIds: [userId],
+          updateType: 'xp',
+          message: `The leaderboard has been updated with a new level up!`,
+          timestamp: new Date().toISOString()
+        });
+      }
     }
     
     return { currentXp, level, nextLevelXp };
@@ -381,6 +393,7 @@ export const storage = {
     
     // Send real-time update if rank changed
     if (rankChanged && (global as any).sendToUser) {
+      // Send personal notification to the user about their rank change
       (global as any).sendToUser(userId, {
         type: 'rank_update',
         userId: userId,
@@ -389,6 +402,17 @@ export const storage = {
         rankPoints: newPoints,
         timestamp: new Date().toISOString()
       });
+      
+      // Broadcast leaderboard update to all users
+      if ((global as any).broadcastToAll) {
+        (global as any).broadcastToAll({
+          type: 'leaderboard_update',
+          userIds: [userId],
+          updateType: 'rank',
+          message: `The ranking leaderboard has been updated!`,
+          timestamp: new Date().toISOString()
+        });
+      }
     }
     
     return { rankPoints: newPoints, rank: newRank };
@@ -537,6 +561,7 @@ export const storage = {
     
     // Send real-time update
     if ((global as any).sendToUser) {
+      // Personal notification about streak update
       (global as any).sendToUser(userId, {
         type: 'streak_update',
         userId: userId,
@@ -545,6 +570,18 @@ export const storage = {
         canClaimReward: streakData.canClaimReward,
         timestamp: new Date().toISOString()
       });
+      
+      // Only broadcast leaderboard update if streak changed significantly (5+ days)
+      // to avoid too many notifications
+      if (newStreakDays % 5 === 0 && (global as any).broadcastToAll) {
+        (global as any).broadcastToAll({
+          type: 'leaderboard_update',
+          userIds: [userId],
+          updateType: 'streak',
+          message: `The streak leaderboard has been updated!`,
+          timestamp: new Date().toISOString()
+        });
+      }
     }
   },
   
