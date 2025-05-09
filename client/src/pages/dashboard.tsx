@@ -131,6 +131,24 @@ export default function Dashboard() {
           
           {/* Right Column */}
           <div className="space-y-8">
+            {/* Wellness Breaks Section with home page styling */}
+            <div className="relative group">
+              {/* Home page inspired corner decorations */}
+              <div className="absolute -left-3 top-3 w-8 h-8 border-l border-t border-cyan-500/40"></div>
+              <div className="absolute -right-3 bottom-3 w-8 h-8 border-r border-b border-primary/40"></div>
+              
+              {/* Home page style accent line */}
+              <div className="absolute top-0 left-4 right-4 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent"></div>
+              
+              {/* Glassmorphism card from home page */}
+              <div className="relative z-10 glassmorphism overflow-hidden border border-cyan-500/30 transition-all duration-300 hover:-translate-y-1">
+                {/* Energy glow effect */}
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-cyan-500/10 filter blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                <BreaksRecommender />
+              </div>
+            </div>
+            
             {/* Streak Section with home page styling */}
             <div className="relative group">
               {/* Home page inspired corner decorations */}
