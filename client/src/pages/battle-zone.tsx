@@ -191,7 +191,7 @@ export default function BattleZone() {
                 <DialogTrigger asChild>
                   <Button className="mt-4 md:mt-0 bg-gradient-to-r from-warning-600 to-danger-600 hover:from-warning-500 hover:to-danger-500">
                     <Sword className="w-4 h-4 mr-2" />
-                    Create Battle
+                    Create Exam Challenge
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="!fixed !top-1/2 !left-1/2 !transform !-translate-x-1/2 !-translate-y-1/2 bg-background/90 backdrop-blur-sm border border-cyan-500/30 shadow-glow overflow-hidden max-w-md w-full mx-auto max-h-[90vh] overflow-y-auto p-4 sm:p-6">
@@ -199,7 +199,7 @@ export default function BattleZone() {
                   <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-cyan-500/60"></div>
                   <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-cyan-500/60"></div>
                   <DialogHeader>
-                    <DialogTitle className="font-gaming">Create a New Battle</DialogTitle>
+                    <DialogTitle className="font-gaming">Create a New Entrance Exam Challenge</DialogTitle>
                     <DialogDescription>
                       Set up an entrance exam challenge for other aspirants to test their knowledge. Your answers will be judged by AI.
                     </DialogDescription>
@@ -278,7 +278,7 @@ export default function BattleZone() {
                       disabled={createBattleMutation.isPending}
                     >
                       <Sword className="h-4 w-4 mr-2" />
-                      Create Battle
+                      Create Exam Challenge
                     </Button>
                   </DialogFooter>
                 </DialogContent>
