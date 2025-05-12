@@ -289,19 +289,19 @@ export default function BattleZone() {
               <TabsList className="bg-background/40 border border-cyan-500/30 w-full justify-start mb-6">
                 <TabsTrigger value="active" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
                   <Sword className="h-4 w-4 mr-2" />
-                  Active Battles
+                  Live Competitions
                 </TabsTrigger>
                 <TabsTrigger value="upcoming" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
                   <Calendar className="h-4 w-4 mr-2" />
-                  Upcoming
+                  Scheduled Tests
                 </TabsTrigger>
                 <TabsTrigger value="past" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
                   <History className="h-4 w-4 mr-2" />
-                  Past Battles
+                  Previous Exams
                 </TabsTrigger>
               </TabsList>
               
-              {/* Active Battles */}
+              {/* Live Competitions */}
               <TabsContent value="active" className="space-y-4">
                 {isLoading ? (
                   Array(3).fill(0).map((_, i) => (
