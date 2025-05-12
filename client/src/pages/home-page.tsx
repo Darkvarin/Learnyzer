@@ -635,10 +635,10 @@ export default function HomePage() {
                       <Book className="h-10 w-10 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-gaming mb-4 text-white">Comprehensive Curriculum</h3>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">Specialized Entrance Exam Preparation</h3>
                   <p className="text-gray-300">
-                    Access content from 3rd grade through 12th grade, plus competitive exam preparation for 
-                    JEE, NEET, UPSC, CLAT and more.
+                    Focused preparation for India's top competitive entrance exams including 
+                    JEE, NEET, UPSC, CLAT, and CUET.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -749,8 +749,8 @@ export default function HomePage() {
               <Card className="border-primary/10 bg-card/50 backdrop-blur-sm h-full pt-8 relative">
                 <div className="absolute top-0 right-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-primary/30 to-transparent opacity-50 hidden lg:block"></div>
                 <CardContent>
-                  <h3 className="text-xl font-bold mb-3">Explore Curriculum</h3>
-                  <p className="text-gray-400">Access grade-specific courses and materials tailored to your educational needs.</p>
+                  <h3 className="text-xl font-bold mb-3">Master Entrance Exams</h3>
+                  <p className="text-gray-400">Access exam-specific preparation materials tailored to JEE, NEET, UPSC, CLAT, and CUET.</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -1037,9 +1037,9 @@ export default function HomePage() {
             >
               <Card className="border-primary/10 bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-3">What educational boards and syllabi are covered?</h3>
+                  <h3 className="text-xl font-semibold mb-3">What entrance exams does LearnityX cover?</h3>
                   <p className="text-gray-400">
-                    LearnityX covers the major Indian educational boards including CBSE, ICSE, and state boards. Our content spans from 3rd to 12th grade and includes preparation for competitive exams like JEE, NEET, UPSC, and CLAT.
+                    LearnityX specializes in preparation for India's most competitive entrance exams including JEE (engineering), NEET (medical), UPSC (civil services), CLAT (law), and CUET (university admissions). Our platform is exclusively designed for these high-stakes exams.
                   </p>
                 </CardContent>
               </Card>
