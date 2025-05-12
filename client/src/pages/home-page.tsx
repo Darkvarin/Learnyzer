@@ -479,10 +479,10 @@ export default function HomePage() {
                       <Brain className="h-10 w-10 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-gaming mb-4 text-white">AI-Powered Tutor</h3>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">Entrance Exam AI Coach</h3>
                   <p className="text-gray-300">
-                    Experience personalized learning with our voice-interactive AI tutors that adapt to your learning style 
-                    and provide real-time feedback on your progress.
+                    Experience personalized coaching with our voice-interactive AI tutors that adapt to your exam preparation needs 
+                    and provide real-time feedback to maximize your JEE, NEET, UPSC, CLAT, or CUET score.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -1022,9 +1022,9 @@ export default function HomePage() {
             >
               <Card className="border-primary/10 bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-3">How does LearnityX adapt to my learning style?</h3>
+                  <h3 className="text-xl font-semibold mb-3">How does LearnityX adapt to my exam preparation needs?</h3>
                   <p className="text-gray-400">
-                    LearnityX uses advanced AI to analyze your learning patterns, strengths, and areas for improvement. The AI tutor adjusts its teaching approach based on your responses, progress, and preferences to provide a truly personalized learning experience.
+                    LearnityX uses advanced AI to analyze your performance patterns, strengths, and areas for improvement on each entrance exam. The AI tutor adjusts its teaching approach based on your responses to practice questions, progress on exam topics, and preferences to provide a truly personalized preparation experience for JEE, NEET, UPSC, CLAT, or CUET.
                   </p>
                 </CardContent>
               </Card>
@@ -1087,8 +1087,8 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
             className="text-center max-w-3xl mx-auto"
           >
-            <h2 className="text-3xl md:text-4xl font-gaming gaming-text mb-6">Ready to Transform Your Learning?</h2>
-            <p className="text-xl opacity-80 mb-8">Join thousands of students who are already experiencing the future of education with LearnityX.</p>
+            <h2 className="text-3xl md:text-4xl font-gaming gaming-text mb-6">Ready to Conquer Your Entrance Exams?</h2>
+            <p className="text-xl opacity-80 mb-8">Join thousands of aspirants who are already preparing for JEE, NEET, UPSC, CLAT, and CUET with LearnityX.</p>
             <Button 
               onClick={() => navigate("/auth")}
               className="game-button py-6 px-10 text-lg"
@@ -1106,7 +1106,7 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
               <h3 className="text-2xl font-gaming gaming-text mb-2">LearnityX</h3>
-              <p className="opacity-70">Level up your learning journey</p>
+              <p className="opacity-70">Master your entrance exam preparation</p>
             </div>
             <div className="flex flex-wrap gap-6">
               <Link href="/auth" className="opacity-70 hover:opacity-100 transition-opacity">
