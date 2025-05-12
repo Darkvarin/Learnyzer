@@ -720,7 +720,7 @@ export default function AiTutor() {
                           
                           <div className="space-y-3">
                             <div>
-                              <label className="text-sm font-medium mb-1 block">Subject</label>
+                              <label className="text-sm font-medium mb-1 block text-amber-400">Entrance Exam Subject</label>
                               <Select
                                 value={currentSubject}
                                 onValueChange={(value) => setCurrentSubject(value)}
@@ -759,7 +759,7 @@ export default function AiTutor() {
                             </div>
                             
                             <div>
-                              <label className="text-sm font-medium mb-1 block">Topic</label>
+                              <label className="text-sm font-medium mb-1 block text-amber-400">Exam Topic</label>
                               <Input
                                 type="text"
                                 placeholder="Enter exam topic (e.g. JEE Kinematics, UPSC Modern History)"
@@ -802,7 +802,7 @@ export default function AiTutor() {
                       </div>
                       
                       <div className="bg-dark-card rounded-lg p-4">
-                        <h3 className="text-md font-bold mb-2">Voice-First Entrance Exam Tutoring</h3>
+                        <h3 className="text-md font-bold mb-2 text-gradient-primary">Voice-First Entrance Exam Tutoring</h3>
                         <div className="flex items-center space-x-3 mb-4">
                           <div className="w-12 h-12 rounded-full overflow-hidden">
                             <img 
