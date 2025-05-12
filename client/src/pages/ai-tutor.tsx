@@ -332,12 +332,12 @@ export default function AiTutor() {
           <div className="w-1 h-10 bg-gradient-to-b from-cyan-500/70 via-cyan-600/50 to-primary/20"></div>
           <h1 className="text-3xl font-gaming gaming-text text-glow">
             <span className="gradient-text" style={{
-              background: "linear-gradient(90deg, #06b6d4, #7d27ff, #06b6d4)",
+              background: "linear-gradient(90deg, #ff0000, #ffff00, #00ff00)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundSize: "200% auto",
               animation: "gradient-animation 3s linear infinite"
-            }}>AI Tutor</span>
+            }}>AI Entrance Exam Tutor</span>
           </h1>
         </div>
         
