@@ -377,7 +377,7 @@ export default function HomePage() {
                       <div className="bg-background/95 rounded-lg p-4 h-full relative z-10">
                         <ShieldCheck className="h-8 w-8 mb-3 text-fuchsia-400 solo-icon" />
                         <h3 className="text-lg font-semibold mb-1">Verified Content</h3>
-                        <p className="text-sm text-gray-400">All material is aligned with standard curriculum requirements</p>
+                        <p className="text-sm text-gray-400">All material is aligned with official entrance exam patterns and requirements</p>
                       </div>
                     </div>
                     
@@ -734,7 +734,7 @@ export default function HomePage() {
                 <div className="absolute top-0 right-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-primary/30 to-transparent opacity-50 hidden lg:block"></div>
                 <CardContent>
                   <h3 className="text-xl font-bold mb-3">Create Your Profile</h3>
-                  <p className="text-gray-400">Sign up and set your grade, subjects, and learning goals to get a personalized experience.</p>
+                  <p className="text-gray-400">Sign up and select your target entrance exam, subjects, and learning goals to get a personalized experience.</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -966,7 +966,7 @@ export default function HomePage() {
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
                           <Check className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="opacity-90">Custom curriculum integration</span>
+                        <span className="opacity-90">Customized entrance exam coaching</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
