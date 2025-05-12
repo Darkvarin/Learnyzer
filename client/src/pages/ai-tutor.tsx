@@ -689,7 +689,18 @@ export default function AiTutor() {
                       disabled={sendMessageMutation.isPending}
                     />
                     <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
-                      <Button type="button" size="icon" variant="ghost" className="text-gray-400 hover:text-white transition-colors">
+                      <Button 
+                        type="button" 
+                        size="icon" 
+                        variant="ghost" 
+                        className="text-gray-400 hover:text-white transition-colors"
+                        onClick={() => {
+                          toast({
+                            title: "Attach files to your question",
+                            description: "Upload images or documents related to entrance exam questions",
+                          });
+                        }}
+                      >
                         <Paperclip className="h-4 w-4" />
                       </Button>
                       <Button 
