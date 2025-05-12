@@ -380,7 +380,7 @@ export default function AiTutor() {
                     {aiTutor?.name || "AI Tutor"}
                   </h2>
                   <p className="text-sm text-cyan-200/70 mt-1 text-center mb-6 border-b border-cyan-500/20 pb-2">
-                    {aiTutor?.specialty || "Your Personal Learning Assistant"}
+                    {aiTutor?.specialty || "Your Entrance Exam Voice Coach"}
                   </p>
                   
                   <div className="w-full bg-background/60 rounded-lg p-5 text-sm border border-cyan-500/20 monarch-card-glow relative">
@@ -390,7 +390,7 @@ export default function AiTutor() {
                     
                     <h3 className="font-semibold mb-2 font-gaming text-cyan-200">About</h3>
                     <p className="text-cyan-100/80 text-sm">
-                      {aiTutor?.description || "I'm your AI learning companion, here to help you master any subject through personalized guidance and support."}
+                      {aiTutor?.description || "I'm your AI entrance exam coach, providing voice-based guidance to help you excel in JEE, NEET, UPSC, CLAT and CUET through personalized explanations."}
                     </p>
                     
                     <h3 className="font-semibold mt-4 mb-2 font-gaming text-cyan-200">Specialties</h3>
@@ -400,21 +400,21 @@ export default function AiTutor() {
                           <GraduationCap className="h-4 w-4 text-cyan-400" />
                           <div className="absolute inset-0 bg-cyan-500/5 animate-pulse rounded"></div>
                         </div>
-                        <span>{aiTutor?.subjects?.[0] || "Personalized explanations"}</span>
+                        <span>{aiTutor?.subjects?.[0] || "Voice-based JEE/NEET coaching"}</span>
                       </li>
                       <li className="flex items-center gap-3 text-white/90">
                         <div className="bg-primary/10 p-1.5 rounded relative">
                           <Book className="h-4 w-4 text-primary-400" />
                           <div className="absolute inset-0 bg-primary/5 animate-pulse rounded"></div>
                         </div>
-                        <span>{aiTutor?.subjects?.[1] || "Study material creation"}</span>
+                        <span>{aiTutor?.subjects?.[1] || "UPSC/CLAT/CUET whiteboard solutions"}</span>
                       </li>
                       <li className="flex items-center gap-3 text-white/90">
                         <div className="bg-cyan-500/10 p-1.5 rounded relative">
                           <FileCheck className="h-4 w-4 text-cyan-400" />
                           <div className="absolute inset-0 bg-cyan-500/5 animate-pulse rounded"></div>
                         </div>
-                        <span>{aiTutor?.subjects?.[2] || "Progress tracking"}</span>
+                        <span>{aiTutor?.subjects?.[2] || "Personalized exam strategies"}</span>
                       </li>
                     </ul>
                   </div>
@@ -781,7 +781,7 @@ export default function AiTutor() {
                       </div>
                       
                       <div className="bg-dark-card rounded-lg p-4">
-                        <h3 className="text-md font-bold mb-2">Voice Interaction</h3>
+                        <h3 className="text-md font-bold mb-2">Voice-First Entrance Exam Tutoring</h3>
                         <div className="flex items-center space-x-3 mb-4">
                           <div className="w-12 h-12 rounded-full overflow-hidden">
                             <img 
@@ -838,9 +838,9 @@ export default function AiTutor() {
                             )}
                           </Button>
                           <p className="text-xs text-center mt-2 text-gray-400">
-                            {isListening ? "Listening... (click to stop)" : 
-                             isSpeaking ? "AI Tutor is speaking..." : 
-                             diagramUrl ? "Press to speak" : "Start teaching session first"}
+                            {isListening ? "Listening to your question... (click to stop)" : 
+                             isSpeaking ? "AI Tutor is explaining your exam topic..." : 
+                             diagramUrl ? "Press to ask exam questions by voice" : "Start exam topic session first"}
                           </p>
                         </div>
                       </div>
