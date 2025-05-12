@@ -50,8 +50,8 @@ export default function Courses() {
       
       <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold font-gaming">Courses</h1>
-          <p className="text-gray-400 mt-1">Learn, practice, and master your subjects</p>
+          <h1 className="text-2xl font-bold font-gaming">Entrance Exam Courses</h1>
+          <p className="text-gray-400 mt-1">Prepare, practice, and master your entrance exam subjects</p>
         </div>
 
         <div className="flex flex-col space-y-6">
@@ -71,11 +71,14 @@ export default function Courses() {
                   </SelectTrigger>
                   <SelectContent className="bg-dark-surface border-dark-border">
                     <SelectItem value="all">All Exams</SelectItem>
-                    <SelectItem value="jee">JEE</SelectItem>
+                    <SelectItem value="jee">JEE Main</SelectItem>
+                    <SelectItem value="jee_advanced">JEE Advanced</SelectItem>
                     <SelectItem value="neet">NEET</SelectItem>
                     <SelectItem value="upsc">UPSC</SelectItem>
+                    <SelectItem value="upsc_prelims">UPSC Prelims</SelectItem>
+                    <SelectItem value="upsc_mains">UPSC Mains</SelectItem>
                     <SelectItem value="clat">CLAT</SelectItem>
-                    <SelectItem value="school">School</SelectItem>
+                    <SelectItem value="cuet">CUET</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -97,7 +100,12 @@ export default function Courses() {
                     <SelectItem value="biology">Biology</SelectItem>
                     <SelectItem value="history">History</SelectItem>
                     <SelectItem value="geography">Geography</SelectItem>
-                    <SelectItem value="computer_science">Computer Science</SelectItem>
+                    <SelectItem value="polity">Indian Polity</SelectItem>
+                    <SelectItem value="economy">Indian Economy</SelectItem>
+                    <SelectItem value="aptitude">Logical Reasoning & Aptitude</SelectItem>
+                    <SelectItem value="legal">Legal Aptitude</SelectItem>
+                    <SelectItem value="general_knowledge">General Knowledge</SelectItem>
+                    <SelectItem value="current_affairs">Current Affairs</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -248,8 +256,8 @@ export default function Courses() {
                 ) : (
                   <div className="text-center py-12 text-gray-400">
                     <i className="ri-book-open-line text-5xl mb-3"></i>
-                    <p className="text-lg mb-2">No courses in progress</p>
-                    <p className="text-sm mb-4">Start a course to see it here</p>
+                    <p className="text-lg mb-2">No exam preparation in progress</p>
+                    <p className="text-sm mb-4">Start your entrance exam preparation to see it here</p>
                   </div>
                 )}
               </TabsContent>
