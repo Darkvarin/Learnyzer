@@ -224,7 +224,7 @@ export default function HomePage() {
           <div 
             className="absolute inset-0 bg-center bg-cover opacity-50" 
             style={{ 
-              backgroundImage: "url('/images/indian-education-bg.svg')",
+              backgroundImage: "url('/images/indian-entrance-exam-bg.svg')",
               backgroundSize: "cover", 
               backgroundPosition: "center",
               backgroundBlendMode: "luminosity"
@@ -444,7 +444,7 @@ export default function HomePage() {
                 className="text-3xl md:text-5xl font-gaming mb-2 relative px-6"
               >
                 <span className="relative z-10">
-                  Revolutionary Features
+                  Exam-Mastery Features
                   <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
                 </span>
               </motion.h2>
@@ -520,8 +520,8 @@ export default function HomePage() {
                   </div>
                   <h3 className="text-2xl font-gaming mb-4 text-white">Battle Zone Challenges</h3>
                   <p className="text-gray-300">
-                    Compete in 1v1, 2v2, 3v3, or 4v4 real-time academic battles, solve problems under 
-                    pressure and earn rank points to climb the leaderboard.
+                    Compete in 1v1, 2v2, 3v3, or 4v4 real-time entrance exam challenges, solve JEE/NEET/UPSC/CLAT/CUET problems under 
+                    pressure and earn rank points to climb the national aspirant leaderboard.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -560,7 +560,7 @@ export default function HomePage() {
                   <h3 className="text-2xl font-gaming mb-4 text-white">Complete Rank System</h3>
                   <p className="text-gray-300">
                     Climb from Bronze to Grandmaster with a comprehensive ranking system that reflects your 
-                    academic progress and competitive performance.
+                    entrance exam preparation progress and competitive performance against other aspirants.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
