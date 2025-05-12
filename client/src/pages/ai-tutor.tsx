@@ -55,7 +55,7 @@ export default function AiTutor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [diagramUrl, setDiagramUrl] = useState<string | null>(null);
   
-  // Canvas display functionality
+  // Canvas display functionality for AI-generated content
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -63,88 +63,55 @@ export default function AiTutor() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    let isDrawing = false;
-    let lastX = 0;
-    let lastY = 0;
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Set initial canvas properties
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = activeTool === 'eraser' ? '#1E1E24' : '#ffffff';
+    // Set canvas background
+    ctx.fillStyle = "#1E1E24";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    const draw = (e: MouseEvent) => {
-      if (!isDrawing) return;
+    // Show loading message or placeholder when no diagram is present
+    if (!diagramUrl) {
+      ctx.font = "20px sans-serif";
+      ctx.fillStyle = "#888888";
+      ctx.textAlign = "center";
+      ctx.fillText("AI-generated diagram will appear here", canvas.width/2, canvas.height/2 - 20);
+      ctx.fillText("Enter a topic and click 'Generate Diagram'", canvas.width/2, canvas.height/2 + 20);
+    }
+    
+    // Draw loading spinner if generating diagram
+    if (isGeneratingDiagram) {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = 30;
       
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(e.offsetX, e.offsetY);
-      ctx.stroke();
+      // Animation function for loading spinner
+      const drawLoadingSpinner = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#1E1E24";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.font = "20px sans-serif";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.textAlign = "center";
+        ctx.fillText("Generating AI diagram...", centerX, centerY + 60);
+        
+        // Draw spinner
+        ctx.strokeStyle = "#00A3FF";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        const angle = (Date.now() / 500) % (Math.PI * 2);
+        ctx.arc(centerX, centerY, radius, angle, angle + Math.PI * 1.5);
+        ctx.stroke();
+        
+        if (isGeneratingDiagram) {
+          requestAnimationFrame(drawLoadingSpinner);
+        }
+      };
       
-      [lastX, lastY] = [e.offsetX, e.offsetY];
-    };
-    
-    const startDrawing = (e: MouseEvent) => {
-      isDrawing = true;
-      [lastX, lastY] = [e.offsetX, e.offsetY];
-    };
-    
-    const stopDrawing = () => {
-      isDrawing = false;
-    };
-    
-    // Mobile/touch support
-    const drawTouch = (e: TouchEvent) => {
-      if (!isDrawing || !canvas) return;
-      e.preventDefault();
-      
-      const touch = e.touches[0];
-      const rect = canvas.getBoundingClientRect();
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
-      
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-      
-      [lastX, lastY] = [x, y];
-    };
-    
-    const startDrawingTouch = (e: TouchEvent) => {
-      if (!canvas) return;
-      e.preventDefault();
-      
-      isDrawing = true;
-      const touch = e.touches[0];
-      const rect = canvas.getBoundingClientRect();
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
-      
-      [lastX, lastY] = [x, y];
-    };
-    
-    // Event listeners
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseout', stopDrawing);
-    
-    canvas.addEventListener('touchstart', startDrawingTouch);
-    canvas.addEventListener('touchmove', drawTouch);
-    canvas.addEventListener('touchend', stopDrawing);
-    
-    return () => {
-      canvas.removeEventListener('mousedown', startDrawing);
-      canvas.removeEventListener('mousemove', draw);
-      canvas.removeEventListener('mouseup', stopDrawing);
-      canvas.removeEventListener('mouseout', stopDrawing);
-      
-      canvas.removeEventListener('touchstart', startDrawingTouch);
-      canvas.removeEventListener('touchmove', drawTouch);
-      canvas.removeEventListener('touchend', stopDrawing);
-    };
-  }, [activeTool]);
+      drawLoadingSpinner();
+    }
+  }, [diagramUrl, isGeneratingDiagram]);
   
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -718,7 +685,7 @@ export default function AiTutor() {
                             className="absolute top-0 left-0 w-full h-full z-20"
                           ></canvas>
                           
-                          {isGeneratingWhiteboard && (
+                          {isGeneratingDiagram && (
                             <div className="absolute inset-0 flex items-center justify-center bg-dark-card/80 z-30">
                               <div className="flex flex-col items-center">
                                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mb-4"></div>
@@ -789,9 +756,9 @@ export default function AiTutor() {
                             <Button 
                               onClick={handleStartTeaching}
                               className="w-full bg-primary-600 hover:bg-primary-500"
-                              disabled={isGeneratingWhiteboard}
+                              disabled={isGeneratingDiagram}
                             >
-                              {isGeneratingWhiteboard ? (
+                              {isGeneratingDiagram ? (
                                 <>Generating... <span className="ml-2 animate-pulse">⏳</span></>
                               ) : (
                                 <>Generate Interactive Content</>
@@ -837,7 +804,7 @@ export default function AiTutor() {
                         <div className="mt-3 flex flex-col items-center">
                           <div className="w-full p-3 rounded-lg border border-primary-600/30 bg-dark-surface mb-3">
                             <p className="text-sm text-center text-gray-300">
-                              {isGeneratingWhiteboard ? (
+                              {isGeneratingDiagram ? (
                                 <span>Preparing exam content...</span>
                               ) : diagramUrl ? (
                                 <span>I'm coaching you on <span className="text-primary-400 font-medium">{currentTopic}</span> now. Ask exam questions!</span>
