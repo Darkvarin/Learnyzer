@@ -521,26 +521,59 @@ export default function AiTutor() {
                     
                     <h3 className="font-semibold mt-4 mb-2 font-gaming text-cyan-200">Specialties</h3>
                     <ul className="space-y-3">
-                      <li className="flex items-center gap-3 text-white/90">
+                      <li 
+                        className="flex items-center gap-3 text-white/90 cursor-pointer hover:bg-cyan-500/10 p-2 rounded-md transition-colors"
+                        onClick={() => {
+                          toast({
+                            title: "JEE/NEET Expertise",
+                            description: "Expert guidance in Physics, Chemistry, Biology and Mathematics for JEE and NEET exam preparation."
+                          });
+                          setActiveTab("canvas");
+                          setCurrentTopic("JEE Physics concepts");
+                        }}
+                      >
                         <div className="bg-cyan-500/10 p-1.5 rounded relative">
                           <GraduationCap className="h-4 w-4 text-cyan-400" />
                           <div className="absolute inset-0 bg-cyan-500/5 animate-pulse rounded"></div>
                         </div>
                         <span>{aiTutor?.subjects?.[0] || "Interactive JEE/NEET diagrams & presentations"}</span>
+                        <ChevronRight className="h-4 w-4 text-cyan-400 ml-auto" />
                       </li>
-                      <li className="flex items-center gap-3 text-white/90">
+                      <li 
+                        className="flex items-center gap-3 text-white/90 cursor-pointer hover:bg-primary/10 p-2 rounded-md transition-colors"
+                        onClick={() => {
+                          toast({
+                            title: "UPSC/CLAT/CUET Expertise",
+                            description: "Visual concept explanations for UPSC, CLAT and CUET with advanced diagram generation."
+                          });
+                          setActiveTab("canvas");
+                          setCurrentTopic("UPSC current affairs analysis");
+                        }}
+                      >
                         <div className="bg-primary/10 p-1.5 rounded relative">
                           <Book className="h-4 w-4 text-primary-400" />
                           <div className="absolute inset-0 bg-primary/5 animate-pulse rounded"></div>
                         </div>
                         <span>{aiTutor?.subjects?.[1] || "UPSC/CLAT/CUET visual concept explanations"}</span>
+                        <ChevronRight className="h-4 w-4 text-primary-400 ml-auto" />
                       </li>
-                      <li className="flex items-center gap-3 text-white/90">
+                      <li 
+                        className="flex items-center gap-3 text-white/90 cursor-pointer hover:bg-cyan-500/10 p-2 rounded-md transition-colors"
+                        onClick={() => {
+                          toast({
+                            title: "Voice-Based Coaching",
+                            description: "Interactive voice-based coaching with personalized exam strategies and feedback."
+                          });
+                          setActiveTab("chat");
+                          handleVoiceInteraction();
+                        }}
+                      >
                         <div className="bg-cyan-500/10 p-1.5 rounded relative">
                           <FileCheck className="h-4 w-4 text-cyan-400" />
                           <div className="absolute inset-0 bg-cyan-500/5 animate-pulse rounded"></div>
                         </div>
                         <span>{aiTutor?.subjects?.[2] || "Voice-based coaching for all entrance exams"}</span>
+                        <ChevronRight className="h-4 w-4 text-cyan-400 ml-auto" />
                       </li>
                     </ul>
                   </div>
@@ -549,27 +582,73 @@ export default function AiTutor() {
                     <Button 
                       size="icon" 
                       onClick={handleVoiceInteraction}
-                      className="bg-cyan-500/80 hover:bg-cyan-500 text-white relative overflow-hidden"
+                      className="bg-cyan-500/80 hover:bg-cyan-500 text-white relative overflow-hidden tooltip-wrapper"
                     >
                       {/* Solo Leveling button effect */}
                       <div className="absolute inset-0 cyan-aura opacity-0 hover:opacity-30 transition-opacity duration-200"></div>
                       <Mic className="h-4 w-4 relative z-10" />
+                      <span className="tooltip-text">Voice Interaction</span>
                     </Button>
                     <Button 
                       size="icon" 
                       variant="outline" 
-                      className="bg-background/60 hover:bg-background/80 text-white border-cyan-500/30 hover:border-cyan-500/50"
+                      className="bg-background/60 hover:bg-background/80 text-white border-cyan-500/30 hover:border-cyan-500/50 tooltip-wrapper"
+                      onClick={() => {
+                        setActiveTab("chat");
+                        toast({
+                          title: "Chat Mode Activated",
+                          description: "Ask your entrance exam questions using text chat"
+                        });
+                      }}
                     >
                       <MessageSquare className="h-4 w-4" />
+                      <span className="tooltip-text">Text Chat</span>
                     </Button>
                     <Button 
                       size="icon" 
                       variant="outline" 
-                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50"
+                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50 tooltip-wrapper"
+                      onClick={() => {
+                        setActiveTab("performance");
+                        toast({
+                          title: "Performance Dashboard",
+                          description: "Track your entrance exam preparation progress"
+                        });
+                      }}
                     >
                       <Settings2 className="h-4 w-4" />
+                      <span className="tooltip-text">Settings</span>
                     </Button>
                   </div>
+                  
+                  <style jsx>{`
+                    .tooltip-wrapper {
+                      position: relative;
+                    }
+                    .tooltip-text {
+                      visibility: hidden;
+                      position: absolute;
+                      z-index: 1;
+                      bottom: 125%;
+                      left: 50%;
+                      transform: translateX(-50%);
+                      background-color: rgba(15, 23, 42, 0.9);
+                      color: white;
+                      text-align: center;
+                      padding: 4px 8px;
+                      border-radius: 4px;
+                      font-size: 12px;
+                      white-space: nowrap;
+                      transition: opacity 0.3s;
+                      opacity: 0;
+                      pointer-events: none;
+                      border: 1px solid rgba(34, 211, 238, 0.2);
+                    }
+                    .tooltip-wrapper:hover .tooltip-text {
+                      visibility: visible;
+                      opacity: 1;
+                    }
+                  `}</style>
                 </div>
               )}
             </div>
