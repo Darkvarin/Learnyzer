@@ -29,6 +29,7 @@ import {
   AlertTriangle,
   Check,
   ImageIcon,
+  PenTool,
   PieChart,
   Search as ScanSearch
 } from "lucide-react";
@@ -167,23 +168,55 @@ export default function AiTutor() {
   };
   
   // In a production environment, this would call the OpenAI API to generate presentations and diagrams
-  const generateDiagram = () => {
+  const generateDiagram = (topic: string) => {
+    if (!topic) {
+      toast({
+        title: "Please enter an exam topic",
+        description: "Enter a specific entrance exam topic like 'JEE Kinematics' or 'UPSC Modern History'",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setIsGeneratingWhiteboard(true);
     
-    // Simulating API call delay (in production this would use OpenAI to generate visual content)
-    setTimeout(() => {
-      // Canvas background for the presentation - no fake data
-      const defaultCanvasBg = "/whiteboard-background.svg";
-      
-      // Set the basic canvas background for interactive learning
-      setDiagramUrl(defaultCanvasBg);
-      setIsGeneratingWhiteboard(false);
-      
-      // In a real implementation, we would use OpenAI to identify weak points and 
-      // generate interactive diagrams specific to the entrance exam topic
-      // For now, start with empty array
-      setWeakPoints([]);
-    }, 1500);
+    // Create a request to OpenAI to generate a diagram for the specified topic
+    const generateAIDiagram = async () => {
+      try {
+        const response = await apiRequest('POST', '/api/ai/generate-diagram', {
+          subject: currentSubject,
+          topic: topic,
+          examType: currentSubject.split(' ')[0] // Extract exam type (JEE, NEET, etc.)
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setDiagramUrl(data.diagramUrl);
+          setWeakPoints(data.keyPoints || []);
+          toast({
+            title: "Diagram generated successfully",
+            description: "AI has created a visual explanation for your topic",
+            variant: "default"
+          });
+        } else {
+          throw new Error("Failed to generate diagram");
+        }
+      } catch (error) {
+        console.error("Error generating diagram:", error);
+        // Fallback to a basic canvas background if API fails
+        setDiagramUrl("/whiteboard-background.svg");
+        setWeakPoints([]);
+        toast({
+          title: "Could not generate diagram",
+          description: "Please try again with a different topic",
+          variant: "destructive"
+        });
+      } finally {
+        setIsGeneratingWhiteboard(false);
+      }
+    };
+    
+    generateAIDiagram();
   };
   
   const { data: aiTutor, isLoading: isLoadingTutor } = useQuery({
@@ -465,7 +498,7 @@ export default function AiTutor() {
                       {/* Solo Leveling active tab effect */}
                       <div className="absolute inset-0 primary-aura opacity-0 group-data-[state=active]:opacity-20"></div>
                       <PenTool className="h-4 w-4 mr-2" />
-                      <span className="relative z-10">Teaching Session</span>
+                      <span className="relative z-10">Entrance Exam Session</span>
                     </TabsTrigger>
                     <TabsTrigger 
                       value="performance" 
@@ -659,8 +692,8 @@ export default function AiTutor() {
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="text-lg font-bold">Interactive Canvas & Presentations</h3>
                           <div className="flex items-center gap-2">
-                            <Button size="sm" variant="outline" onClick={() => generateAIDiagram()} className="h-8 px-3 py-1 text-xs bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/50 text-amber-300">
-                              <Image className="h-3 w-3 mr-1" />
+                            <Button size="sm" variant="outline" onClick={() => generateDiagram(currentTopic)} className="h-8 px-3 py-1 text-xs bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/50 text-amber-300">
+                              <ImageIcon className="h-3 w-3 mr-1" />
                               Generate Diagram
                             </Button>
                           </div>
