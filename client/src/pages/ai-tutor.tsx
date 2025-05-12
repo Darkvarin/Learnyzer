@@ -53,12 +53,12 @@ export default function AiTutor() {
   const [currentTopic, setCurrentTopic] = useState(chapterParam || "");
   const [isGeneratingWhiteboard, setIsGeneratingWhiteboard] = useState(false);
   const [weakPoints, setWeakPoints] = useState<string[]>([]); 
-  const whiteboardRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [diagramUrl, setDiagramUrl] = useState<string | null>(null);
   
-  // Canvas drawing functionality
+  // Canvas display functionality
   useEffect(() => {
-    const canvas = whiteboardRef.current;
+    const canvas = canvasRef.current;
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
@@ -147,8 +147,8 @@ export default function AiTutor() {
     };
   }, [activeTool]);
   
-  const clearWhiteboard = () => {
-    const canvas = whiteboardRef.current;
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
@@ -157,14 +157,16 @@ export default function AiTutor() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
   
-  const setToolColor = (color: string) => {
-    const canvas = whiteboardRef.current;
+  const prepareCanvasForDiagram = () => {
+    const canvas = canvasRef.current;
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    ctx.strokeStyle = color;
+    // Prepare the canvas for displaying the AI-generated diagram
+    ctx.fillStyle = "#1E1E24";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
   
   // In a production environment, this would call the OpenAI API to generate presentations and diagrams
@@ -711,7 +713,7 @@ export default function AiTutor() {
                             />
                           )}
                           <canvas 
-                            ref={whiteboardRef} 
+                            ref={canvasRef} 
                             width={800} 
                             height={500} 
                             className="absolute top-0 left-0 w-full h-full z-20"
