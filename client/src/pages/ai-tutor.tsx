@@ -396,6 +396,21 @@ export default function AiTutor() {
 
   const handlePromptClick = (promptText: string) => {
     setMessage(promptText);
+    
+    // Add a slight delay before sending to let the UI update
+    setTimeout(() => {
+      // Send the message
+      sendMessageMutation.mutate(promptText);
+      
+      // Show a toast notification
+      toast({
+        title: "Question submitted",
+        description: "Processing your entrance exam question..."
+      });
+      
+      // Switch to the chat tab to see the response
+      setActiveTab("chat");
+    }, 300);
   };
   
   const handleStartTeaching = () => {
@@ -977,7 +992,20 @@ export default function AiTutor() {
                   <div className="bg-dark-card rounded-lg p-4 flex-1 min-h-[500px]">
                     <div className="flex items-center justify-between mb-6">
                       <h3 className="text-lg font-bold">Learning Progress</h3>
-                      <Select defaultValue="last30">
+                      <Select 
+                        defaultValue="last30"
+                        onValueChange={(value) => {
+                          toast({
+                            title: "Time period changed",
+                            description: `Showing data for ${
+                              value === "last7" ? "last 7 days" : 
+                              value === "last30" ? "last 30 days" : 
+                              "last 90 days"
+                            }`
+                          });
+                          // In a future implementation, this would fetch data for the selected time period
+                        }}
+                      >
                         <SelectTrigger className="w-[140px]">
                           <SelectValue placeholder="Time Period" />
                         </SelectTrigger>
