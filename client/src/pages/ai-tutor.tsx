@@ -50,7 +50,7 @@ export default function AiTutor() {
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState("chat");
   const [activeTool, setActiveTool] = useState("pen");
-  const [currentSubject, setCurrentSubject] = useState(subjectParam?.toLowerCase() || "mathematics");
+  const [currentSubject, setCurrentSubject] = useState(subjectParam?.toLowerCase() || "jee_mathematics");
   const [currentTopic, setCurrentTopic] = useState(chapterParam || "");
   const [isGeneratingWhiteboard, setIsGeneratingWhiteboard] = useState(false);
   const [weakPoints, setWeakPoints] = useState<string[]>([]); 
@@ -168,20 +168,21 @@ export default function AiTutor() {
     ctx.strokeStyle = color;
   };
   
-  // In a production environment, this would call the OpenAI API to generate a diagram
+  // In a production environment, this would call the OpenAI API to generate presentations and diagrams
   const generateDiagram = () => {
     setIsGeneratingWhiteboard(true);
     
-    // Simulating API call delay (in production this would be a real API call)
+    // Simulating API call delay (in production this would use OpenAI to generate visual content)
     setTimeout(() => {
-      // Simple generated whiteboard background - no fake data
-      const defaultWhiteboardBg = "/whiteboard-background.svg";
+      // Canvas background for the presentation - no fake data
+      const defaultCanvasBg = "/whiteboard-background.svg";
       
-      // Set the basic whiteboard background
-      setDiagramUrl(defaultWhiteboardBg);
+      // Set the basic canvas background for interactive learning
+      setDiagramUrl(defaultCanvasBg);
       setIsGeneratingWhiteboard(false);
       
-      // In a real implementation, we would use the AI to identify weak points
+      // In a real implementation, we would use OpenAI to identify weak points and 
+      // generate interactive diagrams specific to the entrance exam topic
       // For now, start with empty array
       setWeakPoints([]);
     }, 1500);
@@ -390,7 +391,7 @@ export default function AiTutor() {
                     
                     <h3 className="font-semibold mb-2 font-gaming text-cyan-200">About</h3>
                     <p className="text-cyan-100/80 text-sm">
-                      {aiTutor?.description || "I'm your AI entrance exam coach, providing voice-based guidance to help you excel in JEE, NEET, UPSC, CLAT and CUET through personalized explanations."}
+                      {aiTutor?.description || "I'm your AI entrance exam coach for JEE, NEET, UPSC, CLAT and CUET, providing voice-based guidance with interactive diagrams and presentations for all exam subjects."}
                     </p>
                     
                     <h3 className="font-semibold mt-4 mb-2 font-gaming text-cyan-200">Specialties</h3>
@@ -400,21 +401,21 @@ export default function AiTutor() {
                           <GraduationCap className="h-4 w-4 text-cyan-400" />
                           <div className="absolute inset-0 bg-cyan-500/5 animate-pulse rounded"></div>
                         </div>
-                        <span>{aiTutor?.subjects?.[0] || "Voice-based JEE/NEET coaching"}</span>
+                        <span>{aiTutor?.subjects?.[0] || "Interactive JEE/NEET diagrams & presentations"}</span>
                       </li>
                       <li className="flex items-center gap-3 text-white/90">
                         <div className="bg-primary/10 p-1.5 rounded relative">
                           <Book className="h-4 w-4 text-primary-400" />
                           <div className="absolute inset-0 bg-primary/5 animate-pulse rounded"></div>
                         </div>
-                        <span>{aiTutor?.subjects?.[1] || "UPSC/CLAT/CUET whiteboard solutions"}</span>
+                        <span>{aiTutor?.subjects?.[1] || "UPSC/CLAT/CUET visual concept explanations"}</span>
                       </li>
                       <li className="flex items-center gap-3 text-white/90">
                         <div className="bg-cyan-500/10 p-1.5 rounded relative">
                           <FileCheck className="h-4 w-4 text-cyan-400" />
                           <div className="absolute inset-0 bg-cyan-500/5 animate-pulse rounded"></div>
                         </div>
-                        <span>{aiTutor?.subjects?.[2] || "Personalized exam strategies"}</span>
+                        <span>{aiTutor?.subjects?.[2] || "Voice-based coaching for all entrance exams"}</span>
                       </li>
                     </ul>
                   </div>
@@ -658,7 +659,7 @@ export default function AiTutor() {
                     <div className="lg:col-span-2 flex flex-col gap-4">
                       <div className="bg-dark-card rounded-lg p-4 flex-1 overflow-hidden">
                         <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-bold">Interactive Whiteboard</h3>
+                          <h3 className="text-lg font-bold">Interactive Canvas & Presentations</h3>
                           <div className="flex items-center gap-2">
                             <Button size="sm" variant="outline" onClick={clearWhiteboard} className="h-8 px-2 py-1 text-xs">
                               <Eraser className="h-3 w-3 mr-1" />
@@ -704,7 +705,7 @@ export default function AiTutor() {
                             <div className="absolute inset-0 flex items-center justify-center bg-dark-card/80 z-30">
                               <div className="flex flex-col items-center">
                                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mb-4"></div>
-                                <p className="text-gray-300">Generating teaching materials...</p>
+                                <p className="text-gray-300">Generating interactive diagrams for {currentSubject.replace('_', ' ')}...</p>
                               </div>
                             </div>
                           )}
@@ -728,11 +729,31 @@ export default function AiTutor() {
                                   <SelectValue placeholder="Select subject" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="mathematics">Mathematics</SelectItem>
-                                  <SelectItem value="physics">Physics</SelectItem>
-                                  <SelectItem value="chemistry">Chemistry</SelectItem>
-                                  <SelectItem value="biology">Biology</SelectItem>
-                                  <SelectItem value="computer_science">Computer Science</SelectItem>
+                                  {/* JEE/NEET subjects */}
+                                  <SelectItem value="jee_mathematics">JEE Mathematics</SelectItem>
+                                  <SelectItem value="jee_physics">JEE Physics</SelectItem>
+                                  <SelectItem value="jee_chemistry">JEE Chemistry</SelectItem>
+                                  <SelectItem value="neet_biology">NEET Biology</SelectItem>
+                                  <SelectItem value="neet_chemistry">NEET Chemistry</SelectItem>
+                                  <SelectItem value="neet_physics">NEET Physics</SelectItem>
+                                  
+                                  {/* UPSC subjects */}
+                                  <SelectItem value="upsc_history">UPSC History</SelectItem>
+                                  <SelectItem value="upsc_geography">UPSC Geography</SelectItem>
+                                  <SelectItem value="upsc_polity">UPSC Polity</SelectItem>
+                                  <SelectItem value="upsc_economics">UPSC Economics</SelectItem>
+                                  <SelectItem value="upsc_environment">UPSC Environment</SelectItem>
+                                  
+                                  {/* CLAT subjects */}
+                                  <SelectItem value="clat_legal_reasoning">CLAT Legal Reasoning</SelectItem>
+                                  <SelectItem value="clat_logical_reasoning">CLAT Logical Reasoning</SelectItem>
+                                  <SelectItem value="clat_english">CLAT English</SelectItem>
+                                  <SelectItem value="clat_current_affairs">CLAT Current Affairs</SelectItem>
+                                  
+                                  {/* CUET subjects */}
+                                  <SelectItem value="cuet_general_test">CUET General Test</SelectItem>
+                                  <SelectItem value="cuet_domain_subjects">CUET Domain Subjects</SelectItem>
+                                  <SelectItem value="cuet_languages">CUET Languages</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
@@ -741,7 +762,7 @@ export default function AiTutor() {
                               <label className="text-sm font-medium mb-1 block">Topic</label>
                               <Input
                                 type="text"
-                                placeholder="Enter specific topic (e.g. Calculus, Quantum Physics)"
+                                placeholder="Enter exam topic (e.g. JEE Kinematics, UPSC Modern History)"
                                 className="w-full bg-dark-surface border border-dark-border focus:border-primary-500"
                                 value={currentTopic}
                                 onChange={(e) => setCurrentTopic(e.target.value)}
@@ -756,7 +777,7 @@ export default function AiTutor() {
                               {isGeneratingWhiteboard ? (
                                 <>Generating... <span className="ml-2 animate-pulse">⏳</span></>
                               ) : (
-                                <>Start Teaching Session</>
+                                <>Generate Interactive Content</>
                               )}
                             </Button>
                           </div>
