@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <!-- Dark background -->
+  <rect width="100" height="100" rx="15" fill="#141625" />
+  
+  <!-- Hexagonal border with glow -->
+  <path d="M50 5 L90 30 L90 70 L50 95 L10 70 L10 30 Z" stroke="#39d0d8" stroke-width="2" fill="none" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.9;0.7" dur="3s" repeatCount="indefinite" />
+  </path>
+  
+  <!-- Brain symbol representing AI learning -->
+  <path d="M65 45 C65 36.7 58.3 30 50 30 C41.7 30 35 36.7 35 45 C35 48.8 36.4 52.3 38.7 55 L38.7 55 L38.7 60 C38.7 63.3 41.4 66 45 66 L55 66 C58.3 66 61 63.3 61 60 L61 55 C63.3 52.3 65 48.8 65 45 Z M43 45 C43 42.2 45.2 40 48 40 C50.8 40 53 42.2 53 45 C53 47.8 50.8 50 48 50 C45.2 50 43 47.8 43 45 Z M57 45 C57 42.2 54.8 40 52 40 C49.2 40 47 42.2 47 45 C47 47.8 49.2 50 52 50 C54.8 50 57 47.8 57 45 Z M45 55 L55 55 L55 60 C55 60 50 62 45 60 L45 55 Z" fill="#39d0d8">
+    <animate attributeName="fill" values="#39d0d8;#3e8eff;#39d0d8" dur="5s" repeatCount="indefinite" />
+  </path>
+  
+  <!-- Book/exam paper below -->
+  <path d="M30 70 L70 70 L70 80 C70 80 60 85 50 85 C40 85 30 80 30 80 Z" fill="#39d0d8" opacity="0.7" />
+  
+  <!-- Entrance exam accent elements -->
+  <circle cx="25" cy="40" r="5" fill="#ff6b6b" opacity="0.8" />
+  <circle cx="75" cy="40" r="5" fill="#feca57" opacity="0.8" />
+  <circle cx="25" cy="60" r="5" fill="#1dd1a1" opacity="0.8" />
+  <circle cx="75" cy="60" r="5" fill="#5f27cd" opacity="0.8" />
+  
+  <!-- Glowing effect -->
+  <filter id="glow">
+    <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+    <feMerge>
+      <feMergeNode in="coloredBlur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</svg>

@@ -30,12 +30,13 @@ export default function Courses() {
   
   const { data: courses, isLoading: coursesLoading } = useQuery<Course[]>({
     queryKey: [`/api/courses?exam=${selectedExam}&subject=${selectedSubject}&grade=${user?.grade || ''}`],
+    enabled: !!user, // Only run the query when user data is available
   });
   
-  // Function to open AI tutor with specific chapter content
+  // Function to open AI tutor with specific entrance exam content
   const openAITutorWithChapter = (course: Course, chapterTitle: string) => {
     // Navigate to AI Tutor page with state via URL params
-    navigate(`/ai-tutor?subject=${encodeURIComponent(course.subject)}&chapter=${encodeURIComponent(chapterTitle)}&course=${encodeURIComponent(course.title)}`);
+    navigate(`/ai-tutor?subject=${encodeURIComponent(course.subject)}&chapter=${encodeURIComponent(chapterTitle)}&exam=${encodeURIComponent(course.examType)}&course=${encodeURIComponent(course.title)}`);
   };
   
   const filteredCourses = courses?.filter(course => 
@@ -116,19 +117,18 @@ export default function Courses() {
           <div>
             <div className="mb-6">
               <Input
-                placeholder="Search courses..."
+                placeholder="Search exam preparations..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-dark-card border-dark-border"
-                prefix={<i className="ri-search-line mr-2 text-gray-400"></i>}
+                className="bg-dark-card border-dark-border pl-8"
               />
             </div>
             
             <Tabs defaultValue="all" className="w-full">
               <TabsList className="bg-dark-card border border-dark-border w-full justify-start mb-6">
-                <TabsTrigger value="all" className="data-[state=active]:bg-primary-600">All Courses</TabsTrigger>
-                <TabsTrigger value="in_progress" className="data-[state=active]:bg-primary-600">In Progress</TabsTrigger>
-                <TabsTrigger value="completed" className="data-[state=active]:bg-primary-600">Completed</TabsTrigger>
+                <TabsTrigger value="all" className="data-[state=active]:bg-primary-600">All Exam Prep</TabsTrigger>
+                <TabsTrigger value="in_progress" className="data-[state=active]:bg-primary-600">Preparing</TabsTrigger>
+                <TabsTrigger value="completed" className="data-[state=active]:bg-primary-600">Mastered</TabsTrigger>
               </TabsList>
               
               <TabsContent value="all" className="space-y-4">
@@ -316,8 +316,8 @@ export default function Courses() {
                 ) : (
                   <div className="text-center py-12 text-gray-400">
                     <i className="ri-medal-line text-5xl mb-3"></i>
-                    <p className="text-lg mb-2">No completed courses yet</p>
-                    <p className="text-sm mb-4">Keep learning to complete courses</p>
+                    <p className="text-lg mb-2">No completed exam preparations yet</p>
+                    <p className="text-sm mb-4">Continue your entrance exam preparation to complete your studies</p>
                   </div>
                 )}
               </TabsContent>

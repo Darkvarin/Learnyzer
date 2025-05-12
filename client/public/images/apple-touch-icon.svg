@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
+  <!-- Background -->
+  <rect width="180" height="180" rx="40" fill="#141625" />
+  
+  <!-- Hexagonal border with glow -->
+  <path d="M90 20 L150 55 L150 125 L90 160 L30 125 L30 55 Z" stroke="#39d0d8" stroke-width="3" fill="none" opacity="0.8" />
+  
+  <!-- LearnityX text -->
+  <text x="90" y="145" font-family="Arial, sans-serif" font-weight="bold" font-size="18" fill="#ffffff" text-anchor="middle">LEARNITYX</text>
+  
+  <!-- Brain symbol representing AI learning -->
+  <path d="M110 80 C110 65 100 55 90 55 C75 55 65 65 65 80 C65 88 68 95 73 100 L73 100 L73 110 C73 116 77 120 83 120 L97 120 C103 120 107 116 107 110 L107 100 C112 95 115 88 115 80 Z M78 80 C78 75 82 70 87 70 C92 70 96 75 96 80 C96 85 92 90 87 90 C82 90 78 85 78 80 Z M102 80 C102 75 98 70 93 70 C88 70 84 75 84 80 C84 85 88 90 93 90 C98 90 102 85 102 80 Z M83 100 L97 100 L97 110 C97 110 90 113 83 110 L83 100 Z" fill="#39d0d8" />
+  
+  <!-- Book/exam paper below -->
+  <path d="M60 120 L120 120 L120 135 C120 135 105 145 90 145 C75 145 60 135 60 135 Z" fill="#39d0d8" opacity="0.6" />
+  
+  <!-- Entrance exam accent elements - JEE, NEET, UPSC, CLAT icons -->
+  <circle cx="50" cy="70" r="8" fill="#ff6b6b" opacity="0.8" />
+  <circle cx="130" cy="70" r="8" fill="#feca57" opacity="0.8" />
+  <circle cx="50" cy="100" r="8" fill="#1dd1a1" opacity="0.8" />
+  <circle cx="130" cy="100" r="8" fill="#5f27cd" opacity="0.8" />
+  
+  <!-- Small text for exams -->
+  <text x="50" y="73" font-family="Arial, sans-serif" font-weight="bold" font-size="7" fill="#ffffff" text-anchor="middle">JEE</text>
+  <text x="130" y="73" font-family="Arial, sans-serif" font-weight="bold" font-size="7" fill="#ffffff" text-anchor="middle">NEET</text>
+  <text x="50" y="103" font-family="Arial, sans-serif" font-weight="bold" font-size="7" fill="#ffffff" text-anchor="middle">UPSC</text>
+  <text x="130" y="103" font-family="Arial, sans-serif" font-weight="bold" font-size="7" fill="#ffffff" text-anchor="middle">CUET</text>
+</svg>

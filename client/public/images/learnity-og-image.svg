@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Background gradient -->
+  <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#141625" />
+    <stop offset="100%" stop-color="#0c101b" />
+  </linearGradient>
+  <rect width="1200" height="630" fill="url(#bg-gradient)" />
+  
+  <!-- Grid pattern overlay -->
+  <pattern id="grid-pattern" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
+    <line x1="0" y1="0" x2="50" y2="0" stroke="#39d0d8" stroke-width="0.2" />
+    <line x1="0" y1="0" x2="0" y2="50" stroke="#39d0d8" stroke-width="0.2" />
+  </pattern>
+  <rect width="1200" height="630" fill="url(#grid-pattern)" opacity="0.1" />
+  
+  <!-- Decorative hexagon shapes -->
+  <path d="M250 150 L350 200 L350 300 L250 350 L150 300 L150 200 Z" stroke="#39d0d8" stroke-width="2" fill="none" opacity="0.5" />
+  <path d="M1050 150 L1150 200 L1150 300 L1050 350 L950 300 L950 200 Z" stroke="#39d0d8" stroke-width="2" fill="none" opacity="0.5" />
+  <path d="M600 500 L650 530 L650 580 L600 610 L550 580 L550 530 Z" stroke="#39d0d8" stroke-width="2" fill="none" opacity="0.5" />
+  
+  <!-- LearnityX logo -->
+  <g transform="translate(500, 150)">
+    <path d="M100 0 L180 40 L180 120 L100 160 L20 120 L20 40 Z" stroke="#39d0d8" stroke-width="5" fill="none" />
+    <path d="M100 30 L150 60 L150 110 L100 140 L50 110 L50 60 Z" fill="#39d0d8" opacity="0.3" />
+    <text x="100" y="105" font-family="Arial, sans-serif" font-weight="900" font-size="32" fill="#ffffff" text-anchor="middle">LX</text>
+  </g>
+  
+  <!-- Main Heading -->
+  <text x="600" y="280" font-family="Arial, sans-serif" font-weight="bold" font-size="64" fill="#ffffff" text-anchor="middle">LearnityX</text>
+  
+  <!-- Tagline -->
+  <text x="600" y="350" font-family="Arial, sans-serif" font-weight="normal" font-size="36" fill="#39d0d8" text-anchor="middle">AI-Powered Indian Entrance Exam Preparation</text>
+  
+  <!-- Exam names -->
+  <rect x="350" y="400" width="100" height="50" rx="25" fill="#ff6b6b" opacity="0.8" />
+  <text x="400" y="432" font-family="Arial, sans-serif" font-weight="bold" font-size="24" fill="#ffffff" text-anchor="middle">JEE</text>
+  
+  <rect x="470" y="400" width="100" height="50" rx="25" fill="#feca57" opacity="0.8" />
+  <text x="520" y="432" font-family="Arial, sans-serif" font-weight="bold" font-size="24" fill="#ffffff" text-anchor="middle">NEET</text>
+  
+  <rect x="590" y="400" width="100" height="50" rx="25" fill="#1dd1a1" opacity="0.8" />
+  <text x="640" y="432" font-family="Arial, sans-serif" font-weight="bold" font-size="24" fill="#ffffff" text-anchor="middle">UPSC</text>
+  
+  <rect x="710" y="400" width="100" height="50" rx="25" fill="#5f27cd" opacity="0.8" />
+  <text x="760" y="432" font-family="Arial, sans-serif" font-weight="bold" font-size="24" fill="#ffffff" text-anchor="middle">CLAT</text>
+  
+  <rect x="830" y="400" width="100" height="50" rx="25" fill="#ff9f43" opacity="0.8" />
+  <text x="880" y="432" font-family="Arial, sans-serif" font-weight="bold" font-size="24" fill="#ffffff" text-anchor="middle">CUET</text>
+  
+  <!-- URL -->
+  <text x="600" y="500" font-family="Arial, sans-serif" font-weight="normal" font-size="28" fill="#ffffff" text-anchor="middle">learnity-x.com</text>
+</svg>
