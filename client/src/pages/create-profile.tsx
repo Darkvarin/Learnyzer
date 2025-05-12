@@ -18,86 +18,84 @@ import { MobileNavigation } from '@/components/layout/mobile-navigation';
 // Validation schema for user profile
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  age: z.string().refine((val) => {
-    const num = parseInt(val);
-    return !isNaN(num) && num > 0 && num < 100;
-  }, { message: "Please enter a valid age" }),
-  gender: z.string().min(1, "Please select your gender"),
-  class: z.string().min(1, "Please select your class"),
-  stream: z.string().optional(),
+  email: z.string().email("Please enter a valid email address"),
+  class: z.string().min(1, "Please select your class/grade"),
+  track: z.string().min(1, "Please select your exam track"),
+  referralCode: z.string().optional(),
 });
 
 type ProfileForm = z.infer<typeof profileSchema>;
 
 export default function CreateProfile() {
   const [, navigate] = useLocation();
-  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showStreamField, setShowStreamField] = useState(false);
-  const [currentGrade, setCurrentGrade] = useState("");
-  const [isHigherGrade, setIsHigherGrade] = useState(false);
-
-  // If not logged in, redirect to auth page
-  if (!user) {
-    navigate("/auth");
+  const { user } = useAuth();
+  
+  // Redirect to dashboard if already logged in and profile is complete
+  if (user && user.grade) {
+    navigate('/dashboard');
     return null;
   }
-
-  // Profile form
+  
   const form = useForm<ProfileForm>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: "",
-      age: "",
-      gender: "",
+      email: "",
       class: "",
-      stream: "",
-    },
-  });
-
-  // Handle class selection to conditionally show stream field
-  const handleClassChange = (value: string) => {
-    form.setValue("class", value);
-    setCurrentGrade(value);
-    
-    // Check if grade is 11th or above (including undergraduate and postgraduate)
-    const higherGrades = ["11", "12", "undergraduate", "postgraduate"];
-    const isHigher = higherGrades.includes(value);
-    
-    setIsHigherGrade(isHigher);
-    setShowStreamField(value === "11" || value === "12");
-    
-    if (!isHigher) {
-      form.setValue("stream", "");
+      track: "",
+      referralCode: "",
     }
+  });
+  
+  const [selectedClass, setSelectedClass] = useState<string>("");
+  
+  const handleClassChange = (value: string) => {
+    setSelectedClass(value);
+    form.setValue('class', value);
   };
-
-  // Form submit handler
+  
   const onSubmit = async (data: ProfileForm) => {
     setIsSubmitting(true);
+    
     try {
-      await apiRequest("POST", "/api/user/profile", {
-        ...data,
-        age: parseInt(data.age)
-      });
-
-      // Update user data in cache
-      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      // Convert class to proper format (e.g., "Class 6")
+      const formattedGrade = data.class ? `Class ${data.class}` : null;
       
-      toast({
-        title: "Profile created successfully",
-        description: "Welcome to LearnityX! Your learning journey begins now.",
+      // Send the profile data to the server
+      const response = await apiRequest('POST', '/api/profile', {
+        name: data.name,
+        email: data.email,
+        grade: formattedGrade,
+        track: data.track,
+        referralCode: data.referralCode || undefined,
       });
       
-      navigate("/");
+      if (response.ok) {
+        // Invalidate the user query to refresh data
+        queryClient.invalidateQueries(['/api/user']);
+        
+        toast({
+          title: "Profile Created!",
+          description: "Your profile has been set up successfully.",
+        });
+        
+        // Redirect to dashboard
+        navigate('/dashboard');
+      } else {
+        const errorData = await response.json();
+        toast({
+          title: "Profile Creation Failed",
+          description: errorData.message || "There was an error creating your profile. Please try again.",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
-      console.error("Error creating profile:", error);
       toast({
-        title: "Profile creation failed",
-        description: "Failed to create your profile. Please try again.",
+        title: "Profile Creation Failed",
+        description: "There was an error connecting to the server. Please check your internet connection.",
         variant: "destructive",
       });
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -131,173 +129,140 @@ export default function CreateProfile() {
         
         <div className="flex items-center justify-center">
           <Card className="w-full max-w-md game-card bg-background/90 border-cyan-500/30">
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-gaming gaming-text mb-2">Complete Your Profile</CardTitle>
-          <CardDescription>
-            Tell us more about yourself so we can personalize your learning experience
-          </CardDescription>
-        </CardHeader>
-        
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your full name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="age"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Age</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="Your age" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gender</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your gender" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                        <SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="class"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Class/Grade</FormLabel>
-                    <Select 
-                      onValueChange={handleClassChange} 
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your class/grade" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="3">Class 3</SelectItem>
-                        <SelectItem value="4">Class 4</SelectItem>
-                        <SelectItem value="5">Class 5</SelectItem>
-                        <SelectItem value="6">Class 6</SelectItem>
-                        <SelectItem value="7">Class 7</SelectItem>
-                        <SelectItem value="8">Class 8</SelectItem>
-                        <SelectItem value="9">Class 9</SelectItem>
-                        <SelectItem value="10">Class 10</SelectItem>
-                        <SelectItem value="11">Class 11</SelectItem>
-                        <SelectItem value="12">Class 12</SelectItem>
-                        <SelectItem value="undergraduate">Undergraduate</SelectItem>
-                        <SelectItem value="postgraduate">Postgraduate</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              {isHigherGrade && (
-                <FormField
-                  control={form.control}
-                  name="stream"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Stream/Track</FormLabel>
-                      <Select 
-                        onValueChange={field.onChange} 
-                        defaultValue={field.value}
-                        disabled={!isHigherGrade}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder={isHigherGrade 
-                              ? (showStreamField ? "Select your stream" : "Select your education track") 
-                              : "Available for Class 11 and above"} 
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {showStreamField ? (
-                            // Stream options for 11th and 12th
-                            <>
-                              <SelectItem value="medical">Medical (PCB)</SelectItem>
-                              <SelectItem value="non_medical">Non-Medical (PCM)</SelectItem>
-                              <SelectItem value="commerce">Commerce</SelectItem>
-                              <SelectItem value="humanities">Humanities/Arts</SelectItem>
-                            </>
-                          ) : (
-                            // Track options for undergraduate and above
-                            <>
-                              <SelectItem value="engineering">Engineering</SelectItem>
-                              <SelectItem value="medical">Medical</SelectItem>
-                              <SelectItem value="commerce">Commerce</SelectItem>
-                              <SelectItem value="arts">Arts</SelectItem>
-                              <SelectItem value="upsc">UPSC</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
-                            </>
-                          )}
-                        </SelectContent>
-                      </Select>
-                      <FormDescription>
-                        {showStreamField 
-                          ? "Your stream helps us recommend appropriate courses and study materials" 
-                          : "Your education track helps us personalize your learning content"}
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-            </CardContent>
+            <CardHeader className="text-center">
+              <CardTitle className="text-3xl font-gaming gaming-text mb-2">Complete Your Profile</CardTitle>
+              <CardDescription>
+                Tell us more about yourself so we can personalize your learning experience
+              </CardDescription>
+            </CardHeader>
             
-            <CardFooter>
-              <Button type="submit" className="w-full game-button" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating Profile...
-                  </>
-                ) : (
-                  "Create Profile"
-                )}
-              </Button>
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <CardContent className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter your full name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="Enter your email address" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="class"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Class/Grade</FormLabel>
+                        <Select 
+                          onValueChange={handleClassChange} 
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select your class/grade" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="3">Class 3</SelectItem>
+                            <SelectItem value="4">Class 4</SelectItem>
+                            <SelectItem value="5">Class 5</SelectItem>
+                            <SelectItem value="6">Class 6</SelectItem>
+                            <SelectItem value="7">Class 7</SelectItem>
+                            <SelectItem value="8">Class 8</SelectItem>
+                            <SelectItem value="9">Class 9</SelectItem>
+                            <SelectItem value="10">Class 10</SelectItem>
+                            <SelectItem value="11">Class 11</SelectItem>
+                            <SelectItem value="12">Class 12</SelectItem>
+                            <SelectItem value="graduate">Graduate</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="track"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Exam Track</FormLabel>
+                        <Select 
+                          onValueChange={field.onChange} 
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select your exam track" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="CUET">CUET</SelectItem>
+                            <SelectItem value="JEE">JEE</SelectItem>
+                            <SelectItem value="NEET">NEET</SelectItem>
+                            <SelectItem value="CLAT">CLAT</SelectItem>
+                            <SelectItem value="UPSC">UPSC</SelectItem>
+                            <SelectItem value="General">General</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="referralCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Referral Code (Optional)</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter referral code if you have one" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          If someone referred you, enter their code to get bonus rewards
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+                
+                <CardFooter>
+                  <Button type="submit" className="w-full game-button" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating Profile...
+                      </>
+                    ) : (
+                      "Create Profile"
+                    )}
+                  </Button>
+                </CardFooter>
+              </form>
+            </Form>
+          </Card>
         </div>
       </main>
     </div>
