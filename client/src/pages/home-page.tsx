@@ -643,11 +643,11 @@ export default function HomePage() {
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>All major Indian boards</span>
+                      <span>Coverage of all major entrance exams</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Grade-specific content</span>
+                      <span>Exam-specific preparation strategies</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
@@ -834,7 +834,7 @@ export default function HomePage() {
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
                           <Check className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="opacity-90">Limited access to course content</span>
+                        <span className="opacity-90">Limited access to exam preparation materials</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
@@ -892,7 +892,7 @@ export default function HomePage() {
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
                           <Check className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="opacity-90">Full access to all course content</span>
+                        <span className="opacity-90">Full access to all entrance exam materials</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
@@ -1054,7 +1054,7 @@ export default function HomePage() {
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold mb-3">How do the Battle Zones work?</h3>
                   <p className="text-gray-400">
-                    Battle Zones are real-time academic competitions where you can challenge other students in 1v1, 2v2, 3v3, or 4v4 formats. Each battle focuses on specific subjects or topics, and your performance earns you rank points that help you climb from Bronze to Grandmaster ranks.
+                    Battle Zones are real-time academic competitions where you can challenge other entrance exam aspirants in 1v1, 2v2, 3v3, or 4v4 formats. Each battle focuses on specific exam topics and sections, and your performance earns you rank points that help you climb from Bronze to Grandmaster ranks.
                   </p>
                 </CardContent>
               </Card>
