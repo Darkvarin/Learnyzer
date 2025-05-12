@@ -663,5 +663,101 @@ Analyze this student's performance data and provide comprehensive analytics:
       console.error("Battle judging error:", error);
       return res.status(500).json({ message: "Error judging battle" });
     }
+  },
+
+  /**
+   * Generate an interactive diagram for entrance exam learning
+   */
+  async generateDiagram(req: Request, res: Response) {
+    if (!req.isAuthenticated() || !req.user) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    try {
+      const diagramSchema = z.object({
+        subject: z.string().min(1, "Subject is required"),
+        topic: z.string().min(1, "Topic is required"),
+        examType: z.string().optional()
+      });
+      
+      const validatedData = diagramSchema.parse(req.body);
+      const { subject, topic, examType } = validatedData;
+      
+      // Format the subject and topic for better AI understanding
+      const formattedSubject = subject.replace(/_/g, ' ');
+      const formattedExamType = examType || subject.split('_')[0];
+      
+      // Create a detailed prompt for the diagram
+      const prompt = `
+        Create an educational, interactive diagram to help students understand "${topic}" for the ${formattedExamType} entrance exam in ${formattedSubject}.
+        
+        The diagram should:
+        1. Visually represent key concepts related to ${topic}
+        2. Include important formulas, equations, or principles if applicable
+        3. Use color-coding to highlight important elements
+        4. Show relationships between different concepts
+        5. Include brief text explanations for each component
+        
+        In addition, please provide 5 key points that students often struggle with when learning this topic.
+        
+        Format your response as JSON with these fields:
+        - diagramUrl: A detailed textual description of what the diagram should show (will be converted to SVG)
+        - keyPoints: Array of 5 important points that students often struggle with in this topic
+      `;
+      
+      // Generate AI response 
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { 
+            role: "system", 
+            content: "You are an expert entrance exam tutor who specializes in creating visual educational content for Indian competitive exams like JEE, NEET, UPSC, CLAT, and CUET." 
+          },
+          { role: "user", content: prompt }
+        ],
+        response_format: { type: "json_object" },
+        max_tokens: 1000
+      });
+      
+      let diagramData;
+      try {
+        diagramData = JSON.parse(completion.choices[0].message.content);
+      } catch (error) {
+        console.error("Error parsing AI response:", error);
+        return res.status(500).json({ message: "Error generating diagram" });
+      }
+      
+      // In production, we would convert the text description to an actual diagram
+      // For now, we'll return a placeholder URL plus the description
+      const diagramUrl = `/images/diagram-${formattedExamType.toLowerCase()}.svg`;
+      
+      // Increment user's AI sessions count
+      await storage.incrementAISessionCount((req.user as any).id);
+      
+      // Send real-time notification about the generated diagram
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser((req.user as any).id, {
+          type: 'ai_insight_generated',
+          userId: (req.user as any).id,
+          messageType: 'interactive_diagram',
+          message: `Interactive diagram for "${topic}" has been generated!`,
+          timestamp: new Date().toISOString()
+        });
+      }
+      
+      return res.status(200).json({
+        diagramUrl: diagramUrl,
+        keyPoints: diagramData.keyPoints || [],
+        description: diagramData.diagramUrl
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      
+      console.error("Error generating diagram:", error);
+      return res.status(500).json({ message: "Error generating diagram content" });
+    }
   }
 };

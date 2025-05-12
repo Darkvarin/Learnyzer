@@ -42,6 +42,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/ai/tools/flashcards", aiService.generateFlashcards);
   app.get("/api/ai/tools/analytics/:userId", aiService.getPerformanceAnalytics);
   app.post("/api/ai/battle/judge/:battleId", aiService.judgeBattle);
+  app.post("/api/ai/generate-diagram", aiService.generateDiagram);
   
   // Course routes
   app.get("/api/courses", courseService.getAllCourses);

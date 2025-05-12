@@ -308,8 +308,8 @@ export default function AiTutor() {
     // Generate the diagram for AI canvas presentation
     generateDiagram(currentTopic);
     
-    // Switch to whiteboard tab
-    setActiveTab("whiteboard");
+    // Switch to canvas tab
+    setActiveTab("canvas");
   };
 
   return (
