@@ -456,7 +456,7 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-xl text-gray-300 max-w-2xl mx-auto mt-6"
             >
-              LearnityX combines advanced AI technology with immersive gamification to create the next generation of education
+              LearnityX combines advanced AI technology with immersive gamification to create the future of entrance exam preparation
             </motion.p>
           </div>
 
@@ -734,7 +734,7 @@ export default function HomePage() {
                 <div className="absolute top-0 right-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-primary/30 to-transparent opacity-50 hidden lg:block"></div>
                 <CardContent>
                   <h3 className="text-xl font-bold mb-3">Create Your Profile</h3>
-                  <p className="text-gray-400">Sign up and select your target entrance exam, subjects, and learning goals to get a personalized experience.</p>
+                  <p className="text-gray-400">Sign up and select your target entrance exam (JEE, NEET, UPSC, CLAT, CUET), specific subjects, and preparation goals for a personalized experience.</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -954,7 +954,7 @@ export default function HomePage() {
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
                           <Check className="h-4 w-4 text-primary" />
                         </div>
-                        <span className="opacity-90">Bulk student accounts</span>
+                        <span className="opacity-90">Bulk aspirant accounts for coaching centers</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
