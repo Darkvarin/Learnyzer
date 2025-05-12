@@ -1,13 +1,16 @@
 import { useState, useMemo } from 'react';
-import { Medal, BarChart3, Search, ChevronUp, ChevronDown, Users } from 'lucide-react';
+import { Medal, BarChart3, Search, ChevronUp, ChevronDown, Users, ArrowLeft } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Header } from "@/components/layout/header";
+import { MobileNavigation } from "@/components/layout/mobile-navigation";
 // Import PageHeader as a relative path since it might not be properly aliased
 import PageHeader from '../components/layout/page-header';
+import { Link } from 'wouter';
 
 function LeaderboardTable({ data, isLoading }: { data: any[]; isLoading: boolean }) {
   const [sortField, setSortField] = useState('rank');
@@ -254,16 +257,39 @@ export default function LeaderboardPage() {
   const categories = ['all', ...Array.from(new Set(indianLeaderboardData.map((item: StudentData) => item.grade).filter(Boolean)))];
 
   return (
-    <div className="container max-w-6xl mx-auto pt-4 pb-16">
-      <PageHeader
-        title="Indian Leaderboard"
-        description="Compete with students across India and rise to the top of the national rankings."
-        icon={<BarChart3 className="h-6 w-6 text-purple-400" />}
-      />
+    <div className="min-h-screen flex flex-col bg-dark text-white relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/80 to-background"></div>
+      
+      {/* Grid overlay */}
+      <div className="absolute inset-0 bg-grid-small-white/[0.2]"></div>
+      
+      {/* Glow effects */}
+      <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl"></div>
+      <div className="absolute top-1/3 -left-20 h-60 w-60 rounded-full bg-cyan-500/10 blur-3xl"></div>
+      
+      <Header />
+      <MobileNavigation />
+      
+      <main className="flex-1 container max-w-6xl mx-auto px-4 pt-20 pb-16 md:pt-24 relative z-10">
+        <div className="flex justify-between items-center mb-6">
+          <PageHeader
+            title="Indian Leaderboard"
+            description="Compete with students across India and rise to the top of the national rankings."
+            icon={<BarChart3 className="h-6 w-6 text-purple-400" />}
+          />
+          
+          <Link href="/dashboard">
+            <Button variant="outline" className="bg-background/40 border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-cyan-400">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          </Link>
+        </div>
 
-      <div className="flex flex-col gap-6 mt-6">
-        {/* Search and Filter Controls */}
-        <div className="flex flex-col md:flex-row gap-4 justify-between">
+        <div className="flex flex-col gap-6 mt-6">
+          {/* Search and Filter Controls */}
+          <div className="flex flex-col md:flex-row gap-4 justify-between">
           <div className="relative w-full md:w-64">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/40" />
             <Input
@@ -313,6 +339,7 @@ export default function LeaderboardPage() {
           </TabsContent>
         </Tabs>
       </div>
+      </main>
     </div>
   );
 }

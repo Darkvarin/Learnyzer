@@ -1,4 +1,4 @@
-import { useLocation } from 'wouter';
+import { useLocation, Link } from 'wouter';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,7 +11,9 @@ import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
+import { Header } from '@/components/layout/header';
+import { MobileNavigation } from '@/components/layout/mobile-navigation';
 
 // Validation schema for user profile
 const profileSchema = z.object({
@@ -101,8 +103,34 @@ export default function CreateProfile() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary/5 to-primary/10">
-      <Card className="w-full max-w-md game-card">
+    <div className="min-h-screen flex flex-col bg-dark text-white relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/80 to-background"></div>
+      
+      {/* Grid overlay */}
+      <div className="absolute inset-0 bg-grid-small-white/[0.2]"></div>
+      
+      {/* Glow effects */}
+      <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl"></div>
+      <div className="absolute top-1/3 -left-20 h-60 w-60 rounded-full bg-cyan-500/10 blur-3xl"></div>
+      
+      <Header />
+      <MobileNavigation />
+      
+      <main className="flex-1 container max-w-6xl mx-auto px-4 pt-20 pb-16 md:pt-24 relative z-10">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-white">Create Your Profile</h1>
+          
+          <Link href="/auth">
+            <Button variant="outline" className="bg-background/40 border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-cyan-400">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Login
+            </Button>
+          </Link>
+        </div>
+        
+        <div className="flex items-center justify-center">
+          <Card className="w-full max-w-md game-card bg-background/90 border-cyan-500/30">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-gaming gaming-text mb-2">Complete Your Profile</CardTitle>
           <CardDescription>
@@ -270,6 +298,8 @@ export default function CreateProfile() {
           </form>
         </Form>
       </Card>
+        </div>
+      </main>
     </div>
   );
 }
