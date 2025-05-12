@@ -213,14 +213,14 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Hero Section - with Indian educational theme */}
+      {/* Hero Section - with Indian entrance exam theme */}
       <section className="relative pt-32 md:pt-36 pb-20">
-        {/* Background with Indian educational theme */}
+        {/* Background with Indian entrance exam theme */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           {/* Dark overlay for better readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-black via-dark-900 to-black opacity-90"></div>
           
-          {/* Indian educational background image */}
+          {/* Indian entrance exam background image */}
           <div 
             className="absolute inset-0 bg-center bg-cover opacity-50" 
             style={{ 
@@ -596,10 +596,10 @@ export default function HomePage() {
                       <Calendar className="h-10 w-10 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-gaming mb-4 text-white">Daily Streak Rewards</h3>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">Daily Exam Prep Rewards</h3>
                   <p className="text-gray-300">
-                    Maintain your learning streak to earn increasing rewards and unlock 
-                    special content for consistent practice and engagement.
+                    Maintain your daily entrance exam preparation streak to earn increasing rewards and unlock 
+                    exclusive test series and practice materials for consistent preparation.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -718,7 +718,7 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-xl opacity-80 max-w-2xl mx-auto"
             >
-              Four simple steps to revolutionize your learning experience
+              Four simple steps to dominate your entrance exam preparation
             </motion.p>
           </div>
 
@@ -807,7 +807,7 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-xl opacity-80 max-w-2xl mx-auto"
             >
-              Choose the plan that best suits your educational needs
+              Choose the plan that best suits your entrance exam preparation goals
             </motion.p>
           </div>
 
