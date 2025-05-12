@@ -267,11 +267,14 @@ export default function AiTutor() {
         description: `Preparing ${chapterParam} from ${courseParam}`
       });
       
-      // Generate the diagram for whiteboard teaching
-      generateDiagram();
+      // Generate the diagram for AI canvas presentation
+      if (subjectParam && chapterParam) {
+        setCurrentTopic(`${subjectParam} ${chapterParam}`);
+        generateDiagram(`${subjectParam} ${chapterParam}`);
+      }
       
-      // Switch to whiteboard tab
-      setActiveTab("whiteboard");
+      // Switch to canvas tab
+      setActiveTab("canvas");
     }
   }, [chapterParam, subjectParam, courseParam]);
   
@@ -334,8 +337,8 @@ export default function AiTutor() {
       description: `Preparing a lesson on ${currentTopic} in ${currentSubject}`
     });
     
-    // Generate the diagram for whiteboard teaching
-    generateDiagram();
+    // Generate the diagram for AI canvas presentation
+    generateDiagram(currentTopic);
     
     // Switch to whiteboard tab
     setActiveTab("whiteboard");
@@ -488,11 +491,11 @@ export default function AiTutor() {
               <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-primary/60"></div>
               <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-primary/60"></div>
 
-              <Tabs defaultValue="whiteboard" value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <Tabs defaultValue="canvas" value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <div className="flex items-center justify-between mb-4">
                   <TabsList className="grid grid-cols-2 w-auto bg-background/30 border border-primary/20 p-1">
                     <TabsTrigger 
-                      value="whiteboard" 
+                      value="canvas" 
                       className="text-sm px-4 data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=active]:shadow-glow relative overflow-hidden"
                     >
                       {/* Solo Leveling active tab effect */}
@@ -660,8 +663,8 @@ export default function AiTutor() {
                   </div>
                 </TabsContent>
                 
-                {/* Whiteboard Tab */}
-                <TabsContent value="whiteboard" className="flex-1 flex flex-col mt-0">
+                {/* Interactive Canvas Tab */}
+                <TabsContent value="canvas" className="flex-1 flex flex-col mt-0">
                   {/* Course info header when opened from a course */}
                   {chapterParam && courseParam && (
                     <div className="mb-4 bg-dark-card rounded-lg p-4 border-l-4 border-primary-600">
