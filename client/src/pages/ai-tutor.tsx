@@ -24,8 +24,6 @@ import {
   FileCheck,
   UserCircle,
   
-  PenTool,
-  Eraser,
   ArrowLeftCircle,
   BarChart4,
   AlertTriangle,
@@ -661,28 +659,10 @@ export default function AiTutor() {
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="text-lg font-bold">Interactive Canvas & Presentations</h3>
                           <div className="flex items-center gap-2">
-                            <Button size="sm" variant="outline" onClick={clearWhiteboard} className="h-8 px-2 py-1 text-xs">
-                              <Eraser className="h-3 w-3 mr-1" />
-                              Clear
+                            <Button size="sm" variant="outline" onClick={() => generateAIDiagram()} className="h-8 px-3 py-1 text-xs bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/50 text-amber-300">
+                              <Image className="h-3 w-3 mr-1" />
+                              Generate Diagram
                             </Button>
-                            <div className="flex items-center gap-1 bg-dark-surface p-1 rounded-md">
-                              <Button 
-                                size="sm" 
-                                variant={activeTool === "pen" ? "default" : "ghost"} 
-                                onClick={() => setActiveTool("pen")}
-                                className="h-7 w-7 p-0"
-                              >
-                                <PenTool className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant={activeTool === "eraser" ? "default" : "ghost"} 
-                                onClick={() => setActiveTool("eraser")}
-                                className="h-7 w-7 p-0"
-                              >
-                                <Eraser className="h-4 w-4" />
-                              </Button>
-                            </div>
                           </div>
                         </div>
                         
