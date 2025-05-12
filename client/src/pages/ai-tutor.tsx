@@ -31,7 +31,20 @@ import {
   ImageIcon,
   PenTool,
   PieChart,
-  Search as ScanSearch
+  Search as ScanSearch,
+  ChevronRight,
+  MicOff,
+  Volume2,
+  VolumeX,
+  Bell,
+  Lightbulb,
+  Clock,
+  BookOpen,
+  Play,
+  Award,
+  Bookmark,
+  Zap,
+  Target
 } from "lucide-react";
 
 export default function AiTutor() {
@@ -621,7 +634,8 @@ export default function AiTutor() {
                     </Button>
                   </div>
                   
-                  <style jsx>{`
+                  {/* Add CSS for tooltips */}
+                  <style dangerouslySetInnerHTML={{ __html: `
                     .tooltip-wrapper {
                       position: relative;
                     }
@@ -648,7 +662,7 @@ export default function AiTutor() {
                       visibility: visible;
                       opacity: 1;
                     }
-                  `}</style>
+                  `}} />
                 </div>
               )}
             </div>
