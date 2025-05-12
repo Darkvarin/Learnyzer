@@ -716,7 +716,7 @@ export default function AiTutor() {
                     <div className="flex flex-col gap-4">
                       <div className="bg-dark-card rounded-lg p-4 flex-1">
                         <div className="flex flex-col gap-4">
-                          <h3 className="text-lg font-bold">Teaching Session</h3>
+                          <h3 className="text-lg font-bold">Entrance Exam Session</h3>
                           
                           <div className="space-y-3">
                             <div>
@@ -786,7 +786,7 @@ export default function AiTutor() {
                             <div className="mt-4">
                               <h4 className="font-medium text-amber-400 flex items-center">
                                 <AlertTriangle className="h-4 w-4 mr-1" />
-                                Weak Points Identified
+                                Key Exam Concepts
                               </h4>
                               <ul className="mt-2 space-y-2">
                                 {weakPoints.map((point, idx) => (
@@ -821,11 +821,11 @@ export default function AiTutor() {
                           <div className="w-full p-3 rounded-lg border border-primary-600/30 bg-dark-surface mb-3">
                             <p className="text-sm text-center text-gray-300">
                               {isGeneratingWhiteboard ? (
-                                <span>Preparing teaching materials...</span>
+                                <span>Preparing exam content...</span>
                               ) : diagramUrl ? (
-                                <span>I'm teaching you about <span className="text-primary-400 font-medium">{currentTopic}</span> now. Ask me anything!</span>
+                                <span>I'm coaching you on <span className="text-primary-400 font-medium">{currentTopic}</span> now. Ask exam questions!</span>
                               ) : (
-                                <span>Select a subject and topic, then start a teaching session</span>
+                                <span>Select an exam subject and topic, then generate interactive content</span>
                               )}
                             </p>
                           </div>
