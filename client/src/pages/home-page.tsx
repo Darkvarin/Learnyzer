@@ -273,7 +273,7 @@ export default function HomePage() {
               <div className="mt-8 relative">
                 <div className="absolute left-0 top-0 w-1 h-full bg-primary/30"></div>
                 <p className="text-xl pl-4 mb-8 text-gray-300 max-w-xl leading-relaxed">
-                  India's first AI-powered educational platform with advanced gamification. Experience the future of learning with voice-interactive AI tutors, real-time battles, and a complete ranking system.
+                  India's first AI-powered competitive exam preparation platform with advanced gamification. Dominate JEE, NEET, UPSC, CLAT, and CUET with voice-interactive AI tutors, real-time battles, and a complete ranking system.
                 </p>
               </div>
               
@@ -349,7 +349,7 @@ export default function HomePage() {
                     <h2 className="text-3xl font-gaming mb-4 hex-title relative inline-block">
                       AI Tutor with Voice Interaction
                     </h2>
-                    <p className="text-gray-400 mb-6">Experience personalized learning with our advanced AI tutors</p>
+                    <p className="text-gray-400 mb-6">Master entrance exam concepts with specialized AI tutors for JEE, NEET, UPSC, CLAT, and CUET</p>
                   </div>
                   
                   {/* Interactive Tech Features with Solo Leveling style */}
@@ -359,7 +359,7 @@ export default function HomePage() {
                       <div className="bg-background/95 rounded-lg p-4 h-full relative z-10">
                         <Brain className="h-8 w-8 mb-3 text-primary solo-icon" />
                         <h3 className="text-lg font-semibold mb-1">Voice Interaction</h3>
-                        <p className="text-sm text-gray-400">Speak naturally with your AI tutor for an immersive learning experience</p>
+                        <p className="text-sm text-gray-400">Discuss entrance exam concepts naturally with your AI tutor for an immersive preparation experience</p>
                       </div>
                     </div>
                     
@@ -1069,7 +1069,7 @@ export default function HomePage() {
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold mb-3">Can parents track their child's progress?</h3>
                   <p className="text-gray-400">
-                    Yes, parents can access a dedicated dashboard to monitor their child's learning progress, achievements, time spent, and areas of improvement. The dashboard provides actionable insights and recommendations to support your child's educational journey.
+                    Yes, parents can access a dedicated dashboard to monitor their child's entrance exam preparation progress, mock test scores, time spent on different exam sections, and areas needing improvement. The dashboard provides actionable insights and preparation recommendations to support your child's journey to cracking competitive entrance exams.
                   </p>
                 </CardContent>
               </Card>
