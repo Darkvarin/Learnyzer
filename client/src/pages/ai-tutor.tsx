@@ -48,10 +48,9 @@ export default function AiTutor() {
   
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState("chat");
-  const [activeTool, setActiveTool] = useState("pen");
   const [currentSubject, setCurrentSubject] = useState(subjectParam?.toLowerCase() || "jee_mathematics");
   const [currentTopic, setCurrentTopic] = useState(chapterParam || "");
-  const [isGeneratingWhiteboard, setIsGeneratingWhiteboard] = useState(false);
+  const [isGeneratingDiagram, setIsGeneratingDiagram] = useState(false);
   const [weakPoints, setWeakPoints] = useState<string[]>([]); 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [diagramUrl, setDiagramUrl] = useState<string | null>(null);
@@ -169,7 +168,7 @@ export default function AiTutor() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
   
-  // In a production environment, this would call the OpenAI API to generate presentations and diagrams
+  // Call the OpenAI API to generate interactive diagrams and presentations
   const generateDiagram = (topic: string) => {
     if (!topic) {
       toast({
@@ -180,7 +179,7 @@ export default function AiTutor() {
       return;
     }
     
-    setIsGeneratingWhiteboard(true);
+    setIsGeneratingDiagram(true);
     
     // Create a request to OpenAI to generate a diagram for the specified topic
     const generateAIDiagram = async () => {
@@ -206,7 +205,7 @@ export default function AiTutor() {
       } catch (error) {
         console.error("Error generating diagram:", error);
         // Fallback to a basic canvas background if API fails
-        setDiagramUrl("/whiteboard-background.svg");
+        setDiagramUrl("/canvas-background.svg");
         setWeakPoints([]);
         toast({
           title: "Could not generate diagram",
@@ -214,7 +213,7 @@ export default function AiTutor() {
           variant: "destructive"
         });
       } finally {
-        setIsGeneratingWhiteboard(false);
+        setIsGeneratingDiagram(false);
       }
     };
     
