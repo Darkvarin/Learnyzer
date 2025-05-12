@@ -52,7 +52,7 @@ export default function Courses() {
       <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold font-gaming">Entrance Exam Courses</h1>
-          <p className="text-gray-400 mt-1">Prepare, practice, and master your entrance exam subjects</p>
+          <p className="text-gray-400 mt-1">Prepare for JEE, NEET, UPSC, CLAT and CUET with our specialized study materials</p>
         </div>
 
         <div className="flex flex-col space-y-6">
@@ -117,7 +117,7 @@ export default function Courses() {
           <div>
             <div className="mb-6">
               <Input
-                placeholder="Search exam preparations..."
+                placeholder="Search JEE, NEET, UPSC, CLAT, CUET preparation materials..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-dark-card border-dark-border pl-8"
@@ -126,9 +126,9 @@ export default function Courses() {
             
             <Tabs defaultValue="all" className="w-full">
               <TabsList className="bg-dark-card border border-dark-border w-full justify-start mb-6">
-                <TabsTrigger value="all" className="data-[state=active]:bg-primary-600">All Exam Prep</TabsTrigger>
-                <TabsTrigger value="in_progress" className="data-[state=active]:bg-primary-600">Preparing</TabsTrigger>
-                <TabsTrigger value="completed" className="data-[state=active]:bg-primary-600">Mastered</TabsTrigger>
+                <TabsTrigger value="all" className="data-[state=active]:bg-primary-600">All Entrance Exams</TabsTrigger>
+                <TabsTrigger value="in_progress" className="data-[state=active]:bg-primary-600">In Preparation</TabsTrigger>
+                <TabsTrigger value="completed" className="data-[state=active]:bg-primary-600">Exam Mastery</TabsTrigger>
               </TabsList>
               
               <TabsContent value="all" className="space-y-4">
@@ -316,8 +316,8 @@ export default function Courses() {
                 ) : (
                   <div className="text-center py-12 text-gray-400">
                     <i className="ri-medal-line text-5xl mb-3"></i>
-                    <p className="text-lg mb-2">No completed exam preparations yet</p>
-                    <p className="text-sm mb-4">Continue your entrance exam preparation to complete your studies</p>
+                    <p className="text-lg mb-2">No mastered entrance exam topics yet</p>
+                    <p className="text-sm mb-4">Complete your JEE, NEET, UPSC, CLAT or CUET preparation modules to earn mastery badges</p>
                   </div>
                 )}
               </TabsContent>
