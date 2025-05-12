@@ -195,8 +195,8 @@ export default function Courses() {
                 ) : (
                   <div className="text-center py-12 text-gray-400">
                     <i className="ri-search-line text-5xl mb-3"></i>
-                    <p className="text-lg mb-2">No courses found</p>
-                    <p className="text-sm mb-4">Try adjusting your filters or search query</p>
+                    <p className="text-lg mb-2">No entrance exam materials found</p>
+                    <p className="text-sm mb-4">Try selecting a different exam type like JEE, NEET, UPSC, CLAT or CUET</p>
                   </div>
                 )}
               </TabsContent>
@@ -256,8 +256,8 @@ export default function Courses() {
                 ) : (
                   <div className="text-center py-12 text-gray-400">
                     <i className="ri-book-open-line text-5xl mb-3"></i>
-                    <p className="text-lg mb-2">No exam preparation in progress</p>
-                    <p className="text-sm mb-4">Start your entrance exam preparation to see it here</p>
+                    <p className="text-lg mb-2">No active entrance exam preparation</p>
+                    <p className="text-sm mb-4">Start your JEE, NEET, UPSC, CLAT or CUET preparation journey to track progress here</p>
                   </div>
                 )}
               </TabsContent>
