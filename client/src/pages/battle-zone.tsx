@@ -177,13 +177,13 @@ export default function BattleZone() {
                 <h1 className="text-3xl font-bold font-gaming relative inline-block" style={{
                   textShadow: "0 0 10px rgba(6, 182, 212, 0.3), 0 0 15px rgba(125, 39, 255, 0.2)"
                 }}>
-                  Battle Zone
+                  Exam Battle Arena
                   {/* Solo Leveling underline effect */}
                   <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></span>
                 </h1>
                 <p className="text-gray-300 mt-2 pl-1 flex items-center">
                   <Sword className="w-4 h-4 text-cyan-500 mr-2" />
-                  Compete with other students to rank up and earn rewards
+                  Compete with other entrance exam aspirants to test your knowledge and earn rewards
                 </p>
               </div>
           
@@ -201,15 +201,15 @@ export default function BattleZone() {
                   <DialogHeader>
                     <DialogTitle className="font-gaming">Create a New Battle</DialogTitle>
                     <DialogDescription>
-                      Set up a battle challenge for other students to join. Your battle will be judged by AI.
+                      Set up an entrance exam challenge for other aspirants to test their knowledge. Your answers will be judged by AI.
                     </DialogDescription>
                   </DialogHeader>
                   
                   <div className="space-y-4 my-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Battle Title</label>
+                      <label className="text-sm font-medium">Entrance Exam Challenge Title</label>
                       <Input
-                        placeholder="e.g. Physics Challenge"
+                        placeholder="e.g. JEE Physics Kinematics Challenge"
                         value={battleTitle}
                         onChange={(e) => setBattleTitle(e.target.value)}
                         className="bg-background/40 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20"
@@ -217,7 +217,7 @@ export default function BattleZone() {
                     </div>
                     
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Battle Type</label>
+                      <label className="text-sm font-medium">Challenge Format</label>
                       <Select
                         value={battleType}
                         onValueChange={setBattleType}
@@ -254,9 +254,9 @@ export default function BattleZone() {
                     </div>
                     
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Topics (comma-separated)</label>
+                      <label className="text-sm font-medium">Exam Topics (comma-separated)</label>
                       <Input
-                        placeholder="e.g. Mechanics, Electromagnetism"
+                        placeholder="e.g. JEE Kinematics, NEET Biomolecules, UPSC Indian Geography"
                         value={battleTopics}
                         onChange={(e) => setBattleTopics(e.target.value)}
                         className="bg-background/40 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20"
