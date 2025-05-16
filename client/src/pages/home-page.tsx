@@ -56,93 +56,13 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo with Learnyzer brand */}
             <Link href="/" className="flex items-center">
-              <div className="relative w-14 h-14 mr-3 overflow-hidden flex items-center justify-center">
-                {/* Inline SVG logo to match your brand exactly */}
-                <svg viewBox="0 0 500 500" className="w-full h-full">
-                  {/* Dark blue background */}
-                  <rect width="500" height="500" fill="#0a2a42" opacity="0" />
-                  
-                  {/* Circular gradient rings */}
-                  <circle cx="250" cy="250" r="200" fill="none" stroke="url(#outerCircleGradient)" strokeWidth="20" />
-                  <circle cx="250" cy="250" r="160" fill="none" stroke="url(#innerCircleGradient)" strokeWidth="10" />
-                  
-                  {/* Digital connector nodes */}
-                  <circle cx="250" cy="50" r="15" fill="#47c1d6" />
-                  <circle cx="450" cy="250" r="15" fill="#4af3c0" />
-                  <circle cx="250" cy="450" r="15" fill="#47c1d6" />
-                  
-                  {/* Digital dots */}
-                  <circle cx="330" cy="110" r="5" fill="#ffffff" />
-                  <circle cx="350" cy="130" r="5" fill="#ffffff" />
-                  <circle cx="370" cy="150" r="5" fill="#ffffff" />
-                  
-                  <circle cx="160" cy="360" r="5" fill="#47c1d6" />
-                  <circle cx="140" cy="340" r="5" fill="#47c1d6" />
-                  <circle cx="120" cy="320" r="5" fill="#47c1d6" />
-                  
-                  {/* Open Book in center */}
-                  <g transform="translate(175, 175) scale(1.5)">
-                    {/* Book outline */}
-                    <path d="M50,80 L50,30 C50,30 65,20 80,30 C95,20 110,30 110,30 L110,80 C110,80 95,70 80,80 C65,70 50,80 50,80 Z" 
-                          fill="none" stroke="#ffffff" strokeWidth="3" />
-                    
-                    {/* Book spine */}
-                    <path d="M80,30 L80,80" fill="none" stroke="#ffffff" strokeWidth="2" />
-                    
-                    {/* Left page with blue gradient */}
-                    <path d="M50,80 L50,30 C50,30 65,20 80,30 L80,80 C65,70 50,80 50,80 Z" fill="#47c1d6" />
-                    
-                    {/* Right page with gradient from blue to green */}
-                    <path d="M110,80 L110,30 C110,30 95,20 80,30 L80,80 C95,70 110,80 110,80 Z" fill="url(#bookGradient)" />
-                  </g>
-                  
-                  {/* Digital connector line */}
-                  <line x1="340" y1="250" x2="450" y2="250" stroke="#4af3c0" strokeWidth="4" />
-                  
-                  {/* Small digital elements */}
-                  <g transform="translate(100, 140)">
-                    <rect x="0" y="0" width="4" height="10" fill="#47c1d6" />
-                    <rect x="6" y="0" width="4" height="10" fill="#47c1d6" />
-                    <rect x="12" y="5" width="4" height="5" fill="#47c1d6" />
-                  </g>
-                  
-                  {/* Vertical dots */}
-                  <g>
-                    <circle cx="160" cy="200" r="3" fill="#ffffff" />
-                    <circle cx="160" cy="215" r="3" fill="#ffffff" />
-                    <circle cx="160" cy="230" r="3" fill="#ffffff" />
-                    <circle cx="160" cy="245" r="3" fill="#ffffff" />
-                    <circle cx="160" cy="260" r="3" fill="#ffffff" />
-                    <circle cx="160" cy="275" r="3" fill="#ffffff" />
-                    
-                    <circle cx="340" cy="200" r="3" fill="#ffffff" />
-                    <circle cx="340" cy="215" r="3" fill="#ffffff" />
-                    <circle cx="340" cy="230" r="3" fill="#ffffff" />
-                    <circle cx="340" cy="245" r="3" fill="#ffffff" />
-                    <circle cx="340" cy="260" r="3" fill="#ffffff" />
-                    <circle cx="340" cy="275" r="3" fill="#ffffff" />
-                  </g>
-                  
-                  {/* Gradients definitions */}
-                  <defs>
-                    <linearGradient id="outerCircleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#47c1d6" />
-                      <stop offset="100%" stopColor="#4af3c0" />
-                    </linearGradient>
-                    
-                    <linearGradient id="innerCircleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#47c1d6" />
-                      <stop offset="100%" stopColor="#4af3c0" />
-                    </linearGradient>
-                    
-                    <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#47c1d6" />
-                      <stop offset="100%" stopColor="#4af3c0" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                {/* Energy pulse effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/20 animate-pulse-slow rounded-full"></div>
+              <div className="relative w-16 h-16 mr-3 overflow-hidden flex items-center justify-center">
+                {/* Exact logo image from the provided file */}
+                <img 
+                  src="data:image/png;base64,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"
+                  alt="Learnyzer Logo" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div className="relative">
                 <span className="text-3xl font-bold font-gaming tracking-wide text-white shadow-glow-xs">Learnyzer</span>
