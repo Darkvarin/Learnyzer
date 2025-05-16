@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <!-- Dark blue background circle -->
+  <circle cx="250" cy="250" r="240" fill="#0a2a42" />
+  
+  <!-- Outer circular elements (blue to green gradient) -->
+  <path d="M250,50 A200,200 0 0,1 450,250 A200,200 0 0,1 250,450 A200,200 0 0,1 50,250 A200,200 0 0,1 250,50 Z" 
+        fill="none" stroke="url(#circleGradient)" stroke-width="20" stroke-linecap="round" stroke-dasharray="240,240" />
+  
+  <!-- Inner circular elements -->
+  <path d="M250,100 A150,150 0 0,1 400,250 A150,150 0 0,1 250,400 A150,150 0 0,1 100,250 A150,150 0 0,1 250,100 Z" 
+        fill="none" stroke="url(#innerGradient)" stroke-width="12" stroke-linecap="round" stroke-dasharray="177,177" />
+  
+  <!-- Digital nodes and connections -->
+  <circle cx="250" cy="50" r="15" fill="#47c1d6" />
+  <circle cx="450" cy="250" r="15" fill="#4af3c0" />
+  <circle cx="250" cy="450" r="15" fill="#47c1d6" />
+  <circle cx="50" cy="250" r="15" fill="#4af3c0" />
+  
+  <!-- Digital connector line -->
+  <line x1="350" y1="250" x2="435" y2="250" stroke="#4af3c0" stroke-width="6" />
+  
+  <!-- Small digital dots -->
+  <g fill="#ffffff">
+    <!-- Right side white dots -->
+    <circle cx="350" cy="150" r="5" />
+    <circle cx="360" cy="165" r="5" />
+    <circle cx="370" cy="180" r="5" />
+    <circle cx="380" cy="195" r="4" />
+    
+    <!-- Left side white dots -->
+    <circle cx="150" cy="350" r="5" />
+    <circle cx="140" cy="335" r="5" />
+    <circle cx="130" cy="320" r="5" />
+    <circle cx="120" cy="305" r="4" />
+  </g>
+  
+  <!-- Left side tech elements -->
+  <g fill="#47c1d6" transform="translate(90, 140)">
+    <rect x="0" y="0" width="5" height="15" rx="1" />
+    <rect x="10" y="0" width="5" height="15" rx="1" />
+    <rect x="20" y="5" width="5" height="10" rx="1" />
+    <rect x="0" y="20" width="5" height="5" rx="1" />
+    <rect x="10" y="20" width="5" height="5" rx="1" />
+  </g>
+  
+  <!-- Open Book in center with gradient -->
+  <g transform="translate(175, 175) scale(1.5)">
+    <!-- Book outline -->
+    <path d="M50,80 L50,30 C50,30 65,20 80,30 C95,20 110,30 110,30 L110,80 C110,80 95,70 80,80 C65,70 50,80 50,80 Z" 
+          fill="none" stroke="#ffffff" stroke-width="3" />
+    
+    <!-- Book center line -->
+    <path d="M80,30 L80,80" fill="none" stroke="#ffffff" stroke-width="2" />
+    
+    <!-- Left page with blue gradient -->
+    <path d="M50,80 L50,30 C50,30 65,20 80,30 L80,80 C65,70 50,80 50,80 Z" fill="#47c1d6" />
+    
+    <!-- Right page with gradient from blue to green -->
+    <path d="M110,80 L110,30 C110,30 95,20 80,30 L80,80 C95,70 110,80 110,80 Z" fill="url(#bookGradient)" />
+  </g>
+  
+  <!-- Gradients definitions -->
+  <defs>
+    <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#47c1d6" />
+      <stop offset="100%" stop-color="#4af3c0" />
+    </linearGradient>
+    
+    <linearGradient id="innerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#47c1d6" />
+      <stop offset="100%" stop-color="#4af3c0" />
+    </linearGradient>
+    
+    <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#47c1d6" />
+      <stop offset="100%" stop-color="#4af3c0" />
+    </linearGradient>
+  </defs>
+</svg>

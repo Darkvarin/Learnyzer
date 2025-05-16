@@ -53,12 +53,15 @@ export default function HomePage() {
       <header className="fixed top-0 left-0 right-0 z-50 glassmorphism border-b border-primary/20">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo with Learnyzer brand - simple icon approach */}
+            {/* Logo with Learnyzer brand - SVG implementation */}
             <Link href="/" className="flex items-center">
-              {/* Styled icon */}
-              <div className="relative w-11 h-11 mr-3 overflow-hidden flex items-center justify-center rounded-full bg-gradient-to-br from-[#47c1d6] to-[#4af3c0]/90 shadow-glow-sm">
-                <Book className="h-5 w-5 text-white" />
-                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-white/5 animate-pulse-slow rounded-full"></div>
+              {/* SVG Logo */}
+              <div className="relative w-12 h-12 mr-3 overflow-hidden flex items-center justify-center">
+                <img 
+                  src="/images/learnyzer-icon.svg" 
+                  alt="Learnyzer Logo" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               {/* Styled text */}
               <div className="relative">
