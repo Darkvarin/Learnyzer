@@ -9,7 +9,7 @@ import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Co
 import { SupportChatbot } from "@/components/support/support-chatbot";
 import { useRealTime } from "@/contexts/real-time-context";
 import { useToast } from "@/hooks/use-toast";
-import { LearnyzerLogo } from "@/components/learnyzer-logo";
+import { LearnyzerLogo } from "../components/learnyzer-logo";
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
@@ -56,17 +56,14 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo with Learnyzer brand */}
             <Link href="/" className="flex items-center">
-              {/* Book icon with colored gradient */}
-              <div className="relative w-10 h-10 mr-3 overflow-hidden flex items-center justify-center bg-background rounded-full border border-primary/50">
-                <div className="text-gradient-primary">
-                  <Book className="h-5 w-5 text-primary" />
-                </div>
-                {/* Glowing effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-blue-600/5 animate-pulse-slow rounded-full"></div>
+              {/* Custom SVG logo matching brand */}
+              <div className="relative w-12 h-12 mr-3 overflow-hidden flex items-center justify-center">
+                <LearnyzerLogo />
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/10 animate-pulse-slow"></div>
               </div>
               {/* Styled text */}
               <div className="relative">
-                <span className="text-3xl font-bold font-gaming tracking-wide text-primary shadow-glow-xs">Learnyzer</span>
+                <span className="text-3xl font-bold font-gaming tracking-wide text-white shadow-glow-xs">Learnyzer</span>
                 <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
               </div>
             </Link>
