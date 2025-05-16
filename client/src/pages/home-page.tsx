@@ -70,58 +70,61 @@ export default function HomePage() {
               </div>
             </Link>
 
-            {/* Desktop Nav with Solo Leveling hover effects and smooth scrolling */}
-            <nav className="hidden md:flex items-center space-x-8">
+            {/* Desktop Nav with enhanced futuristic design */}
+            <nav className="hidden md:flex items-center space-x-6">
               <button 
                 onClick={() => {
                   const featuresSection = document.getElementById('features');
                   featuresSection?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming bg-transparent border-none"
+                className="px-3 py-2 text-white hover:text-primary transition-all relative group font-gaming bg-transparent border-none overflow-hidden"
               >
-                Features
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md"></span>
+                <span className="absolute top-0 left-0 w-0 h-1 bg-gradient-to-r from-primary to-blue-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 right-0 w-0 h-1 bg-gradient-to-l from-primary to-blue-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="relative z-10">Features</span>
               </button>
               <button 
                 onClick={() => {
                   const pricingSection = document.getElementById('pricing');
                   pricingSection?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming bg-transparent border-none"
+                className="px-3 py-2 text-white hover:text-primary transition-all relative group font-gaming bg-transparent border-none overflow-hidden"
               >
-                Pricing
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md"></span>
+                <span className="absolute top-0 left-0 w-0 h-1 bg-gradient-to-r from-primary to-blue-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 right-0 w-0 h-1 bg-gradient-to-l from-primary to-blue-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="relative z-10">Pricing</span>
               </button>
               <button 
                 onClick={() => {
                   const howItWorksSection = document.getElementById('how-it-works');
                   howItWorksSection?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming bg-transparent border-none"
+                className="px-3 py-2 text-white hover:text-primary transition-all relative group font-gaming bg-transparent border-none overflow-hidden"
               >
-                How it Works
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md"></span>
+                <span className="absolute top-0 left-0 w-0 h-1 bg-gradient-to-r from-primary to-blue-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 right-0 w-0 h-1 bg-gradient-to-l from-primary to-blue-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="relative z-10">How it Works</span>
               </button>
               <button 
                 onClick={() => {
                   const faqSection = document.getElementById('faq');
                   faqSection?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="text-gray-300 hover:text-cyan-400 transition-all relative group font-gaming bg-transparent border-none"
+                className="px-3 py-2 text-white hover:text-primary transition-all relative group font-gaming bg-transparent border-none overflow-hidden"
               >
-                FAQs
-                <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500 to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-0 bg-cyan-500/70 group-hover:h-1/2 transition-all duration-300 rounded-sm"></span>
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md"></span>
+                <span className="absolute top-0 left-0 w-0 h-1 bg-gradient-to-r from-primary to-blue-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 right-0 w-0 h-1 bg-gradient-to-l from-primary to-blue-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="relative z-10">FAQs</span>
               </button>
               <Button 
                 onClick={() => user ? navigate("/dashboard") : navigate("/auth")}
-                className="relative overflow-hidden group bg-transparent border border-cyan-500/50 hover:bg-cyan-950/50 transition-all duration-300"
+                className="relative overflow-hidden group bg-gradient-to-r from-primary/80 to-blue-600/80 hover:from-primary hover:to-blue-600 border-none transition-all duration-300 shadow-glow-sm"
               >
-                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-950/50 to-cyan-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                <span className="relative z-10 flex items-center font-gaming tracking-wide text-cyan-100">
+                <span className="relative z-10 flex items-center font-gaming tracking-wide text-white">
                   {user ? "Dashboard" : "Get Started"}
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </span>
