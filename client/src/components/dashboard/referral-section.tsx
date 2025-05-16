@@ -63,7 +63,7 @@ export function ReferralSection() {
             </div>
             <div>
               <h3 className="font-bold text-sm">Earn 500 XP per referral</h3>
-              <p className="text-xs text-gray-400 mt-1">When your friend joins LearnityX</p>
+              <p className="text-xs text-gray-400 mt-1">When your friend joins Learnyzer</p>
             </div>
           </div>
           
