@@ -101,41 +101,33 @@ export function Header() {
         <div className="absolute top-0 right-0 w-[2px] h-8 bg-cyan-500/70"></div>
       </div>
       
-      <div className="container mx-auto px-4 py-3 h-full relative z-10 before:absolute before:inset-0 before:rounded-b-xl before:bg-gradient-to-r before:from-blue-900/20 before:to-cyan-900/20 before:backdrop-blur-sm before:-z-10 before:border-b before:border-cyan-500/30">
+      <div className="container mx-auto px-4 py-3 h-full relative z-10 glassmorphism border-b border-primary/20">
         <div className="flex items-center justify-between h-full relative">
-          {/* Decorative elements */}
-          <div className="absolute -bottom-1 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
-          <div className="absolute -top-1 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
+          {/* Decorative elements matching home page */}
+          <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+          <div className="absolute -top-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#4af3c0]/30 to-transparent"></div>
           {/* Elegant Logo */}
           <div className="flex items-center space-x-3">
             <Link href="/" className="flex items-center">
-              <div className="relative w-10 h-10 mr-3 flex items-center justify-center overflow-hidden">
-                {/* Logo background with glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-cyan-900/30 rounded-full border border-cyan-500/50 glow-border"></div>
-                
+              <div className="relative w-12 h-12 mr-3 overflow-hidden flex items-center justify-center">
+                <div className="absolute w-full h-full rounded-full bg-[#0a2a42] border-2 border-[#47c1d6]"></div>
+                <div className="absolute w-8 h-8 rounded-full border-2 border-[#4af3c0]"></div>
                 {/* Learnyzer Logo */}
                 <img 
                   src="/images/learnyzer-logo.png" 
                   alt="Learnyzer Logo" 
-                  className="w-9 h-9 object-contain relative z-10"
+                  className="w-8 h-8 object-contain relative z-10"
                 />
               </div>
               <div className="relative">
-                <span className="text-2xl font-gaming tracking-wide">
-                  <span className="gradient-text font-bold text-3xl" style={{
-                    background: "linear-gradient(90deg, #0ea5e9, #7c3aed)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    textShadow: "0 0 5px rgba(14, 165, 233, 0.3)"
-                  }}>Learnyzer</span>
-                </span>
+                <span className="text-3xl font-bold font-gaming tracking-wide text-[#47c1d6] shadow-glow-xs">Learnyzer</span>
                 
-                {/* Simple elegant underline */}
-                <div className="absolute -bottom-1 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent"></div>
+                {/* Simple elegant underline matching homepage */}
+                <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
               </div>
             </Link>
-            <div className="flex items-center h-6 px-2 border border-cyan-500/50 rounded-sm">
-              <span className="text-xs font-mono text-cyan-400 font-gaming">BETA</span>
+            <div className="flex items-center h-6 px-2 border border-[#4af3c0]/50 rounded-sm bg-[#0a2a42]/50">
+              <span className="text-xs font-mono text-[#4af3c0] font-gaming">BETA</span>
             </div>
           </div>
           
@@ -185,7 +177,7 @@ export function Header() {
               <DropdownMenuTrigger className="flex items-center space-x-2 group">
                 <div className="relative w-9 h-9">
                   {/* Simple avatar frame */}
-                  <div className="absolute inset-0 rounded-full overflow-hidden border border-cyan-500/60 bg-gradient-to-br from-blue-900/30 to-cyan-900/20">
+                  <div className="absolute inset-0 rounded-full overflow-hidden border border-[#47c1d6]/60 bg-[#0a2a42]">
                     {user?.profileImage ? (
                       <img 
                         src={user.profileImage} 
@@ -194,7 +186,7 @@ export function Header() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-xs font-bold text-cyan-400">
+                        <span className="text-xs font-bold text-[#4af3c0]">
                           {user?.name ? user.name.substring(0, 2).toUpperCase() : "US"}
                         </span>
                       </div>
@@ -203,8 +195,8 @@ export function Header() {
                 </div>
                 {!isMobile && (
                   <>
-                    <span className="text-sm font-medium text-white font-gaming group-hover:text-cyan-400 transition-colors">{user?.name || "User"}</span>
-                    <ChevronDown className="h-4 w-4 text-cyan-500 group-hover:text-white transition-colors" />
+                    <span className="text-sm font-medium text-white font-gaming group-hover:text-[#4af3c0] transition-colors">{user?.name || "User"}</span>
+                    <ChevronDown className="h-4 w-4 text-[#47c1d6] group-hover:text-white transition-colors" />
                   </>
                 )}
               </DropdownMenuTrigger>
@@ -252,23 +244,26 @@ function NavLink({
     <Link 
       href={href} 
       onClick={setActive}
-      className={`relative px-4 py-2 mx-2 group ${
-        active ? 'text-white' : 'text-cyan-300/90 hover:text-white'
-      }`}
+      className={`relative px-3 py-2 mx-2 group ${
+        active ? 'text-[#4af3c0]' : 'text-white hover:text-[#47c1d6]'
+      } transition-all font-gaming overflow-hidden`}
     >
+      {/* Background hover effect */}
+      <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md"></span>
+      
       {/* Text content */}
-      <span className="font-gaming tracking-wide text-sm transition-colors duration-200">
+      <span className="font-gaming tracking-wide text-sm transition-colors duration-200 relative z-10">
         {children}
       </span>
       
       {/* Active state elegant border */}
-      <div className={`absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-500 to-transparent transition-all duration-300 ${
+      <div className={`absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-[#4af3c0] to-transparent transition-all duration-300 ${
         active ? 'opacity-100' : 'opacity-0 group-hover:opacity-70'
       }`}></div>
       
       {/* Subtle top indicator for active state */}
       {active && (
-        <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></div>
+        <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-[#4af3c0]/40 to-transparent"></div>
       )}
     </Link>
   );
