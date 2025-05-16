@@ -9,6 +9,7 @@ import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Co
 import { SupportChatbot } from "@/components/support/support-chatbot";
 import { useRealTime } from "@/contexts/real-time-context";
 import { useToast } from "@/hooks/use-toast";
+import { LearnyzerLogo } from "@/components/learnyzer-logo";
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
