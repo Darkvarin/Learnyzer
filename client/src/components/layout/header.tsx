@@ -101,17 +101,24 @@ export function Header() {
         <div className="absolute top-0 right-0 w-[2px] h-8 bg-cyan-500/70"></div>
       </div>
       
-      <div className="container mx-auto px-4 py-3 h-full">
-        <div className="flex items-center justify-between h-full">
+      <div className="container mx-auto px-4 py-3 h-full relative z-10 before:absolute before:inset-0 before:rounded-b-xl before:bg-gradient-to-r before:from-blue-900/20 before:to-cyan-900/20 before:backdrop-blur-sm before:-z-10 before:border-b before:border-cyan-500/30">
+        <div className="flex items-center justify-between h-full relative">
+          {/* Decorative elements */}
+          <div className="absolute -bottom-1 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
+          <div className="absolute -top-1 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
           {/* Elegant Logo */}
           <div className="flex items-center space-x-3">
             <Link href="/" className="flex items-center">
-              <div className="relative w-10 h-10 mr-3 flex items-center justify-center">
-                {/* Simple circle background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-cyan-900/30 rounded-full border border-cyan-500/50"></div>
+              <div className="relative w-10 h-10 mr-3 flex items-center justify-center overflow-hidden">
+                {/* Logo background with glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-cyan-900/30 rounded-full border border-cyan-500/50 glow-border"></div>
                 
-                {/* Logo icon */}
-                <Brain className="h-5 w-5 text-cyan-400 relative z-10" />
+                {/* Learnyzer Logo */}
+                <img 
+                  src="/images/learnyzer-logo.png" 
+                  alt="Learnyzer Logo" 
+                  className="w-9 h-9 object-contain relative z-10"
+                />
               </div>
               <div className="relative">
                 <span className="text-2xl font-gaming tracking-wide">

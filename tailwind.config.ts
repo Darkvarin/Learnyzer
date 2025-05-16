@@ -118,6 +118,10 @@ export default {
             height: "var(--radix-accordion-content-height)",
           },
         },
+        "pulse-slow": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.7" },
+        },
         "accordion-up": {
           from: {
             height: "var(--radix-accordion-content-height)",
@@ -175,6 +179,7 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-slow": "pulse-slow 3s ease-in-out infinite",
         "floating": "floating 6s ease-in-out infinite",
         "digital-float": "digital-float 10s ease infinite",
         "glow-intense": "glow-intense 3s ease-in-out infinite",
