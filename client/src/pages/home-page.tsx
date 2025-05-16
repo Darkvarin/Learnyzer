@@ -56,12 +56,8 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo with Learnyzer brand */}
             <Link href="/" className="flex items-center">
-              <div className="relative w-14 h-14 mr-3 overflow-hidden">
-                <img 
-                  src="/images/learnyzer-logo.svg" 
-                  alt="Learnyzer Logo" 
-                  className="w-full h-full object-contain"
-                />
+              <div className="relative w-14 h-14 mr-3 overflow-hidden flex items-center justify-center">
+                <div className="w-full h-full bg-[url('/images/learnyzer-logo-simple.svg')] bg-contain bg-no-repeat bg-center"></div>
                 {/* Energy pulse effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/20 animate-pulse-slow rounded-full"></div>
               </div>
