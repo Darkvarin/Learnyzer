@@ -57,7 +57,28 @@ export default function HomePage() {
             {/* Logo with Learnyzer brand */}
             <Link href="/" className="flex items-center">
               <div className="relative w-14 h-14 mr-3 overflow-hidden flex items-center justify-center">
-                <div className="w-full h-full bg-[url('/images/learnyzer-logo-simple.svg')] bg-contain bg-no-repeat bg-center"></div>
+                {/* Inline SVG logo to ensure it displays properly */}
+                <svg viewBox="0 0 200 200" className="w-full h-full">
+                  {/* Circular frame */}
+                  <circle cx="100" cy="100" r="90" fill="none" stroke="#47c1d6" strokeWidth="4" />
+                  <circle cx="100" cy="100" r="75" fill="none" stroke="#4af3c0" strokeWidth="2" strokeDasharray="10 5" />
+                  
+                  {/* Open book icon */}
+                  <path d="M70,125 L70,75 C70,75 85,65 100,75 C115,65 130,75 130,75 L130,125 C130,125 115,115 100,125 C85,115 70,125 70,125 Z" 
+                        fill="none" stroke="white" strokeWidth="2" />
+                  <path d="M100,75 L100,125" fill="none" stroke="white" strokeWidth="2" />
+                  <path d="M70,125 L70,75 C70,75 85,65 100,75 L100,125 C85,115 70,125 70,125 Z" fill="#47c1d6" />
+                  <path d="M130,125 L130,75 C130,75 115,65 100,75 L100,125 C115,115 130,125 130,125 Z" fill="#4af3c0" />
+                  
+                  {/* Connection nodes and dots */}
+                  <circle cx="100" cy="10" r="6" fill="#47c1d6" />
+                  <circle cx="190" cy="100" r="6" fill="#4af3c0" />
+                  <circle cx="100" cy="190" r="6" fill="#47c1d6" />
+                  <circle cx="10" cy="100" r="6" fill="#4af3c0" />
+                  
+                  {/* Digital elements */}
+                  <line x1="130" y1="100" x2="185" y2="100" stroke="#4af3c0" strokeWidth="2" />
+                </svg>
                 {/* Energy pulse effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/20 animate-pulse-slow rounded-full"></div>
               </div>
@@ -145,68 +166,83 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Mobile menu with Solo Leveling style and smooth scrolling */}
-        <div className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} glassmorphism border-b border-cyan-500/20 py-6`}>
-          <nav className="container mx-auto px-4 flex flex-col space-y-5">
+        {/* Mobile menu with enhanced futuristic design */}
+        <div className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} glassmorphism border-b border-primary/20 py-6`}>
+          <nav className="container mx-auto px-4 flex flex-col space-y-4">
             <button 
-              className="text-left px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming bg-transparent border-none"
+              className="text-left px-4 py-3 text-white hover:text-primary transition-all relative font-gaming bg-transparent border-none overflow-hidden"
               onClick={() => {
                 setMobileMenuOpen(false);
                 const featuresSection = document.getElementById('features');
                 featuresSection?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
-              <span className="relative">Features</span>
-              <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md"></span>
+              <span className="absolute left-0 top-0 w-1 h-0 bg-gradient-to-b from-primary to-blue-500 group-hover:h-full transition-all duration-300"></span>
+              <span className="absolute right-0 bottom-0 w-1 h-0 bg-gradient-to-t from-primary to-blue-500 group-hover:h-full transition-all duration-300"></span>
+              <div className="flex items-center">
+                <span className="relative z-10 ml-2">Features</span>
+              </div>
+              <span className="absolute bottom-0 left-2 right-2 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></span>
             </button>
             <button 
-              className="text-left px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming bg-transparent border-none"
+              className="text-left px-4 py-3 text-white hover:text-primary transition-all relative font-gaming bg-transparent border-none overflow-hidden"
               onClick={() => {
                 setMobileMenuOpen(false);
                 const pricingSection = document.getElementById('pricing');
                 pricingSection?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
-              <span className="relative">Pricing</span>
-              <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md"></span>
+              <span className="absolute left-0 top-0 w-1 h-0 bg-gradient-to-b from-primary to-blue-500 group-hover:h-full transition-all duration-300"></span>
+              <span className="absolute right-0 bottom-0 w-1 h-0 bg-gradient-to-t from-primary to-blue-500 group-hover:h-full transition-all duration-300"></span>
+              <div className="flex items-center">
+                <span className="relative z-10 ml-2">Pricing</span>
+              </div>
+              <span className="absolute bottom-0 left-2 right-2 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></span>
             </button>
             <button 
-              className="text-left px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming bg-transparent border-none"
+              className="text-left px-4 py-3 text-white hover:text-primary transition-all relative font-gaming bg-transparent border-none overflow-hidden"
               onClick={() => {
                 setMobileMenuOpen(false);
                 const howItWorksSection = document.getElementById('how-it-works');
                 howItWorksSection?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
-              <span className="relative">How it Works</span>
-              <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md"></span>
+              <span className="absolute left-0 top-0 w-1 h-0 bg-gradient-to-b from-primary to-blue-500 group-hover:h-full transition-all duration-300"></span>
+              <span className="absolute right-0 bottom-0 w-1 h-0 bg-gradient-to-t from-primary to-blue-500 group-hover:h-full transition-all duration-300"></span>
+              <div className="flex items-center">
+                <span className="relative z-10 ml-2">How it Works</span>
+              </div>
+              <span className="absolute bottom-0 left-2 right-2 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></span>
             </button>
             <button 
-              className="text-left px-4 py-2 text-gray-300 hover:text-cyan-400 transition-colors relative font-gaming bg-transparent border-none"
+              className="text-left px-4 py-3 text-white hover:text-primary transition-all relative font-gaming bg-transparent border-none overflow-hidden"
               onClick={() => {
                 setMobileMenuOpen(false);
                 const faqSection = document.getElementById('faq');
                 faqSection?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-cyan-500/50 rounded-r-md"></span>
-              <span className="relative">FAQs</span>
-              <span className="absolute bottom-0 left-10 right-10 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent"></span>
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md"></span>
+              <span className="absolute left-0 top-0 w-1 h-0 bg-gradient-to-b from-primary to-blue-500 group-hover:h-full transition-all duration-300"></span>
+              <span className="absolute right-0 bottom-0 w-1 h-0 bg-gradient-to-t from-primary to-blue-500 group-hover:h-full transition-all duration-300"></span>
+              <div className="flex items-center">
+                <span className="relative z-10 ml-2">FAQs</span>
+              </div>
+              <span className="absolute bottom-0 left-2 right-2 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></span>
             </button>
             <Button 
               onClick={() => {
                 setMobileMenuOpen(false);
                 user ? navigate("/dashboard") : navigate("/auth");
               }}
-              className="w-full relative overflow-hidden group border border-cyan-500/30 bg-black/90"
+              className="w-full relative overflow-hidden group bg-gradient-to-r from-primary/80 to-blue-600/80 hover:from-primary hover:to-blue-600 border-none transition-all duration-300 shadow-glow-sm mt-2"
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-cyan-950/70 to-cyan-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-md"></span>
-              <span className="relative z-10 py-2 flex items-center justify-center font-gaming tracking-wide text-cyan-100">
+              <span className="relative z-10 py-2 flex items-center justify-center font-gaming tracking-wide text-white">
                 {user ? "Dashboard" : "GET STARTED"}
-                <ArrowRight className="ml-2 h-4 w-4 text-cyan-300" />
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
               </span>
             </Button>
           </nav>
