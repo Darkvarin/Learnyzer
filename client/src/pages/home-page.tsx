@@ -9,7 +9,6 @@ import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Co
 import { SupportChatbot } from "@/components/support/support-chatbot";
 import { useRealTime } from "@/contexts/real-time-context";
 import { useToast } from "@/hooks/use-toast";
-import { LearnyzerLogo } from "../components/learnyzer-logo";
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
@@ -56,10 +55,14 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo with Learnyzer brand */}
             <Link href="/" className="flex items-center">
-              {/* Custom SVG logo matching brand */}
-              <div className="relative w-12 h-12 mr-3 overflow-hidden flex items-center justify-center">
-                <LearnyzerLogo />
-                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/10 animate-pulse-slow"></div>
+              {/* PNG logo */}
+              <div className="relative w-12 h-12 mr-3 overflow-hidden flex items-center justify-center bg-primary/5 rounded-full">
+                <img 
+                  src="/images/learnyzer-logo.png" 
+                  alt="Learnyzer Logo" 
+                  className="w-10 h-10 object-contain"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/5 animate-pulse-slow rounded-full"></div>
               </div>
               {/* Styled text */}
               <div className="relative">
