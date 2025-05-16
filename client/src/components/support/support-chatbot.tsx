@@ -14,7 +14,7 @@ export function SupportChatbot() {
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{
     role: "assistant",
-    content: "Hi there! 👋 I'm your LearnityX support assistant. How can I help you today?",
+    content: "Hi there! 👋 I'm your Learnyzer support assistant. How can I help you today?",
     timestamp: new Date()
   }]);
   const [input, setInput] = useState("");

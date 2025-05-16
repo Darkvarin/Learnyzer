@@ -43,12 +43,12 @@ export function ReferralSection() {
   
   const shareViaTwitter = () => {
     if (!referralData?.referralLink) return;
-    window.open(`https://twitter.com/intent/tweet?text=Join me on LearnityX and learn in a fun, gamified way!&url=${encodeURIComponent(referralData.referralLink)}`, '_blank');
+    window.open(`https://twitter.com/intent/tweet?text=Join me on Learnyzer and learn in a fun, gamified way!&url=${encodeURIComponent(referralData.referralLink)}`, '_blank');
   };
   
   const shareViaWhatsApp = () => {
     if (!referralData?.referralLink) return;
-    window.open(`https://wa.me/?text=${encodeURIComponent(`Join me on LearnityX and learn in a fun, gamified way! ${referralData.referralLink}`)}`, '_blank');
+    window.open(`https://wa.me/?text=${encodeURIComponent(`Join me on Learnyzer and learn in a fun, gamified way! ${referralData.referralLink}`)}`, '_blank');
   };
 
   return (

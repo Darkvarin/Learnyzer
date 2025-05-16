@@ -1053,9 +1053,9 @@ export default function HomePage() {
             >
               <Card className="border-primary/10 bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-3">What entrance exams does LearnityX cover?</h3>
+                  <h3 className="text-xl font-semibold mb-3">What entrance exams does Learnyzer cover?</h3>
                   <p className="text-gray-400">
-                    LearnityX specializes in preparation for India's most competitive entrance exams including JEE (engineering), NEET (medical), UPSC (civil services), CLAT (law), and CUET (university admissions). Our platform is exclusively designed for these high-stakes exams.
+                    Learnyzer specializes in preparation for India's most competitive entrance exams including JEE (engineering), NEET (medical), UPSC (civil services), CLAT (law), and CUET (university admissions). Our platform is exclusively designed for these high-stakes exams.
                   </p>
                 </CardContent>
               </Card>
@@ -1104,7 +1104,7 @@ export default function HomePage() {
             className="text-center max-w-3xl mx-auto"
           >
             <h2 className="text-3xl md:text-4xl font-gaming gaming-text mb-6">Ready to Conquer Your Entrance Exams?</h2>
-            <p className="text-xl opacity-80 mb-8">Join thousands of aspirants who are already preparing for JEE, NEET, UPSC, CLAT, and CUET with LearnityX.</p>
+            <p className="text-xl opacity-80 mb-8">Join thousands of aspirants who are already preparing for JEE, NEET, UPSC, CLAT, and CUET with Learnyzer.</p>
             <Button 
               onClick={() => navigate("/auth")}
               className="game-button py-6 px-10 text-lg"
@@ -1121,7 +1121,7 @@ export default function HomePage() {
         <div className="container px-4 mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
-              <h3 className="text-2xl font-gaming gaming-text mb-2">LearnityX</h3>
+              <h3 className="text-2xl font-gaming gaming-text mb-2">Learnyzer</h3>
               <p className="opacity-70">Master your entrance exam preparation</p>
             </div>
             <div className="flex flex-wrap gap-6">
@@ -1137,7 +1137,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="mt-8 pt-6 border-t border-border text-center opacity-70 text-sm">
-            <p>© {new Date().getFullYear()} LearnityX. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} Learnyzer. All rights reserved.</p>
           </div>
         </div>
       </footer>

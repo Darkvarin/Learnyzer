@@ -71,7 +71,7 @@ export default function AuthPage() {
       await loginMutation.mutateAsync(data);
       toast({
         title: "Login successful",
-        description: "Welcome back to LearnityX!",
+        description: "Welcome back to Learnyzer!",
       });
       navigate("/");
     } catch (error) {
@@ -123,7 +123,7 @@ export default function AuthPage() {
             <CardHeader className="text-center relative">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
               <CardTitle className="text-3xl font-gaming gaming-text mb-2 relative inline-block hex-title">
-                LearnityX
+                Learnyzer
                 <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
               </CardTitle>
               <CardDescription className="relative z-10 text-cyan-300/90">
