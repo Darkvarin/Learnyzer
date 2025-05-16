@@ -472,7 +472,7 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-xl text-gray-300 max-w-2xl mx-auto mt-6"
             >
-              LearnityX combines advanced AI technology with immersive gamification to create the future of entrance exam preparation
+              Learnyzer combines advanced AI technology with immersive gamification to create the future of entrance exam preparation
             </motion.p>
           </div>
 
@@ -726,7 +726,7 @@ export default function HomePage() {
               transition={{ duration: 0.5 }}
               className="text-3xl md:text-4xl font-gaming gaming-text mb-4"
             >
-              How LearnityX Works
+              How Learnyzer Works
             </motion.h2>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
@@ -1026,7 +1026,7 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-xl opacity-80 max-w-2xl mx-auto"
             >
-              Get answers to common questions about LearnityX
+              Get answers to common questions about Learnyzer
             </motion.p>
           </div>
 
@@ -1038,9 +1038,9 @@ export default function HomePage() {
             >
               <Card className="border-primary/10 bg-card/50 backdrop-blur-sm">
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-3">How does LearnityX adapt to my exam preparation needs?</h3>
+                  <h3 className="text-xl font-semibold mb-3">How does Learnyzer adapt to my exam preparation needs?</h3>
                   <p className="text-gray-400">
-                    LearnityX uses advanced AI to analyze your performance patterns, strengths, and areas for improvement on each entrance exam. The AI tutor adjusts its teaching approach based on your responses to practice questions, progress on exam topics, and preferences to provide a truly personalized preparation experience for JEE, NEET, UPSC, CLAT, or CUET.
+                    Learnyzer uses advanced AI to analyze your performance patterns, strengths, and areas for improvement on each entrance exam. The AI tutor adjusts its teaching approach based on your responses to practice questions, progress on exam topics, and preferences to provide a truly personalized preparation experience for JEE, NEET, UPSC, CLAT, or CUET.
                   </p>
                 </CardContent>
               </Card>

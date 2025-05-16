@@ -120,7 +120,7 @@ export function Header() {
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     textShadow: "0 0 5px rgba(14, 165, 233, 0.3)"
-                  }}>LearnityX</span>
+                  }}>Learnyzer</span>
                 </span>
                 
                 {/* Simple elegant underline */}
