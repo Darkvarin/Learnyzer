@@ -200,23 +200,23 @@ export function Header() {
                   </>
                 )}
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-black/90 backdrop-blur-xl border border-cyan-500/40">
-                <DropdownMenuLabel className="text-cyan-100 font-gaming">
+              <DropdownMenuContent align="end" className="bg-[#0a2a42]/90 backdrop-blur-xl border border-[#47c1d6]/40">
+                <DropdownMenuLabel className="text-[#47c1d6] font-gaming">
                   <div className="flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-cyan-400" />
+                    <Zap className="h-4 w-4 text-[#4af3c0]" />
                     <span>My Account</span>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent h-[1px]" />
-                <DropdownMenuItem asChild className="hover:bg-cyan-500/10 text-white/90 transition-colors">
+                <DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-[#47c1d6]/30 to-transparent h-px" />
+                <DropdownMenuItem asChild className="hover:bg-[#47c1d6]/10 text-white/90 transition-colors">
                   <Link href="/profile" className="flex items-center w-full">
-                    <User className="h-4 w-4 mr-2 text-cyan-400" />
+                    <User className="h-4 w-4 mr-2 text-[#4af3c0]" />
                     Profile & Settings
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent h-[1px]" />
-                <DropdownMenuItem onClick={handleLogout} className="hover:bg-blue-500/10 text-white/90 transition-colors">
-                  <LogOut className="h-4 w-4 mr-2 text-blue-400" />
+                <DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-[#47c1d6]/30 to-transparent h-px" />
+                <DropdownMenuItem onClick={handleLogout} className="hover:bg-[#4af3c0]/10 text-white/90 transition-colors">
+                  <LogOut className="h-4 w-4 mr-2 text-[#4af3c0]" />
                   Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
