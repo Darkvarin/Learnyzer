@@ -57,27 +57,89 @@ export default function HomePage() {
             {/* Logo with Learnyzer brand */}
             <Link href="/" className="flex items-center">
               <div className="relative w-14 h-14 mr-3 overflow-hidden flex items-center justify-center">
-                {/* Inline SVG logo to ensure it displays properly */}
-                <svg viewBox="0 0 200 200" className="w-full h-full">
-                  {/* Circular frame */}
-                  <circle cx="100" cy="100" r="90" fill="none" stroke="#47c1d6" strokeWidth="4" />
-                  <circle cx="100" cy="100" r="75" fill="none" stroke="#4af3c0" strokeWidth="2" strokeDasharray="10 5" />
+                {/* Inline SVG logo to match your brand exactly */}
+                <svg viewBox="0 0 500 500" className="w-full h-full">
+                  {/* Dark blue background */}
+                  <rect width="500" height="500" fill="#0a2a42" opacity="0" />
                   
-                  {/* Open book icon */}
-                  <path d="M70,125 L70,75 C70,75 85,65 100,75 C115,65 130,75 130,75 L130,125 C130,125 115,115 100,125 C85,115 70,125 70,125 Z" 
-                        fill="none" stroke="white" strokeWidth="2" />
-                  <path d="M100,75 L100,125" fill="none" stroke="white" strokeWidth="2" />
-                  <path d="M70,125 L70,75 C70,75 85,65 100,75 L100,125 C85,115 70,125 70,125 Z" fill="#47c1d6" />
-                  <path d="M130,125 L130,75 C130,75 115,65 100,75 L100,125 C115,115 130,125 130,125 Z" fill="#4af3c0" />
+                  {/* Circular gradient rings */}
+                  <circle cx="250" cy="250" r="200" fill="none" stroke="url(#outerCircleGradient)" strokeWidth="20" />
+                  <circle cx="250" cy="250" r="160" fill="none" stroke="url(#innerCircleGradient)" strokeWidth="10" />
                   
-                  {/* Connection nodes and dots */}
-                  <circle cx="100" cy="10" r="6" fill="#47c1d6" />
-                  <circle cx="190" cy="100" r="6" fill="#4af3c0" />
-                  <circle cx="100" cy="190" r="6" fill="#47c1d6" />
-                  <circle cx="10" cy="100" r="6" fill="#4af3c0" />
+                  {/* Digital connector nodes */}
+                  <circle cx="250" cy="50" r="15" fill="#47c1d6" />
+                  <circle cx="450" cy="250" r="15" fill="#4af3c0" />
+                  <circle cx="250" cy="450" r="15" fill="#47c1d6" />
                   
-                  {/* Digital elements */}
-                  <line x1="130" y1="100" x2="185" y2="100" stroke="#4af3c0" strokeWidth="2" />
+                  {/* Digital dots */}
+                  <circle cx="330" cy="110" r="5" fill="#ffffff" />
+                  <circle cx="350" cy="130" r="5" fill="#ffffff" />
+                  <circle cx="370" cy="150" r="5" fill="#ffffff" />
+                  
+                  <circle cx="160" cy="360" r="5" fill="#47c1d6" />
+                  <circle cx="140" cy="340" r="5" fill="#47c1d6" />
+                  <circle cx="120" cy="320" r="5" fill="#47c1d6" />
+                  
+                  {/* Open Book in center */}
+                  <g transform="translate(175, 175) scale(1.5)">
+                    {/* Book outline */}
+                    <path d="M50,80 L50,30 C50,30 65,20 80,30 C95,20 110,30 110,30 L110,80 C110,80 95,70 80,80 C65,70 50,80 50,80 Z" 
+                          fill="none" stroke="#ffffff" strokeWidth="3" />
+                    
+                    {/* Book spine */}
+                    <path d="M80,30 L80,80" fill="none" stroke="#ffffff" strokeWidth="2" />
+                    
+                    {/* Left page with blue gradient */}
+                    <path d="M50,80 L50,30 C50,30 65,20 80,30 L80,80 C65,70 50,80 50,80 Z" fill="#47c1d6" />
+                    
+                    {/* Right page with gradient from blue to green */}
+                    <path d="M110,80 L110,30 C110,30 95,20 80,30 L80,80 C95,70 110,80 110,80 Z" fill="url(#bookGradient)" />
+                  </g>
+                  
+                  {/* Digital connector line */}
+                  <line x1="340" y1="250" x2="450" y2="250" stroke="#4af3c0" strokeWidth="4" />
+                  
+                  {/* Small digital elements */}
+                  <g transform="translate(100, 140)">
+                    <rect x="0" y="0" width="4" height="10" fill="#47c1d6" />
+                    <rect x="6" y="0" width="4" height="10" fill="#47c1d6" />
+                    <rect x="12" y="5" width="4" height="5" fill="#47c1d6" />
+                  </g>
+                  
+                  {/* Vertical dots */}
+                  <g>
+                    <circle cx="160" cy="200" r="3" fill="#ffffff" />
+                    <circle cx="160" cy="215" r="3" fill="#ffffff" />
+                    <circle cx="160" cy="230" r="3" fill="#ffffff" />
+                    <circle cx="160" cy="245" r="3" fill="#ffffff" />
+                    <circle cx="160" cy="260" r="3" fill="#ffffff" />
+                    <circle cx="160" cy="275" r="3" fill="#ffffff" />
+                    
+                    <circle cx="340" cy="200" r="3" fill="#ffffff" />
+                    <circle cx="340" cy="215" r="3" fill="#ffffff" />
+                    <circle cx="340" cy="230" r="3" fill="#ffffff" />
+                    <circle cx="340" cy="245" r="3" fill="#ffffff" />
+                    <circle cx="340" cy="260" r="3" fill="#ffffff" />
+                    <circle cx="340" cy="275" r="3" fill="#ffffff" />
+                  </g>
+                  
+                  {/* Gradients definitions */}
+                  <defs>
+                    <linearGradient id="outerCircleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#47c1d6" />
+                      <stop offset="100%" stopColor="#4af3c0" />
+                    </linearGradient>
+                    
+                    <linearGradient id="innerCircleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#47c1d6" />
+                      <stop offset="100%" stopColor="#4af3c0" />
+                    </linearGradient>
+                    
+                    <linearGradient id="bookGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#47c1d6" />
+                      <stop offset="100%" stopColor="#4af3c0" />
+                    </linearGradient>
+                  </defs>
                 </svg>
                 {/* Energy pulse effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/20 animate-pulse-slow rounded-full"></div>
