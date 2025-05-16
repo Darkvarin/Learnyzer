@@ -53,19 +53,19 @@ export default function HomePage() {
       <header className="fixed top-0 left-0 right-0 z-50 glassmorphism border-b border-primary/20">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo with Solo Leveling effect */}
+            {/* Logo with Learnyzer brand */}
             <Link href="/" className="flex items-center">
-              <div className="relative w-12 h-12 mr-3">
-                {/* Hexagonal clip container for logo */}
-                <div className="absolute inset-0 hex-clip-container bg-gradient-to-br from-primary to-purple-600 opacity-80"></div>
+              <div className="relative w-14 h-14 mr-3 overflow-hidden">
+                <img 
+                  src="/images/learnyzer-logo.svg" 
+                  alt="Learnyzer Logo" 
+                  className="w-full h-full object-contain"
+                />
                 {/* Energy pulse effect */}
-                <div className="absolute inset-[-4px] hex-clip-container bg-gradient-to-br from-primary/40 to-purple-600/40 animate-pulse-slow"></div>
-                <div className="absolute inset-1 hex-clip-container bg-gradient-to-br from-primary to-purple-800 flex items-center justify-center">
-                  <Brain className="h-6 w-6 text-white futuristic-glow" />
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/20 animate-pulse-slow rounded-full"></div>
               </div>
               <div className="relative">
-                <span className="text-3xl font-bold font-gaming tracking-wide text-white shadow-glow-xs">LearnityX</span>
+                <span className="text-3xl font-bold font-gaming tracking-wide text-white shadow-glow-xs">Learnyzer</span>
                 <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
               </div>
             </Link>
