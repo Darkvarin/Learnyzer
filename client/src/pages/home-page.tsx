@@ -56,17 +56,17 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo with Learnyzer brand */}
             <Link href="/" className="flex items-center">
-              <div className="relative w-16 h-16 mr-3 overflow-hidden flex items-center justify-center bg-dark-blue/80 rounded-full border border-primary/30">
-                <img 
-                  src="/images/logo-colors.svg" 
-                  alt="Learnyzer Logo" 
-                  className="w-full h-full object-contain"
-                />
-                {/* Energy pulse effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/10 animate-pulse-slow rounded-full"></div>
+              {/* Book icon with colored gradient */}
+              <div className="relative w-10 h-10 mr-3 overflow-hidden flex items-center justify-center bg-background rounded-full border border-primary/50">
+                <div className="text-gradient-primary">
+                  <Book className="h-5 w-5 text-primary" />
+                </div>
+                {/* Glowing effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-blue-600/5 animate-pulse-slow rounded-full"></div>
               </div>
+              {/* Styled text */}
               <div className="relative">
-                <span className="text-3xl font-bold font-gaming tracking-wide text-white shadow-glow-xs">Learnyzer</span>
+                <span className="text-3xl font-bold font-gaming tracking-wide text-primary shadow-glow-xs">Learnyzer</span>
                 <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
               </div>
             </Link>
