@@ -11,6 +11,7 @@ import { notificationService } from "./services/notification-service";
 import { supportService } from "./services/support-service";
 import { wellnessService } from "./services/wellness-service";
 import { leaderboardService } from "./services/leaderboard-service";
+import { paymentService } from "./services/payment-service";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up enhanced authentication with improved security and database session storage
@@ -91,6 +92,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/leaderboard", leaderboardService.getGlobalLeaderboard);
   app.get("/api/leaderboard/friends", leaderboardService.getFriendsLeaderboard);
   app.get("/api/leaderboard/position/:userId?", leaderboardService.getUserRankPosition);
+
+  // Payment routes
+  app.post("/api/payment/create-order", paymentService.createOrder);
+  app.post("/api/payment/verify-payment", paymentService.verifyPayment);
 
   const httpServer = createServer(app);
   
