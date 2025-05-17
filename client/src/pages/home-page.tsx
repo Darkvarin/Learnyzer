@@ -828,11 +828,12 @@ export default function HomePage() {
             </motion.p>
           </div>
 
-          <SubscriptionService>
-            {({ subscribe, isLoading }) => (
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 mx-auto">
-            {/* Monthly Basic Plan */}
-            <motion.div
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 mx-auto">
+            <SubscriptionService>
+              {({ subscribe, isLoading }) => (
+                <>
+                {/* Monthly Basic Plan */}
+                <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
               transition={{ duration: 0.5, delay: 0 }}
@@ -887,10 +888,12 @@ export default function HomePage() {
                   </div>
                   <div className="mt-6">
                     <Button 
-                      onClick={() => navigate("/auth")}
+                      onClick={() => subscribe(SubscriptionPlan.MONTHLY_BASIC)}
                       className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
                       hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
+                      disabled={isLoading}
                     >
+                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                       Subscribe
                     </Button>
                   </div>
@@ -954,10 +957,12 @@ export default function HomePage() {
                   </div>
                   <div className="mt-6">
                     <Button 
-                      onClick={() => navigate("/auth")}
+                      onClick={() => subscribe(SubscriptionPlan.MONTHLY_PRO)}
                       className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
                       hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
+                      disabled={isLoading}
                     >
+                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                       Subscribe
                     </Button>
                   </div>
@@ -1025,10 +1030,12 @@ export default function HomePage() {
                   </div>
                   <div className="mt-6">
                     <Button 
-                      onClick={() => navigate("/auth")}
+                      onClick={() => subscribe(SubscriptionPlan.YEARLY)}
                       className="w-full text-sm bg-[#4af3c0] hover:bg-[#4af3c0]/90 text-[#0a2a42] font-medium 
                       shadow-[0_0_15px_rgba(74,243,192,0.3)] hover:shadow-[0_0_20px_rgba(74,243,192,0.5)] transition-all duration-300"
+                      disabled={isLoading}
                     >
+                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2 text-[#0a2a42]" /> : null}
                       Subscribe
                     </Button>
                   </div>
@@ -1093,10 +1100,12 @@ export default function HomePage() {
                   </div>
                   <div className="mt-6">
                     <Button 
-                      onClick={() => navigate("/auth")}
+                      onClick={() => subscribe(SubscriptionPlan.QUARTERLY)}
                       className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
                       hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
+                      disabled={isLoading}
                     >
+                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                       Subscribe
                     </Button>
                   </div>
@@ -1161,10 +1170,12 @@ export default function HomePage() {
                   </div>
                   <div className="mt-6">
                     <Button 
-                      onClick={() => navigate("/auth")}
+                      onClick={() => subscribe(SubscriptionPlan.HALF_YEARLY)}
                       className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
                       hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
+                      disabled={isLoading}
                     >
+                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                       Subscribe
                     </Button>
                   </div>
@@ -1172,6 +1183,8 @@ export default function HomePage() {
               </Card>
             </motion.div>
           </div>
+            )}
+          </SubscriptionService>
         </div>
       </section>
 
