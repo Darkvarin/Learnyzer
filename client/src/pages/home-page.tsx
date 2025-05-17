@@ -827,178 +827,291 @@ export default function HomePage() {
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Free Plan */}
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mx-auto">
+            {/* Monthly Basic Plan */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
               transition={{ duration: 0.5, delay: 0 }}
+              className="md:col-span-1"
             >
               <Card className="border-primary/10 bg-card h-full overflow-hidden relative">
                 <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
-                <CardContent className="p-6">
+                <CardContent className="p-4 md:p-6">
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold opacity-70">Basic</h3>
+                    <h3 className="text-lg font-semibold opacity-70">Monthly Basic</h3>
                     <div className="flex items-end mt-2">
-                      <span className="text-4xl font-gaming">Free</span>
-                      <span className="text-gray-400 ml-2 mb-1">forever</span>
+                      <span className="text-3xl md:text-4xl font-gaming">₹799</span>
+                      <span className="text-gray-400 ml-2 mb-1">per month</span>
                     </div>
                   </div>
-                  <div className="py-4 border-y border-border">
-                    <ul className="space-y-3">
+                  <div className="py-3 border-y border-border">
+                    <ul className="space-y-2">
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">Limited access to exam preparation materials</span>
+                        <span className="opacity-90 text-sm">Access to all AI tools</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">Basic AI assistance</span>
+                        <span className="opacity-90 text-sm">No AI tutor access</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">5 battle participations per month</span>
+                        <span className="opacity-90 text-sm">Basic analytics</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">Standard rank progression</span>
+                        <span className="opacity-90 text-sm">Monthly billing</span>
                       </li>
                     </ul>
                   </div>
-                  <div className="mt-6">
+                  <div className="mt-4">
                     <Button 
                       onClick={() => navigate("/auth")}
-                      className="w-full"
+                      className="w-full text-sm"
                     >
-                      Get Started
+                      Subscribe
                     </Button>
                   </div>
                 </CardContent>
               </Card>
             </motion.div>
 
-            {/* Premium Plan */}
+            {/* Monthly Pro Plan */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
               transition={{ duration: 0.5, delay: 0.1 }}
+              className="md:col-span-1"
             >
-              <Card className="border border-primary/30 bg-card h-full overflow-hidden relative transform scale-105 shadow-lg shadow-primary/10">
-                <div className="absolute inset-0 bg-primary/5"></div>
-                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">MOST POPULAR</div>
-                <CardContent className="p-6 relative">
+              <Card className="border-primary/10 bg-card h-full overflow-hidden relative">
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+                <CardContent className="p-4 md:p-6">
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold opacity-70">Premium</h3>
+                    <h3 className="text-lg font-semibold opacity-70">Monthly Pro</h3>
                     <div className="flex items-end mt-2">
-                      <span className="text-4xl font-gaming">₹499</span>
+                      <span className="text-3xl md:text-4xl font-gaming">₹1500</span>
                       <span className="text-gray-400 ml-2 mb-1">per month</span>
                     </div>
                   </div>
-                  <div className="py-4 border-y border-border/50">
-                    <ul className="space-y-3">
+                  <div className="py-3 border-y border-border">
+                    <ul className="space-y-2">
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">Full access to all entrance exam materials</span>
+                        <span className="opacity-90 text-sm">2 AI tutor lessons daily</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">Advanced AI tutoring & tools</span>
+                        <span className="opacity-90 text-sm">All AI tools (20 uses/day)</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">Unlimited battle participations</span>
+                        <span className="opacity-90 text-sm">Performance analytics</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">Accelerated rank progression</span>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
-                        </div>
-                        <span className="opacity-90">Performance analytics</span>
+                        <span className="opacity-90 text-sm">Monthly billing</span>
                       </li>
                     </ul>
                   </div>
-                  <div className="mt-6">
+                  <div className="mt-4">
                     <Button 
                       onClick={() => navigate("/auth")}
-                      className="w-full bg-primary hover:bg-primary/90"
+                      className="w-full text-sm"
                     >
-                      Get Premium
+                      Subscribe
                     </Button>
                   </div>
                 </CardContent>
               </Card>
             </motion.div>
 
-            {/* Enterprise Plan */}
+            {/* Quarterly Plan */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
               transition={{ duration: 0.5, delay: 0.2 }}
+              className="md:col-span-1"
             >
-              <Card className="border-primary/10 bg-card h-full overflow-hidden relative">
-                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
-                <CardContent className="p-6">
+              <Card className="border border-primary/30 bg-card h-full overflow-hidden relative transform scale-105 shadow-lg shadow-primary/10">
+                <div className="absolute inset-0 bg-primary/5"></div>
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">BEST VALUE</div>
+                <CardContent className="p-4 md:p-6 relative">
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold opacity-70">School</h3>
+                    <h3 className="text-lg font-semibold opacity-70">Quarterly</h3>
                     <div className="flex items-end mt-2">
-                      <span className="text-4xl font-gaming">Custom</span>
-                      <span className="text-gray-400 ml-2 mb-1">per school</span>
+                      <span className="text-3xl md:text-4xl font-gaming">₹4199</span>
+                      <span className="text-gray-400 ml-2 mb-1">per quarter</span>
                     </div>
+                    <div className="text-xs text-[#4af3c0] mt-1">Save ₹1301 compared to monthly</div>
                   </div>
-                  <div className="py-4 border-y border-border">
-                    <ul className="space-y-3">
+                  <div className="py-3 border-y border-border/50">
+                    <ul className="space-y-2">
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">Bulk aspirant accounts for coaching centers</span>
+                        <span className="opacity-90 text-sm">3 AI tutor lessons daily</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">School administrator dashboard</span>
+                        <span className="opacity-90 text-sm">All AI tools (40 uses/day)</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">Customized entrance exam coaching</span>
+                        <span className="opacity-90 text-sm">Advanced analytics</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-4 w-4 text-primary" />
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
-                        <span className="opacity-90">School-wide analytics & reporting</span>
+                        <span className="opacity-90 text-sm">Quarterly billing</span>
                       </li>
                     </ul>
                   </div>
-                  <div className="mt-6">
+                  <div className="mt-4">
                     <Button 
-                      variant="outline"
-                      className="w-full"
                       onClick={() => navigate("/auth")}
+                      className="w-full bg-primary hover:bg-primary/90 text-sm"
                     >
-                      Contact Sales
+                      Subscribe
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Half-Yearly Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="md:col-span-1"
+            >
+              <Card className="border-primary/10 bg-card h-full overflow-hidden relative">
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+                <CardContent className="p-4 md:p-6">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold opacity-70">Half-Yearly</h3>
+                    <div className="flex items-end mt-2">
+                      <span className="text-3xl md:text-4xl font-gaming">₹7599</span>
+                      <span className="text-gray-400 ml-2 mb-1">per 6 months</span>
+                    </div>
+                    <div className="text-xs text-[#4af3c0] mt-1">Save ₹3401 compared to monthly</div>
+                  </div>
+                  <div className="py-3 border-y border-border">
+                    <ul className="space-y-2">
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-primary" />
+                        </div>
+                        <span className="opacity-90 text-sm">3 AI tutor lessons daily</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-primary" />
+                        </div>
+                        <span className="opacity-90 text-sm">All AI tools (40 uses/day)</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-primary" />
+                        </div>
+                        <span className="opacity-90 text-sm">Advanced analytics</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-primary" />
+                        </div>
+                        <span className="opacity-90 text-sm">6-month billing</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="mt-4">
+                    <Button 
+                      onClick={() => navigate("/auth")}
+                      className="w-full text-sm"
+                    >
+                      Subscribe
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Yearly Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="md:col-span-1"
+            >
+              <Card className="border-primary/10 bg-card h-full overflow-hidden relative">
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+                <CardContent className="p-4 md:p-6">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold opacity-70">Yearly</h3>
+                    <div className="flex items-end mt-2">
+                      <span className="text-3xl md:text-4xl font-gaming">₹12999</span>
+                      <span className="text-gray-400 ml-2 mb-1">per year</span>
+                    </div>
+                    <div className="text-xs text-[#4af3c0] mt-1">Save ₹5001 compared to monthly</div>
+                  </div>
+                  <div className="py-3 border-y border-border">
+                    <ul className="space-y-2">
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-primary" />
+                        </div>
+                        <span className="opacity-90 text-sm">3 AI tutor lessons daily</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-primary" />
+                        </div>
+                        <span className="opacity-90 text-sm">All AI tools (40 uses/day)</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-primary" />
+                        </div>
+                        <span className="opacity-90 text-sm">Priority support</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-primary" />
+                        </div>
+                        <span className="opacity-90 text-sm">Annual billing</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="mt-4">
+                    <Button 
+                      onClick={() => navigate("/auth")}
+                      className="w-full text-sm"
+                    >
+                      Subscribe
                     </Button>
                   </div>
                 </CardContent>
