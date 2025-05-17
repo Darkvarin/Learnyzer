@@ -827,7 +827,7 @@ export default function HomePage() {
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 mx-auto">
             {/* Monthly Basic Plan */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -962,7 +962,7 @@ export default function HomePage() {
               </Card>
             </motion.div>
 
-            {/* Quarterly Plan */}
+            {/* Yearly Plan - FEATURED MIDDLE PLAN */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
@@ -981,16 +981,16 @@ export default function HomePage() {
                   <div className="mb-4">
                     <div className="flex items-center space-x-2">
                       <div className="h-2 w-2 rounded-full bg-[#4af3c0]"></div>
-                      <h3 className="text-lg font-semibold text-[#4af3c0]">Quarterly</h3>
+                      <h3 className="text-lg font-semibold text-[#4af3c0]">Yearly</h3>
                     </div>
                     <div className="flex items-end mt-4 relative">
                       <span className="text-3xl md:text-4xl font-gaming text-white relative">
                         <span className="absolute -top-3 -left-2 text-xs text-[#4af3c0]/60">INR</span>
-                        ₹4199
+                        ₹12999
                       </span>
-                      <span className="text-gray-400 ml-2 mb-1">per quarter</span>
+                      <span className="text-gray-400 ml-2 mb-1">per year</span>
                     </div>
-                    <div className="text-xs text-[#4af3c0] mt-2 font-medium">Save ₹1301 compared to monthly</div>
+                    <div className="text-xs text-[#4af3c0] mt-2 font-medium">Save ₹5001 compared to monthly</div>
                   </div>
                   <div className="py-4 border-y border-[#4af3c0]/20">
                     <ul className="space-y-3">
@@ -1010,13 +1010,13 @@ export default function HomePage() {
                         <div className="mr-2 mt-0.5 bg-[#4af3c0]/20 p-0.5 rounded-full">
                           <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="text-white/90 text-sm">Advanced analytics</span>
+                        <span className="text-white/90 text-sm">Priority support</span>
                       </li>
                       <li className="flex items-start">
                         <div className="mr-2 mt-0.5 bg-[#4af3c0]/20 p-0.5 rounded-full">
                           <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="text-white/90 text-sm">Quarterly billing</span>
+                        <span className="text-white/90 text-sm">Annual billing</span>
                       </li>
                     </ul>
                   </div>
@@ -1032,12 +1032,80 @@ export default function HomePage() {
                 </CardContent>
               </Card>
             </motion.div>
+            
+            {/* Quarterly Plan */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="md:col-span-1"
+            >
+              <Card className="border-primary/10 bg-gradient-to-b from-[#0a0f18] to-[#0a2a42]/40 h-full overflow-hidden relative group">
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-[#47c1d6]/40 to-transparent group-hover:via-[#47c1d6]/60 transition-all duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 -right-1 h-[2px] bg-gradient-to-r from-transparent via-[#47c1d6]/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                <div className="absolute left-0 top-0 w-1 h-12 bg-gradient-to-b from-[#47c1d6]/60 to-transparent"></div>
+                
+                <CardContent className="p-4 md:p-6 relative z-10">
+                  <div className="mb-4">
+                    <div className="flex items-center space-x-2">
+                      <div className="h-2 w-2 rounded-full bg-[#47c1d6]"></div>
+                      <h3 className="text-lg font-semibold text-[#47c1d6]">Quarterly</h3>
+                    </div>
+                    <div className="flex items-end mt-4 relative">
+                      <span className="text-3xl md:text-4xl font-gaming text-white relative">
+                        <span className="absolute -top-3 -left-2 text-xs text-[#47c1d6]/60">INR</span>
+                        ₹4199
+                      </span>
+                      <span className="text-gray-400 ml-2 mb-1">per quarter</span>
+                    </div>
+                    <div className="text-xs text-[#4af3c0] mt-2 font-medium">Save ₹1301 compared to monthly</div>
+                  </div>
+                  <div className="py-4 border-y border-[#47c1d6]/10">
+                    <ul className="space-y-3">
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
+                        </div>
+                        <span className="text-white/90 text-sm">3 AI tutor lessons daily</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
+                        </div>
+                        <span className="text-white/90 text-sm">All AI tools (40 uses/day)</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
+                        </div>
+                        <span className="text-white/90 text-sm">Advanced analytics</span>
+                      </li>
+                      <li className="flex items-start">
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
+                        </div>
+                        <span className="text-white/90 text-sm">Quarterly billing</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="mt-6">
+                    <Button 
+                      onClick={() => navigate("/auth")}
+                      className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
+                      hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
+                    >
+                      Subscribe
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
 
             {/* Half-Yearly Plan */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
               className="md:col-span-1"
             >
               <Card className="border-primary/10 bg-gradient-to-b from-[#0a0f18] to-[#0a2a42]/40 h-full overflow-hidden relative group">
@@ -1085,74 +1153,6 @@ export default function HomePage() {
                           <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
                         <span className="text-white/90 text-sm">6-month billing</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="mt-6">
-                    <Button 
-                      onClick={() => navigate("/auth")}
-                      className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
-                      hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
-                    >
-                      Subscribe
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Yearly Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: scrollY > 750 ? 1 : 0, y: scrollY > 750 ? 0 : 20 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="md:col-span-1"
-            >
-              <Card className="border-primary/10 bg-gradient-to-b from-[#0a0f18] to-[#0a2a42]/40 h-full overflow-hidden relative group">
-                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-[#47c1d6]/40 to-transparent group-hover:via-[#47c1d6]/60 transition-all duration-500"></div>
-                <div className="absolute -bottom-1 -left-1 -right-1 h-[2px] bg-gradient-to-r from-transparent via-[#47c1d6]/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
-                <div className="absolute left-0 top-0 w-1 h-12 bg-gradient-to-b from-[#47c1d6]/60 to-transparent"></div>
-                
-                <CardContent className="p-4 md:p-6 relative z-10">
-                  <div className="mb-4">
-                    <div className="flex items-center space-x-2">
-                      <div className="h-2 w-2 rounded-full bg-[#47c1d6]"></div>
-                      <h3 className="text-lg font-semibold text-[#47c1d6]">Yearly</h3>
-                    </div>
-                    <div className="flex items-end mt-4 relative">
-                      <span className="text-3xl md:text-4xl font-gaming text-white relative">
-                        <span className="absolute -top-3 -left-2 text-xs text-[#47c1d6]/60">INR</span>
-                        ₹12999
-                      </span>
-                      <span className="text-gray-400 ml-2 mb-1">per year</span>
-                    </div>
-                    <div className="text-xs text-[#4af3c0] mt-2 font-medium">Save ₹5001 compared to monthly</div>
-                  </div>
-                  <div className="py-4 border-y border-[#47c1d6]/10">
-                    <ul className="space-y-3">
-                      <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-[#4af3c0]" />
-                        </div>
-                        <span className="text-white/90 text-sm">3 AI tutor lessons daily</span>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-[#4af3c0]" />
-                        </div>
-                        <span className="text-white/90 text-sm">All AI tools (40 uses/day)</span>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-[#4af3c0]" />
-                        </div>
-                        <span className="text-white/90 text-sm">Priority support</span>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-[#4af3c0]" />
-                        </div>
-                        <span className="text-white/90 text-sm">Annual billing</span>
                       </li>
                     </ul>
                   </div>
