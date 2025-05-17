@@ -835,48 +835,58 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0 }}
               className="md:col-span-1"
             >
-              <Card className="border-primary/10 bg-card h-full overflow-hidden relative">
-                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
-                <CardContent className="p-4 md:p-6">
+              <Card className="border-primary/10 bg-gradient-to-b from-[#0a0f18] to-[#0a2a42]/40 h-full overflow-hidden relative group">
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-[#47c1d6]/40 to-transparent group-hover:via-[#47c1d6]/60 transition-all duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 -right-1 h-[2px] bg-gradient-to-r from-transparent via-[#47c1d6]/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                <div className="absolute left-0 top-0 w-1 h-12 bg-gradient-to-b from-[#47c1d6]/60 to-transparent"></div>
+                
+                <CardContent className="p-4 md:p-6 relative z-10">
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold opacity-70">Monthly Basic</h3>
-                    <div className="flex items-end mt-2">
-                      <span className="text-3xl md:text-4xl font-gaming">₹799</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="h-2 w-2 rounded-full bg-[#47c1d6]"></div>
+                      <h3 className="text-lg font-semibold text-[#47c1d6]">Monthly Basic</h3>
+                    </div>
+                    <div className="flex items-end mt-4 relative">
+                      <span className="text-3xl md:text-4xl font-gaming text-white relative">
+                        <span className="absolute -top-3 -left-2 text-xs text-[#47c1d6]/60">INR</span>
+                        ₹799
+                      </span>
                       <span className="text-gray-400 ml-2 mb-1">per month</span>
                     </div>
                   </div>
-                  <div className="py-3 border-y border-border">
-                    <ul className="space-y-2">
+                  <div className="py-4 border-y border-[#47c1d6]/10">
+                    <ul className="space-y-3">
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">Access to all AI tools</span>
+                        <span className="text-white/90 text-sm">Access to all AI tools</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">No AI tutor access</span>
+                        <span className="text-white/90 text-sm">No AI tutor access</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">Basic analytics</span>
+                        <span className="text-white/90 text-sm">Basic analytics</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">Monthly billing</span>
+                        <span className="text-white/90 text-sm">Monthly billing</span>
                       </li>
                     </ul>
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-6">
                     <Button 
                       onClick={() => navigate("/auth")}
-                      className="w-full text-sm"
+                      className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
+                      hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
                     >
                       Subscribe
                     </Button>
@@ -892,48 +902,58 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="md:col-span-1"
             >
-              <Card className="border-primary/10 bg-card h-full overflow-hidden relative">
-                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
-                <CardContent className="p-4 md:p-6">
+              <Card className="border-primary/10 bg-gradient-to-b from-[#0a0f18] to-[#0a2a42]/40 h-full overflow-hidden relative group">
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-[#47c1d6]/40 to-transparent group-hover:via-[#47c1d6]/60 transition-all duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 -right-1 h-[2px] bg-gradient-to-r from-transparent via-[#47c1d6]/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                <div className="absolute left-0 top-0 w-1 h-12 bg-gradient-to-b from-[#47c1d6]/60 to-transparent"></div>
+                
+                <CardContent className="p-4 md:p-6 relative z-10">
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold opacity-70">Monthly Pro</h3>
-                    <div className="flex items-end mt-2">
-                      <span className="text-3xl md:text-4xl font-gaming">₹1500</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="h-2 w-2 rounded-full bg-[#47c1d6]"></div>
+                      <h3 className="text-lg font-semibold text-[#47c1d6]">Monthly Pro</h3>
+                    </div>
+                    <div className="flex items-end mt-4 relative">
+                      <span className="text-3xl md:text-4xl font-gaming text-white relative">
+                        <span className="absolute -top-3 -left-2 text-xs text-[#47c1d6]/60">INR</span>
+                        ₹1500
+                      </span>
                       <span className="text-gray-400 ml-2 mb-1">per month</span>
                     </div>
                   </div>
-                  <div className="py-3 border-y border-border">
-                    <ul className="space-y-2">
+                  <div className="py-4 border-y border-[#47c1d6]/10">
+                    <ul className="space-y-3">
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">2 AI tutor lessons daily</span>
+                        <span className="text-white/90 text-sm">2 AI tutor lessons daily</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">All AI tools (20 uses/day)</span>
+                        <span className="text-white/90 text-sm">All AI tools (20 uses/day)</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">Performance analytics</span>
+                        <span className="text-white/90 text-sm">Performance analytics</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">Monthly billing</span>
+                        <span className="text-white/90 text-sm">Monthly billing</span>
                       </li>
                     </ul>
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-6">
                     <Button 
                       onClick={() => navigate("/auth")}
-                      className="w-full text-sm"
+                      className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
+                      hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
                     >
                       Subscribe
                     </Button>
@@ -949,51 +969,62 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="md:col-span-1"
             >
-              <Card className="border border-primary/30 bg-card h-full overflow-hidden relative transform scale-105 shadow-lg shadow-primary/10">
-                <div className="absolute inset-0 bg-primary/5"></div>
-                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs px-3 py-1 rounded-full font-medium">BEST VALUE</div>
-                <CardContent className="p-4 md:p-6 relative">
+              <Card className="border border-[#4af3c0]/30 bg-gradient-to-b from-[#0a1520] to-[#0a2a42]/40 h-full overflow-hidden relative transform scale-105 shadow-lg shadow-[#4af3c0]/20 group">
+                <div className="absolute inset-0 bg-[#4af3c0]/5"></div>
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-[#4af3c0] to-transparent"></div>
+                <div className="absolute -bottom-1 -left-1 -right-1 h-[2px] bg-gradient-to-r from-transparent via-[#4af3c0]/50 to-transparent"></div>
+                <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-[#4af3c0]/30 via-[#4af3c0]/10 to-transparent"></div>
+                <div className="absolute right-0 top-0 h-full w-1 bg-gradient-to-b from-[#4af3c0]/30 via-[#4af3c0]/10 to-transparent"></div>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#4af3c0] text-[#0a2a42] text-xs px-3 py-1 rounded-full font-bold shadow-[0_0_10px_rgba(74,243,192,0.5)]">BEST VALUE</div>
+                
+                <CardContent className="p-4 md:p-6 relative z-10">
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold opacity-70">Quarterly</h3>
-                    <div className="flex items-end mt-2">
-                      <span className="text-3xl md:text-4xl font-gaming">₹4199</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="h-2 w-2 rounded-full bg-[#4af3c0]"></div>
+                      <h3 className="text-lg font-semibold text-[#4af3c0]">Quarterly</h3>
+                    </div>
+                    <div className="flex items-end mt-4 relative">
+                      <span className="text-3xl md:text-4xl font-gaming text-white relative">
+                        <span className="absolute -top-3 -left-2 text-xs text-[#4af3c0]/60">INR</span>
+                        ₹4199
+                      </span>
                       <span className="text-gray-400 ml-2 mb-1">per quarter</span>
                     </div>
-                    <div className="text-xs text-[#4af3c0] mt-1">Save ₹1301 compared to monthly</div>
+                    <div className="text-xs text-[#4af3c0] mt-2 font-medium">Save ₹1301 compared to monthly</div>
                   </div>
-                  <div className="py-3 border-y border-border/50">
-                    <ul className="space-y-2">
+                  <div className="py-4 border-y border-[#4af3c0]/20">
+                    <ul className="space-y-3">
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">3 AI tutor lessons daily</span>
+                        <span className="text-white/90 text-sm">3 AI tutor lessons daily</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">All AI tools (40 uses/day)</span>
+                        <span className="text-white/90 text-sm">All AI tools (40 uses/day)</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">Advanced analytics</span>
+                        <span className="text-white/90 text-sm">Advanced analytics</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/20 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">Quarterly billing</span>
+                        <span className="text-white/90 text-sm">Quarterly billing</span>
                       </li>
                     </ul>
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-6">
                     <Button 
                       onClick={() => navigate("/auth")}
-                      className="w-full bg-primary hover:bg-primary/90 text-sm"
+                      className="w-full text-sm bg-[#4af3c0] hover:bg-[#4af3c0]/90 text-[#0a2a42] font-medium 
+                      shadow-[0_0_15px_rgba(74,243,192,0.3)] hover:shadow-[0_0_20px_rgba(74,243,192,0.5)] transition-all duration-300"
                     >
                       Subscribe
                     </Button>
@@ -1009,49 +1040,59 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="md:col-span-1"
             >
-              <Card className="border-primary/10 bg-card h-full overflow-hidden relative">
-                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
-                <CardContent className="p-4 md:p-6">
+              <Card className="border-primary/10 bg-gradient-to-b from-[#0a0f18] to-[#0a2a42]/40 h-full overflow-hidden relative group">
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-[#47c1d6]/40 to-transparent group-hover:via-[#47c1d6]/60 transition-all duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 -right-1 h-[2px] bg-gradient-to-r from-transparent via-[#47c1d6]/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                <div className="absolute left-0 top-0 w-1 h-12 bg-gradient-to-b from-[#47c1d6]/60 to-transparent"></div>
+                
+                <CardContent className="p-4 md:p-6 relative z-10">
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold opacity-70">Half-Yearly</h3>
-                    <div className="flex items-end mt-2">
-                      <span className="text-3xl md:text-4xl font-gaming">₹7599</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="h-2 w-2 rounded-full bg-[#47c1d6]"></div>
+                      <h3 className="text-lg font-semibold text-[#47c1d6]">Half-Yearly</h3>
+                    </div>
+                    <div className="flex items-end mt-4 relative">
+                      <span className="text-3xl md:text-4xl font-gaming text-white relative">
+                        <span className="absolute -top-3 -left-2 text-xs text-[#47c1d6]/60">INR</span>
+                        ₹7599
+                      </span>
                       <span className="text-gray-400 ml-2 mb-1">per 6 months</span>
                     </div>
-                    <div className="text-xs text-[#4af3c0] mt-1">Save ₹3401 compared to monthly</div>
+                    <div className="text-xs text-[#4af3c0] mt-2 font-medium">Save ₹3401 compared to monthly</div>
                   </div>
-                  <div className="py-3 border-y border-border">
-                    <ul className="space-y-2">
+                  <div className="py-4 border-y border-[#47c1d6]/10">
+                    <ul className="space-y-3">
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">3 AI tutor lessons daily</span>
+                        <span className="text-white/90 text-sm">3 AI tutor lessons daily</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">All AI tools (40 uses/day)</span>
+                        <span className="text-white/90 text-sm">All AI tools (40 uses/day)</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">Advanced analytics</span>
+                        <span className="text-white/90 text-sm">Advanced analytics</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">6-month billing</span>
+                        <span className="text-white/90 text-sm">6-month billing</span>
                       </li>
                     </ul>
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-6">
                     <Button 
                       onClick={() => navigate("/auth")}
-                      className="w-full text-sm"
+                      className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
+                      hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
                     >
                       Subscribe
                     </Button>
@@ -1067,49 +1108,59 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.4 }}
               className="md:col-span-1"
             >
-              <Card className="border-primary/10 bg-card h-full overflow-hidden relative">
-                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
-                <CardContent className="p-4 md:p-6">
+              <Card className="border-primary/10 bg-gradient-to-b from-[#0a0f18] to-[#0a2a42]/40 h-full overflow-hidden relative group">
+                <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-[#47c1d6]/40 to-transparent group-hover:via-[#47c1d6]/60 transition-all duration-500"></div>
+                <div className="absolute -bottom-1 -left-1 -right-1 h-[2px] bg-gradient-to-r from-transparent via-[#47c1d6]/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+                <div className="absolute left-0 top-0 w-1 h-12 bg-gradient-to-b from-[#47c1d6]/60 to-transparent"></div>
+                
+                <CardContent className="p-4 md:p-6 relative z-10">
                   <div className="mb-4">
-                    <h3 className="text-lg font-semibold opacity-70">Yearly</h3>
-                    <div className="flex items-end mt-2">
-                      <span className="text-3xl md:text-4xl font-gaming">₹12999</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="h-2 w-2 rounded-full bg-[#47c1d6]"></div>
+                      <h3 className="text-lg font-semibold text-[#47c1d6]">Yearly</h3>
+                    </div>
+                    <div className="flex items-end mt-4 relative">
+                      <span className="text-3xl md:text-4xl font-gaming text-white relative">
+                        <span className="absolute -top-3 -left-2 text-xs text-[#47c1d6]/60">INR</span>
+                        ₹12999
+                      </span>
                       <span className="text-gray-400 ml-2 mb-1">per year</span>
                     </div>
-                    <div className="text-xs text-[#4af3c0] mt-1">Save ₹5001 compared to monthly</div>
+                    <div className="text-xs text-[#4af3c0] mt-2 font-medium">Save ₹5001 compared to monthly</div>
                   </div>
-                  <div className="py-3 border-y border-border">
-                    <ul className="space-y-2">
+                  <div className="py-4 border-y border-[#47c1d6]/10">
+                    <ul className="space-y-3">
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">3 AI tutor lessons daily</span>
+                        <span className="text-white/90 text-sm">3 AI tutor lessons daily</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">All AI tools (40 uses/day)</span>
+                        <span className="text-white/90 text-sm">All AI tools (40 uses/day)</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">Priority support</span>
+                        <span className="text-white/90 text-sm">Priority support</span>
                       </li>
                       <li className="flex items-start">
-                        <div className="mr-2 mt-0.5 bg-primary/20 p-0.5 rounded-full">
-                          <Check className="h-3 w-3 text-primary" />
+                        <div className="mr-2 mt-0.5 bg-[#4af3c0]/10 p-0.5 rounded-full">
+                          <Check className="h-3 w-3 text-[#4af3c0]" />
                         </div>
-                        <span className="opacity-90 text-sm">Annual billing</span>
+                        <span className="text-white/90 text-sm">Annual billing</span>
                       </li>
                     </ul>
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-6">
                     <Button 
                       onClick={() => navigate("/auth")}
-                      className="w-full text-sm"
+                      className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
+                      hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
                     >
                       Subscribe
                     </Button>
