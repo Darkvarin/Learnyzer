@@ -9,6 +9,7 @@ import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Co
 import { SupportChatbot } from "@/components/support/support-chatbot";
 import { useRealTime } from "@/contexts/real-time-context";
 import { useToast } from "@/hooks/use-toast";
+import RazorpayCheckout from "@/components/razorpay-checkout";
 
 
 export default function HomePage() {
@@ -18,6 +19,10 @@ export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { sendNotification } = useRealTime();
   const { toast } = useToast();
+  
+  // Payment modal state
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState({ name: '', amount: 0 });
 
   // Handle scroll animation effects
   useEffect(() => {
@@ -32,7 +37,40 @@ export default function HomePage() {
 
   // Don't redirect authenticated users - they should be able to see homepage
   // We'll just show different UI elements based on authentication status
-
+  
+  // Function to handle subscription checkout
+  const handleSubscription = (planName: string, amount: number) => {
+    // Check if user is logged in
+    fetch('/api/auth/me')
+      .then(response => {
+        if (!response.ok) {
+          // User not logged in, redirect to auth
+          toast({
+            title: "Authentication Required",
+            description: "Please sign in to subscribe to this plan",
+            variant: "destructive",
+          });
+          navigate("/auth");
+          return;
+        }
+        
+        // User logged in, show payment modal
+        setSelectedPlan({
+          name: planName,
+          amount: amount
+        });
+        setPaymentModalOpen(true);
+      })
+      .catch(error => {
+        console.error('Authentication check failed:', error);
+        toast({
+          title: "Error",
+          description: "Could not process your request. Please try again.",
+          variant: "destructive"
+        });
+      });
+  };
+  
   // For non-authenticated users, show landing page
   return (
     <div className="min-h-screen futuristic-bg relative solo-page">
