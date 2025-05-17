@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Compass, Menu, X, Github, MessageCircle, Facebook, Twitter, Youtube, Instagram, Check, BellRing, Shield, Zap } from "lucide-react";
+import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Compass, Menu, X, Github, MessageCircle, Facebook, Twitter, Youtube, Instagram, Check, BellRing, Shield, Zap, Loader2 } from "lucide-react";
 import { SupportChatbot } from "@/components/support/support-chatbot";
 import { useRealTime } from "@/contexts/real-time-context";
 import { useToast } from "@/hooks/use-toast";
+import SubscriptionService, { SubscriptionPlan } from "@/components/subscription/subscription-service";
 
 export default function HomePage() {
   const { user, isLoading } = useAuth();
@@ -827,7 +828,9 @@ export default function HomePage() {
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 mx-auto">
+          <SubscriptionService>
+            {({ subscribe, isLoading }) => (
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 mx-auto">
             {/* Monthly Basic Plan */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
