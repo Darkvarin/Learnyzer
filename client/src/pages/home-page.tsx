@@ -923,39 +923,7 @@ export default function HomePage() {
                   </div>
                   <div className="mt-6">
                     <Button 
-                      onClick={() => {
-                        // Check if user is logged in
-                        fetch('/api/auth/me')
-                          .then(response => {
-                            if (!response.ok) {
-                              // User not logged in, redirect to auth
-                              toast({
-                                title: "Authentication Required",
-                                description: "Please sign in to subscribe to this plan",
-                                variant: "destructive",
-                              });
-                              navigate("/auth");
-                              return;
-                            }
-                            
-                            // User logged in, show subscription notification
-                            toast({
-                              title: "Monthly Basic Plan",
-                              description: "₹799/month subscription selected. Integration with Razorpay is in progress.",
-                            });
-                            
-                            // Here we would integrate with Razorpay in production
-                            // loadRazorpay('MONTHLY_BASIC', 799);
-                          })
-                          .catch(error => {
-                            console.error('Authentication check failed:', error);
-                            toast({
-                              title: "Error",
-                              description: "Could not process your request. Please try again.",
-                              variant: "destructive"
-                            });
-                          });
-                      }}
+                      onClick={() => handleSubscription("Monthly Basic Plan", 799)}
                       className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
                       hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
                     >
@@ -1022,39 +990,7 @@ export default function HomePage() {
                   </div>
                   <div className="mt-6">
                     <Button 
-                      onClick={() => {
-                        // Check if user is logged in
-                        fetch('/api/auth/me')
-                          .then(response => {
-                            if (!response.ok) {
-                              // User not logged in, redirect to auth
-                              toast({
-                                title: "Authentication Required",
-                                description: "Please sign in to subscribe to this plan",
-                                variant: "destructive",
-                              });
-                              navigate("/auth");
-                              return;
-                            }
-                            
-                            // User logged in, show subscription notification
-                            toast({
-                              title: "Monthly Pro Plan",
-                              description: "₹1,500/month subscription selected. Integration with Razorpay is in progress.",
-                            });
-                            
-                            // Here we would integrate with Razorpay in production
-                            // loadRazorpay('MONTHLY_PRO', 1500);
-                          })
-                          .catch(error => {
-                            console.error('Authentication check failed:', error);
-                            toast({
-                              title: "Error",
-                              description: "Could not process your request. Please try again.",
-                              variant: "destructive"
-                            });
-                          });
-                      }}
+                      onClick={() => handleSubscription("Monthly Pro Plan", 1500)}
                       className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
                       hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
                     >
@@ -1125,39 +1061,7 @@ export default function HomePage() {
                   </div>
                   <div className="mt-6">
                     <Button 
-                      onClick={() => {
-                        // Check if user is logged in
-                        fetch('/api/auth/me')
-                          .then(response => {
-                            if (!response.ok) {
-                              // User not logged in, redirect to auth
-                              toast({
-                                title: "Authentication Required",
-                                description: "Please sign in to subscribe to this plan",
-                                variant: "destructive",
-                              });
-                              navigate("/auth");
-                              return;
-                            }
-                            
-                            // User logged in, show subscription notification
-                            toast({
-                              title: "Yearly Plan",
-                              description: "₹12,999/year subscription selected. Integration with Razorpay is in progress.",
-                            });
-                            
-                            // Here we would integrate with Razorpay in production
-                            // loadRazorpay('YEARLY', 12999);
-                          })
-                          .catch(error => {
-                            console.error('Authentication check failed:', error);
-                            toast({
-                              title: "Error",
-                              description: "Could not process your request. Please try again.",
-                              variant: "destructive"
-                            });
-                          });
-                      }}
+                      onClick={() => handleSubscription("Yearly Plan", 12999)}
                       className="w-full text-sm bg-[#4af3c0] hover:bg-[#4af3c0]/90 text-[#0a2a42] font-medium 
                       shadow-[0_0_15px_rgba(74,243,192,0.3)] hover:shadow-[0_0_20px_rgba(74,243,192,0.5)] transition-all duration-300"
                     >
@@ -1225,39 +1129,7 @@ export default function HomePage() {
                   </div>
                   <div className="mt-6">
                     <Button 
-                      onClick={() => {
-                        // Check if user is logged in
-                        fetch('/api/auth/me')
-                          .then(response => {
-                            if (!response.ok) {
-                              // User not logged in, redirect to auth
-                              toast({
-                                title: "Authentication Required",
-                                description: "Please sign in to subscribe to this plan",
-                                variant: "destructive",
-                              });
-                              navigate("/auth");
-                              return;
-                            }
-                            
-                            // User logged in, show subscription notification
-                            toast({
-                              title: "Quarterly Plan",
-                              description: "₹4,199/quarter subscription selected. Integration with Razorpay is in progress.",
-                            });
-                            
-                            // Here we would integrate with Razorpay in production
-                            // loadRazorpay('QUARTERLY', 4199);
-                          })
-                          .catch(error => {
-                            console.error('Authentication check failed:', error);
-                            toast({
-                              title: "Error",
-                              description: "Could not process your request. Please try again.",
-                              variant: "destructive"
-                            });
-                          });
-                      }}
+                      onClick={() => handleSubscription("Quarterly Plan", 4199)}
                       className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
                       hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
                     >
@@ -1325,39 +1197,7 @@ export default function HomePage() {
                   </div>
                   <div className="mt-6">
                     <Button 
-                      onClick={() => {
-                        // Check if user is logged in
-                        fetch('/api/auth/me')
-                          .then(response => {
-                            if (!response.ok) {
-                              // User not logged in, redirect to auth
-                              toast({
-                                title: "Authentication Required",
-                                description: "Please sign in to subscribe to this plan",
-                                variant: "destructive",
-                              });
-                              navigate("/auth");
-                              return;
-                            }
-                            
-                            // User logged in, show subscription notification
-                            toast({
-                              title: "Half-Yearly Plan",
-                              description: "₹7,599/6-months subscription selected. Integration with Razorpay is in progress.",
-                            });
-                            
-                            // Here we would integrate with Razorpay in production
-                            // loadRazorpay('HALF_YEARLY', 7599);
-                          })
-                          .catch(error => {
-                            console.error('Authentication check failed:', error);
-                            toast({
-                              title: "Error",
-                              description: "Could not process your request. Please try again.",
-                              variant: "destructive"
-                            });
-                          });
-                      }}
+                      onClick={() => handleSubscription("Half-Yearly Plan", 7599)}
                       className="w-full text-sm bg-[#0a2a42] hover:bg-[#0a2a42]/80 text-white border border-[#47c1d6]/40 
                       hover:border-[#47c1d6] transition-all duration-300 group-hover:shadow-[0_0_15px_rgba(71,193,214,0.3)]"
                     >
@@ -1507,6 +1347,15 @@ export default function HomePage() {
       
       {/* Support Chatbot */}
       <SupportChatbot />
+      
+      {/* Razorpay Payment Modal */}
+      <RazorpayCheckout
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+        planName={selectedPlan.name}
+        amount={selectedPlan.amount}
+        currency="INR"
+      />
     </div>
   );
 }
