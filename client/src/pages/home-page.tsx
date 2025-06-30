@@ -10,6 +10,8 @@ import { SupportChatbot } from "@/components/support/support-chatbot";
 import { useRealTime } from "@/contexts/real-time-context";
 import { useToast } from "@/hooks/use-toast";
 import RazorpayCheckout from "@/components/razorpay-checkout";
+import { SEOHead } from "@/components/seo/seo-head";
+import { createEducationalOrganizationSchema, createSoftwareApplicationSchema, createFAQSchema } from "@/components/seo/structured-data";
 
 
 export default function HomePage() {
@@ -71,9 +73,44 @@ export default function HomePage() {
       });
   };
   
+  // SEO data for homepage
+  const faqData = [
+    {
+      question: "What is LearnityX and how does it help with entrance exam preparation?",
+      answer: "LearnityX is an AI-powered learning platform specifically designed for Indian competitive entrance exams including JEE, NEET, UPSC, CLAT, and CUET. It combines personalized AI tutoring with gamified learning experiences to help students achieve better results."
+    },
+    {
+      question: "Which entrance exams does LearnityX support?",
+      answer: "LearnityX supports all major Indian entrance exams: JEE Main & Advanced for engineering, NEET for medical, UPSC CSE for civil services, CLAT for law, and CUET for university admissions."
+    },
+    {
+      question: "How does the AI tutoring work on LearnityX?",
+      answer: "Our AI tutors use GPT-4o technology to provide personalized explanations, solve doubts instantly, and adapt to your learning pace. The AI analyzes your performance and creates customized study plans for optimal results."
+    },
+    {
+      question: "Is LearnityX free to use?",
+      answer: "LearnityX offers both free and premium features. Basic access includes limited AI interactions and study materials, while premium subscriptions unlock unlimited AI tutoring, advanced analytics, and exclusive content."
+    },
+    {
+      question: "How effective is LearnityX for JEE and NEET preparation?",
+      answer: "LearnityX has helped thousands of students improve their exam scores with personalized AI guidance, adaptive learning paths, and comprehensive practice materials designed specifically for JEE and NEET success."
+    }
+  ];
+
   // For non-authenticated users, show landing page
   return (
     <div className="min-h-screen futuristic-bg relative solo-page">
+      <SEOHead
+        title="LearnityX - AI-Powered Indian Entrance Exam Preparation | JEE, NEET, UPSC, CLAT, CUET"
+        description="Master JEE, NEET, UPSC, CLAT, and CUET with AI tutoring, gamified learning, and personalized study plans. Join thousands of successful students achieving their dreams."
+        keywords="JEE preparation, NEET coaching, UPSC preparation, CLAT exam, CUET preparation, entrance exam AI, Indian competitive exams, AI tutor, online coaching, exam preparation platform"
+        canonical={window.location.origin}
+        structuredData={{
+          ...createEducationalOrganizationSchema(),
+          ...createSoftwareApplicationSchema(),
+          ...createFAQSchema(faqData)
+        }}
+      />
       {/* Cyberpunk-style background elements */}
       <div className="absolute inset-0 cyber-grid z-0"></div>
       

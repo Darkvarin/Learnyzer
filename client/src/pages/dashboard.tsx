@@ -10,6 +10,8 @@ import { BreaksRecommender } from "@/components/wellness/breaks-recommender";
 import { LayoutGrid, BarChart3, Zap, Award, Users, Brain, BookOpen, Target, Trophy } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
+import { SEOHead } from "@/components/seo/seo-head";
+import { createWebPageSchema } from "@/components/seo/structured-data";
 
 export default function Dashboard() {
   const { user } = useAuth();
