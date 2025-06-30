@@ -180,6 +180,124 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to export security logs" });
     }
   });
+
+  // Lead Generation routes
+  app.get("/api/leads", requireAuth, async (req, res) => {
+    try {
+      const { leadGenerationService } = await import("./services/lead-generation");
+      const { startDate, endDate, hasEmail, hasMobile, grade, track } = req.query;
+      
+      const filters = {
+        startDate: startDate ? new Date(startDate as string) : undefined,
+        endDate: endDate ? new Date(endDate as string) : undefined,
+        hasEmail: hasEmail === 'true',
+        hasMobile: hasMobile === 'true',
+        grade: grade as string,
+        track: track as string
+      };
+
+      const leads = await leadGenerationService.getLeads(filters);
+      res.json(leads);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+      res.status(500).json({ message: "Failed to fetch leads" });
+    }
+  });
+
+  app.get("/api/leads/stats", requireAuth, async (req, res) => {
+    try {
+      const { leadGenerationService } = await import("./services/lead-generation");
+      const stats = await leadGenerationService.getLeadStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching lead stats:", error);
+      res.status(500).json({ message: "Failed to fetch lead statistics" });
+    }
+  });
+
+  app.get("/api/leads/export", requireAuth, async (req, res) => {
+    try {
+      const { leadGenerationService } = await import("./services/lead-generation");
+      const { startDate, endDate, hasEmail, hasMobile, grade, track } = req.query;
+      
+      const filters = {
+        startDate: startDate ? new Date(startDate as string) : undefined,
+        endDate: endDate ? new Date(endDate as string) : undefined,
+        hasEmail: hasEmail === 'true',
+        hasMobile: hasMobile === 'true',
+        grade: grade as string,
+        track: track as string
+      };
+
+      const excelBuffer = await leadGenerationService.exportToExcel(filters);
+      
+      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+      res.setHeader("Content-Disposition", `attachment; filename="leads-export-${new Date().toISOString().split('T')[0]}.xlsx"`);
+      res.send(excelBuffer);
+    } catch (error) {
+      console.error("Error exporting leads:", error);
+      res.status(500).json({ message: "Failed to export leads" });
+    }
+  });
+
+  app.get("/api/leads/email-list", requireAuth, async (req, res) => {
+    try {
+      const { leadGenerationService } = await import("./services/lead-generation");
+      const { startDate, endDate, grade, track } = req.query;
+      
+      const filters = {
+        startDate: startDate ? new Date(startDate as string) : undefined,
+        endDate: endDate ? new Date(endDate as string) : undefined,
+        hasEmail: true,
+        grade: grade as string,
+        track: track as string
+      };
+
+      const emailList = await leadGenerationService.getEmailList(filters);
+      res.json({ emails: emailList, count: emailList.length });
+    } catch (error) {
+      console.error("Error fetching email list:", error);
+      res.status(500).json({ message: "Failed to fetch email list" });
+    }
+  });
+
+  app.get("/api/leads/mobile-list", requireAuth, async (req, res) => {
+    try {
+      const { leadGenerationService } = await import("./services/lead-generation");
+      const { startDate, endDate, grade, track } = req.query;
+      
+      const filters = {
+        startDate: startDate ? new Date(startDate as string) : undefined,
+        endDate: endDate ? new Date(endDate as string) : undefined,
+        hasMobile: true,
+        grade: grade as string,
+        track: track as string
+      };
+
+      const mobileList = await leadGenerationService.getMobileList(filters);
+      res.json({ mobiles: mobileList, count: mobileList.length });
+    } catch (error) {
+      console.error("Error fetching mobile list:", error);
+      res.status(500).json({ message: "Failed to fetch mobile list" });
+    }
+  });
+
+  app.get("/api/leads/search", requireAuth, async (req, res) => {
+    try {
+      const { leadGenerationService } = await import("./services/lead-generation");
+      const { q } = req.query;
+      
+      if (!q || typeof q !== 'string') {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+
+      const results = await leadGenerationService.searchLeads(q);
+      res.json(results);
+    } catch (error) {
+      console.error("Error searching leads:", error);
+      res.status(500).json({ message: "Failed to search leads" });
+    }
+  });
   app.post("/api/notifications/rank", notificationService.simulateRankPromotion);
   app.post("/api/notifications/achievement", notificationService.simulateAchievement);
   app.post("/api/notifications/xp", notificationService.simulateXpGained);
