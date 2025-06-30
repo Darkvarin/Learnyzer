@@ -44,6 +44,7 @@ export default function AuthPage() {
   const [mobileForOTP, setMobileForOTP] = useState("");
   const [otpVerified, setOtpVerified] = useState(false);
   const [isOtpLoading, setIsOtpLoading] = useState(false);
+  const [generatedOTP, setGeneratedOTP] = useState("");
 
   // Use useEffect for navigation instead of early return
   useEffect(() => {
@@ -99,6 +100,9 @@ export default function AuthPage() {
       if (result.success) {
         setOtpSent(true);
         setMobileForOTP(mobile);
+        if (result.otp) {
+          setGeneratedOTP(result.otp);
+        }
         toast({
           title: "OTP Sent",
           description: `OTP sent to ${mobile}. ${result.otp ? `Your OTP is: ${result.otp}` : ''}`,
@@ -430,6 +434,19 @@ export default function AuthPage() {
                           </FormItem>
                         )}
                       />
+
+                      {/* OTP Code Display */}
+                      {otpSent && generatedOTP && (
+                        <div className="mb-4 p-4 bg-[#4af3c0]/10 border border-[#4af3c0]/30 rounded-lg">
+                          <div className="text-sm text-[#4af3c0] mb-2">Your OTP Code (for testing):</div>
+                          <div className="text-2xl font-mono font-bold text-[#4af3c0] tracking-wider">
+                            {generatedOTP}
+                          </div>
+                          <div className="text-xs text-primary-foreground/60 mt-2">
+                            Copy this code and paste it in the field below
+                          </div>
+                        </div>
+                      )}
 
                       {/* OTP Verification Field */}
                       {otpSent && (
