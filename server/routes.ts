@@ -77,24 +77,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user/referrals", userService.getUserReferrals);
   app.post("/api/user/referrals", userService.createReferral);
   
+  // Authentication middleware for AI routes
+  const requireAuth = (req: any, res: any, next: any) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    next();
+  };
+
   // AI routes - Enhanced with GPT-4o and DALL-E 3
-  app.get("/api/ai/tutor", aiService.getAITutor);
-  app.post("/api/ai/tutor/respond", aiService.getAITutorResponse);
-  app.get("/api/ai/conversation/recent", aiService.getRecentConversation);
-  app.post("/api/ai/conversation", aiService.saveConversation);
-  app.get("/api/ai/tools", aiService.getAITools);
-  app.get("/api/ai/tools/:id", aiService.getAITool);
-  app.post("/api/ai/tools/notes", aiService.generateStudyNotes);
-  app.post("/api/ai/tools/answer-check", aiService.checkAnswer);
-  app.post("/api/ai/tools/flashcards", aiService.generateFlashcards);
-  app.get("/api/ai/tools/analytics/:userId", aiService.getPerformanceAnalytics);
-  app.post("/api/ai/battle/judge/:battleId", aiService.judgeBattle);
-  app.post("/api/ai/generate-diagram", aiService.generateDiagram);
+  app.get("/api/ai/tutor", requireAuth, aiService.getAITutor);
+  app.post("/api/ai/tutor/respond", requireAuth, aiService.getAITutorResponse);
+  app.get("/api/ai/conversation/recent", requireAuth, aiService.getRecentConversation);
+  app.post("/api/ai/conversation", requireAuth, aiService.saveConversation);
+  app.get("/api/ai/tools", requireAuth, aiService.getAITools);
+  app.get("/api/ai/tools/:id", requireAuth, aiService.getAITool);
+  app.post("/api/ai/tools/notes", requireAuth, aiService.generateStudyNotes);
+  app.post("/api/ai/tools/answer-check", requireAuth, aiService.checkAnswer);
+  app.post("/api/ai/tools/flashcards", requireAuth, aiService.generateFlashcards);
+  app.get("/api/ai/tools/analytics/:userId", requireAuth, aiService.getPerformanceAnalytics);
+  app.post("/api/ai/battle/judge/:battleId", requireAuth, aiService.judgeBattle);
+  app.post("/api/ai/generate-diagram", requireAuth, aiService.generateDiagram);
   
   // New enhanced AI visual learning routes
-  app.post("/api/ai/generate-image", aiService.generateEducationalImage);
-  app.post("/api/ai/visual-package", aiService.generateVisualLearningPackage);
-  app.post("/api/ai/study-session", aiService.generateInteractiveStudySession);
+  app.post("/api/ai/generate-image", requireAuth, aiService.generateEducationalImage);
+  app.post("/api/ai/visual-package", requireAuth, aiService.generateVisualLearningPackage);
+  app.post("/api/ai/study-session", requireAuth, aiService.generateInteractiveStudySession);
   
   // Course routes
   app.get("/api/courses", courseService.getAllCourses);
