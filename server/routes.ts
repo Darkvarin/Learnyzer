@@ -13,11 +13,15 @@ import { wellnessService } from "./services/wellness-service";
 import { leaderboardService } from "./services/leaderboard-service";
 import { paymentService } from "./services/payment-service";
 import { otpService } from "./services/otp-service";
+import { setupSEORoutes } from "./services/sitemap-generator";
 import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up enhanced authentication with improved security and database session storage
   setupAuth(app);
+
+  // Set up SEO routes (sitemap.xml, robots.txt, schema.json)
+  setupSEORoutes(app);
 
   // Auth routes
   app.post("/api/auth/register", authService.register);

@@ -3,14 +3,14 @@
 export const createEducationalOrganizationSchema = () => ({
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
-  "name": "LearnityX",
+  "name": "Learnyzer",
   "description": "AI-powered preparation platform for Indian entrance exams including JEE, NEET, UPSC, CLAT, and CUET",
   "url": window.location.origin,
   "logo": `${window.location.origin}/images/logo.png`,
   "sameAs": [
-    "https://www.facebook.com/learnityX",
-    "https://twitter.com/learnityX",
-    "https://www.instagram.com/learnityX"
+    "https://www.facebook.com/learnyzer",
+    "https://twitter.com/learnyzer",
+    "https://www.instagram.com/learnyzer"
   ],
   "address": {
     "@type": "PostalAddress",
@@ -82,7 +82,7 @@ export const createExamPreparationSchema = (exam: string) => ({
 export const createSoftwareApplicationSchema = () => ({
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "LearnityX",
+  "name": "Learnyzer",
   "description": "AI-powered learning platform for competitive exam preparation",
   "applicationCategory": "EducationalApplication",
   "operatingSystem": "Web Browser",
