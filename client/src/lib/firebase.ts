@@ -79,6 +79,22 @@ export class FirebasePhoneAuth {
   // Verify OTP
   async verifyOTP(otp: string): Promise<{ success: boolean; message: string; uid?: string }> {
     try {
+      // If Firebase is not configured, use mock OTP verification
+      if (!this.isFirebaseConfigured()) {
+        if (otp === this.mockOTP) {
+          return {
+            success: true,
+            message: 'Phone number verified successfully',
+            uid: 'mock-uid-' + Date.now()
+          };
+        } else {
+          return {
+            success: false,
+            message: 'Invalid OTP. Please try again.'
+          };
+        }
+      }
+
       if (!this.confirmationResult) {
         return {
           success: false,

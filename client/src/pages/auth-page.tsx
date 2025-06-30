@@ -96,6 +96,9 @@ export default function AuthPage() {
       if (result.success) {
         setOtpSent(true);
         setMobileForOTP(mobile);
+        if (result.otp) {
+          setGeneratedOTP(result.otp);
+        }
         toast({
           title: "OTP Sent",
           description: result.message,
@@ -131,18 +134,13 @@ export default function AuthPage() {
 
     setIsOtpLoading(true);
     try {
-      const response = await fetch('/api/auth/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mobile: mobileForOTP, otp, purpose: 'signup' }),
-      });
-
-      const result = await response.json();
+      const result = await firebasePhoneAuth.verifyOTP(otp);
+      
       if (result.success) {
         setOtpVerified(true);
         toast({
-          title: "Mobile Verified",
-          description: "Your mobile number has been verified successfully!",
+          title: "Phone Verified",
+          description: "Your phone number has been verified successfully",
         });
       } else {
         toast({
@@ -151,10 +149,10 @@ export default function AuthPage() {
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to verify OTP. Please try again.",
+        description: error.message || "Failed to verify OTP. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -548,6 +546,9 @@ export default function AuthPage() {
               </TabsContent>
             </Tabs>
           </Card>
+          
+          {/* Hidden reCAPTCHA container for Firebase */}
+          <div id="recaptcha-container" style={{ display: 'none' }}></div>
         </div>
       </div>
 
