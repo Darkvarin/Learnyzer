@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 import { Brain, Sword, Trophy } from 'lucide-react';
+import { firebasePhoneAuth } from '@/lib/firebase';
 
 // Validation schemas
 const loginSchema = z.object({
@@ -90,22 +91,14 @@ export default function AuthPage() {
 
     setIsOtpLoading(true);
     try {
-      const response = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mobile, purpose: 'signup' }),
-      });
-
-      const result = await response.json();
+      const result = await firebasePhoneAuth.sendOTP(mobile, 'recaptcha-container');
+      
       if (result.success) {
         setOtpSent(true);
         setMobileForOTP(mobile);
-        if (result.otp) {
-          setGeneratedOTP(result.otp);
-        }
         toast({
           title: "OTP Sent",
-          description: `OTP sent to ${mobile}. ${result.otp ? `Your OTP is: ${result.otp}` : ''}`,
+          description: result.message,
         });
       } else {
         toast({
@@ -114,10 +107,10 @@ export default function AuthPage() {
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to send OTP. Please try again.",
+        description: error.message || "Failed to send OTP. Please try again.",
         variant: "destructive",
       });
     } finally {
