@@ -1,4 +1,4 @@
-import { db } from "../db/index";
+import { db } from "../db";
 import { users } from "@shared/schema";
 import { desc, and, gte, lte, isNotNull, or, eq, like, sql } from "drizzle-orm";
 import * as XLSX from "xlsx";

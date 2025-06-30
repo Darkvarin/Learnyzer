@@ -88,6 +88,16 @@ LearnityX is a comprehensive educational platform designed specifically for Indi
 - **Content Security Policy**: Strict CSP headers to prevent code injection attacks
 - **Automated Response**: Intelligent rate limiting and suspicious activity detection
 
+### Lead Generation System
+- **Comprehensive Data Collection**: Automatic capture of emails and mobile numbers during user registration
+- **Advanced Filtering**: Filter leads by date range, contact availability, grade, track, and other criteria
+- **Excel Export**: One-click export to professional Excel spreadsheets with statistics and analytics
+- **Contact Lists**: Separate email and mobile number lists with easy copy-to-clipboard functionality
+- **Real-Time Statistics**: Live dashboard showing total leads, contact coverage, and conversion metrics
+- **Search Functionality**: Advanced search across all user data fields for quick lead lookup
+- **Grade Analytics**: Breakdown of leads by educational grade with visual progress indicators
+- **Marketing Ready**: Pre-formatted lists perfect for email campaigns and SMS marketing
+
 ## Data Flow
 
 1. **User Registration/Login**: Client → Auth Service → Database → Session Store
