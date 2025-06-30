@@ -24,6 +24,7 @@ import StudyNotesGenerator from "./pages/ai-tools/study-notes";
 import AnswerChecker from "./pages/ai-tools/answer-checker";
 import PerformanceAnalytics from "./pages/ai-tools/performance";
 import AIVisualLab from "./pages/ai-visual-lab";
+import SecurityDashboard from "./pages/security-dashboard";
 
 function App() {
   return (
@@ -41,7 +42,8 @@ function App() {
                 <ProtectedRoute path="/ai-tools/answer-checker" component={AnswerChecker} />
                 <ProtectedRoute path="/ai-tools/performance" component={PerformanceAnalytics} />
                 <ProtectedRoute path="/ai-tutor" component={AiTutor} />
-                <ProtectedRoute path="/ai-visual-lab" component={AIVisualLab} />                
+                <ProtectedRoute path="/ai-visual-lab" component={AIVisualLab} />
+                <ProtectedRoute path="/security-dashboard" component={SecurityDashboard} />                
                 <ProtectedRoute path="/profile" component={ProfileSettings} />
                 <ProtectedRoute path="/create-profile" component={CreateProfile} />
                 <ProtectedRoute path="/websocket-test" component={WebSocketTest} />

@@ -131,6 +131,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Real-time notification testing routes
   app.post("/api/notifications/test", notificationService.sendTestNotification);
   app.post("/api/notifications/streak", notificationService.simulateStreakUpdate);
+
+  // Security monitoring routes (admin only)
+  app.get("/api/security/events", requireAuth, async (req, res) => {
+    try {
+      const { auditLogger } = await import("./security/audit");
+      const events = auditLogger.getSecurityEvents(100);
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch security events" });
+    }
+  });
+
+  app.get("/api/security/analysis", requireAuth, async (req, res) => {
+    try {
+      const { auditLogger } = await import("./security/audit");
+      const analysis = auditLogger.analyzeSecurityPatterns();
+      const riskScore = Math.min(100, (analysis.failedLogins * 5) + (analysis.rateLimitViolations * 3) + (analysis.suspiciousIPs.length * 10));
+      
+      res.json({
+        ...analysis,
+        totalEvents: auditLogger.getSecurityEvents().length,
+        riskScore
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to analyze security patterns" });
+    }
+  });
+
+  app.get("/api/security/threats/active", requireAuth, async (req, res) => {
+    try {
+      const { auditLogger } = await import("./security/audit");
+      const threats = auditLogger.getSuspiciousActivity(3600000); // Last hour
+      res.json(threats);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch active threats" });
+    }
+  });
+
+  app.get("/api/security/export", requireAuth, async (req, res) => {
+    try {
+      const { auditLogger } = await import("./security/audit");
+      const logs = auditLogger.exportLogs("json");
+      res.setHeader("Content-Type", "application/json");
+      res.setHeader("Content-Disposition", `attachment; filename="security-logs-${new Date().toISOString().split('T')[0]}.json"`);
+      res.send(logs);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to export security logs" });
+    }
+  });
   app.post("/api/notifications/rank", notificationService.simulateRankPromotion);
   app.post("/api/notifications/achievement", notificationService.simulateAchievement);
   app.post("/api/notifications/xp", notificationService.simulateXpGained);
