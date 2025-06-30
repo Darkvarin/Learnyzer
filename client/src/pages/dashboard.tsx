@@ -19,8 +19,21 @@ export default function Dashboard() {
     queryKey: ["/api/user/stats"],
   });
 
+  // Dynamic SEO data based on user progress
+  const dashboardSchema = createWebPageSchema({
+    title: `${user?.name || user?.username || 'Student'}'s Learning Dashboard - Learnyzer`,
+    description: `Track your progress in JEE, NEET, UPSC, CLAT, and CUET preparation. Level ${userStats?.level || 1}, ${userStats?.currentXp || 0} XP, ${userStats?.streakDays || 0} day streak.`
+  });
+
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden futuristic-bg">
+      <SEOHead
+        title={`${user?.name || user?.username || 'Student'}'s Dashboard - Learnyzer`}
+        description={`Track your entrance exam preparation progress with AI-powered learning. Level ${userStats?.level || 1}, ${userStats?.currentXp || 0} XP earned. Advanced analytics for JEE, NEET, UPSC, CLAT, and CUET success.`}
+        keywords="student dashboard, exam preparation progress, JEE progress tracker, NEET study analytics, UPSC preparation dashboard, AI learning progress, competitive exam analytics"
+        canonical={`${window.location.origin}/dashboard`}
+        structuredData={dashboardSchema}
+      />
       {/* Modern cyberpunk grid background with subtle Solo Leveling accents */}
       <div className="absolute inset-0 cyber-grid z-0 opacity-20"></div>
       
