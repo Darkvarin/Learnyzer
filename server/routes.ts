@@ -77,7 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user/referrals", userService.getUserReferrals);
   app.post("/api/user/referrals", userService.createReferral);
   
-  // AI routes
+  // AI routes - Enhanced with GPT-4o and DALL-E 3
   app.get("/api/ai/tutor", aiService.getAITutor);
   app.post("/api/ai/tutor/respond", aiService.getAITutorResponse);
   app.get("/api/ai/conversation/recent", aiService.getRecentConversation);
@@ -90,6 +90,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/ai/tools/analytics/:userId", aiService.getPerformanceAnalytics);
   app.post("/api/ai/battle/judge/:battleId", aiService.judgeBattle);
   app.post("/api/ai/generate-diagram", aiService.generateDiagram);
+  
+  // New enhanced AI visual learning routes
+  app.post("/api/ai/generate-image", aiService.generateEducationalImage);
+  app.post("/api/ai/visual-package", aiService.generateVisualLearningPackage);
+  app.post("/api/ai/study-session", aiService.generateInteractiveStudySession);
   
   // Course routes
   app.get("/api/courses", courseService.getAllCourses);
