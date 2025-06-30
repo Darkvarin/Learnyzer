@@ -6,12 +6,16 @@ import { eq } from 'drizzle-orm';
 
 let razorpayInstance: Razorpay;
 
-// Initialize Razorpay instance
+// Initialize Razorpay instance only if keys are provided
 try {
-  razorpayInstance = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID || '',
-    key_secret: process.env.RAZORPAY_KEY_SECRET || '',
-  });
+  if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+    razorpayInstance = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
+  } else {
+    console.log('Razorpay keys not configured - payment features disabled');
+  }
 } catch (error) {
   console.error('Failed to initialize Razorpay:', error);
 }
