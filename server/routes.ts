@@ -13,6 +13,7 @@ import { wellnessService } from "./services/wellness-service";
 import { leaderboardService } from "./services/leaderboard-service";
 import { paymentService } from "./services/payment-service";
 import { otpService } from "./services/otp-service";
+import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up enhanced authentication with improved security and database session storage
@@ -69,21 +70,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // User routes
-  app.get("/api/user/stats", userService.getUserStats);
-  app.get("/api/user/streak", userService.getUserStreak);
-  app.post("/api/user/streak/claim", userService.claimStreakReward);
-  app.get("/api/user/rank", userService.getUserRank);
-  app.get("/api/user/referrals", userService.getUserReferrals);
-  app.post("/api/user/referrals", userService.createReferral);
-  
-  // Authentication middleware for AI routes
+  // Authentication middleware for protected routes
   const requireAuth = (req: any, res: any, next: any) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Authentication required" });
     }
     next();
   };
+
+  // User routes
+  app.get("/api/user/stats", requireAuth, userService.getUserStats);
+  app.get("/api/user/streak", requireAuth, userService.getUserStreak);
+  app.post("/api/user/streak/claim", requireAuth, userService.claimStreakReward);
+  app.get("/api/user/rank", requireAuth, userService.getUserRank);
+  app.get("/api/user/referrals", requireAuth, userService.getUserReferrals);
+  app.post("/api/user/referrals", requireAuth, userService.createReferral);
+
+  // Gamification - Streak endpoints
+  app.get("/api/gamification/streak", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const streakData = await storage.getUserStreakData(userId);
+      
+      // Check if streak needs to be updated
+      const needsUpdate = await storage.needsStreakUpdate(userId);
+      if (needsUpdate) {
+        await storage.updateUserStreak(userId);
+        await storage.initializeStreakGoals(userId);
+      }
+      
+      res.json(streakData);
+    } catch (error) {
+      console.error("Error fetching streak data:", error);
+      res.status(500).json({ message: "Failed to fetch streak data" });
+    }
+  });
+
+  app.post("/api/gamification/streak/claim", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const streakData = await storage.getUserStreakData(userId);
+      
+      if (!streakData.canClaimReward) {
+        return res.status(400).json({ message: "No reward available to claim" });
+      }
+      
+      // Calculate XP based on streak length
+      let xpEarned = 50; // Base reward
+      if (streakData.days >= 30) xpEarned = 500; // Monthly champion
+      else if (streakData.days % 7 === 0) xpEarned = 200; // Perfect week
+      else if ([7, 14, 21, 50, 100].includes(streakData.days)) xpEarned = 300; // Milestones
+      
+      // Award XP and mark reward as claimed
+      await storage.addUserXP(userId, xpEarned);
+      await storage.markStreakRewardClaimed(userId);
+      
+      res.json({ xpEarned, message: "Streak reward claimed successfully!" });
+    } catch (error) {
+      console.error("Error claiming streak reward:", error);
+      res.status(500).json({ message: "Failed to claim streak reward" });
+    }
+  });
+
+  app.post("/api/gamification/streak/update-goal", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { goalDescription, progressIncrement = 1 } = req.body;
+      
+      await storage.updateStreakGoalProgress(userId, goalDescription, progressIncrement);
+      
+      // Check if all goals are completed and update achievements
+      await storage.checkAchievements(userId);
+      
+      res.json({ message: "Goal progress updated successfully" });
+    } catch (error) {
+      console.error("Error updating goal progress:", error);
+      res.status(500).json({ message: "Failed to update goal progress" });
+    }
+  });
 
   // AI routes - Enhanced with GPT-4o and DALL-E 3
   app.get("/api/ai/tutor", requireAuth, aiService.getAITutor);
