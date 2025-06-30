@@ -7,6 +7,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { UserProvider } from "@/contexts/user-context";
 import { RealTimeProvider } from "@/contexts/real-time-context";
 import { ProtectedRoute } from "@/components/protected-route";
+import { Footer } from "@/components/layout/footer";
 
 import Dashboard from "@/pages/dashboard";
 import BattleZone from "@/pages/battle-zone";
@@ -34,25 +35,30 @@ function App() {
         <AuthProvider>
           <UserProvider>
             <RealTimeProvider>
-              <Switch>
-                <Route path="/" component={HomePage} />
-                <ProtectedRoute path="/dashboard" component={Dashboard} />
-                <ProtectedRoute path="/battle-zone" component={BattleZone} />
-                <ProtectedRoute path="/ai-tools" component={AiTools} />
-                <ProtectedRoute path="/ai-tools/study-notes" component={StudyNotesGenerator} />
-                <ProtectedRoute path="/ai-tools/answer-checker" component={AnswerChecker} />
-                <ProtectedRoute path="/ai-tools/performance" component={PerformanceAnalytics} />
-                <ProtectedRoute path="/ai-tutor" component={AiTutor} />
-                <ProtectedRoute path="/ai-visual-lab" component={AIVisualLab} />
-                <ProtectedRoute path="/security-dashboard" component={SecurityDashboard} />
-                <ProtectedRoute path="/lead-generation" component={LeadGeneration} />                
-                <ProtectedRoute path="/profile" component={ProfileSettings} />
-                <ProtectedRoute path="/create-profile" component={CreateProfile} />
-                <ProtectedRoute path="/websocket-test" component={WebSocketTest} />
-                <ProtectedRoute path="/leaderboard" component={LeaderboardPage} />
-                <Route path="/auth" component={AuthPage} />
-                <Route component={NotFound} />
-              </Switch>
+              <div className="min-h-screen flex flex-col">
+                <main className="flex-1">
+                  <Switch>
+                    <Route path="/" component={HomePage} />
+                    <ProtectedRoute path="/dashboard" component={Dashboard} />
+                    <ProtectedRoute path="/battle-zone" component={BattleZone} />
+                    <ProtectedRoute path="/ai-tools" component={AiTools} />
+                    <ProtectedRoute path="/ai-tools/study-notes" component={StudyNotesGenerator} />
+                    <ProtectedRoute path="/ai-tools/answer-checker" component={AnswerChecker} />
+                    <ProtectedRoute path="/ai-tools/performance" component={PerformanceAnalytics} />
+                    <ProtectedRoute path="/ai-tutor" component={AiTutor} />
+                    <ProtectedRoute path="/ai-visual-lab" component={AIVisualLab} />
+                    <ProtectedRoute path="/security-dashboard" component={SecurityDashboard} />
+                    <ProtectedRoute path="/lead-generation" component={LeadGeneration} />                
+                    <ProtectedRoute path="/profile" component={ProfileSettings} />
+                    <ProtectedRoute path="/create-profile" component={CreateProfile} />
+                    <ProtectedRoute path="/websocket-test" component={WebSocketTest} />
+                    <ProtectedRoute path="/leaderboard" component={LeaderboardPage} />
+                    <Route path="/auth" component={AuthPage} />
+                    <Route component={NotFound} />
+                  </Switch>
+                </main>
+                <Footer />
+              </div>
               <Toaster />
             </RealTimeProvider>
           </UserProvider>
