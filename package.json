@@ -67,7 +67,7 @@
     "input-otp": "^1.2.4",
     "lucide-react": "^0.453.0",
     "memoizee": "^0.4.17",
-    "openai": "^4.97.0",
+    "openai": "^4.104.0",
     "openid-client": "^6.6.1",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",

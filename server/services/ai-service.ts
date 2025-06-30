@@ -43,7 +43,7 @@ export const aiService = {
   },
   
   /**
-   * Get a response from the AI tutor
+   * Get a response from the AI tutor with enhanced GPT-4o capabilities
    */
   async getAITutorResponse(req: Request, res: Response) {
     if (!req.isAuthenticated() || !req.user) {
@@ -51,58 +51,160 @@ export const aiService = {
     }
     
     const schema = z.object({
-      message: z.string().min(1, "Message cannot be empty")
+      message: z.string().min(1, "Message cannot be empty"),
+      subject: z.string().optional(),
+      includeVisuals: z.boolean().optional(),
+      difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional()
     });
     
     try {
-      const { message } = schema.parse(req.body);
+      const { message, subject, includeVisuals, difficulty } = schema.parse(req.body);
       const userId = (req.user as any).id;
       
-      // Get the user's AI tutor
-      const tutor = await storage.getAITutorForUser(userId);
+      // Get user data and AI tutor
+      const [tutor, user] = await Promise.all([
+        storage.getAITutorForUser(userId),
+        storage.getUserById(userId)
+      ]);
       
       if (!tutor) {
         return res.status(404).json({ message: "AI tutor not found" });
       }
       
-      // Get the user's conversation history
+      // Get conversation history for context
       const conversation = await storage.getRecentConversation(userId);
       
-      // Build the prompt context
-      let promptContext = `You are ${tutor.name}, ${tutor.specialty}. Your personality traits are ${tutor.personalityTraits}. `;
-      promptContext += `You are helping a student named ${(req.user as any).name} who is on the ${(req.user as any).track} track. `;
-      promptContext += "Provide educational guidance in a friendly, encouraging manner. Be concise and helpful. ";
-      
-      // Format previous messages for context if they exist
+      // Enhanced system prompt for immersive experience
+      const systemPrompt = `You are ${tutor.name}, an advanced AI tutor specializing in ${tutor.specialty} for Indian competitive exams (JEE, NEET, UPSC, CLAT, CUET).
+
+Student Profile:
+- Name: ${user?.name}
+- Grade: ${user?.grade || 'Not specified'}
+- Level: ${user?.level || 1}
+- Track: ${user?.track || 'General'}
+- Current XP: ${user?.currentXp || 0}
+
+Your Enhanced Teaching Approach:
+- Provide immersive, step-by-step explanations with real-world applications
+- Use Indian context examples and NCERT references
+- Adapt difficulty based on student level: ${difficulty || 'auto-detect'}
+- Create engaging learning experiences with interactive elements
+- Suggest visual aids when concepts benefit from diagrams or illustrations
+- Include memory techniques and exam strategies
+- Connect topics to competitive exam patterns
+- Encourage critical thinking through probing questions
+
+Personality: ${tutor.personalityTraits}
+Current Subject: ${subject || 'General discussion'}
+
+Respond in an engaging, conversational manner that makes learning enjoyable and memorable. If the topic would benefit from visual representation, mention specific diagrams or illustrations that would help.`;
+
+      // Format conversation history
       const previousMessages = conversation 
-        ? conversation.messages.map(msg => ({
+        ? conversation.messages.slice(-6).map(msg => ({
             role: msg.role,
             content: msg.content
           }))
         : [];
       
-      // Get response from OpenAI
+      // Generate enhanced AI response
       const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
-          { role: "system", content: promptContext },
+          { role: "system", content: systemPrompt },
           ...previousMessages,
           { role: "user", content: message }
         ],
-        max_tokens: 500
+        max_tokens: 1500,
+        temperature: 0.8,
+        presence_penalty: 0.1,
+        frequency_penalty: 0.1
       });
       
-      const response = completion.choices[0].message.content;
+      const aiResponse = completion.choices[0].message.content;
       
-      // Return the AI response
-      return res.status(200).json({ response });
+      // Check if visual content would be helpful
+      const needsVisuals = includeVisuals || 
+        /diagram|chart|graph|visual|illustration|draw|image|picture|flowchart|concept map|structure|formula|equation/i.test(aiResponse || '');
+      
+      let visualSuggestions = null;
+      if (needsVisuals) {
+        visualSuggestions = await this.generateVisualSuggestions(message, subject || '', aiResponse || '');
+      }
+      
+      // Save enhanced conversation
+      await storage.saveConversation({
+        userId,
+        tutorId: tutor.id,
+        messages: [
+          { role: 'user', content: message, timestamp: new Date() },
+          { role: 'assistant', content: aiResponse || '', timestamp: new Date() }
+        ],
+        subject: subject || 'General',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+      
+      // Update achievements
+      await storage.incrementAISessionCount(userId);
+      
+      return res.status(200).json({ 
+        response: aiResponse,
+        tutor: {
+          name: tutor.name,
+          specialty: tutor.specialty,
+          avatar: tutor.avatar
+        },
+        visualSuggestions,
+        personalized: true,
+        studentLevel: user?.level || 1,
+        subject: subject || 'General'
+      });
     } catch (error) {
       if (error instanceof z.ZodError) {
         const validationError = fromZodError(error);
         return res.status(400).json({ message: validationError.message });
       }
-      console.error("AI tutor response error:", error);
+      console.error("Enhanced AI tutor response error:", error);
       return res.status(500).json({ message: "Error generating AI response" });
+    }
+  },
+
+  /**
+   * Generate visual content suggestions using GPT-4o analysis
+   */
+  async generateVisualSuggestions(userMessage: string, subject: string, aiResponse: string) {
+    try {
+      const visualPrompt = `Analyze this educational interaction and suggest specific visual aids that would enhance understanding:
+
+Subject: ${subject}
+Student Question: ${userMessage}
+AI Response: ${aiResponse}
+
+Provide a JSON response with practical visual suggestions:
+{
+  "diagrams": ["specific diagram descriptions that would help visualize concepts"],
+  "illustrations": ["educational illustrations that would clarify complex ideas"],
+  "charts": ["types of charts/graphs that would organize information better"],
+  "conceptMaps": ["concept mapping suggestions for connecting ideas"],
+  "generateImage": true/false,
+  "imagePrompt": "specific DALL-E prompt if an image would be most helpful"
+}
+
+Focus on visuals that directly support Indian competitive exam preparation.`;
+
+      const visualResponse = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [{ role: "user", content: visualPrompt }],
+        max_tokens: 600,
+        temperature: 0.3,
+        response_format: { type: "json_object" }
+      });
+
+      return JSON.parse(visualResponse.choices[0].message.content || '{}');
+    } catch (error) {
+      console.error('Visual suggestions generation error:', error);
+      return null;
     }
   },
   
@@ -758,6 +860,407 @@ Analyze this student's performance data and provide comprehensive analytics:
       
       console.error("Error generating diagram:", error);
       return res.status(500).json({ message: "Error generating diagram content" });
+    }
+  },
+
+  /**
+   * Generate educational images using DALL-E 3 for immersive learning
+   */
+  async generateEducationalImage(req: Request, res: Response) {
+    if (!req.isAuthenticated() || !req.user) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
+    const schema = z.object({
+      topic: z.string().min(1, "Topic is required"),
+      subject: z.string().min(1, "Subject is required"),
+      style: z.enum(["diagram", "illustration", "chart", "concept_map", "infographic"]).optional(),
+      examType: z.string().optional(),
+      customPrompt: z.string().optional()
+    });
+
+    try {
+      const { topic, subject, style, examType, customPrompt } = schema.parse(req.body);
+      const userId = (req.user as any).id;
+
+      // Create educational image prompt for DALL-E 3
+      let imagePrompt = customPrompt || `Create an educational ${style || 'diagram'} for "${topic}" in ${subject}${examType ? ` for ${examType} exam preparation` : ''}. 
+
+The image should be:
+- Clear, professional, and educational
+- Include labeled diagrams and key concepts
+- Use vibrant colors but maintain readability
+- Include text annotations and explanations
+- Be suitable for Indian competitive exam students
+- Have a clean, modern design with good visual hierarchy
+
+Focus on making complex concepts easy to understand through visual representation.`;
+
+      // Generate image using DALL-E 3
+      const imageResponse = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: imagePrompt,
+        n: 1,
+        size: "1024x1024",
+        quality: "standard",
+        style: "natural"
+      });
+
+      const imageUrl = imageResponse.data[0].url;
+
+      // Generate explanation for the image
+      const explanationPrompt = `Explain this educational image about "${topic}" in ${subject}. Describe:
+1. What the image illustrates
+2. Key concepts shown
+3. How students can use this for exam preparation
+4. Important details to focus on
+
+Keep the explanation concise and exam-oriented.`;
+
+      const explanationResponse = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { role: "system", content: "You are an expert educator explaining visual learning materials for Indian competitive exams." },
+          { role: "user", content: explanationPrompt }
+        ],
+        max_tokens: 600,
+        temperature: 0.4
+      });
+
+      const explanation = explanationResponse.choices[0].message.content;
+
+      // Update user's AI tool usage
+      await storage.incrementAISessionCount(userId);
+
+      // Send real-time notification
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser(userId, {
+          type: 'ai_insight_generated',
+          userId,
+          messageType: 'educational_image',
+          message: `Educational image for "${topic}" has been generated!`,
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        imageUrl,
+        explanation,
+        topic,
+        subject,
+        style: style || 'diagram',
+        examType,
+        generatedAt: new Date()
+      });
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      console.error("DALL-E image generation error:", error);
+      return res.status(500).json({ 
+        message: "Error generating educational image",
+        details: error.message 
+      });
+    }
+  },
+
+  /**
+   * Generate comprehensive visual learning package (Image + SVG + Explanation + Quiz)
+   */
+  async generateVisualLearningPackage(req: Request, res: Response) {
+    if (!req.isAuthenticated() || !req.user) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
+    const schema = z.object({
+      topic: z.string().min(1, "Topic is required"),
+      subject: z.string().min(1, "Subject is required"),
+      examType: z.string().optional(),
+      includeImage: z.boolean().default(true),
+      includeDiagram: z.boolean().default(true),
+      includeQuiz: z.boolean().default(true)
+    });
+
+    try {
+      const { topic, subject, examType, includeImage, includeDiagram, includeQuiz } = schema.parse(req.body);
+      const userId = (req.user as any).id;
+
+      const results: any = {
+        topic,
+        subject,
+        examType,
+        generatedAt: new Date(),
+        packageComponents: []
+      };
+
+      // Generate DALL-E 3 image if requested
+      if (includeImage) {
+        try {
+          const imagePrompt = `Create a comprehensive educational illustration for "${topic}" in ${subject}${examType ? ` for ${examType} exam` : ''}. 
+
+The illustration should include:
+- Multiple visual elements explaining the concept
+- Clear labels and annotations
+- Step-by-step visual breakdown
+- Key formulas or definitions
+- Color-coded sections for easy understanding
+- Professional educational design
+- Suitable for Indian competitive exam students
+
+Make it visually rich but educational, focusing on clarity and comprehensive coverage of the topic.`;
+
+          const imageResponse = await openai.images.generate({
+            model: "dall-e-3",
+            prompt: imagePrompt,
+            n: 1,
+            size: "1024x1024",
+            quality: "standard"
+          });
+
+          results.educationalImage = {
+            url: imageResponse.data[0].url,
+            type: "comprehensive_illustration"
+          };
+          results.packageComponents.push("educational_image");
+        } catch (imageError) {
+          console.error("Image generation failed:", imageError);
+          results.imageError = "Failed to generate educational image";
+        }
+      }
+
+      // Generate comprehensive explanation
+      const explanationPrompt = `Create a comprehensive learning guide for "${topic}" in ${subject}${examType ? ` for ${examType} exam preparation` : ''}. Include:
+
+1. **Concept Overview**: Clear explanation of the fundamental concepts
+2. **Visual Elements**: Description of key visual components and their significance
+3. **Exam Strategy**: How this topic appears in competitive exams
+4. **Memory Techniques**: Mnemonics and memory aids
+5. **Common Mistakes**: Typical errors students make
+6. **Practice Approach**: How to practice and master this topic
+7. **Related Topics**: Connections to other subjects/chapters
+8. **Quick Review Points**: Key facts for last-minute revision
+
+Format this as a comprehensive study guide that complements the visual materials.`;
+
+      const explanationResponse = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { role: "system", content: "You are an expert educator creating comprehensive study guides for Indian competitive exam preparation. Focus on practical learning strategies and exam success." },
+          { role: "user", content: explanationPrompt }
+        ],
+        max_tokens: 1200,
+        temperature: 0.5
+      });
+
+      results.comprehensiveGuide = explanationResponse.choices[0].message.content;
+      results.packageComponents.push("comprehensive_guide");
+
+      // Generate quiz questions if requested
+      if (includeQuiz) {
+        try {
+          const quizPrompt = `Create 5 multiple-choice questions for "${topic}" in ${subject}${examType ? ` for ${examType} exams` : ''}. Include explanations for each answer.
+
+Format as JSON:
+{
+  "questions": [
+    {
+      "question": "Question text",
+      "options": ["A) ...", "B) ...", "C) ...", "D) ..."],
+      "correct": 0,
+      "explanation": "Why this answer is correct"
+    }
+  ]
+}`;
+
+          const quizResponse = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [{ role: "user", content: quizPrompt }],
+            max_tokens: 1000,
+            temperature: 0.4,
+            response_format: { type: "json_object" }
+          });
+
+          results.practiceQuiz = JSON.parse(quizResponse.choices[0].message.content || '{}');
+          results.packageComponents.push("practice_quiz");
+        } catch (quizError) {
+          console.error("Quiz generation failed:", quizError);
+          results.quizError = "Failed to generate practice quiz";
+        }
+      }
+
+      // Update user stats
+      await storage.incrementAISessionCount(userId);
+
+      // Send real-time notification
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser(userId, {
+          type: 'ai_insight_generated',
+          userId,
+          messageType: 'visual_learning_package',
+          message: `Complete visual learning package for "${topic}" has been generated!`,
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        ...results,
+        totalComponents: results.packageComponents.length
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      console.error("Visual learning package generation error:", error);
+      return res.status(500).json({ message: "Error generating visual learning package" });
+    }
+  },
+
+  /**
+   * Generate interactive study session with AI tutor and visuals
+   */
+  async generateInteractiveStudySession(req: Request, res: Response) {
+    if (!req.isAuthenticated() || !req.user) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
+    const schema = z.object({
+      topic: z.string().min(1, "Topic is required"),
+      subject: z.string().min(1, "Subject is required"),
+      duration: z.number().min(15).max(120).default(30), // Study session duration in minutes
+      difficulty: z.enum(["beginner", "intermediate", "advanced"]).default("intermediate"),
+      includeVisuals: z.boolean().default(true)
+    });
+
+    try {
+      const { topic, subject, duration, difficulty, includeVisuals } = schema.parse(req.body);
+      const userId = (req.user as any).id;
+      const user = await storage.getUserById(userId);
+      const tutor = await storage.getAITutorForUser(userId);
+
+      // Create personalized study session plan
+      const sessionPrompt = `Create a ${duration}-minute interactive study session for "${topic}" in ${subject} at ${difficulty} level.
+
+Student Profile:
+- Name: ${user?.name}
+- Level: ${user?.level}
+- Current XP: ${user?.currentXp}
+
+Create a structured session with:
+1. **Introduction** (5 minutes): Hook and learning objectives
+2. **Core Content** (60% of time): Main concepts with examples
+3. **Practice** (25% of time): Interactive exercises
+4. **Review** (10% of time): Summary and key takeaways
+
+Include:
+- Engaging explanations that build on previous knowledge
+- Real-world applications and Indian context examples
+- Interactive questions throughout
+- Memory techniques and mnemonics
+- Exam-focused tips and strategies
+
+Format as JSON:
+{
+  "sessionPlan": {
+    "title": "Session title",
+    "duration": ${duration},
+    "sections": [
+      {
+        "name": "Section name",
+        "duration": "X minutes",
+        "content": "Detailed content",
+        "activities": ["activity1", "activity2"],
+        "keyPoints": ["point1", "point2"]
+      }
+    ]
+  },
+  "learningObjectives": ["objective1", "objective2"],
+  "prerequisites": ["prerequisite1"],
+  "nextSteps": ["next topic to study"]
+}`;
+
+      const sessionResponse = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { role: "system", content: `You are ${tutor?.name || 'an expert AI tutor'} creating personalized interactive study sessions for Indian competitive exam preparation.` },
+          { role: "user", content: sessionPrompt }
+        ],
+        max_tokens: 1500,
+        temperature: 0.7,
+        response_format: { type: "json_object" }
+      });
+
+      const sessionData = JSON.parse(sessionResponse.choices[0].message.content || '{}');
+
+      // Generate supporting visual if requested
+      let supportingVisual = null;
+      if (includeVisuals) {
+        try {
+          const visualPrompt = `Create an educational infographic for "${topic}" in ${subject} that supports a ${duration}-minute study session. 
+
+The infographic should:
+- Summarize key concepts visually
+- Include flowcharts, diagrams, or process illustrations
+- Use color coding for different concept categories
+- Include memorable visual mnemonics
+- Be optimized for quick reference during study
+- Have a modern, engaging design suitable for competitive exam prep
+
+Focus on visual clarity and educational value.`;
+
+          const visualResponse = await openai.images.generate({
+            model: "dall-e-3",
+            prompt: visualPrompt,
+            n: 1,
+            size: "1024x1024",
+            quality: "standard"
+          });
+
+          supportingVisual = {
+            url: visualResponse.data[0].url,
+            type: "study_session_infographic",
+            description: "Visual summary and reference guide for the study session"
+          };
+        } catch (visualError) {
+          console.error("Visual generation failed:", visualError);
+        }
+      }
+
+      // Update user stats
+      await storage.incrementAISessionCount(userId);
+
+      // Send real-time notification
+      if ((global as any).sendToUser) {
+        (global as any).sendToUser(userId, {
+          type: 'ai_insight_generated',
+          userId,
+          messageType: 'interactive_study_session',
+          message: `Interactive ${duration}-minute study session for "${topic}" is ready!`,
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        ...sessionData,
+        supportingVisual,
+        tutor: {
+          name: tutor?.name || 'AI Tutor',
+          specialty: tutor?.specialty || 'General Studies'
+        },
+        generatedAt: new Date(),
+        estimatedCompletionTime: `${duration} minutes`
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      console.error("Interactive study session generation error:", error);
+      return res.status(500).json({ message: "Error generating interactive study session" });
     }
   }
 };
