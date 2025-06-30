@@ -10,6 +10,8 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
+  mobile: text("mobile").unique(),
+  mobileVerified: boolean("mobile_verified").default(false).notNull(),
   profileImage: text("profile_image"),
   grade: text("grade"),             // Student's class/grade (e.g., "5", "11", "undergraduate")
   track: text("track"),             // Educational track or stream
@@ -210,6 +212,17 @@ export const userStreakGoals = pgTable("user_streak_goals", {
   date: timestamp("date").defaultNow().notNull()
 });
 
+// OTP Verification Table for mobile authentication
+export const otpVerification = pgTable("otp_verification", {
+  id: serial("id").primaryKey(),
+  mobile: text("mobile").notNull(),
+  otp: text("otp").notNull(),
+  purpose: text("purpose").notNull(), // 'signup', 'login', 'password_reset'
+  verified: boolean("verified").default(false).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
 // Relations
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -307,6 +320,12 @@ export const insertUserSchema = createInsertSchema(users, {
   username: (schema) => schema.min(3, "Username must be at least 3 characters"),
   password: (schema) => schema.min(6, "Password must be at least 6 characters"),
   name: (schema) => schema.min(2, "Name must be at least 2 characters"),
+  mobile: (schema) => schema.regex(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit Indian number"),
+});
+
+export const insertOtpVerificationSchema = createInsertSchema(otpVerification, {
+  mobile: (schema) => schema.regex(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit Indian number"),
+  otp: (schema) => schema.length(6, "OTP must be exactly 6 digits"),
 });
 
 export const insertCourseSchema = createInsertSchema(courses, {
@@ -333,6 +352,7 @@ export const insertAchievementSchema = createInsertSchema(achievements, {
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type InsertOtpVerification = z.infer<typeof insertOtpVerificationSchema>;
 export type User = typeof users.$inferSelect;
 export type Course = typeof courses.$inferSelect;
 export type UserCourse = typeof userCourses.$inferSelect;
@@ -350,3 +370,4 @@ export type StreakGoal = typeof streakGoals.$inferSelect;
 export type UserStreakGoal = typeof userStreakGoals.$inferSelect;
 export type WellnessPreference = typeof wellnessPreferences.$inferSelect;
 export type WellnessBreak = typeof wellnessBreaks.$inferSelect;
+export type OtpVerification = typeof otpVerification.$inferSelect;

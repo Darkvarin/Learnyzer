@@ -16,7 +16,7 @@ export const authService = {
       // Validate request body against the schema
       const validatedData = insertUserSchema.parse(req.body);
       
-      // Check if username or email already exists
+      // Check if username, email, or mobile already exists
       const existingUser = await storage.getUserByUsername(validatedData.username);
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
@@ -25,6 +25,14 @@ export const authService = {
       const existingEmail = await storage.getUserByEmail(validatedData.email);
       if (existingEmail) {
         return res.status(400).json({ message: "Email already exists" });
+      }
+
+      // Check if mobile number already exists (if provided)
+      if (validatedData.mobile) {
+        const existingMobile = await storage.getUserByMobile(validatedData.mobile);
+        if (existingMobile) {
+          return res.status(400).json({ message: "Mobile number already exists" });
+        }
       }
       
       // Hash the password

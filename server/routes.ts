@@ -12,6 +12,7 @@ import { supportService } from "./services/support-service";
 import { wellnessService } from "./services/wellness-service";
 import { leaderboardService } from "./services/leaderboard-service";
 import { paymentService } from "./services/payment-service";
+import { otpService } from "./services/otp-service";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up enhanced authentication with improved security and database session storage
@@ -22,6 +23,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/login", authService.login);
   app.post("/api/auth/logout", authService.logout);
   app.get("/api/auth/me", authService.getCurrentUser);
+
+  // OTP routes for mobile verification
+  app.post('/api/auth/send-otp', async (req, res) => {
+    try {
+      const { mobile, purpose } = req.body;
+      
+      if (!mobile || !purpose) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Mobile number and purpose are required' 
+        });
+      }
+
+      const result = await otpService.sendOTP(mobile, purpose);
+      res.json(result);
+    } catch (error) {
+      console.error('Send OTP error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Internal server error' 
+      });
+    }
+  });
+
+  app.post('/api/auth/verify-otp', async (req, res) => {
+    try {
+      const { mobile, otp, purpose } = req.body;
+      
+      if (!mobile || !otp || !purpose) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Mobile number, OTP, and purpose are required' 
+        });
+      }
+
+      const result = await otpService.verifyOTP(mobile, otp, purpose);
+      res.json(result);
+    } catch (error) {
+      console.error('Verify OTP error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Internal server error' 
+      });
+    }
+  });
 
   // User routes
   app.get("/api/user/stats", userService.getUserStats);

@@ -195,6 +195,15 @@ export const storage = {
       where: eq(schema.users.email, email)
     });
   },
+
+  /**
+   * Get a user by mobile number
+   */
+  async getUserByMobile(mobile: string) {
+    return await db.query.users.findFirst({
+      where: eq(schema.users.mobile, mobile)
+    });
+  },
   
   /**
    * Get a user by referral code
