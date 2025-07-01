@@ -49,7 +49,8 @@ function App() {
                     <ProtectedRoute path="/ai-tutor" component={AiTutor} />
                     <ProtectedRoute path="/ai-visual-lab" component={AIVisualLab} />
                     <ProtectedRoute path="/security-dashboard" component={SecurityDashboard} />
-                    <ProtectedRoute path="/lead-generation" component={LeadGeneration} />                
+                    <ProtectedRoute path="/lead-generation" component={LeadGeneration} />
+                    <Route path="/feedback" component={CustomerFeedback} />                
                     <ProtectedRoute path="/profile" component={ProfileSettings} />
                     <ProtectedRoute path="/create-profile" component={CreateProfile} />
                     <ProtectedRoute path="/websocket-test" component={WebSocketTest} />
