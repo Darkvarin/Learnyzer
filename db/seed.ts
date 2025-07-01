@@ -133,9 +133,9 @@ async function seed() {
     ];
     
     // Check if categories already exist
-    const existingCategory = await db.query.courseCategories.findFirst();
+    const existingCourseCategory = await db.query.courseCategories.findFirst();
     
-    if (!existingCategory) {
+    if (!existingCourseCategory) {
       for (const category of courseCategories) {
         await db.insert(schema.courseCategories).values(category);
       }
@@ -920,8 +920,8 @@ async function seed() {
       }
     ];
 
-    const existingCategory = await db.query.feedbackCategories.findFirst();
-    if (!existingCategory) {
+    const existingFeedbackCategory = await db.query.feedbackCategories.findFirst();
+    if (!existingFeedbackCategory) {
       for (const category of feedbackCategories) {
         await db.insert(schema.feedbackCategories).values(category);
       }

@@ -27,6 +27,7 @@ import PerformanceAnalytics from "./pages/ai-tools/performance";
 import AIVisualLab from "./pages/ai-visual-lab";
 import SecurityDashboard from "./pages/security-dashboard";
 import LeadGeneration from "./pages/lead-generation";
+import CustomerFeedback from "./pages/customer-feedback";
 
 function App() {
   return (

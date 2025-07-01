@@ -15,6 +15,10 @@ import { paymentService } from "./services/payment-service";
 import { otpService } from "./services/otp-service";
 import { setupSEORoutes } from "./services/sitemap-generator";
 import { storage } from "./storage";
+import { db } from "../db";
+import { eq, and, asc, desc, isNotNull, sql } from "drizzle-orm";
+import * as schema from "../shared/schema";
+import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up enhanced authentication with improved security and database session storage
