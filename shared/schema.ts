@@ -223,6 +223,58 @@ export const otpVerification = pgTable("otp_verification", {
   createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
+// Customer Feedback System Tables
+export const feedbackCategories = pgTable("feedback_categories", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  icon: text("icon"),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
+export const customerFeedback = pgTable("customer_feedback", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  categoryId: integer("category_id").references(() => feedbackCategories.id).notNull(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  type: text("type").notNull(), // 'feedback', 'feature_request', 'bug_report', 'suggestion'
+  priority: text("priority").default("medium").notNull(), // 'low', 'medium', 'high', 'urgent'
+  status: text("status").default("open").notNull(), // 'open', 'under_review', 'in_progress', 'resolved', 'closed'
+  rating: integer("rating"), // 1-5 star rating (optional)
+  isAnonymous: boolean("is_anonymous").default(false).notNull(),
+  userEmail: text("user_email"), // For anonymous feedback
+  userName: text("user_name"), // For anonymous feedback
+  tags: text("tags"), // JSON array of tags
+  attachments: text("attachments"), // JSON array of attachment URLs
+  adminResponse: text("admin_response"),
+  adminResponseAt: timestamp("admin_response_at"),
+  respondedBy: integer("responded_by").references(() => users.id),
+  upvotes: integer("upvotes").default(0).notNull(),
+  downvotes: integer("downvotes").default(0).notNull(),
+  isPublic: boolean("is_public").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+export const feedbackVotes = pgTable("feedback_votes", {
+  id: serial("id").primaryKey(),
+  feedbackId: integer("feedback_id").references(() => customerFeedback.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  voteType: text("vote_type").notNull(), // 'up' or 'down'
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
+export const feedbackComments = pgTable("feedback_comments", {
+  id: serial("id").primaryKey(),
+  feedbackId: integer("feedback_id").references(() => customerFeedback.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  comment: text("comment").notNull(),
+  isAdminComment: boolean("is_admin_comment").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
 // Relations
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -237,7 +289,10 @@ export const usersRelations = relations(users, ({ many }) => ({
   referralsReceived: many(referrals, { relationName: "referralsReceived" }),
   userStreakGoals: many(userStreakGoals),
   wellnessPreferences: many(wellnessPreferences),
-  wellnessBreaks: many(wellnessBreaks)
+  wellnessBreaks: many(wellnessBreaks),
+  feedback: many(customerFeedback),
+  feedbackVotes: many(feedbackVotes),
+  feedbackComments: many(feedbackComments)
 }));
 
 export const coursesRelations = relations(courses, ({ many }) => ({
@@ -313,6 +368,28 @@ export const wellnessBreaksRelations = relations(wellnessBreaks, ({ one }) => ({
   user: one(users, { fields: [wellnessBreaks.userId], references: [users.id] })
 }));
 
+export const feedbackCategoriesRelations = relations(feedbackCategories, ({ many }) => ({
+  feedback: many(customerFeedback)
+}));
+
+export const customerFeedbackRelations = relations(customerFeedback, ({ one, many }) => ({
+  user: one(users, { fields: [customerFeedback.userId], references: [users.id] }),
+  category: one(feedbackCategories, { fields: [customerFeedback.categoryId], references: [feedbackCategories.id] }),
+  respondent: one(users, { fields: [customerFeedback.respondedBy], references: [users.id] }),
+  votes: many(feedbackVotes),
+  comments: many(feedbackComments)
+}));
+
+export const feedbackVotesRelations = relations(feedbackVotes, ({ one }) => ({
+  feedback: one(customerFeedback, { fields: [feedbackVotes.feedbackId], references: [customerFeedback.id] }),
+  user: one(users, { fields: [feedbackVotes.userId], references: [users.id] })
+}));
+
+export const feedbackCommentsRelations = relations(feedbackComments, ({ one }) => ({
+  feedback: one(customerFeedback, { fields: [feedbackComments.feedbackId], references: [customerFeedback.id] }),
+  user: one(users, { fields: [feedbackComments.userId], references: [users.id] })
+}));
+
 // Schemas for validation
 
 export const insertUserSchema = createInsertSchema(users, {
@@ -351,8 +428,48 @@ export const insertAchievementSchema = createInsertSchema(achievements, {
   xpReward: (schema) => schema.min(1, "XP reward must be at least 1"),
 });
 
+export const insertFeedbackCategorySchema = createInsertSchema(feedbackCategories, {
+  name: (schema) => schema.min(2, "Category name must be at least 2 characters"),
+});
+
+export const insertCustomerFeedbackSchema = createInsertSchema(customerFeedback, {
+  title: (schema) => schema.min(5, "Title must be at least 5 characters").max(200, "Title too long"),
+  description: (schema) => schema.min(10, "Description must be at least 10 characters"),
+  type: (schema) => schema.refine(
+    (val) => ["feedback", "feature_request", "bug_report", "suggestion"].includes(val),
+    "Invalid feedback type"
+  ),
+  priority: (schema) => schema.refine(
+    (val) => ["low", "medium", "high", "urgent"].includes(val),
+    "Invalid priority level"
+  ),
+  rating: (schema) => schema.optional().refine(
+    (val) => val === undefined || (val >= 1 && val <= 5),
+    "Rating must be between 1 and 5"
+  ),
+  userEmail: (schema) => schema.optional().refine(
+    (val) => val === undefined || val === null || z.string().email().safeParse(val).success,
+    "Invalid email format"
+  ),
+});
+
+export const insertFeedbackVoteSchema = createInsertSchema(feedbackVotes, {
+  voteType: (schema) => schema.refine(
+    (val) => ["up", "down"].includes(val),
+    "Vote type must be 'up' or 'down'"
+  ),
+});
+
+export const insertFeedbackCommentSchema = createInsertSchema(feedbackComments, {
+  comment: (schema) => schema.min(3, "Comment must be at least 3 characters"),
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertOtpVerification = z.infer<typeof insertOtpVerificationSchema>;
+export type InsertFeedbackCategory = z.infer<typeof insertFeedbackCategorySchema>;
+export type InsertCustomerFeedback = z.infer<typeof insertCustomerFeedbackSchema>;
+export type InsertFeedbackVote = z.infer<typeof insertFeedbackVoteSchema>;
+export type InsertFeedbackComment = z.infer<typeof insertFeedbackCommentSchema>;
 export type User = typeof users.$inferSelect;
 export type Course = typeof courses.$inferSelect;
 export type UserCourse = typeof userCourses.$inferSelect;
@@ -371,3 +488,7 @@ export type UserStreakGoal = typeof userStreakGoals.$inferSelect;
 export type WellnessPreference = typeof wellnessPreferences.$inferSelect;
 export type WellnessBreak = typeof wellnessBreaks.$inferSelect;
 export type OtpVerification = typeof otpVerification.$inferSelect;
+export type FeedbackCategory = typeof feedbackCategories.$inferSelect;
+export type CustomerFeedback = typeof customerFeedback.$inferSelect;
+export type FeedbackVote = typeof feedbackVotes.$inferSelect;
+export type FeedbackComment = typeof feedbackComments.$inferSelect;
