@@ -873,6 +873,63 @@ async function seed() {
       console.log("⏩ Demo user already exists, skipping...");
     }
 
+    // Seed feedback categories
+    console.log("🏷️ Seeding feedback categories...");
+    const feedbackCategories = [
+      {
+        name: "General Feedback",
+        description: "General feedback about the platform",
+        icon: "MessageSquare",
+        isActive: true
+      },
+      {
+        name: "Feature Request",
+        description: "Suggestions for new features",
+        icon: "Lightbulb", 
+        isActive: true
+      },
+      {
+        name: "Bug Report",
+        description: "Report bugs and technical issues",
+        icon: "Bug",
+        isActive: true
+      },
+      {
+        name: "AI Tutor",
+        description: "Feedback about AI tutoring experience",
+        icon: "Brain",
+        isActive: true
+      },
+      {
+        name: "Course Content",
+        description: "Feedback about course materials and content",
+        icon: "BookOpen",
+        isActive: true
+      },
+      {
+        name: "User Experience",
+        description: "Feedback about website usability and design",
+        icon: "Palette",
+        isActive: true
+      },
+      {
+        name: "Performance",
+        description: "Website speed and performance issues",
+        icon: "Zap",
+        isActive: true
+      }
+    ];
+
+    const existingCategory = await db.query.feedbackCategories.findFirst();
+    if (!existingCategory) {
+      for (const category of feedbackCategories) {
+        await db.insert(schema.feedbackCategories).values(category);
+      }
+      console.log(`✅ Added ${feedbackCategories.length} feedback categories`);
+    } else {
+      console.log("⏩ Feedback categories already exist, skipping...");
+    }
+
     console.log("🎉 Database seeding completed successfully!");
   } catch (error) {
     console.error("Error seeding database:", error);

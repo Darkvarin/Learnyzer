@@ -387,6 +387,340 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/leaderboard/friends", leaderboardService.getFriendsLeaderboard);
   app.get("/api/leaderboard/position/:userId?", leaderboardService.getUserRankPosition);
 
+  // Customer Feedback API Routes
+  
+  // Get all feedback categories
+  app.get("/api/feedback/categories", async (req, res) => {
+    try {
+      const categories = await db.query.feedbackCategories.findMany({
+        where: eq(schema.feedbackCategories.isActive, true),
+        orderBy: asc(schema.feedbackCategories.name)
+      });
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching feedback categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  // Get all feedback with filtering and pagination
+  app.get("/api/feedback", async (req, res) => {
+    try {
+      const { 
+        type, 
+        status, 
+        priority, 
+        categoryId, 
+        isPublic, 
+        page = "1", 
+        limit = "10",
+        sortBy = "createdAt",
+        sortOrder = "desc"
+      } = req.query;
+
+      const offset = (parseInt(page as string) - 1) * parseInt(limit as string);
+      
+      // Build query conditions
+      const whereConditions = [];
+      if (type) whereConditions.push(eq(schema.customerFeedback.type, type as string));
+      if (status) whereConditions.push(eq(schema.customerFeedback.status, status as string));
+      if (priority) whereConditions.push(eq(schema.customerFeedback.priority, priority as string));
+      if (categoryId) whereConditions.push(eq(schema.customerFeedback.categoryId, parseInt(categoryId as string)));
+      if (isPublic !== undefined) whereConditions.push(eq(schema.customerFeedback.isPublic, isPublic === "true"));
+
+      const feedback = await db.query.customerFeedback.findMany({
+        where: whereConditions.length > 0 ? and(...whereConditions) : undefined,
+        with: {
+          user: {
+            columns: { id: true, username: true, name: true, profileImage: true }
+          },
+          category: true,
+          votes: true,
+          comments: {
+            with: {
+              user: {
+                columns: { id: true, username: true, name: true, profileImage: true }
+              }
+            },
+            orderBy: asc(schema.feedbackComments.createdAt)
+          }
+        },
+        limit: parseInt(limit as string),
+        offset: offset,
+        orderBy: sortOrder === "asc" ? asc(schema.customerFeedback.createdAt) : desc(schema.customerFeedback.createdAt)
+      });
+
+      const totalCount = await db.$count(schema.customerFeedback, 
+        whereConditions.length > 0 ? and(...whereConditions) : undefined
+      );
+
+      res.json({
+        feedback,
+        pagination: {
+          page: parseInt(page as string),
+          limit: parseInt(limit as string),
+          total: totalCount,
+          totalPages: Math.ceil(totalCount / parseInt(limit as string))
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching feedback:", error);
+      res.status(500).json({ error: "Failed to fetch feedback" });
+    }
+  });
+
+  // Get feedback by ID
+  app.get("/api/feedback/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const feedback = await db.query.customerFeedback.findFirst({
+        where: eq(schema.customerFeedback.id, parseInt(id)),
+        with: {
+          user: {
+            columns: { id: true, username: true, name: true, profileImage: true }
+          },
+          category: true,
+          respondent: {
+            columns: { id: true, username: true, name: true }
+          },
+          votes: {
+            with: {
+              user: {
+                columns: { id: true, username: true }
+              }
+            }
+          },
+          comments: {
+            with: {
+              user: {
+                columns: { id: true, username: true, name: true, profileImage: true }
+              }
+            },
+            orderBy: asc(schema.feedbackComments.createdAt)
+          }
+        }
+      });
+
+      if (!feedback) {
+        return res.status(404).json({ error: "Feedback not found" });
+      }
+
+      res.json(feedback);
+    } catch (error) {
+      console.error("Error fetching feedback:", error);
+      res.status(500).json({ error: "Failed to fetch feedback" });
+    }
+  });
+
+  // Submit new feedback
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const validatedData = schema.insertCustomerFeedbackSchema.parse(req.body);
+      
+      // If user is authenticated, use their ID, otherwise allow anonymous feedback
+      if (req.isAuthenticated()) {
+        validatedData.userId = (req.user as any).id;
+      }
+
+      const [newFeedback] = await db.insert(schema.customerFeedback)
+        .values(validatedData)
+        .returning();
+
+      // Fetch the complete feedback with relations
+      const completeFeedback = await db.query.customerFeedback.findFirst({
+        where: eq(schema.customerFeedback.id, newFeedback.id),
+        with: {
+          user: {
+            columns: { id: true, username: true, name: true, profileImage: true }
+          },
+          category: true
+        }
+      });
+
+      res.status(201).json(completeFeedback);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ errors: error.errors });
+      }
+      console.error("Error creating feedback:", error);
+      res.status(500).json({ error: "Failed to create feedback" });
+    }
+  });
+
+  // Vote on feedback
+  app.post("/api/feedback/:id/vote", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { voteType } = req.body;
+      const userId = (req.user as any).id;
+
+      // Check if user already voted
+      const existingVote = await db.query.feedbackVotes.findFirst({
+        where: and(
+          eq(schema.feedbackVotes.feedbackId, parseInt(id)),
+          eq(schema.feedbackVotes.userId, userId)
+        )
+      });
+
+      if (existingVote) {
+        if (existingVote.voteType === voteType) {
+          // Remove vote if same type
+          await db.delete(schema.feedbackVotes)
+            .where(eq(schema.feedbackVotes.id, existingVote.id));
+        } else {
+          // Update vote type
+          await db.update(schema.feedbackVotes)
+            .set({ voteType })
+            .where(eq(schema.feedbackVotes.id, existingVote.id));
+        }
+      } else {
+        // Create new vote
+        await db.insert(schema.feedbackVotes)
+          .values({
+            feedbackId: parseInt(id),
+            userId,
+            voteType
+          });
+      }
+
+      // Update vote counts
+      const votes = await db.query.feedbackVotes.findMany({
+        where: eq(schema.feedbackVotes.feedbackId, parseInt(id))
+      });
+
+      const upvotes = votes.filter(v => v.voteType === "up").length;
+      const downvotes = votes.filter(v => v.voteType === "down").length;
+
+      await db.update(schema.customerFeedback)
+        .set({ upvotes, downvotes })
+        .where(eq(schema.customerFeedback.id, parseInt(id)));
+
+      res.json({ upvotes, downvotes });
+    } catch (error) {
+      console.error("Error voting on feedback:", error);
+      res.status(500).json({ error: "Failed to vote on feedback" });
+    }
+  });
+
+  // Add comment to feedback
+  app.post("/api/feedback/:id/comments", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { comment } = req.body;
+      const userId = (req.user as any).id;
+
+      const validatedData = schema.insertFeedbackCommentSchema.parse({
+        feedbackId: parseInt(id),
+        userId,
+        comment
+      });
+
+      const [newComment] = await db.insert(schema.feedbackComments)
+        .values(validatedData)
+        .returning();
+
+      const completeComment = await db.query.feedbackComments.findFirst({
+        where: eq(schema.feedbackComments.id, newComment.id),
+        with: {
+          user: {
+            columns: { id: true, username: true, name: true, profileImage: true }
+          }
+        }
+      });
+
+      res.status(201).json(completeComment);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ errors: error.errors });
+      }
+      console.error("Error adding comment:", error);
+      res.status(500).json({ error: "Failed to add comment" });
+    }
+  });
+
+  // Admin response to feedback
+  app.patch("/api/feedback/:id/respond", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { response, status } = req.body;
+      const userId = (req.user as any).id;
+
+      const updateData: any = {
+        adminResponse: response,
+        adminResponseAt: new Date(),
+        respondedBy: userId,
+        updatedAt: new Date()
+      };
+
+      if (status) {
+        updateData.status = status;
+      }
+
+      await db.update(schema.customerFeedback)
+        .set(updateData)
+        .where(eq(schema.customerFeedback.id, parseInt(id)));
+
+      const updatedFeedback = await db.query.customerFeedback.findFirst({
+        where: eq(schema.customerFeedback.id, parseInt(id)),
+        with: {
+          user: {
+            columns: { id: true, username: true, name: true, profileImage: true }
+          },
+          category: true,
+          respondent: {
+            columns: { id: true, username: true, name: true }
+          }
+        }
+      });
+
+      res.json(updatedFeedback);
+    } catch (error) {
+      console.error("Error responding to feedback:", error);
+      res.status(500).json({ error: "Failed to respond to feedback" });
+    }
+  });
+
+  // Get feedback statistics
+  app.get("/api/feedback/stats", async (req, res) => {
+    try {
+      const totalFeedback = await db.$count(schema.customerFeedback);
+      const openFeedback = await db.$count(schema.customerFeedback, eq(schema.customerFeedback.status, "open"));
+      const resolvedFeedback = await db.$count(schema.customerFeedback, eq(schema.customerFeedback.status, "resolved"));
+      
+      const feedbackByType = await db.select({
+        type: schema.customerFeedback.type,
+        count: sql<number>`count(*)`
+      })
+      .from(schema.customerFeedback)
+      .groupBy(schema.customerFeedback.type);
+
+      const feedbackByPriority = await db.select({
+        priority: schema.customerFeedback.priority,
+        count: sql<number>`count(*)`
+      })
+      .from(schema.customerFeedback)
+      .groupBy(schema.customerFeedback.priority);
+
+      const averageRating = await db.select({
+        avgRating: sql<number>`avg(rating)`
+      })
+      .from(schema.customerFeedback)
+      .where(isNotNull(schema.customerFeedback.rating));
+
+      res.json({
+        total: totalFeedback,
+        open: openFeedback,
+        resolved: resolvedFeedback,
+        byType: feedbackByType,
+        byPriority: feedbackByPriority,
+        averageRating: averageRating[0]?.avgRating || 0
+      });
+    } catch (error) {
+      console.error("Error fetching feedback stats:", error);
+      res.status(500).json({ error: "Failed to fetch feedback statistics" });
+    }
+  });
+
   // Payment routes
   app.post("/api/payment/create-order", paymentService.createOrder);
   app.post("/api/payment/verify-payment", paymentService.verifyPayment);
