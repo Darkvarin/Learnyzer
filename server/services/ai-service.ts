@@ -74,30 +74,37 @@ export const aiService = {
       // Get conversation history for context
       const conversation = await storage.getRecentConversation(userId);
       
-      // Enhanced system prompt for immersive experience
-      const systemPrompt = `You are ${tutor.name}, an advanced AI tutor specializing in ${tutor.specialty} for Indian competitive exams (JEE, NEET, UPSC, CLAT, CUET).
+      // Enhanced system prompt for topic-focused, immersive experience
+      const systemPrompt = `You are ${tutor.name}, an expert AI tutor specializing in ${tutor.specialty} for Indian competitive exams (JEE, NEET, UPSC, CLAT, CUET, CSE).
 
 Student Profile:
 - Name: ${user?.name}
-- Grade: ${user?.grade || 'Not specified'}
+- Grade: ${user?.grade || 'Competitive Exam Level'}
 - Level: ${user?.level || 1}
 - Track: ${user?.track || 'General'}
 - Current XP: ${user?.currentXp || 0}
 
+CRITICAL INSTRUCTIONS - Topic Focus:
+1. ALWAYS stay directly relevant to the student's question/topic
+2. Provide SPECIFIC, exam-relevant information
+3. Include concrete examples, formulas, and facts
+4. Avoid generic study advice unless specifically asked
+5. Connect every response to actual exam patterns and question types
+
 Your Enhanced Teaching Approach:
-- Provide immersive, step-by-step explanations with real-world applications
-- Use Indian context examples and NCERT references
-- Adapt difficulty based on student level: ${difficulty || 'auto-detect'}
-- Create engaging learning experiences with interactive elements
-- Suggest visual aids when concepts benefit from diagrams or illustrations
-- Include memory techniques and exam strategies
-- Connect topics to competitive exam patterns
-- Encourage critical thinking through probing questions
+- Give precise, step-by-step explanations with Indian educational context
+- Use NCERT references and competitive exam examples
+- Adapt complexity to student level: ${difficulty || 'intermediate'}
+- Provide specific formulas, theorems, or key facts
+- Suggest exact visual aids (diagrams, charts, graphs) when helpful
+- Include memory techniques and mnemonics for the specific topic
+- Reference how this exact topic appears in ${subject || 'competitive'} exams
+- Ask focused follow-up questions to test understanding
 
 Personality: ${tutor.personalityTraits}
-Current Subject: ${subject || 'General discussion'}
+Current Subject Focus: ${subject || 'Cross-subject consultation'}
 
-Respond in an engaging, conversational manner that makes learning enjoyable and memorable. If the topic would benefit from visual representation, mention specific diagrams or illustrations that would help.`;
+REMEMBER: Every response must be directly tied to the student's specific query. Provide actionable, exam-focused content that helps them master the exact topic they're asking about.`;
 
       // Format conversation history
       const previousMessages = conversation 
@@ -272,12 +279,26 @@ Focus on visuals that directly support Indian competitive exam preparation.`;
         timestamp: new Date()
       });
       
-      // Get AI response
-      const promptContext = `You are ${tutor.name}, ${tutor.specialty}. Your personality traits are ${tutor.personalityTraits}. `;
-      const previousMessages = conversation.messages.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      }));
+      // Get AI response with enhanced topic focus
+      const promptContext = `You are ${tutor.name}, an expert ${tutor.specialty} tutor for Indian competitive exams.
+
+Personality: ${tutor.personalityTraits}
+
+CRITICAL INSTRUCTIONS:
+1. Stay focused on the student's specific question/topic
+2. Provide exam-relevant, factual information
+3. Include specific formulas, concepts, or facts when applicable
+4. Use Indian educational context and references
+5. Give precise, actionable answers that help with exam preparation
+
+Avoid generic responses. Focus on the exact topic the student is asking about.`;
+      
+      const previousMessages = Array.isArray(conversation.messages) 
+        ? conversation.messages.map((msg: any) => ({
+            role: msg.role,
+            content: msg.content
+          }))
+        : [];
       
       const completion = await openai.chat.completions.create({
         model: "gpt-4o",
@@ -285,7 +306,8 @@ Focus on visuals that directly support Indian competitive exam preparation.`;
           { role: "system", content: promptContext },
           ...previousMessages
         ],
-        max_tokens: 500
+        max_tokens: 800,
+        temperature: 0.3 // Lower temperature for more focused responses
       });
       
       const aiResponse = completion.choices[0].message.content;
@@ -356,6 +378,8 @@ Focus on visuals that directly support Indian competitive exam preparation.`;
     
     const schema = z.object({
       topic: z.string().min(2, "Topic must be at least 2 characters"),
+      subject: z.string().optional(),
+      examType: z.string().optional(),
       preferences: z.object({
         style: z.string().optional(),
         length: z.string().optional(),
@@ -365,37 +389,73 @@ Focus on visuals that directly support Indian competitive exam preparation.`;
     });
     
     try {
-      const { topic, preferences } = schema.parse(req.body);
+      const { topic, subject, examType, preferences } = schema.parse(req.body);
+      const userId = (req.user as any).id;
+      const user = await storage.getUserById(userId);
       
-      // Build the prompt
-      let prompt = `Generate comprehensive study notes on "${topic}". `;
+      // Build a comprehensive, topic-focused prompt
+      const systemPrompt = `You are an expert Indian competitive exam tutor specializing in creating highly focused, exam-relevant study notes. Your expertise spans JEE, NEET, UPSC, CLAT, CUET, and CSE preparation.
+
+Key Requirements:
+1. Stay STRICTLY focused on the given topic
+2. Provide exam-relevant content only
+3. Include specific formulas, concepts, and facts
+4. Use Indian educational context and examples
+5. Structure content for optimal retention and understanding`;
+
+      let userPrompt = `Create comprehensive study notes specifically focused on "${topic}"`;
+      
+      if (subject) {
+        userPrompt += ` in ${subject}`;
+      }
+      
+      if (examType) {
+        userPrompt += ` for ${examType} exam preparation`;
+      }
+      
+      userPrompt += `.\n\nStudent Profile:
+- Grade/Level: ${user?.grade || 'Competitive Exam Level'}
+- Track: ${user?.track || 'General'}
+- Current Level: ${user?.level || 1}
+
+MANDATORY Structure:
+1. **Topic Overview** (2-3 lines defining the exact topic)
+2. **Key Concepts** (Core principles directly related to ${topic})
+3. **Important Formulas/Facts** (Specific to ${topic} only)
+4. **Exam-Specific Points** (How ${topic} appears in questions)
+5. **Memory Techniques** (Mnemonics for ${topic})
+6. **Common Mistakes** (Errors students make with ${topic})
+7. **Practice Strategy** (How to master ${topic})
+
+`;
       
       if (preferences.style) {
-        prompt += `Use a ${preferences.style} style. `;
+        userPrompt += `Style: ${preferences.style}\n`;
       }
       
       if (preferences.length) {
-        prompt += `Make the notes ${preferences.length}. `;
+        userPrompt += `Length: ${preferences.length}\n`;
       }
       
       if (preferences.includeExamples) {
-        prompt += "Include practical examples and illustrations. ";
+        userPrompt += `Include specific examples and solved problems related to ${topic}.\n`;
       }
       
       if (preferences.focusAreas && preferences.focusAreas.length > 0) {
-        prompt += `Focus especially on: ${preferences.focusAreas.join(", ")}. `;
+        userPrompt += `Special focus areas within ${topic}: ${preferences.focusAreas.join(", ")}\n`;
       }
       
-      prompt += "Format the notes in a structured, easy-to-understand manner with clear headings and bullet points where appropriate. Target Indian students preparing for exams.";
+      userPrompt += `\nCRITICAL: Every piece of content must be directly related to "${topic}". Do not include general study advice or unrelated concepts. Focus exclusively on mastering this specific topic.`;
       
       // Get response from OpenAI
       const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
-          { role: "system", content: "You are an expert educational content creator specializing in creating high-quality study notes for Indian students." },
-          { role: "user", content: prompt }
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt }
         ],
-        max_tokens: 1500
+        max_tokens: 1800,
+        temperature: 0.3 // Lower temperature for more focused, factual content
       });
       
       const notes = completion.choices[0].message.content;
@@ -883,18 +943,20 @@ Analyze this student's performance data and provide comprehensive analytics:
       const { topic, subject, style, examType, customPrompt } = schema.parse(req.body);
       const userId = (req.user as any).id;
 
-      // Create educational image prompt for DALL-E 3
-      let imagePrompt = customPrompt || `Create an educational ${style || 'diagram'} for "${topic}" in ${subject}${examType ? ` for ${examType} exam preparation` : ''}. 
+      // Create topic-focused educational image prompt for DALL-E 3
+      let imagePrompt = customPrompt || `Create a highly specific educational ${style || 'diagram'} exclusively about "${topic}" in ${subject}${examType ? ` for ${examType} competitive exam` : ''}. 
 
-The image should be:
-- Clear, professional, and educational
-- Include labeled diagrams and key concepts
-- Use vibrant colors but maintain readability
-- Include text annotations and explanations
-- Be suitable for Indian competitive exam students
-- Have a clean, modern design with good visual hierarchy
+CRITICAL REQUIREMENTS FOR "${topic}":
+- Show ONLY concepts, formulas, and principles directly related to ${topic}
+- Include specific step-by-step breakdown of ${topic} processes
+- Add precise labels and annotations explaining ${topic} components
+- Use visual elements that directly teach ${topic}
+- Include key formulas, equations, or facts specific to ${topic}
+- Show how ${topic} appears in competitive exam questions
+- Make it comprehensive for complete ${topic} understanding
+- Use Indian educational context and standards
 
-Focus on making complex concepts easy to understand through visual representation.`;
+Create a focused visual learning tool that teaches ${topic} completely. Every element must be directly relevant to mastering ${topic}.`;
 
       // Generate image using DALL-E 3
       const imageResponse = await openai.images.generate({
@@ -998,18 +1060,19 @@ Keep the explanation concise and exam-oriented.`;
       // Generate DALL-E 3 image if requested
       if (includeImage) {
         try {
-          const imagePrompt = `Create a comprehensive educational illustration for "${topic}" in ${subject}${examType ? ` for ${examType} exam` : ''}. 
+          const imagePrompt = `Create a highly detailed educational diagram specifically for "${topic}" in ${subject}${examType ? ` (${examType} exam preparation)` : ''}. 
 
-The illustration should include:
-- Multiple visual elements explaining the concept
-- Clear labels and annotations
-- Step-by-step visual breakdown
-- Key formulas or definitions
-- Color-coded sections for easy understanding
-- Professional educational design
-- Suitable for Indian competitive exam students
+SPECIFIC REQUIREMENTS for ${topic}:
+- Show the exact concepts, formulas, and principles of ${topic}
+- Include step-by-step visual breakdown of how ${topic} works
+- Add clear labels, annotations, and explanations specific to ${topic}
+- Use diagrams, flowcharts, or visual representations relevant to ${topic}
+- Include key formulas, equations, or definitions related to ${topic}
+- Color-code different aspects of ${topic} for better understanding
+- Make it exam-focused with competitive exam question patterns
+- Ensure Indian educational context and NCERT alignment
 
-Make it visually rich but educational, focusing on clarity and comprehensive coverage of the topic.`;
+Create a comprehensive visual guide that teaches ${topic} completely through the illustration. Focus on accuracy and educational value for ${subject} students.`;
 
           const imageResponse = await openai.images.generate({
             model: "dall-e-3",
