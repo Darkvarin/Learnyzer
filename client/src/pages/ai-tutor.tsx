@@ -360,6 +360,14 @@ export default function AiTutor() {
       speak(text);
     }
   };
+
+  const handleVoiceInteraction = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  };
   
   // Auto-start teaching if coming from course page with chapter parameters
   useEffect(() => {
@@ -552,7 +560,7 @@ export default function AiTutor() {
                           <Book className="h-4 w-4 text-primary-400" />
                           <div className="absolute inset-0 bg-primary/5 animate-pulse rounded"></div>
                         </div>
-                        <span>{aiTutor?.subjects?.[1] || "UPSC/CLAT/CUET/CSE visual concept explanations"}</span>
+                        <span>{(aiTutor as any)?.subjects?.[1] || "UPSC/CLAT/CUET/CSE visual concept explanations"}</span>
                         <ChevronRight className="h-4 w-4 text-primary-400 ml-auto" />
                       </li>
                       <li 
@@ -570,7 +578,7 @@ export default function AiTutor() {
                           <FileCheck className="h-4 w-4 text-cyan-400" />
                           <div className="absolute inset-0 bg-cyan-500/5 animate-pulse rounded"></div>
                         </div>
-                        <span>{aiTutor?.subjects?.[2] || "Voice-based coaching for all entrance exams"}</span>
+                        <span>{(aiTutor as any)?.subjects?.[2] || "Voice-based coaching for all entrance exams"}</span>
                         <ChevronRight className="h-4 w-4 text-cyan-400 ml-auto" />
                       </li>
                     </ul>
@@ -724,8 +732,8 @@ export default function AiTutor() {
                           </div>
                         </div>
                       </>
-                    ) : conversation && conversation.messages && conversation.messages.length > 0 ? (
-                      conversation.messages.map((msg, idx) => (
+                    ) : conversation && (conversation as any).messages && (conversation as any).messages.length > 0 ? (
+                      (conversation as any).messages.map((msg: any, idx: any) => (
                         <div key={idx} className="flex items-start space-x-3 mb-6">
                           {msg.role === 'assistant' ? (
                             <>
@@ -733,7 +741,7 @@ export default function AiTutor() {
                                 <Robot className="h-5 w-5 text-white" />
                               </div>
                               <div className="flex-1">
-                                <div className="text-sm font-semibold text-primary-400 mb-1">{aiTutor?.name || "AI Tutor"}</div>
+                                <div className="text-sm font-semibold text-primary-400 mb-1">{(aiTutor as any)?.name || "AI Tutor"}</div>
                                 <div className="bg-dark-surface text-gray-200 p-4 rounded-lg border border-dark-border">
                                   {msg.content}
                                 </div>
@@ -1065,14 +1073,14 @@ export default function AiTutor() {
                         <div className="flex items-center space-x-3 mb-4">
                           <div className="w-12 h-12 rounded-full overflow-hidden">
                             <img 
-                              src={aiTutor?.image || "/ai-tutor-placeholder.svg"} 
+                              src={(aiTutor as any)?.image || "/ai-tutor-placeholder.svg"} 
                               alt="AI Tutor" 
                               className="w-full h-full object-cover"
                             />
                           </div>
                           <div>
-                            <p className="font-medium">{aiTutor?.name || "AI Tutor"}</p>
-                            <p className="text-xs text-gray-400">{aiTutor?.specialty || "Your Learning Assistant"}</p>
+                            <p className="font-medium">{(aiTutor as any)?.name || "AI Tutor"}</p>
+                            <p className="text-xs text-gray-400">{(aiTutor as any)?.specialty || "Your Learning Assistant"}</p>
                           </div>
                         </div>
                         
