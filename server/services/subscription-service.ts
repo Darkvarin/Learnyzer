@@ -5,14 +5,24 @@ import { eq, and, gte, desc } from "drizzle-orm";
 export class SubscriptionService {
   // Define subscription tier limits
   private static readonly TIER_LIMITS = {
-    free: {
-      aiChatLimit: 10,
-      aiVisualLabLimit: 2,
-      aiTutorSessionLimit: 3,
-      visualPackageLimit: 1,
-      courseAccessLevel: 'basic',
+    free_trial: {
+      aiChatLimit: 100,
+      aiVisualLabLimit: 20,
+      aiTutorSessionLimit: 30,
+      visualPackageLimit: 10,
+      courseAccessLevel: 'unlimited',
       prioritySupport: false,
-      downloadLimit: 5
+      downloadLimit: 50,
+      trialDuration: 1 // 1 day
+    },
+    free: {
+      aiChatLimit: 0, // No access after trial expires
+      aiVisualLabLimit: 0,
+      aiTutorSessionLimit: 0,
+      visualPackageLimit: 0,
+      courseAccessLevel: 'locked',
+      prioritySupport: false,
+      downloadLimit: 0
     },
     basic: {
       aiChatLimit: 50,
@@ -72,13 +82,12 @@ export class SubscriptionService {
     subscriptionTier: string;
   }> {
     try {
-      // Get user's subscription details
+      // Get user's subscription details - temporary compatibility mode
       const user = await db.query.users.findFirst({
         where: eq(users.id, userId),
         columns: {
-          subscriptionTier: true,
-          subscriptionStatus: true,
-          subscriptionEndDate: true
+          id: true,
+          createdAt: true
         }
       });
 
@@ -86,7 +95,17 @@ export class SubscriptionService {
         throw new Error('User not found');
       }
 
-      const tier = user.subscriptionTier || 'free';
+      // Determine subscription tier based on user account age (trial logic)
+      const accountAge = Date.now() - user.createdAt.getTime();
+      const oneDayInMs = 24 * 60 * 60 * 1000;
+      
+      let tier: string;
+      if (accountAge <= oneDayInMs) {
+        tier = 'free_trial'; // First day = trial period
+      } else {
+        tier = 'free'; // After trial expires
+      }
+      
       const limits = this.TIER_LIMITS[tier as keyof typeof this.TIER_LIMITS];
       
       if (!limits) {
