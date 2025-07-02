@@ -6,10 +6,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Image, BookOpen, Brain, Zap, Download, Share2 } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Loader2, Image, BookOpen, Brain, Zap, Download, Share2, GraduationCap, Book, FileCheck, Target, Award } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 
 export default function AIVisualLab() {
   const [activeTab, setActiveTab] = useState("image");
@@ -28,6 +30,27 @@ export default function AIVisualLab() {
   });
   const [results, setResults] = useState<any>(null);
   const { toast } = useToast();
+  const [location, navigate] = useLocation();
+
+  // State for exam selection modal
+  const [showExamModal, setShowExamModal] = useState(false);
+
+  // Get user data for exam selection check
+  const { data: userData } = useQuery({
+    queryKey: ['/api/auth/me'],
+  });
+
+  // Check if user has selected an exam
+  const userExam = (userData as any)?.selectedExam;
+
+  // Function to check if user can access AI tools
+  const checkExamSelection = () => {
+    if (!userExam) {
+      setShowExamModal(true);
+      return false;
+    }
+    return true;
+  };
 
   // Get user data for exam filtering
   const { data: user } = useQuery({
@@ -35,7 +58,6 @@ export default function AIVisualLab() {
   });
 
   // Filter exam types based on user's selected exam if locked
-  const userExam = (user as any)?.selectedExam;
   const examLocked = (user as any)?.examLocked;
 
   const subjects = [
@@ -66,6 +88,11 @@ export default function AIVisualLab() {
   };
 
   const generateImage = async () => {
+    // Check if user has selected an exam before allowing AI tool usage
+    if (!checkExamSelection()) {
+      return;
+    }
+
     if (!formData.topic || !formData.subject) {
       toast({
         title: "Missing Information",

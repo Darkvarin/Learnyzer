@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useLocation } from "wouter";
 import { 
   Send, 
@@ -427,6 +428,11 @@ export default function AiTutor() {
   }, [(conversation as any)?.messages, voiceEnabled]);
 
   const handlePromptClick = (promptText: string) => {
+    // Check if user has selected an exam before allowing AI tool usage
+    if (!checkExamSelection()) {
+      return;
+    }
+    
     setMessage(promptText);
     
     // Add a slight delay before sending to let the UI update
@@ -1259,6 +1265,93 @@ export default function AiTutor() {
           </div>
         </div>
       </main>
+
+      {/* Exam Selection Modal */}
+      <Dialog open={showExamModal} onOpenChange={setShowExamModal}>
+        <DialogContent className="bg-dark-card border border-dark-border">
+          <DialogHeader>
+            <DialogTitle className="text-gradient-primary">Choose Your Entrance Exam</DialogTitle>
+            <DialogDescription className="text-gray-400">
+              To use AI learning tools and prevent misuse, please select your target entrance exam first. This ensures focused, exam-specific content.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-primary-600 hover:bg-primary-700 text-white"
+              >
+                <GraduationCap className="h-4 w-4 mr-2" />
+                JEE Main/Advanced
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Book className="h-4 w-4 mr-2" />
+                NEET
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-orange-600 hover:bg-orange-700 text-white"
+              >
+                <FileCheck className="h-4 w-4 mr-2" />
+                UPSC
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-purple-600 hover:bg-purple-700 text-white"
+              >
+                <Target className="h-4 w-4 mr-2" />
+                CLAT
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-cyan-600 hover:bg-cyan-700 text-white"
+              >
+                <Zap className="h-4 w-4 mr-2" />
+                CUET
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Award className="h-4 w-4 mr-2" />
+                CSE
+              </Button>
+            </div>
+            
+            <div className="flex justify-center pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowExamModal(false)}
+                className="border-dark-border text-gray-400 hover:text-white"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
