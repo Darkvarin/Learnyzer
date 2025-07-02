@@ -7,6 +7,7 @@ import { useVoice } from "@/hooks/useVoice";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { SubscriptionGuard, useSubscriptionTracking } from "@/components/subscription/subscription-guard";
+import { TrialLockdown, useTrialStatus } from "@/components/trial/trial-lockdown";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";

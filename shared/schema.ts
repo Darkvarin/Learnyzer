@@ -27,14 +27,15 @@ export const users = pgTable("users", {
   lastStreakDate: timestamp("last_streak_date"),
   referralCode: text("referral_code").notNull().unique(),
   // Subscription fields
-  subscriptionTier: text("subscription_tier").default("free").notNull(), // free, basic, pro, quarterly, half_yearly, yearly
-  subscriptionStatus: text("subscription_status").default("inactive").notNull(), // inactive, active, expired, cancelled
-  subscriptionStartDate: timestamp("subscription_start_date"),
-  subscriptionEndDate: timestamp("subscription_end_date"),
-  paymentId: text("payment_id"),
-  razorpayOrderId: text("razorpay_order_id"),
-  razorpayPaymentId: text("razorpay_payment_id"),
-  autoRenewal: boolean("auto_renewal").default(false).notNull(),
+  // Subscription fields (temporarily commented for compatibility)
+  // subscriptionTier: text("subscription_tier").default("free").notNull(), // free, basic, pro, quarterly, half_yearly, yearly
+  // subscriptionStatus: text("subscription_status").default("inactive").notNull(), // inactive, active, expired, cancelled
+  // subscriptionStartDate: timestamp("subscription_start_date"),
+  // subscriptionEndDate: timestamp("subscription_end_date"),
+  // paymentId: text("payment_id"),
+  // razorpayOrderId: text("razorpay_order_id"),
+  // razorpayPaymentId: text("razorpay_payment_id"),
+  // autoRenewal: boolean("auto_renewal").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
@@ -224,7 +225,8 @@ export const userStreakGoals = pgTable("user_streak_goals", {
   date: timestamp("date").defaultNow().notNull()
 });
 
-// Usage Tracking Table
+// Usage Tracking Table (temporarily commented for compatibility)
+/*
 export const usageTracking = pgTable("usage_tracking", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
@@ -235,7 +237,7 @@ export const usageTracking = pgTable("usage_tracking", {
   metadata: jsonb("metadata") // Additional data like tokens used, session duration, etc.
 });
 
-// Subscription Limits Table
+// Subscription Limits Table (temporarily commented for compatibility)
 export const subscriptionLimits = pgTable("subscription_limits", {
   id: serial("id").primaryKey(),
   tierName: text("tier_name").notNull().unique(), // free, basic, pro, quarterly, half_yearly, yearly
@@ -248,6 +250,7 @@ export const subscriptionLimits = pgTable("subscription_limits", {
   downloadLimit: integer("download_limit").notNull(), // Content downloads per month
   createdAt: timestamp("created_at").defaultNow().notNull()
 });
+*/
 
 // OTP Verification Table for mobile authentication
 export const otpVerification = pgTable("otp_verification", {
@@ -325,7 +328,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   referralsGiven: many(referrals, { relationName: "referralsGiven" }),
   referralsReceived: many(referrals, { relationName: "referralsReceived" }),
   userStreakGoals: many(userStreakGoals),
-  usageTracking: many(usageTracking),
+  // usageTracking: many(usageTracking), // Temporarily commented for compatibility
   wellnessPreferences: many(wellnessPreferences),
   wellnessBreaks: many(wellnessBreaks),
   feedback: many(customerFeedback),
@@ -428,10 +431,12 @@ export const feedbackCommentsRelations = relations(feedbackComments, ({ one }) =
   user: one(users, { fields: [feedbackComments.userId], references: [users.id] })
 }));
 
-// Usage Tracking Relations
+// Usage Tracking Relations (temporarily commented for compatibility)
+/*
 export const usageTrackingRelations = relations(usageTracking, ({ one }) => ({
   user: one(users, { fields: [usageTracking.userId], references: [users.id] })
 }));
+*/
 
 // Schemas for validation
 
@@ -531,8 +536,8 @@ export type UserStreakGoal = typeof userStreakGoals.$inferSelect;
 export type WellnessPreference = typeof wellnessPreferences.$inferSelect;
 export type WellnessBreak = typeof wellnessBreaks.$inferSelect;
 export type OtpVerification = typeof otpVerification.$inferSelect;
-export type UsageTracking = typeof usageTracking.$inferSelect;
-export type SubscriptionLimits = typeof subscriptionLimits.$inferSelect;
+// export type UsageTracking = typeof usageTracking.$inferSelect; // Temporarily commented for compatibility
+// export type SubscriptionLimits = typeof subscriptionLimits.$inferSelect; // Temporarily commented for compatibility
 export type FeedbackCategory = typeof feedbackCategories.$inferSelect;
 export type CustomerFeedback = typeof customerFeedback.$inferSelect;
 export type FeedbackVote = typeof feedbackVotes.$inferSelect;

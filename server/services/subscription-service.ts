@@ -1,5 +1,6 @@
 import { db } from "@db";
-import { users, usageTracking, subscriptionLimits } from "@shared/schema";
+import { users } from "@shared/schema";
+// import { usageTracking, subscriptionLimits } from "@shared/schema"; // Temporarily commented for compatibility
 import { eq, and, gte, desc } from "drizzle-orm";
 
 export class SubscriptionService {
