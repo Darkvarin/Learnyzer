@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Image, BookOpen, Brain, Zap, Download, Share2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 
 export default function AIVisualLab() {
   const [activeTab, setActiveTab] = useState("image");
@@ -28,15 +29,29 @@ export default function AIVisualLab() {
   const [results, setResults] = useState<any>(null);
   const { toast } = useToast();
 
+  // Get user data for exam filtering
+  const { data: user } = useQuery({
+    queryKey: ['/api/auth/me'],
+  });
+
+  // Filter exam types based on user's selected exam if locked
+  const userExam = (user as any)?.selectedExam;
+  const examLocked = (user as any)?.examLocked;
+
   const subjects = [
     "Physics", "Chemistry", "Mathematics", "Biology", "History", 
     "Geography", "Political Science", "Economics", "English", "Current Affairs", "Computer Science"
   ];
 
-  const examTypes = [
+  // Filter exam types based on user's locked exam
+  const allExamTypes = [
     "JEE Main", "JEE Advanced", "NEET", "UPSC", "CLAT", "CUET", "CSE",
     "GATE", "NDA", "CDS", "SSC", "Banking"
   ];
+  
+  const examTypes = examLocked && userExam 
+    ? allExamTypes.filter(exam => exam.toLowerCase().includes(userExam.toLowerCase()))
+    : allExamTypes;
 
   const styles = [
     { value: "diagram", label: "Educational Diagram" },
@@ -224,10 +239,18 @@ export default function AIVisualLab() {
 
                   <div>
                     <label className="text-sm font-medium text-slate-300 mb-2 block">
-                      Exam Type
+                      Exam Type {examLocked && userExam && (
+                        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded ml-2">
+                          Locked: {userExam.toUpperCase()}
+                        </span>
+                      )}
                     </label>
-                    <Select value={formData.examType} onValueChange={(value) => handleInputChange("examType", value)}>
-                      <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                    <Select 
+                      value={formData.examType} 
+                      onValueChange={(value) => handleInputChange("examType", value)}
+                      disabled={examLocked && userExam}
+                    >
+                      <SelectTrigger className={`bg-slate-700/50 border-slate-600 text-white ${examLocked ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         <SelectValue placeholder="Select exam" />
                       </SelectTrigger>
                       <SelectContent>
