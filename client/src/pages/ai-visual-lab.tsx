@@ -45,7 +45,17 @@ export default function AIVisualLab() {
 
   // Function to check if user can access AI tools
   const checkExamSelection = () => {
+    console.log('Checking exam selection in Visual Lab:', { userData, userExam, isAuthenticated: !!userData });
+    if (!userData) {
+      toast({
+        title: "Please log in",
+        description: "You need to be logged in to use AI tools",
+        variant: "destructive"
+      });
+      return false;
+    }
     if (!userExam) {
+      console.log('No exam selected, showing modal');
       setShowExamModal(true);
       return false;
     }
@@ -220,6 +230,17 @@ export default function AIVisualLab() {
               Create immersive educational content with GPT-4o and DALL-E 3. 
               Generate stunning visuals, comprehensive study materials, and interactive learning experiences.
             </p>
+            <div className="flex justify-center mt-4">
+              <Button
+                onClick={() => checkExamSelection()}
+                variant="outline"
+                size="sm"
+                className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border-red-500/30"
+              >
+                <AlertTriangle className="h-4 w-4 mr-2" />
+                Test Exam Check
+              </Button>
+            </div>
           </div>
         </div>
       </div>

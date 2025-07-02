@@ -69,7 +69,17 @@ export default function AiTutor() {
 
   // Function to check if user can access AI tools
   const checkExamSelection = () => {
+    console.log('Checking exam selection:', { userData, userExam, isAuthenticated: !!userData });
+    if (!userData) {
+      toast({
+        title: "Please log in",
+        description: "You need to be logged in to use AI tools",
+        variant: "destructive"
+      });
+      return false;
+    }
     if (!userExam) {
+      console.log('No exam selected, showing modal');
       setShowExamModal(true);
       return false;
     }
@@ -724,6 +734,15 @@ export default function AiTutor() {
                   </TabsList>
                   
                   <div className="flex items-center gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => checkExamSelection()}
+                      className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border-red-500/30 hover:border-red-500/50"
+                    >
+                      <AlertTriangle className="h-4 w-4 mr-2" />
+                      Test Exam Check
+                    </Button>
                     <Button 
                       variant="outline" 
                       size="sm" 
