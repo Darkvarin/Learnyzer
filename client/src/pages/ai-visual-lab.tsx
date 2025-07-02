@@ -12,6 +12,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import { SubscriptionGuard, useSubscriptionTracking } from "@/components/subscription/subscription-guard";
 
 export default function AIVisualLab() {
   const [activeTab, setActiveTab] = useState("image");
@@ -34,6 +35,9 @@ export default function AIVisualLab() {
 
   // State for exam selection modal
   const [showExamModal, setShowExamModal] = useState(false);
+  
+  // Subscription tracking
+  const { trackFeatureUsage } = useSubscriptionTracking();
 
   // Get user data for exam selection check
   const { data: userData } = useQuery({

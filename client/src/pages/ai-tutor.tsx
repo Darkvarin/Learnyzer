@@ -353,6 +353,17 @@ export default function AiTutor() {
   
   const sendMessageMutation = useMutation({
     mutationFn: async (message: string) => {
+      // Track AI chat usage before sending message
+      const hasAccess = await trackFeatureUsage("ai_chat", {
+        messageLength: message.length,
+        subject: currentSubject,
+        timestamp: new Date().toISOString()
+      });
+      
+      if (!hasAccess) {
+        throw new Error("Usage limit exceeded");
+      }
+      
       return apiRequest("POST", "/api/ai/tutor/respond", { message });
     },
     onSuccess: () => {
@@ -360,12 +371,21 @@ export default function AiTutor() {
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation/recent'] });
       queryClient.invalidateQueries({ queryKey: ['/api/user/stats'] });
     },
-    onError: () => {
-      toast({
-        title: "Failed to send message",
-        description: "There was an error sending your message. Please try again later.",
-        variant: "destructive",
-      });
+    onError: (error) => {
+      const errorMessage = error.message || "Unknown error";
+      if (errorMessage.includes("Usage limit exceeded")) {
+        toast({
+          title: "Daily Limit Reached",
+          description: "You've reached your daily AI chat limit. Upgrade your plan for unlimited access!",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Failed to send message",
+          description: "There was an error sending your message. Please try again later.",
+          variant: "destructive",
+        });
+      }
     }
   });
 
