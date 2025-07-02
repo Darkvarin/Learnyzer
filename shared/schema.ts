@@ -15,6 +15,9 @@ export const users = pgTable("users", {
   profileImage: text("profile_image"),
   grade: text("grade"),             // Student's class/grade (e.g., "5", "11", "undergraduate")
   track: text("track"),             // Educational track or stream
+  selectedExam: text("selected_exam"), // Locked entrance exam (jee, neet, upsc, clat, cuet, cse)
+  examLocked: boolean("exam_locked").default(false).notNull(), // Whether exam selection is locked
+  examLockedAt: timestamp("exam_locked_at"), // When the exam was locked
   level: integer("level").default(1).notNull(),
   currentXp: integer("current_xp").default(0).notNull(),
   nextLevelXp: integer("next_level_xp").default(1000).notNull(),

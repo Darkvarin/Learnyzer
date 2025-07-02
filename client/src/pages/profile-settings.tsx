@@ -44,15 +44,29 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, UploadCloud, Shield, Bell, LogOut } from "lucide-react";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { User, UploadCloud, Shield, Bell, LogOut, Lock, GraduationCap, AlertTriangle } from "lucide-react";
 
 // Validation schemas
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email"),
   profileImage: z.string().optional(),
-  track: z.string().optional(),
-  grade: z.string().optional(),
+  selectedExam: z.string().optional(),
+});
+
+const examSelectionSchema = z.object({
+  selectedExam: z.string().min(1, "Please select an entrance exam"),
 });
 
 const securitySchema = z.object({
