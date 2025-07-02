@@ -383,13 +383,14 @@ export default function AiTutor() {
   
   // Auto-speak AI responses when voice is enabled
   useEffect(() => {
-    if (conversation?.messages && voiceEnabled) {
-      const lastMessage = conversation.messages[conversation.messages.length - 1];
+    if ((conversation as any)?.messages && voiceEnabled) {
+      const messages = (conversation as any).messages;
+      const lastMessage = messages[messages.length - 1];
       if (lastMessage?.role === 'assistant' && lastMessage.content) {
         handleTextToSpeech(lastMessage.content);
       }
     }
-  }, [conversation?.messages, voiceEnabled]);
+  }, [(conversation as any)?.messages, voiceEnabled]);
 
   const handlePromptClick = (promptText: string) => {
     setMessage(promptText);
@@ -487,8 +488,8 @@ export default function AiTutor() {
                     {/* AI tutor image with Solo Leveling frame */}
                     <div className="absolute inset-0 rounded-full overflow-hidden p-1 bg-gradient-to-br from-cyan-500/50 via-primary/40 to-cyan-500/50">
                       <img 
-                        src={aiTutor?.image || "/ai-tutor-placeholder.svg"} 
-                        alt={aiTutor?.name || "AI Tutor"} 
+                        src={(aiTutor as any)?.image || "/ai-tutor-placeholder.svg"} 
+                        alt={(aiTutor as any)?.name || "AI Tutor"} 
                         className="w-full h-full rounded-full object-cover p-0.5 bg-background"
                       />
                     </div>
@@ -500,10 +501,10 @@ export default function AiTutor() {
                   </div>
                   
                   <h2 className="text-xl font-bold mt-5 font-gaming text-glow">
-                    {aiTutor?.name || "AI Tutor"}
+                    {(aiTutor as any)?.name || "AI Tutor"}
                   </h2>
                   <p className="text-sm text-cyan-200/70 mt-1 text-center mb-6 border-b border-cyan-500/20 pb-2">
-                    {aiTutor?.specialty || "Your Entrance Exam Voice Coach"}
+                    {(aiTutor as any)?.specialty || "Your Entrance Exam Voice Coach"}
                   </p>
                   
                   <div className="w-full bg-background/60 rounded-lg p-5 text-sm border border-cyan-500/20 monarch-card-glow relative">
@@ -513,7 +514,7 @@ export default function AiTutor() {
                     
                     <h3 className="font-semibold mb-2 font-gaming text-cyan-200">About</h3>
                     <p className="text-cyan-100/80 text-sm">
-                      {aiTutor?.description || "I'm your AI entrance exam coach for JEE, NEET, UPSC, CLAT, CUET and CSE, providing voice-based guidance with interactive diagrams and presentations for all exam subjects."}
+                      {(aiTutor as any)?.description || "I'm your AI entrance exam coach for JEE, NEET, UPSC, CLAT, CUET and CSE, providing voice-based guidance with interactive diagrams and presentations for all exam subjects."}
                     </p>
                     
                     <h3 className="font-semibold mt-4 mb-2 font-gaming text-cyan-200">Specialties</h3>
@@ -533,7 +534,7 @@ export default function AiTutor() {
                           <GraduationCap className="h-4 w-4 text-cyan-400" />
                           <div className="absolute inset-0 bg-cyan-500/5 animate-pulse rounded"></div>
                         </div>
-                        <span>{aiTutor?.subjects?.[0] || "Interactive JEE/NEET diagrams & presentations"}</span>
+                        <span>{(aiTutor as any)?.subjects?.[0] || "Interactive JEE/NEET diagrams & presentations"}</span>
                         <ChevronRight className="h-4 w-4 text-cyan-400 ml-auto" />
                       </li>
                       <li 
