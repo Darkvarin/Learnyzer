@@ -52,13 +52,8 @@ export default function AIVisualLab() {
     return true;
   };
 
-  // Get user data for exam filtering
-  const { data: user } = useQuery({
-    queryKey: ['/api/auth/me'],
-  });
-
   // Filter exam types based on user's selected exam if locked
-  const examLocked = (user as any)?.examLocked;
+  const examLocked = (userData as any)?.examLocked;
 
   const subjects = [
     "Physics", "Chemistry", "Mathematics", "Biology", "History", 
@@ -128,6 +123,11 @@ export default function AIVisualLab() {
   };
 
   const generateVisualPackage = async () => {
+    // Check if user has selected an exam before allowing AI tool usage
+    if (!checkExamSelection()) {
+      return;
+    }
+
     if (!formData.topic || !formData.subject) {
       toast({
         title: "Missing Information",
@@ -165,6 +165,11 @@ export default function AIVisualLab() {
   };
 
   const generateStudySession = async () => {
+    // Check if user has selected an exam before allowing AI tool usage
+    if (!checkExamSelection()) {
+      return;
+    }
+
     if (!formData.topic || !formData.subject) {
       toast({
         title: "Missing Information",
@@ -592,6 +597,93 @@ export default function AIVisualLab() {
           </Card>
         </div>
       </div>
+
+      {/* Exam Selection Modal */}
+      <Dialog open={showExamModal} onOpenChange={setShowExamModal}>
+        <DialogContent className="bg-dark-card border border-dark-border">
+          <DialogHeader>
+            <DialogTitle className="text-gradient-primary">Choose Your Entrance Exam</DialogTitle>
+            <DialogDescription className="text-gray-400">
+              To use AI learning tools and prevent misuse, please select your target entrance exam first. This ensures focused, exam-specific content.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-primary-600 hover:bg-primary-700 text-white"
+              >
+                <GraduationCap className="h-4 w-4 mr-2" />
+                JEE Main/Advanced
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Book className="h-4 w-4 mr-2" />
+                NEET
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-orange-600 hover:bg-orange-700 text-white"
+              >
+                <FileCheck className="h-4 w-4 mr-2" />
+                UPSC
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-purple-600 hover:bg-purple-700 text-white"
+              >
+                <Target className="h-4 w-4 mr-2" />
+                CLAT
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-cyan-600 hover:bg-cyan-700 text-white"
+              >
+                <Zap className="h-4 w-4 mr-2" />
+                CUET
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile-settings');
+                  setShowExamModal(false);
+                }}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Award className="h-4 w-4 mr-2" />
+                CSE
+              </Button>
+            </div>
+            
+            <div className="flex justify-center pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowExamModal(false)}
+                className="border-dark-border text-gray-400 hover:text-white"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
