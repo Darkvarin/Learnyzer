@@ -13,7 +13,7 @@ import { wellnessService } from "./services/wellness-service";
 import { leaderboardService } from "./services/leaderboard-service";
 import { paymentService } from "./services/payment-service";
 import { otpService } from "./services/otp-service";
-import { SubscriptionService } from "./services/subscription-service";
+import { SimpleSubscriptionService } from "./services/simple-subscription-service";
 import { setupSEORoutes } from "./services/sitemap-generator";
 import { storage } from "./storage";
 import { db } from "../db";

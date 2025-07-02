@@ -28,6 +28,7 @@ import AIVisualLab from "./pages/ai-visual-lab";
 import SecurityDashboard from "./pages/security-dashboard";
 import LeadGeneration from "./pages/lead-generation";
 import CustomerFeedback from "./pages/customer-feedback";
+import SubscriptionPage from "./pages/subscription";
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
                     <ProtectedRoute path="/ai-tools/performance" component={PerformanceAnalytics} />
                     <ProtectedRoute path="/ai-tutor" component={AiTutor} />
                     <ProtectedRoute path="/ai-visual-lab" component={AIVisualLab} />
+                    <ProtectedRoute path="/subscription" component={SubscriptionPage} />
                     <ProtectedRoute path="/security-dashboard" component={SecurityDashboard} />
                     <ProtectedRoute path="/lead-generation" component={LeadGeneration} />
                     <Route path="/feedback" component={CustomerFeedback} />                
