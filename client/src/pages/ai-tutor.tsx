@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { useUser } from "@/contexts/user-context";
 import { useToast } from "@/hooks/use-toast";
+import { useVoice } from "@/hooks/useVoice";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
@@ -53,6 +54,18 @@ export default function AiTutor() {
   const queryClient = useQueryClient();
   const [location, navigate] = useLocation();
   
+  // Voice functionality
+  const { 
+    isListening, 
+    isSpeaking, 
+    transcript, 
+    isSupported: isVoiceSupported, 
+    startListening, 
+    stopListening, 
+    speak, 
+    stopSpeaking 
+  } = useVoice();
+  
   // Parse URL parameters if coming from course page
   const searchParams = new URLSearchParams(window.location.search);
   const subjectParam = searchParams.get('subject');
@@ -65,6 +78,7 @@ export default function AiTutor() {
   const [currentTopic, setCurrentTopic] = useState(chapterParam || "");
   const [isGeneratingDiagram, setIsGeneratingDiagram] = useState(false);
   const [weakPoints, setWeakPoints] = useState<string[]>([]); 
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [diagramUrl, setDiagramUrl] = useState<string | null>(null);
   
@@ -178,6 +192,17 @@ export default function AiTutor() {
       drawLoadingSpinner();
     }
   }, [diagramUrl, isGeneratingDiagram]);
+
+  // Handle voice transcript
+  useEffect(() => {
+    if (transcript && !isListening) {
+      setMessage(transcript);
+      // Auto-send message if voice is enabled and we got a complete transcript
+      if (voiceEnabled && transcript.length > 3) {
+        handleSendMessage(transcript);
+      }
+    }
+  }, [transcript, isListening]);
   
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -309,16 +334,32 @@ export default function AiTutor() {
     }
   });
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim()) return;
+  const handleSendMessage = (messageText?: string) => {
+    const msgToSend = messageText || message;
+    if (!msgToSend.trim()) return;
     
-    sendMessageMutation.mutate(message);
+    sendMessageMutation.mutate(msgToSend);
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSendMessage();
   };
   
-  // Track voice interaction state
-  const [isListening, setIsListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  // Voice interaction functions
+  const handleVoiceInput = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  };
+
+  const handleTextToSpeech = (text: string) => {
+    if (voiceEnabled && text) {
+      speak(text);
+    }
+  };
   
   // Auto-start teaching if coming from course page with chapter parameters
   useEffect(() => {
@@ -340,72 +381,15 @@ export default function AiTutor() {
     }
   }, [chapterParam, subjectParam, courseParam]);
   
-  const handleVoiceInteraction = () => {
-    // If already listening, stop listening
-    if (isListening) {
-      setIsListening(false);
-      toast({
-        title: "Voice recognition stopped",
-        description: "Processing your entrance exam question..."
-      });
-      
-      // Simulate AI processing time
-      setTimeout(() => {
-        setIsSpeaking(true);
-        
-        // If we have a topic, use it in the notification
-        let topicMessage = currentTopic ? 
-          `${currentTopic}` : 
-          "entrance exam concepts";
-          
-        toast({
-          title: "AI Entrance Exam Tutor Speaking",
-          description: `${aiTutor?.name || "Your tutor"} is explaining ${topicMessage}`
-        });
-        
-        // Add a simulated message to demonstrate voice interaction
-        if (currentTopic) {
-          // This would ideally connect to the actual conversation system
-          // In production, this would come from the actual speech-to-text and AI response
-          const simulatedMessage = {
-            role: 'assistant',
-            content: `I've analyzed your question about ${currentTopic}. For entrance exams, you should focus on understanding the core principles rather than memorizing formulas. Let's work through this concept step by step.`,
-            timestamp: new Date().toISOString()
-          };
-          
-          // In production, this would be saved to the conversation history
-          console.log("Simulated AI response:", simulatedMessage);
-        }
-        
-        // Simulate AI speaking time then reset state
-        setTimeout(() => {
-          setIsSpeaking(false);
-        }, 5000);
-      }, 1500);
-      
-      return;
-    }
-    
-    // Start listening
-    setIsListening(true);
-    toast({
-      title: "Voice interaction activated",
-      description: "Speak your entrance exam question clearly and I'll analyze it."
-    });
-    
-    // In a real implementation, this would use the Web Speech API:
-    // const recognition = new window.SpeechRecognition();
-    // recognition.onresult = (event) => { ... }
-    // recognition.start();
-    
-    // Simulate user speaking for 4 seconds, then auto-trigger processing
-    setTimeout(() => {
-      // Auto stop after 4 seconds for demo purposes
-      if (isListening) {
-        handleVoiceInteraction(); // This will trigger the stop listening code above
+  // Auto-speak AI responses when voice is enabled
+  useEffect(() => {
+    if (conversation?.messages && voiceEnabled) {
+      const lastMessage = conversation.messages[conversation.messages.length - 1];
+      if (lastMessage?.role === 'assistant' && lastMessage.content) {
+        handleTextToSpeech(lastMessage.content);
       }
-    }, 4000);
-  };
+    }
+  }, [conversation?.messages, voiceEnabled]);
 
   const handlePromptClick = (promptText: string) => {
     setMessage(promptText);
