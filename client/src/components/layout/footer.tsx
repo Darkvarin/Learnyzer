@@ -139,7 +139,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-border/50">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-sm text-muted-foreground">
-              © 2025 LearnityX. All rights reserved. Made with ❤️ for Indian students.
+              © 2025 Learnyzer Edtech. All rights reserved. Made with ❤️ for Indian students.
             </div>
             <div className="flex items-center space-x-6 text-sm text-muted-foreground">
               <span>🇮🇳 Proudly Indian</span>
