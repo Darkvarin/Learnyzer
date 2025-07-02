@@ -44,32 +44,32 @@ export class SimpleSubscriptionService {
       basic: {
         aiChatLimit: 50,
         aiVisualLabLimit: 25,
-        aiTutorSessionLimit: 15,
+        aiTutorSessionLimit: 0,
         visualPackageLimit: 10
       },
       pro: {
-        aiChatLimit: -1, // Unlimited
-        aiVisualLabLimit: -1,
-        aiTutorSessionLimit: -1,
-        visualPackageLimit: 50
+        aiChatLimit: 20,
+        aiVisualLabLimit: 20,
+        aiTutorSessionLimit: 2,
+        visualPackageLimit: 20
       },
       quarterly: {
-        aiChatLimit: -1,
-        aiVisualLabLimit: -1,
-        aiTutorSessionLimit: -1,
-        visualPackageLimit: 50
+        aiChatLimit: 40,
+        aiVisualLabLimit: 40,
+        aiTutorSessionLimit: 3,
+        visualPackageLimit: 40
       },
       half_yearly: {
-        aiChatLimit: -1,
-        aiVisualLabLimit: -1,
-        aiTutorSessionLimit: -1,
-        visualPackageLimit: 50
+        aiChatLimit: 40,
+        aiVisualLabLimit: 40,
+        aiTutorSessionLimit: 3,
+        visualPackageLimit: 40
       },
       yearly: {
-        aiChatLimit: -1,
-        aiVisualLabLimit: -1,
-        aiTutorSessionLimit: -1,
-        visualPackageLimit: 50
+        aiChatLimit: 40,
+        aiVisualLabLimit: 40,
+        aiTutorSessionLimit: 3,
+        visualPackageLimit: 40
       }
     };
 
@@ -236,11 +236,11 @@ export class SimpleSubscriptionService {
    */
   static getSubscriptionPricing(): SubscriptionPricing {
     return {
-      basic: { monthly: 299, currency: "INR" },
-      pro: { monthly: 599, currency: "INR" },
-      quarterly: { quarterly: 1499, currency: "INR", savings: "Save ₹300" },
-      half_yearly: { half_yearly: 2799, currency: "INR", savings: "Save ₹800" },
-      yearly: { yearly: 4799, currency: "INR", savings: "Save ₹2400" }
+      basic: { monthly: 799, currency: "INR" },
+      pro: { monthly: 1500, currency: "INR" },
+      quarterly: { quarterly: 4199, currency: "INR", savings: "Save ₹1301 compared to monthly" },
+      half_yearly: { half_yearly: 7599, currency: "INR", savings: "Save ₹3401 compared to monthly" },
+      yearly: { yearly: 12999, currency: "INR", savings: "Save ₹5001 compared to monthly" }
     };
   }
 

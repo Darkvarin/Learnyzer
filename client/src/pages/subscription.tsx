@@ -62,46 +62,102 @@ const pricingPlans: PricingPlan[] = [
   },
   {
     id: "basic",
-    name: "Basic",
-    description: "Great for regular practice",
-    price: 299,
+    name: "Monthly Basic",
+    description: "Access to all AI tools",
+    price: 799,
     duration: "month",
     features: [
-      "50 AI chat sessions daily",
-      "25 visual lab generations daily",
-      "15 AI tutor sessions daily", 
-      "10 visual learning packages daily",
-      "All exam types support",
-      "Priority support"
+      "Access to all AI tools",
+      "No AI tutor access",
+      "Basic analytics",
+      "Monthly billing"
     ],
     limits: {
       aiChatLimit: 50,
       aiVisualLabLimit: 25,
-      aiTutorSessionLimit: 15,
+      aiTutorSessionLimit: 0,
       visualPackageLimit: 10
     }
   },
   {
     id: "pro",
-    name: "Pro",
-    description: "Best for serious learners",
-    price: 599,
+    name: "Monthly Pro",
+    description: "2 AI tutor lessons daily",
+    price: 1500,
     duration: "month",
     popular: true,
     features: [
-      "Unlimited AI chat sessions",
-      "Unlimited visual lab generations",
-      "Unlimited AI tutor sessions",
-      "50 visual learning packages daily",
-      "Advanced analytics",
-      "Priority support",
-      "Exclusive content"
+      "2 AI tutor lessons daily",
+      "All AI tools (20 uses/day)",
+      "Performance analytics",
+      "Monthly billing"
     ],
     limits: {
-      aiChatLimit: -1, // Unlimited
-      aiVisualLabLimit: -1,
-      aiTutorSessionLimit: -1,
-      visualPackageLimit: 50
+      aiChatLimit: 20,
+      aiVisualLabLimit: 20,
+      aiTutorSessionLimit: 2,
+      visualPackageLimit: 20
+    }
+  },
+  {
+    id: "quarterly",
+    name: "Quarterly",
+    description: "3 AI tutor lessons daily",
+    price: 4199,
+    duration: "quarter",
+    savings: "Save ₹1301 compared to monthly",
+    features: [
+      "3 AI tutor lessons daily",
+      "All AI tools (40 uses/day)",
+      "Advanced analytics",
+      "Quarterly billing"
+    ],
+    limits: {
+      aiChatLimit: 40,
+      aiVisualLabLimit: 40,
+      aiTutorSessionLimit: 3,
+      visualPackageLimit: 40
+    }
+  },
+  {
+    id: "half_yearly",
+    name: "Half-Yearly",
+    description: "3 AI tutor lessons daily",
+    price: 7599,
+    duration: "6 months",
+    savings: "Save ₹3401 compared to monthly",
+    features: [
+      "3 AI tutor lessons daily",
+      "All AI tools (40 uses/day)",
+      "Advanced analytics",
+      "6-month billing"
+    ],
+    limits: {
+      aiChatLimit: 40,
+      aiVisualLabLimit: 40,
+      aiTutorSessionLimit: 3,
+      visualPackageLimit: 40
+    }
+  },
+  {
+    id: "yearly",
+    name: "Yearly",
+    description: "3 AI tutor lessons daily",
+    price: 12999,
+    duration: "year",
+    popular: true,
+    savings: "Save ₹5001 compared to monthly",
+    features: [
+      "3 AI tutor lessons daily",
+      "All AI tools (40 uses/day)",
+      "Priority support",
+      "Annual billing"
+    ],
+    limits: {
+      aiChatLimit: 40,
+      aiVisualLabLimit: 40,
+      aiTutorSessionLimit: 3,
+      visualPackageLimit: 40
     }
   },
   {
