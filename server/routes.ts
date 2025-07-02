@@ -200,6 +200,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/achievements", userService.getAllAchievements);
   app.get("/api/achievements/:id", userService.getAchievementById);
   
+  // Exam selection and lock route
+  app.post("/api/user/confirm-exam", requireAuth, async (req: any, res) => {
+    try {
+      const { selectedExam } = req.body;
+      const userId = req.user.id;
+
+      if (!selectedExam || !["jee", "neet", "upsc", "clat", "cuet", "cse"].includes(selectedExam)) {
+        return res.status(400).json({ message: "Invalid exam selection" });
+      }
+
+      // Update user with selected exam and lock it
+      await storage.updateUserExamSelection(userId, selectedExam);
+
+      // Fetch updated user data
+      const updatedUser = await storage.getUserById(userId);
+
+      // Send WebSocket notification
+      sendToUser(userId, {
+        type: "exam_confirmed",
+        examType: selectedExam,
+        message: `Entrance exam ${selectedExam.toUpperCase()} confirmed and locked`
+      });
+
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error confirming exam selection:", error);
+      res.status(500).json({ message: "Failed to confirm exam selection" });
+    }
+  });
+
   // Real-time notification testing routes
   app.post("/api/notifications/test", notificationService.sendTestNotification);
   app.post("/api/notifications/streak", notificationService.simulateStreakUpdate);

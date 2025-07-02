@@ -223,12 +223,11 @@ export default function ProfileSettings() {
   // Confirm exam selection with lock
   const confirmExamSelection = async () => {
     try {
-      const response = await apiRequest("POST", "/api/user/confirm-exam", {
+      const updatedUser = await apiRequest("POST", "/api/user/confirm-exam", {
         selectedExam: selectedExamForConfirmation,
       });
 
-      const updatedUser = { ...user, ...response };
-      setUser(updatedUser);
+      setUser(updatedUser as any);
       queryClient.setQueryData(["/api/auth/me"], updatedUser);
       
       setShowConfirmationDialog(false);

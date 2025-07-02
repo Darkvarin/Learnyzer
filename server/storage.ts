@@ -177,6 +177,21 @@ export const storage = {
       where: eq(schema.users.id, userId)
     });
   },
+
+  /**
+   * Update user's exam selection and lock it
+   */
+  async updateUserExamSelection(userId: number, selectedExam: string) {
+    await db.update(schema.users)
+      .set({
+        selectedExam,
+        examLocked: true,
+        examLockedAt: new Date()
+      })
+      .where(eq(schema.users.id, userId));
+    
+    return true;
+  },
   
   /**
    * Get a user by username
