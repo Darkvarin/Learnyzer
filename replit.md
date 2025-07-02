@@ -269,6 +269,12 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Updated AI Visual Lab to use "ai_visual_lab" feature type with existing subscription controls
   - Enhanced useTrialStatus hook to work with existing subscription service data
   - Unified trial functionality through existing subscription infrastructure eliminates duplicate code
+- July 02, 2025: Database cleanup and user account management
+  - Permanently removed unwanted user accounts from database (demo, carlofism, Locky2413429)
+  - Cleaned up all associated user data including achievements, enrollments, conversations, and battles
+  - Maintained only "Ekansh" account as primary user for platform
+  - Resolved duplicate subscription plans on subscription page causing React key warnings
+  - Fixed pricing consistency across all platform components to match home page exactly
 
 ## User Preferences
 
