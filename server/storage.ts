@@ -1,6 +1,6 @@
 import { db } from "@db";
 import * as schema from "@shared/schema";
-import { eq, and, desc, gte, lt, sql, isNull, asc, ne, inArray } from "drizzle-orm";
+import { eq, and, desc, gte, lt, sql, isNull, asc, ne, inArray, like } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import bcrypt from "bcrypt";
 
@@ -1214,6 +1214,10 @@ export const storage = {
    * Get the AI tutor assigned to a user
    */
   async getAITutorForUser(userId: number) {
+    // Get user's selected exam first
+    const user = await this.getUserById(userId);
+    const userExam = user?.selectedExam;
+    
     // Check if the user has had conversations with an AI tutor
     const conversation = await db.query.conversations.findFirst({
       where: eq(schema.conversations.userId, userId),
@@ -1227,14 +1231,31 @@ export const storage = {
       return conversation.aiTutor;
     }
     
-    // If not, return the default AI tutor
-    return await this.getDefaultAITutor();
+    // If not, return exam-specific AI tutor or default
+    return await this.getDefaultAITutor(userExam);
   },
   
   /**
-   * Get the default AI tutor
+   * Get the default AI tutor (optionally exam-specific)
    */
-  async getDefaultAITutor() {
+  async getDefaultAITutor(examType?: string | null) {
+    if (examType) {
+      // Get all tutors and filter by exam type
+      const allTutors = await db.query.aiTutors.findMany({
+        orderBy: asc(schema.aiTutors.id)
+      });
+      
+      // Find exam-specific tutor
+      const examSpecificTutor = allTutors.find(tutor => 
+        tutor.specialty.toLowerCase().includes(examType.toLowerCase())
+      );
+      
+      if (examSpecificTutor) {
+        return examSpecificTutor;
+      }
+    }
+    
+    // Fall back to general tutor
     return await db.query.aiTutors.findFirst({
       orderBy: asc(schema.aiTutors.id)
     });

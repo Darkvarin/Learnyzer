@@ -28,8 +28,15 @@ export default function Courses() {
 
   // Categories have been removed as per requirement
   
+  // Filter courses based on user's selected exam if locked
+  const userExam = (user as any)?.selectedExam;
+  const examLocked = (user as any)?.examLocked;
+  
+  // If exam is locked, only show that exam's content
+  const examFilter = examLocked && userExam ? userExam : selectedExam;
+  
   const { data: courses, isLoading: coursesLoading } = useQuery<Course[]>({
-    queryKey: [`/api/courses?exam=${selectedExam}&subject=${selectedSubject}&grade=${user?.grade || ''}`],
+    queryKey: [`/api/courses?exam=${examFilter}&subject=${selectedSubject}&grade=${user?.grade || ''}`],
     enabled: !!user, // Only run the query when user data is available
   });
   
@@ -62,12 +69,19 @@ export default function Courses() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-gray-400 mb-1 block">Exam Type</label>
+                <label className="text-sm font-medium text-gray-400 mb-1 block">
+                  Exam Type {examLocked && userExam && (
+                    <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded ml-2">
+                      Locked: {userExam.toUpperCase()}
+                    </span>
+                  )}
+                </label>
                 <Select
-                  value={selectedExam}
-                  onValueChange={setSelectedExam}
+                  value={examLocked && userExam ? userExam : selectedExam}
+                  onValueChange={examLocked ? () => {} : setSelectedExam}
+                  disabled={examLocked && userExam}
                 >
-                  <SelectTrigger className="bg-dark-card border-dark-border">
+                  <SelectTrigger className={`bg-dark-card border-dark-border ${examLocked ? 'opacity-50 cursor-not-allowed' : ''}`}>
                     <SelectValue placeholder="Select exam type" />
                   </SelectTrigger>
                   <SelectContent className="bg-dark-surface border-dark-border">
