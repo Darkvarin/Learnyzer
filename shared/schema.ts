@@ -26,6 +26,15 @@ export const users = pgTable("users", {
   streakDays: integer("streak_days").default(0).notNull(),
   lastStreakDate: timestamp("last_streak_date"),
   referralCode: text("referral_code").notNull().unique(),
+  // Subscription fields
+  subscriptionTier: text("subscription_tier").default("free").notNull(), // free, basic, pro, quarterly, half_yearly, yearly
+  subscriptionStatus: text("subscription_status").default("inactive").notNull(), // inactive, active, expired, cancelled
+  subscriptionStartDate: timestamp("subscription_start_date"),
+  subscriptionEndDate: timestamp("subscription_end_date"),
+  paymentId: text("payment_id"),
+  razorpayOrderId: text("razorpay_order_id"),
+  razorpayPaymentId: text("razorpay_payment_id"),
+  autoRenewal: boolean("auto_renewal").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
@@ -215,6 +224,31 @@ export const userStreakGoals = pgTable("user_streak_goals", {
   date: timestamp("date").defaultNow().notNull()
 });
 
+// Usage Tracking Table
+export const usageTracking = pgTable("usage_tracking", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  featureType: text("feature_type").notNull(), // ai_chat, ai_visual_lab, ai_tutor_session, visual_package_generation
+  usageDate: timestamp("usage_date").defaultNow().notNull(),
+  resetDate: timestamp("reset_date").notNull(), // When the usage count resets (daily/monthly)
+  usageCount: integer("usage_count").default(1).notNull(),
+  metadata: jsonb("metadata") // Additional data like tokens used, session duration, etc.
+});
+
+// Subscription Limits Table
+export const subscriptionLimits = pgTable("subscription_limits", {
+  id: serial("id").primaryKey(),
+  tierName: text("tier_name").notNull().unique(), // free, basic, pro, quarterly, half_yearly, yearly
+  aiChatLimit: integer("ai_chat_limit").notNull(), // Messages per day
+  aiVisualLabLimit: integer("ai_visual_lab_limit").notNull(), // Visual generations per day
+  aiTutorSessionLimit: integer("ai_tutor_session_limit").notNull(), // Sessions per day
+  visualPackageLimit: integer("visual_package_limit").notNull(), // Visual packages per day
+  courseAccessLevel: text("course_access_level").notNull(), // basic, premium, unlimited
+  prioritySupport: boolean("priority_support").default(false).notNull(),
+  downloadLimit: integer("download_limit").notNull(), // Content downloads per month
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
 // OTP Verification Table for mobile authentication
 export const otpVerification = pgTable("otp_verification", {
   id: serial("id").primaryKey(),
@@ -291,6 +325,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   referralsGiven: many(referrals, { relationName: "referralsGiven" }),
   referralsReceived: many(referrals, { relationName: "referralsReceived" }),
   userStreakGoals: many(userStreakGoals),
+  usageTracking: many(usageTracking),
   wellnessPreferences: many(wellnessPreferences),
   wellnessBreaks: many(wellnessBreaks),
   feedback: many(customerFeedback),
@@ -393,6 +428,11 @@ export const feedbackCommentsRelations = relations(feedbackComments, ({ one }) =
   user: one(users, { fields: [feedbackComments.userId], references: [users.id] })
 }));
 
+// Usage Tracking Relations
+export const usageTrackingRelations = relations(usageTracking, ({ one }) => ({
+  user: one(users, { fields: [usageTracking.userId], references: [users.id] })
+}));
+
 // Schemas for validation
 
 export const insertUserSchema = createInsertSchema(users, {
@@ -491,6 +531,8 @@ export type UserStreakGoal = typeof userStreakGoals.$inferSelect;
 export type WellnessPreference = typeof wellnessPreferences.$inferSelect;
 export type WellnessBreak = typeof wellnessBreaks.$inferSelect;
 export type OtpVerification = typeof otpVerification.$inferSelect;
+export type UsageTracking = typeof usageTracking.$inferSelect;
+export type SubscriptionLimits = typeof subscriptionLimits.$inferSelect;
 export type FeedbackCategory = typeof feedbackCategories.$inferSelect;
 export type CustomerFeedback = typeof customerFeedback.$inferSelect;
 export type FeedbackVote = typeof feedbackVotes.$inferSelect;
