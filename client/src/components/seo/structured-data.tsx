@@ -3,7 +3,7 @@
 export const createEducationalOrganizationSchema = () => ({
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
-  "name": "Learnyzer",
+  "name": "Learnyzer Edtech",
   "description": "AI-powered preparation platform for Indian entrance exams including JEE, NEET, UPSC, CLAT, and CUET",
   "url": window.location.origin,
   "logo": `${window.location.origin}/images/logo.png`,
@@ -35,7 +35,7 @@ export const createCourseSchema = (course: {
   "description": course.description,
   "provider": {
     "@type": "EducationalOrganization",
-    "name": "LearnityX"
+    "name": "Learnyzer Edtech"
   },
   "courseMode": "online",
   "educationalLevel": course.difficulty,
@@ -59,7 +59,7 @@ export const createExamPreparationSchema = (exam: string) => ({
   "description": `Comprehensive ${exam} preparation with AI tutoring, practice tests, and personalized study plans`,
   "provider": {
     "@type": "EducationalOrganization",
-    "name": "LearnityX"
+    "name": "Learnyzer Edtech"
   },
   "courseMode": "online",
   "educationalLevel": "advanced",
@@ -120,11 +120,11 @@ export const createArticleSchema = (article: {
   "description": article.description,
   "author": {
     "@type": "Organization",
-    "name": article.author || "LearnityX Team"
+    "name": article.author || "Learnyzer Edtech Team"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "LearnityX",
+    "name": "Learnyzer Edtech",
     "logo": {
       "@type": "ImageObject",
       "url": `${window.location.origin}/images/logo.png`
@@ -163,7 +163,7 @@ export const createWebPageSchema = (page: {
   "url": window.location.href,
   "isPartOf": {
     "@type": "WebSite",
-    "name": "LearnityX",
+    "name": "Learnyzer",
     "url": window.location.origin
   },
   "about": page.type || "education",
@@ -173,7 +173,7 @@ export const createWebPageSchema = (page: {
 export const createLocalBusinessSchema = () => ({
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "name": "LearnityX",
+  "name": "Learnyzer Edtech",
   "description": "AI-powered learning platform for Indian competitive exams",
   "url": window.location.origin,
   "logo": `${window.location.origin}/images/logo.png`,
