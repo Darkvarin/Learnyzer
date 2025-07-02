@@ -89,7 +89,7 @@ export default function HomePage() {
     },
     {
       question: "Is Learnyzer free to use?",
-      answer: "Learnyzer offers a 24-hour free trial with full access to all premium features including AI tutoring, visual lab, and advanced tools - no credit card required. After the trial, choose from our flexible subscription plans starting at ₹799/month."
+      answer: "Learnyzer offers a 24-hour free trial with limited daily usage: 2 AI tutor lessons and 10 AI tool uses per day - no credit card required. After the trial, choose from our flexible subscription plans starting at ₹799/month for unlimited access."
     },
     {
       question: "How effective is Learnyzer for JEE and NEET preparation?",
@@ -930,22 +930,22 @@ export default function HomePage() {
                   </div>
                   <div>
                     <h3 className="text-2xl md:text-3xl font-gaming text-[#4af3c0] mb-2">Start Your Free Trial Today!</h3>
-                    <p className="text-gray-300 text-lg">Get full access to all premium features for 24 hours - no credit card required</p>
+                    <p className="text-gray-300 text-lg">Experience our AI-powered learning platform for 24 hours with limited daily usage - no credit card required</p>
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
                   <div className="flex items-center justify-center space-x-2">
                     <Check className="h-5 w-5 text-[#4af3c0]" />
-                    <span className="text-white">5 AI chat sessions</span>
+                    <span className="text-white">10 AI tools uses per day</span>
                   </div>
                   <div className="flex items-center justify-center space-x-2">
                     <Check className="h-5 w-5 text-[#4af3c0]" />
-                    <span className="text-white">2 AI tutor lessons</span>
+                    <span className="text-white">2 AI tutor lessons daily</span>
                   </div>
                   <div className="flex items-center justify-center space-x-2">
                     <Check className="h-5 w-5 text-[#4af3c0]" />
-                    <span className="text-white">3 visual lab generations</span>
+                    <span className="text-white">Basic learning access</span>
                   </div>
                 </div>
 

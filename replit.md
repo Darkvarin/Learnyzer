@@ -275,6 +275,13 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Maintained only "Ekansh" account as primary user for platform
   - Resolved duplicate subscription plans on subscription page causing React key warnings
   - Fixed pricing consistency across all platform components to match home page exactly
+- July 02, 2025: Free trial promotion and accurate feature display
+  - Added prominent free trial banners and badges throughout home page
+  - Updated hero section with "Free 24-Hour Trial Available!" messaging
+  - Created dedicated free trial section before pricing plans with accurate limits
+  - Corrected trial features: 2 AI tutor lessons daily, 10 AI tool uses daily, basic learning access
+  - Updated FAQ section to reflect accurate trial limitations and pricing
+  - Changed main CTA to "Start Free Trial" for better conversion
 
 ## User Preferences
 
