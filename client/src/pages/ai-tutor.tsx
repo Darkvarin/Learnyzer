@@ -107,6 +107,9 @@ export default function AiTutor() {
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState("chat");
   const [currentSubject, setCurrentSubject] = useState(subjectParam?.toLowerCase() || "jee_mathematics");
+  
+  // Subscription tracking
+  const { trackFeatureUsage } = useSubscriptionTracking();
   const [currentTopic, setCurrentTopic] = useState(chapterParam || "");
   const [isGeneratingDiagram, setIsGeneratingDiagram] = useState(false);
   const [weakPoints, setWeakPoints] = useState<string[]>([]); 
@@ -513,7 +516,18 @@ export default function AiTutor() {
             }}>AI Entrance Exam Tutor</span>
           </h1>
         </div>
-        
+
+        <SubscriptionGuard 
+          featureType="ai_tutor_session" 
+          trackOnMount={false}
+          onAccessDenied={() => {
+            toast({
+              title: "Session Limit Reached",
+              description: "You've reached your daily AI tutor session limit. Upgrade to continue learning!",
+              variant: "destructive"
+            });
+          }}
+        >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Left sidebar with AI tutor info */}
           <div className="md:col-span-1">
@@ -1297,6 +1311,7 @@ export default function AiTutor() {
             </div>
           </div>
         </div>
+        </SubscriptionGuard>
       </main>
 
       {/* Exam Selection Modal */}
