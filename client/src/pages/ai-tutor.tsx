@@ -53,6 +53,27 @@ export default function AiTutor() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [location, navigate] = useLocation();
+
+  // Get user data for exam selection check
+  const { data: userData } = useQuery({
+    queryKey: ['/api/auth/me'],
+  });
+
+  // Check if user has selected an exam
+  const userExam = (userData as any)?.selectedExam;
+  const examLocked = (userData as any)?.examLocked;
+
+  // State for exam selection modal
+  const [showExamModal, setShowExamModal] = useState(false);
+
+  // Function to check if user can access AI tools
+  const checkExamSelection = () => {
+    if (!userExam) {
+      setShowExamModal(true);
+      return false;
+    }
+    return true;
+  };
   
   // Voice functionality
   const { 
@@ -337,6 +358,11 @@ export default function AiTutor() {
   const handleSendMessage = (messageText?: string) => {
     const msgToSend = messageText || message;
     if (!msgToSend.trim()) return;
+    
+    // Check if user has selected an exam before allowing AI tool usage
+    if (!checkExamSelection()) {
+      return;
+    }
     
     sendMessageMutation.mutate(msgToSend);
   };
