@@ -639,7 +639,7 @@ export default function AIVisualLab() {
             <div className="grid grid-cols-2 gap-3">
               <Button
                 onClick={() => {
-                  navigate('/profile-settings');
+                  navigate('/profile');
                   setShowExamModal(false);
                 }}
                 className="bg-primary-600 hover:bg-primary-700 text-white"
@@ -649,7 +649,7 @@ export default function AIVisualLab() {
               </Button>
               <Button
                 onClick={() => {
-                  navigate('/profile-settings');
+                  navigate('/profile');
                   setShowExamModal(false);
                 }}
                 className="bg-green-600 hover:bg-green-700 text-white"
@@ -659,7 +659,7 @@ export default function AIVisualLab() {
               </Button>
               <Button
                 onClick={() => {
-                  navigate('/profile-settings');
+                  navigate('/profile');
                   setShowExamModal(false);
                 }}
                 className="bg-orange-600 hover:bg-orange-700 text-white"
@@ -669,7 +669,7 @@ export default function AIVisualLab() {
               </Button>
               <Button
                 onClick={() => {
-                  navigate('/profile-settings');
+                  navigate('/profile');
                   setShowExamModal(false);
                 }}
                 className="bg-purple-600 hover:bg-purple-700 text-white"
@@ -679,7 +679,7 @@ export default function AIVisualLab() {
               </Button>
               <Button
                 onClick={() => {
-                  navigate('/profile-settings');
+                  navigate('/profile');
                   setShowExamModal(false);
                 }}
                 className="bg-cyan-600 hover:bg-cyan-700 text-white"
@@ -689,7 +689,7 @@ export default function AIVisualLab() {
               </Button>
               <Button
                 onClick={() => {
-                  navigate('/profile-settings');
+                  navigate('/profile');
                   setShowExamModal(false);
                 }}
                 className="bg-blue-600 hover:bg-blue-700 text-white"
