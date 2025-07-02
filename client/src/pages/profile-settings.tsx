@@ -89,14 +89,15 @@ const notificationSchema = z.object({
 type ProfileForm = z.infer<typeof profileSchema>;
 type SecurityForm = z.infer<typeof securitySchema>;
 type NotificationForm = z.infer<typeof notificationSchema>;
+type ExamSelectionForm = z.infer<typeof examSelectionSchema>;
 
 export default function ProfileSettings() {
   const { user, setUser } = useUser();
   const { logoutMutation } = useAuth();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("profile");
-  const [currentGrade, setCurrentGrade] = useState((user as any)?.grade || "");
-  const [isHigherGrade, setIsHigherGrade] = useState(false);
+  const [selectedExamForConfirmation, setSelectedExamForConfirmation] = useState<string>("");
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
 
   // Profile form
   const profileForm = useForm<ProfileForm>({
@@ -105,8 +106,15 @@ export default function ProfileSettings() {
       name: user?.name || "",
       email: user?.email || "",
       profileImage: user?.profileImage || "",
-      track: (user as any)?.track || "",
-      grade: (user as any)?.grade || "",
+      selectedExam: (user as any)?.selectedExam || "",
+    },
+  });
+
+  // Exam selection form
+  const examForm = useForm<ExamSelectionForm>({
+    resolver: zodResolver(examSelectionSchema),
+    defaultValues: {
+      selectedExam: (user as any)?.selectedExam || "",
     },
   });
 
@@ -196,6 +204,85 @@ export default function ProfileSettings() {
   };
 
   // Theme toggle removed - dark theme enforced
+
+  // Handle entrance exam selection
+  const handleExamSelection = (examType: string) => {
+    if ((user as any)?.examLocked) {
+      toast({
+        title: "Exam Selection Locked",
+        description: "Your entrance exam selection is locked. Contact support to change it.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSelectedExamForConfirmation(examType);
+    setShowConfirmationDialog(true);
+  };
+
+  // Confirm exam selection with lock
+  const confirmExamSelection = async () => {
+    try {
+      const response = await apiRequest("POST", "/api/user/confirm-exam", {
+        selectedExam: selectedExamForConfirmation,
+      });
+
+      const updatedUser = { ...user, ...response };
+      setUser(updatedUser);
+      queryClient.setQueryData(["/api/auth/me"], updatedUser);
+      
+      setShowConfirmationDialog(false);
+      setSelectedExamForConfirmation("");
+      
+      toast({
+        title: "Entrance Exam Confirmed",
+        description: `${selectedExamForConfirmation} has been set as your entrance exam. This selection is now locked.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to confirm exam",
+        description: "An error occurred while confirming your exam selection.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Get exam details
+  const getExamDetails = (examType: string) => {
+    const examInfo: Record<string, { name: string; description: string; icon: string }> = {
+      jee: {
+        name: "JEE (Joint Entrance Examination)",
+        description: "For engineering admissions in India",
+        icon: "⚙️"
+      },
+      neet: {
+        name: "NEET (National Eligibility cum Entrance Test)",
+        description: "For medical admissions in India",
+        icon: "🩺"
+      },
+      upsc: {
+        name: "UPSC (Union Public Service Commission)",
+        description: "For civil services examination",
+        icon: "🏛️"
+      },
+      clat: {
+        name: "CLAT (Common Law Admission Test)",
+        description: "For law admissions in India",
+        icon: "⚖️"
+      },
+      cuet: {
+        name: "CUET (Common University Entrance Test)",
+        description: "For undergraduate admissions",
+        icon: "🎓"
+      },
+      cse: {
+        name: "CSE (Computer Science Engineering)",
+        description: "For computer science competitive exams",
+        icon: "💻"
+      }
+    };
+    return examInfo[examType] || { name: examType, description: "", icon: "📚" };
+  };
 
   // Handle logout
   const handleLogout = async () => {
@@ -475,104 +562,93 @@ export default function ProfileSettings() {
                           )}
                         />
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={profileForm.control}
-                            name="track"
-                            render={({ field }) => (
-                              <FormItem className="relative">
-                                <FormLabel className="text-purple-300 font-gaming">EDUCATION TRACK</FormLabel>
-                                <Select 
-                                  onValueChange={(value) => field.onChange(value)}
-                                  value={field.value || undefined}
-                                  defaultValue="school"
-                                  disabled={!isHigherGrade}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger className="bg-black/90 border-purple-500/40 shadow-glow-xs focus:shadow-glow-purple">
-                                      <SelectValue placeholder={isHigherGrade 
-                                        ? "Select your education track" 
-                                        : "Available for Class 11 and above"} 
-                                      />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent className="bg-black/90 border-purple-500/40">
-                                    {isHigherGrade ? (
-                                      <>
-                                        <SelectItem value="science">Science (11-12)</SelectItem>
-                                        <SelectItem value="commerce">Commerce (11-12)</SelectItem>
-                                        <SelectItem value="arts">Arts (11-12)</SelectItem>
-                                        <SelectItem value="engineering">Engineering</SelectItem>
-                                        <SelectItem value="medical">Medical</SelectItem>
-                                        <SelectItem value="upsc">UPSC</SelectItem>
-                                        <SelectItem value="other">Other</SelectItem>
-                                      </>
-                                    ) : (
-                                      <SelectItem value="school" disabled>Available for Class 11 and above</SelectItem>
-                                    )}
-                                  </SelectContent>
-                                </Select>
-                                <FormDescription className="text-gray-400">
-                                  {isHigherGrade 
-                                    ? "Choose your education track for personalized content" 
-                                    : "Educational tracks are only available for students in Class 11 or above"}
-                                </FormDescription>
-                                <FormMessage className="text-red-400" />
-                              </FormItem>
+                        {/* Entrance Exam Selection Section */}
+                        <div className="space-y-6">
+                          <div className="flex items-center gap-3 mb-4">
+                            <GraduationCap className="w-6 h-6 text-purple-400" />
+                            <h3 className="text-lg font-gaming text-purple-300">ENTRANCE EXAM SELECTION</h3>
+                            {(user as any)?.examLocked && (
+                              <div className="flex items-center gap-2 px-3 py-1 bg-yellow-900/50 border border-yellow-500/30 rounded-lg">
+                                <Lock className="w-4 h-4 text-yellow-400" />
+                                <span className="text-xs font-gaming text-yellow-300">LOCKED</span>
+                              </div>
                             )}
-                          />
-                          
-                          <FormField
-                            control={profileForm.control}
-                            name="grade"
-                            render={({ field }) => (
-                              <FormItem className="relative">
-                                <FormLabel className="text-purple-300 font-gaming">GRADE/CLASS</FormLabel>
-                                <Select 
-                                  onValueChange={(value) => {
-                                    field.onChange(value);
-                                    setCurrentGrade(value);
-                                    
-                                    // Check if grade is 11th or above (including undergraduate and postgraduate)
-                                    const higherGrades = ["11", "12", "undergraduate", "postgraduate"];
-                                    setIsHigherGrade(higherGrades.includes(value));
-                                    
-                                    // If changing to lower grade, reset track
-                                    if (!higherGrades.includes(value)) {
-                                      profileForm.setValue("track", "");
-                                    }
-                                  }}
-                                  value={field.value || undefined}
-                                  defaultValue="other"
-                                >
-                                  <FormControl>
-                                    <SelectTrigger className="bg-black/90 border-purple-500/40 shadow-glow-xs focus:shadow-glow-purple">
-                                      <SelectValue placeholder="Select your grade/class" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent className="bg-black/90 border-purple-500/40">
-                                    <SelectItem value="3">Class 3</SelectItem>
-                                    <SelectItem value="4">Class 4</SelectItem>
-                                    <SelectItem value="5">Class 5</SelectItem>
-                                    <SelectItem value="6">Class 6</SelectItem>
-                                    <SelectItem value="7">Class 7</SelectItem>
-                                    <SelectItem value="8">Class 8</SelectItem>
-                                    <SelectItem value="9">Class 9</SelectItem>
-                                    <SelectItem value="10">Class 10</SelectItem>
-                                    <SelectItem value="11">Class 11</SelectItem>
-                                    <SelectItem value="12">Class 12</SelectItem>
-                                    <SelectItem value="undergraduate">Undergraduate</SelectItem>
-                                    <SelectItem value="postgraduate">Postgraduate</SelectItem>
-                                    <SelectItem value="other">Other</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormDescription className="text-gray-400">
-                                  Select your current grade or class
-                                </FormDescription>
-                                <FormMessage className="text-red-400" />
-                              </FormItem>
-                            )}
-                          />
+                          </div>
+
+                          {(user as any)?.selectedExam && (user as any)?.examLocked ? (
+                            // Show locked exam selection
+                            <div className="p-4 bg-gradient-to-r from-purple-900/30 to-blue-900/30 border border-purple-500/30 rounded-lg">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <span className="text-2xl">{getExamDetails((user as any).selectedExam).icon}</span>
+                                  <div>
+                                    <h4 className="font-gaming text-purple-300">{getExamDetails((user as any).selectedExam).name}</h4>
+                                    <p className="text-sm text-gray-400">{getExamDetails((user as any).selectedExam).description}</p>
+                                    <div className="flex items-center gap-2 mt-2">
+                                      <Lock className="w-4 h-4 text-yellow-400" />
+                                      <span className="text-xs text-yellow-300">
+                                        Locked until next subscription cycle
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            // Show exam selection grid
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              {["jee", "neet", "upsc", "clat", "cuet", "cse"].map((examType) => {
+                                const examInfo = getExamDetails(examType);
+                                const isSelected = (user as any)?.selectedExam === examType;
+                                
+                                return (
+                                  <div
+                                    key={examType}
+                                    onClick={() => handleExamSelection(examType)}
+                                    className={`
+                                      p-4 border rounded-lg cursor-pointer transition-all duration-300 hover:scale-105
+                                      ${isSelected 
+                                        ? 'bg-purple-900/50 border-purple-400/50 shadow-glow-purple' 
+                                        : 'bg-black/50 border-purple-500/30 hover:border-purple-400/50 hover:bg-purple-950/30'
+                                      }
+                                    `}
+                                  >
+                                    <div className="flex flex-col items-center text-center space-y-3">
+                                      <span className="text-3xl">{examInfo.icon}</span>
+                                      <h4 className="font-gaming text-purple-300 text-sm leading-tight">
+                                        {examInfo.name}
+                                      </h4>
+                                      <p className="text-xs text-gray-400 leading-relaxed">
+                                        {examInfo.description}
+                                      </p>
+                                      {isSelected && (
+                                        <div className="w-full text-center">
+                                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-500/20 border border-purple-400/30 rounded text-xs text-purple-300">
+                                            ✓ Selected
+                                          </span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+
+                          {!(user as any)?.examLocked && (
+                            <div className="mt-4 p-4 bg-yellow-900/20 border border-yellow-500/30 rounded-lg">
+                              <div className="flex items-start gap-3">
+                                <AlertTriangle className="w-5 h-5 text-yellow-400 mt-0.5 flex-shrink-0" />
+                                <div className="space-y-2">
+                                  <h4 className="font-gaming text-yellow-300 text-sm">Important Notice</h4>
+                                  <p className="text-xs text-yellow-200 leading-relaxed">
+                                    Once you confirm your entrance exam selection, it will be locked and cannot be changed until your next subscription cycle. 
+                                    This ensures you receive focused, exam-specific content throughout your preparation.
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                       
@@ -804,6 +880,42 @@ export default function ProfileSettings() {
           </div>
         </div>
       </div>
+
+      {/* Exam Confirmation Dialog */}
+      <AlertDialog open={showConfirmationDialog} onOpenChange={setShowConfirmationDialog}>
+        <AlertDialogContent className="bg-black/95 border-purple-500/30 max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-gaming text-purple-300 flex items-center gap-3">
+              <GraduationCap className="w-6 h-6 text-purple-400" />
+              Confirm Entrance Exam Selection
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-300 leading-relaxed">
+              You're about to select <strong className="text-purple-300">{getExamDetails(selectedExamForConfirmation).name}</strong> as your entrance exam.
+              <br /><br />
+              <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-3 my-3">
+                <div className="flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                  <div className="text-yellow-200 text-sm">
+                    <strong>Important:</strong> Once confirmed, this selection will be locked and cannot be changed until your next subscription cycle.
+                  </div>
+                </div>
+              </div>
+              This ensures you receive focused, exam-specific content throughout your preparation journey.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex gap-3">
+            <AlertDialogCancel className="bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 font-gaming">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmExamSelection}
+              className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white font-gaming"
+            >
+              Confirm & Lock Selection
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </motion.div>
   );
 }
