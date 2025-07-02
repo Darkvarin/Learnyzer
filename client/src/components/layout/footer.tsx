@@ -12,7 +12,7 @@ export function Footer() {
                 <span className="text-white font-bold text-sm">L</span>
               </div>
               <span className="text-xl font-bold font-gaming bg-clip-text text-transparent bg-gradient-to-r from-primary to-amber-500">
-                LearnityX
+                Learnyzer
               </span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">

@@ -200,7 +200,7 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - SEO component library for consistent optimization across pages
   - Exam-specific keyword targeting for JEE, NEET, UPSC, CLAT, CUET
   - Open Graph and Twitter card integration for social media sharing
-  - Company branding updated to "Learnyzer" across all components
+  - Company branding updated to "Learnyzer Edtech" across all components
 - July 01, 2025: Comprehensive customer feedback system implementation
   - Multi-type feedback collection (feedback, feature requests, bug reports, suggestions)
   - Seven organized feedback categories with icon-based navigation
