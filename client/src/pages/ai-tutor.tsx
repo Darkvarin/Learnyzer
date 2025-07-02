@@ -7,7 +7,7 @@ import { useVoice } from "@/hooks/useVoice";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { SubscriptionGuard, useSubscriptionTracking } from "@/components/subscription/subscription-guard";
-import { TrialLockdown, useTrialStatus } from "@/components/trial/trial-lockdown";
+// import { TrialLockdown, useTrialStatus } from "@/components/trial/trial-lockdown"; // Replaced with existing SubscriptionGuard
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -508,7 +508,7 @@ export default function AiTutor() {
   };
 
   return (
-    <TrialLockdown featureName="AI Tutor">
+    <SubscriptionGuard featureType="ai_tutor_session">
       <div className="min-h-screen flex flex-col solo-bg relative overflow-hidden solo-page">
       {/* Solo Leveling background elements */}
       <div className="absolute inset-0 solo-grid z-0 opacity-30"></div>
@@ -1423,6 +1423,6 @@ export default function AiTutor() {
         </DialogContent>
       </Dialog>
       </div>
-    </TrialLockdown>
+    </SubscriptionGuard>
   );
 }

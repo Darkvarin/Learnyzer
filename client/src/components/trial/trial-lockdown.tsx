@@ -11,18 +11,26 @@ interface TrialLockdownProps {
 }
 
 export function TrialLockdown({ children, featureName }: TrialLockdownProps) {
-  // Get user data to check trial status
-  const { data: userData } = useQuery({
-    queryKey: ['/api/auth/me'],
+  // Use existing subscription service to check access
+  const { data: subscriptionStats } = useQuery({
+    queryKey: ['/api/subscription/usage-stats'],
   });
 
-  // Check if trial has expired (1 day from account creation)
-  const isTrialExpired = userData && userData.createdAt 
-    ? Date.now() - new Date(userData.createdAt).getTime() > 24 * 60 * 60 * 1000
-    : false;
+  // Get feature access using subscription service
+  const { data: featureAccess } = useQuery({
+    queryKey: ['/api/subscription/check-access'],
+    refetchOnMount: true
+  });
 
-  // If trial is still active, show the feature
-  if (!isTrialExpired) {
+  // If user has access to AI features (trial active or subscription), show the feature
+  const hasAccess = subscriptionStats?.tier === 'free_trial' || 
+                   subscriptionStats?.tier === 'basic' || 
+                   subscriptionStats?.tier === 'pro' || 
+                   subscriptionStats?.tier === 'quarterly' || 
+                   subscriptionStats?.tier === 'half_yearly' || 
+                   subscriptionStats?.tier === 'yearly';
+
+  if (hasAccess) {
     return <>{children}</>;
   }
 
@@ -145,24 +153,31 @@ export function TrialLockdown({ children, featureName }: TrialLockdownProps) {
   );
 }
 
-// Hook to check trial status
+// Hook to check trial status using existing subscription service
 export function useTrialStatus() {
+  const { data: subscriptionStats } = useQuery({
+    queryKey: ['/api/subscription/usage-stats'],
+  });
+
   const { data: userData } = useQuery({
     queryKey: ['/api/auth/me'],
   });
 
-  const isTrialExpired = userData && userData.createdAt 
-    ? Date.now() - new Date(userData.createdAt).getTime() > 24 * 60 * 60 * 1000
-    : false;
-
-  const timeRemaining = userData && userData.createdAt && !isTrialExpired
+  // Use subscription service to determine trial status
+  const isTrialExpired = subscriptionStats?.tier === 'free';
+  const isOnTrial = subscriptionStats?.tier === 'free_trial';
+  
+  // Calculate time remaining for trial users
+  const timeRemaining = userData && userData.createdAt && isOnTrial
     ? 24 * 60 * 60 * 1000 - (Date.now() - new Date(userData.createdAt).getTime())
     : 0;
 
   return {
     isTrialExpired,
+    isOnTrial,
     timeRemaining,
     hoursRemaining: Math.floor(timeRemaining / (60 * 60 * 1000)),
-    minutesRemaining: Math.floor((timeRemaining % (60 * 60 * 1000)) / (60 * 1000))
+    minutesRemaining: Math.floor((timeRemaining % (60 * 60 * 1000)) / (60 * 1000)),
+    subscriptionTier: subscriptionStats?.tier
   };
 }
