@@ -13,6 +13,7 @@ import { wellnessService } from "./services/wellness-service";
 import { leaderboardService } from "./services/leaderboard-service";
 import { paymentService } from "./services/payment-service";
 import { otpService } from "./services/otp-service";
+import { SubscriptionService } from "./services/subscription-service";
 import { setupSEORoutes } from "./services/sitemap-generator";
 import { storage } from "./storage";
 import { db } from "../db";
@@ -758,6 +759,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Payment routes
   app.post("/api/payment/create-order", paymentService.createOrder);
   app.post("/api/payment/verify-payment", paymentService.verifyPayment);
+
+  // Subscription routes
+  app.get("/api/subscription/check-access/:featureType", async (req, res) => {
+    try {
+      if (!req.user?.id) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { featureType } = req.params;
+      const access = await SubscriptionService.hasFeatureAccess(req.user.id, featureType);
+      
+      res.json(access);
+    } catch (error) {
+      console.error("Error checking subscription access:", error);
+      res.status(500).json({ message: "Failed to check access" });
+    }
+  });
+
+  app.post("/api/subscription/track-usage", async (req, res) => {
+    try {
+      if (!req.user?.id) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const { featureType, metadata } = req.body;
+      const success = await SubscriptionService.trackUsage(req.user.id, featureType, metadata);
+      
+      if (!success) {
+        return res.status(429).json({ 
+          message: "Usage limit exceeded",
+          hasAccess: false 
+        });
+      }
+
+      res.json({ success: true, hasAccess: true });
+    } catch (error) {
+      console.error("Error tracking usage:", error);
+      res.status(500).json({ message: "Failed to track usage" });
+    }
+  });
+
+  app.get("/api/subscription/usage-stats", async (req, res) => {
+    try {
+      if (!req.user?.id) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const stats = await SubscriptionService.getUserUsageStats(req.user.id);
+      res.json(stats);
+    } catch (error) {
+      console.error("Error getting usage stats:", error);
+      res.status(500).json({ message: "Failed to get usage stats" });
+    }
+  });
+
+  app.get("/api/subscription/pricing", async (req, res) => {
+    try {
+      const pricing = SubscriptionService.getSubscriptionPricing();
+      res.json(pricing);
+    } catch (error) {
+      console.error("Error getting pricing:", error);
+      res.status(500).json({ message: "Failed to get pricing" });
+    }
+  });
+
+  app.post("/api/subscription/update", async (req, res) => {
+    try {
+      if (!req.user?.id) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const subscriptionData = req.body;
+      const success = await SubscriptionService.updateSubscription(req.user.id, subscriptionData);
+      
+      if (!success) {
+        return res.status(400).json({ message: "Failed to update subscription" });
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating subscription:", error);
+      res.status(500).json({ message: "Failed to update subscription" });
+    }
+  });
 
   const httpServer = createServer(app);
   
