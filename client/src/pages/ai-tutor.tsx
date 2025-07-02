@@ -508,7 +508,8 @@ export default function AiTutor() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col solo-bg relative overflow-hidden solo-page">
+    <TrialLockdown featureName="AI Tutor">
+      <div className="min-h-screen flex flex-col solo-bg relative overflow-hidden solo-page">
       {/* Solo Leveling background elements */}
       <div className="absolute inset-0 solo-grid z-0 opacity-30"></div>
       
@@ -1421,6 +1422,7 @@ export default function AiTutor() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </TrialLockdown>
   );
 }

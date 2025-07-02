@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { SubscriptionGuard, useSubscriptionTracking } from "@/components/subscription/subscription-guard";
+import { TrialLockdown } from "@/components/trial/trial-lockdown";
 
 export default function AIVisualLab() {
   const [activeTab, setActiveTab] = useState("image");
@@ -220,7 +221,8 @@ export default function AIVisualLab() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <TrialLockdown featureName="AI Visual Lab">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
       <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600/20 to-purple-600/20 backdrop-blur-sm border-b border-cyan-500/20">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),transparent,transparent)]"></div>
@@ -709,6 +711,7 @@ export default function AIVisualLab() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </TrialLockdown>
   );
 }
