@@ -89,7 +89,7 @@ export default function HomePage() {
     },
     {
       question: "Is Learnyzer free to use?",
-      answer: "Learnyzer offers both free and premium features. Basic access includes limited AI interactions and study materials, while premium subscriptions unlock unlimited AI tutoring, advanced analytics, and exclusive content."
+      answer: "Learnyzer offers a 24-hour free trial with full access to all premium features including AI tutoring, visual lab, and advanced tools - no credit card required. After the trial, choose from our flexible subscription plans starting at ₹799/month."
     },
     {
       question: "How effective is Learnyzer for JEE and NEET preparation?",
@@ -369,6 +369,14 @@ export default function HomePage() {
                 </p>
               </div>
               
+              {/* Free Trial Badge */}
+              <div className="mb-6 flex justify-center lg:justify-start">
+                <div className="bg-[#4af3c0]/10 border border-[#4af3c0]/30 rounded-full px-4 py-2 flex items-center space-x-2">
+                  <Zap className="h-4 w-4 text-[#4af3c0]" />
+                  <span className="text-[#4af3c0] font-medium text-sm">Free 24-Hour Trial Available!</span>
+                </div>
+              </div>
+
               <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start mt-10">
                 <Button 
                   onClick={() => user ? navigate("/dashboard") : navigate("/auth")}
@@ -378,7 +386,7 @@ export default function HomePage() {
                     <span className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                   </span>
                   <span className="relative z-10 flex items-center font-medium">
-                    {user ? "Dashboard" : "Get Started"}
+                    {user ? "Dashboard" : "Start Free Trial"}
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
                   </span>
                 </Button>
@@ -902,6 +910,63 @@ export default function HomePage() {
               Choose the plan that best suits your entrance exam preparation goals
             </motion.p>
           </div>
+
+          {/* Free Trial Banner */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: scrollY > 720 ? 1 : 0, y: scrollY > 720 ? 0 : 20 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="max-w-4xl mx-auto mb-12"
+          >
+            <div className="relative overflow-hidden rounded-2xl border border-[#4af3c0]/30 bg-gradient-to-r from-[#0a1520] via-[#0a2a42]/80 to-[#0a1520] p-8 shadow-lg shadow-[#4af3c0]/20">
+              <div className="absolute inset-0 bg-[#4af3c0]/5"></div>
+              <div className="absolute -top-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-[#4af3c0] to-transparent"></div>
+              <div className="absolute -bottom-1 -left-1 -right-1 h-1 bg-gradient-to-r from-transparent via-[#4af3c0]/50 to-transparent"></div>
+              
+              <div className="relative z-10 text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="bg-[#4af3c0]/20 p-3 rounded-full mr-4">
+                    <Zap className="h-8 w-8 text-[#4af3c0]" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl md:text-3xl font-gaming text-[#4af3c0] mb-2">Start Your Free Trial Today!</h3>
+                    <p className="text-gray-300 text-lg">Get full access to all premium features for 24 hours - no credit card required</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+                  <div className="flex items-center justify-center space-x-2">
+                    <Check className="h-5 w-5 text-[#4af3c0]" />
+                    <span className="text-white">5 AI chat sessions</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2">
+                    <Check className="h-5 w-5 text-[#4af3c0]" />
+                    <span className="text-white">2 AI tutor lessons</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2">
+                    <Check className="h-5 w-5 text-[#4af3c0]" />
+                    <span className="text-white">3 visual lab generations</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <Button 
+                    onClick={() => navigate("/auth")}
+                    className="bg-[#4af3c0] hover:bg-[#4af3c0]/90 text-[#0a2a42] font-bold px-8 py-3 text-lg 
+                    shadow-[0_0_20px_rgba(74,243,192,0.4)] hover:shadow-[0_0_30px_rgba(74,243,192,0.6)] 
+                    transition-all duration-300 transform hover:scale-105"
+                  >
+                    Start Free Trial Now
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                  <p className="text-sm text-gray-400">
+                    <Shield className="inline h-4 w-4 mr-1" />
+                    No credit card required • Instant access • Cancel anytime
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6 mx-auto">
             {/* Monthly Basic Plan */}
