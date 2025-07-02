@@ -771,14 +771,14 @@ export default function AiTutor() {
                   </div>
                   
                   {/* Message input */}
-                  <form onSubmit={handleSendMessage} className="relative">
+                  <form onSubmit={handleFormSubmit} className="relative">
                     <Input
                       type="text"
-                      placeholder="Ask anything about your studies..."
-                      className="w-full bg-dark-card border border-dark-border focus:border-primary-500 rounded-lg py-3 px-4 text-gray-300 focus:outline-none pr-20 h-12"
-                      value={message}
+                      placeholder={isListening ? "Listening... speak your question" : "Ask anything about your studies..."}
+                      className="w-full bg-dark-card border border-dark-border focus:border-primary-500 rounded-lg py-3 px-4 text-gray-300 focus:outline-none pr-24 h-12"
+                      value={isListening ? transcript : message}
                       onChange={(e) => setMessage(e.target.value)}
-                      disabled={sendMessageMutation.isPending}
+                      disabled={sendMessageMutation.isPending || isListening}
                     />
                     <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
                       <Button 
@@ -799,10 +799,18 @@ export default function AiTutor() {
                         type="button" 
                         size="icon" 
                         variant="ghost"
-                        onClick={handleVoiceInteraction}
-                        className="text-gray-400 hover:text-white transition-colors"
+                        onClick={handleVoiceInput}
+                        className={`transition-colors ${
+                          isListening 
+                            ? 'text-red-400 hover:text-red-300' 
+                            : isVoiceSupported 
+                              ? 'text-gray-400 hover:text-white' 
+                              : 'text-gray-600 cursor-not-allowed'
+                        }`}
+                        disabled={!isVoiceSupported}
+                        title={isListening ? 'Stop listening' : 'Start voice input'}
                       >
-                        <Mic className="h-4 w-4" />
+                        <Mic className={`h-4 w-4 ${isListening ? 'animate-pulse' : ''}`} />
                       </Button>
                       <Button 
                         type="submit" 
@@ -840,6 +848,51 @@ export default function AiTutor() {
                       <span className="block font-semibold">Generate practice questions</span>
                     </Button>
                   </div>
+                  
+                  {/* Voice Settings */}
+                  {isVoiceSupported && (
+                    <div className="mt-6 bg-dark-card rounded-lg p-4 border border-dark-border">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <Volume2 className="h-4 w-4 text-primary-400" />
+                          <h4 className="font-medium text-primary-400">Voice Controls</h4>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setVoiceEnabled(!voiceEnabled)}
+                            className={`text-xs ${voiceEnabled ? 'bg-primary-500/20 border-primary-500/50 text-primary-300' : 'bg-gray-500/20 border-gray-500/50 text-gray-400'}`}
+                          >
+                            {voiceEnabled ? 'Voice On' : 'Voice Off'}
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2 text-gray-400">
+                          <Mic className={`h-3 w-3 ${isListening ? 'text-red-400' : ''}`} />
+                          <span>Speech-to-text: {isListening ? 'Listening...' : 'Ready'}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-400">
+                          <VolumeX className={`h-3 w-3 ${isSpeaking ? 'text-green-400' : ''}`} />
+                          <span>Text-to-speech: {isSpeaking ? 'Speaking...' : voiceEnabled ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                      </div>
+                      {isSpeaking && (
+                        <div className="mt-2 flex justify-center">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={stopSpeaking}
+                            className="bg-red-500/20 border-red-500/50 text-red-300 hover:bg-red-500/30"
+                          >
+                            <VolumeX className="h-3 w-3 mr-1" />
+                            Stop Speaking
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </TabsContent>
                 
                 {/* Interactive Canvas Tab */}
@@ -1036,13 +1089,13 @@ export default function AiTutor() {
                           </div>
                           
                           <Button 
-                            onClick={handleVoiceInteraction}
+                            onClick={handleVoiceInput}
                             size="lg"
                             className={`h-16 w-16 rounded-full relative
                               ${isListening ? 'bg-red-500 hover:bg-red-600' : 
                                 isSpeaking ? 'bg-green-500 hover:bg-green-600' : 
-                                diagramUrl ? 'bg-primary-600 hover:bg-primary-500' : 'bg-gray-700'}`}
-                            disabled={!diagramUrl || isSpeaking}
+                                isVoiceSupported ? 'bg-primary-600 hover:bg-primary-500' : 'bg-gray-700'}`}
+                            disabled={!isVoiceSupported || isSpeaking}
                           >
                             {isListening ? (
                               // Listening animation
