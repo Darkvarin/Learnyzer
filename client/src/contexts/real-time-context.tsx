@@ -172,7 +172,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
       
       // Use a timeout to handle reconnection
       setTimeout(() => {
-        console.log('Attempting to reconnect to real-time service...');
+
         // Only try to reconnect if we're still in CLOSED state
         if (socketRef.current === ws || socketRef.current === null || 
             socketRef.current.readyState === WebSocket.CLOSED) {
@@ -288,9 +288,9 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
         // Type assertion to make sure TypeScript recognizes 'type' property
         const typedMessage = message as { type?: string };
         if (typedMessage.type) {
-          console.log('Unhandled real-time message type:', typedMessage.type);
+          // Unhandled message type - could log to error service in production
         } else {
-          console.log('Unknown message format received:', message);
+          // Unknown message format - could log to error service in production
         }
     }
   };

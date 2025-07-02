@@ -246,9 +246,11 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Students must choose their target entrance exam before accessing AI features
   - Added exam selection modal with direct navigation to profile settings
   - Protection covers AI Tutor chat, voice interaction, prompt suggestions, and all AI Visual Lab features
+  - Complete lockdown of "Entrance Exam Session" canvas when exam not selected
   - Prevents misuse by ensuring focused, exam-specific learning content
   - User-friendly modal guides students to select from JEE, NEET, UPSC, CLAT, CUET, or CSE
   - Seamless integration maintains user experience while enforcing educational focus
+  - Cleaned up debug notifications and console logs for production-ready experience
 
 ## User Preferences
 
