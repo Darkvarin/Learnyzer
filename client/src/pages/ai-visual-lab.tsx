@@ -34,7 +34,7 @@ export default function AIVisualLab() {
   ];
 
   const examTypes = [
-    "JEE Main", "JEE Advanced", "NEET", "UPSC", "CLAT", "CUET", 
+    "JEE Main", "JEE Advanced", "NEET", "UPSC", "CLAT", "CUET", "CSE",
     "GATE", "NDA", "CDS", "SSC", "Banking"
   ];
 

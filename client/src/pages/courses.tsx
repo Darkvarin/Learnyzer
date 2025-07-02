@@ -80,6 +80,7 @@ export default function Courses() {
                     <SelectItem value="upsc_mains">UPSC Mains</SelectItem>
                     <SelectItem value="clat">CLAT</SelectItem>
                     <SelectItem value="cuet">CUET</SelectItem>
+                    <SelectItem value="cse">CSE</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -117,7 +118,7 @@ export default function Courses() {
           <div>
             <div className="mb-6">
               <Input
-                placeholder="Search JEE, NEET, UPSC, CLAT, CUET preparation materials..."
+                placeholder="Search JEE, NEET, UPSC, CLAT, CUET, CSE preparation materials..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-dark-card border-dark-border pl-8"

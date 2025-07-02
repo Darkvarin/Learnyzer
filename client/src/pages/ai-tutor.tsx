@@ -529,7 +529,7 @@ export default function AiTutor() {
                     
                     <h3 className="font-semibold mb-2 font-gaming text-cyan-200">About</h3>
                     <p className="text-cyan-100/80 text-sm">
-                      {aiTutor?.description || "I'm your AI entrance exam coach for JEE, NEET, UPSC, CLAT and CUET, providing voice-based guidance with interactive diagrams and presentations for all exam subjects."}
+                      {aiTutor?.description || "I'm your AI entrance exam coach for JEE, NEET, UPSC, CLAT, CUET and CSE, providing voice-based guidance with interactive diagrams and presentations for all exam subjects."}
                     </p>
                     
                     <h3 className="font-semibold mt-4 mb-2 font-gaming text-cyan-200">Specialties</h3>
@@ -556,8 +556,8 @@ export default function AiTutor() {
                         className="flex items-center gap-3 text-white/90 cursor-pointer hover:bg-primary/10 p-2 rounded-md transition-colors"
                         onClick={() => {
                           toast({
-                            title: "UPSC/CLAT/CUET Expertise",
-                            description: "Visual concept explanations for UPSC, CLAT and CUET with advanced diagram generation."
+                            title: "UPSC/CLAT/CUET/CSE Expertise",
+                            description: "Visual concept explanations for UPSC, CLAT, CUET and CSE with advanced diagram generation."
                           });
                           setActiveTab("canvas");
                           setCurrentTopic("UPSC current affairs analysis");
@@ -965,6 +965,16 @@ export default function AiTutor() {
                                   <SelectItem value="cuet_general_test">CUET General Test</SelectItem>
                                   <SelectItem value="cuet_domain_subjects">CUET Domain Subjects</SelectItem>
                                   <SelectItem value="cuet_languages">CUET Languages</SelectItem>
+                                  
+                                  {/* CSE subjects */}
+                                  <SelectItem value="cse_programming">CSE Programming</SelectItem>
+                                  <SelectItem value="cse_data_structures">CSE Data Structures</SelectItem>
+                                  <SelectItem value="cse_algorithms">CSE Algorithms</SelectItem>
+                                  <SelectItem value="cse_computer_networks">CSE Computer Networks</SelectItem>
+                                  <SelectItem value="cse_operating_systems">CSE Operating Systems</SelectItem>
+                                  <SelectItem value="cse_database_systems">CSE Database Systems</SelectItem>
+                                  <SelectItem value="cse_software_engineering">CSE Software Engineering</SelectItem>
+                                  <SelectItem value="cse_system_design">CSE System Design</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
