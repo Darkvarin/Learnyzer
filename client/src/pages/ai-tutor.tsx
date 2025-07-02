@@ -746,15 +746,6 @@ export default function AiTutor() {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      onClick={() => checkExamSelection()}
-                      className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border-red-500/30 hover:border-red-500/50"
-                    >
-                      <AlertTriangle className="h-4 w-4 mr-2" />
-                      Test Exam Check
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
                       className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50"
                     >
                       <HelpCircle className="h-4 w-4 mr-2" />
@@ -966,8 +957,29 @@ export default function AiTutor() {
                 
                 {/* Interactive Canvas Tab */}
                 <TabsContent value="canvas" className="flex-1 flex flex-col mt-0">
-                  {/* Course info header when opened from a course */}
-                  {chapterParam && courseParam && (
+                  {/* Check if user has selected an exam before showing AI tools */}
+                  {!userExam ? (
+                    <div className="flex-1 flex flex-col items-center justify-center min-h-[500px] bg-dark-card rounded-xl border border-red-500/30 p-8">
+                      <div className="text-center space-y-4">
+                        <AlertTriangle className="h-16 w-16 text-red-400 mx-auto" />
+                        <h3 className="text-xl font-bold text-red-400">Exam Selection Required</h3>
+                        <p className="text-gray-400 max-w-md">
+                          To access AI tutoring features and prevent misuse, please select your target entrance exam first. 
+                          This ensures focused, exam-specific content.
+                        </p>
+                        <Button
+                          onClick={() => checkExamSelection()}
+                          className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/50"
+                        >
+                          <GraduationCap className="h-4 w-4 mr-2" />
+                          Choose Your Exam
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Course info header when opened from a course */}
+                      {chapterParam && courseParam && (
                     <div className="mb-4 bg-dark-card rounded-lg p-4 border-l-4 border-primary-600">
                       <div className="flex justify-between items-center">
                         <div>
@@ -1194,6 +1206,8 @@ export default function AiTutor() {
                       </div>
                     </div>
                   </div>
+                    </>
+                  )}
                 </TabsContent>
                 
                 {/* Performance Tab */}
