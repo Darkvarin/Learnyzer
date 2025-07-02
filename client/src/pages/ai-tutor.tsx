@@ -567,7 +567,7 @@ export default function AiTutor() {
                           <Book className="h-4 w-4 text-primary-400" />
                           <div className="absolute inset-0 bg-primary/5 animate-pulse rounded"></div>
                         </div>
-                        <span>{aiTutor?.subjects?.[1] || "UPSC/CLAT/CUET visual concept explanations"}</span>
+                        <span>{aiTutor?.subjects?.[1] || "UPSC/CLAT/CUET/CSE visual concept explanations"}</span>
                         <ChevronRight className="h-4 w-4 text-primary-400 ml-auto" />
                       </li>
                       <li 

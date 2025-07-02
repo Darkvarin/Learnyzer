@@ -569,6 +569,99 @@ async function seed() {
           { title: "Chapter 9: Immune System", description: "Immunity, antibodies, and immune responses." },
           { title: "Chapter 10: Common Disorders", description: "Diseases related to various organ systems." }
         ])
+      },
+      
+      // CSE Courses
+      {
+        title: "Data Structures and Algorithms for CSE",
+        description: "Comprehensive coverage of fundamental data structures and algorithmic techniques for Computer Science Engineering.",
+        subject: "Computer Science",
+        examType: "CSE",
+        coverImage: "https://images.unsplash.com/photo-1516110833967-0b5716ca1387?ixlib=rb-4.0.3",
+        chapters: 12,
+        targetGrade: "Engineering",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Arrays and Strings", description: "Array operations, string manipulation, and basic algorithms." },
+          { title: "Chapter 2: Linked Lists", description: "Singly, doubly, and circular linked lists with operations." },
+          { title: "Chapter 3: Stacks and Queues", description: "Implementation and applications of stacks and queues." },
+          { title: "Chapter 4: Trees and Binary Search Trees", description: "Tree traversals, BST operations, and balanced trees." },
+          { title: "Chapter 5: Heaps and Priority Queues", description: "Heap data structure and priority queue implementations." },
+          { title: "Chapter 6: Hash Tables", description: "Hashing techniques, collision resolution, and applications." },
+          { title: "Chapter 7: Graphs", description: "Graph representation, traversals, and basic algorithms." },
+          { title: "Chapter 8: Sorting Algorithms", description: "Comparison and non-comparison based sorting techniques." },
+          { title: "Chapter 9: Searching Algorithms", description: "Linear search, binary search, and advanced searching." },
+          { title: "Chapter 10: Dynamic Programming", description: "DP concepts, memoization, and classic problems." },
+          { title: "Chapter 11: Greedy Algorithms", description: "Greedy strategy and optimization problems." },
+          { title: "Chapter 12: Advanced Topics", description: "Segment trees, tries, and competitive programming techniques." }
+        ])
+      },
+      {
+        title: "Database Systems for CSE",
+        description: "Complete guide to database design, SQL, normalization, and database management systems.",
+        subject: "Computer Science",
+        examType: "CSE",
+        coverImage: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "Engineering",
+        difficulty: "Intermediate",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Database Fundamentals", description: "Introduction to databases, DBMS, and data models." },
+          { title: "Chapter 2: Relational Model", description: "Relations, keys, constraints, and relational algebra." },
+          { title: "Chapter 3: SQL Basics", description: "Data definition, data manipulation, and basic queries." },
+          { title: "Chapter 4: Advanced SQL", description: "Joins, subqueries, views, and stored procedures." },
+          { title: "Chapter 5: Database Design", description: "ER model, ER diagrams, and logical design." },
+          { title: "Chapter 6: Normalization", description: "Functional dependencies, normal forms, and decomposition." },
+          { title: "Chapter 7: Transaction Processing", description: "ACID properties, concurrency, and recovery." },
+          { title: "Chapter 8: Indexing and Optimization", description: "B-trees, hashing, and query optimization." },
+          { title: "Chapter 9: NoSQL Databases", description: "Document stores, key-value pairs, and graph databases." },
+          { title: "Chapter 10: Database Security", description: "Access control, encryption, and data privacy." }
+        ])
+      },
+      {
+        title: "Operating Systems for CSE",
+        description: "Study of operating system concepts, processes, memory management, and system programming.",
+        subject: "Computer Science",
+        examType: "CSE",
+        coverImage: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3",
+        chapters: 11,
+        targetGrade: "Engineering",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: OS Introduction", description: "Operating system concepts, types, and functions." },
+          { title: "Chapter 2: Processes and Threads", description: "Process creation, scheduling, and thread management." },
+          { title: "Chapter 3: CPU Scheduling", description: "Scheduling algorithms and performance metrics." },
+          { title: "Chapter 4: Process Synchronization", description: "Mutual exclusion, semaphores, and monitors." },
+          { title: "Chapter 5: Deadlocks", description: "Deadlock detection, prevention, and avoidance." },
+          { title: "Chapter 6: Memory Management", description: "Memory allocation, paging, and segmentation." },
+          { title: "Chapter 7: Virtual Memory", description: "Demand paging, page replacement, and thrashing." },
+          { title: "Chapter 8: File Systems", description: "File organization, directory structure, and allocation." },
+          { title: "Chapter 9: I/O Management", description: "Device drivers, I/O scheduling, and performance." },
+          { title: "Chapter 10: Security and Protection", description: "Access control, authentication, and security threats." },
+          { title: "Chapter 11: Distributed Systems", description: "Network operating systems and distributed algorithms." }
+        ])
+      },
+      {
+        title: "Computer Networks for CSE",
+        description: "Comprehensive study of networking protocols, architecture, and network programming.",
+        subject: "Computer Science",
+        examType: "CSE",
+        coverImage: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "Engineering",
+        difficulty: "Advanced",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Network Fundamentals", description: "Network topologies, protocols, and OSI model." },
+          { title: "Chapter 2: Physical Layer", description: "Transmission media, encoding, and multiplexing." },
+          { title: "Chapter 3: Data Link Layer", description: "Framing, error detection, and flow control." },
+          { title: "Chapter 4: Network Layer", description: "IP addressing, routing algorithms, and IPv4/IPv6." },
+          { title: "Chapter 5: Transport Layer", description: "TCP, UDP, congestion control, and reliability." },
+          { title: "Chapter 6: Application Layer", description: "HTTP, FTP, SMTP, DNS, and web protocols." },
+          { title: "Chapter 7: Network Security", description: "Cryptography, SSL/TLS, and security protocols." },
+          { title: "Chapter 8: Wireless Networks", description: "WiFi, cellular networks, and mobile computing." },
+          { title: "Chapter 9: Network Performance", description: "QoS, traffic analysis, and optimization." },
+          { title: "Chapter 10: Network Programming", description: "Socket programming and distributed applications." }
+        ])
       }
     ];
     

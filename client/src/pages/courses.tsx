@@ -108,6 +108,7 @@ export default function Courses() {
                     <SelectItem value="legal">Legal Aptitude</SelectItem>
                     <SelectItem value="general_knowledge">General Knowledge</SelectItem>
                     <SelectItem value="current_affairs">Current Affairs</SelectItem>
+                    <SelectItem value="computer_science">Computer Science</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

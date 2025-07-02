@@ -30,7 +30,7 @@ export default function AIVisualLab() {
 
   const subjects = [
     "Physics", "Chemistry", "Mathematics", "Biology", "History", 
-    "Geography", "Political Science", "Economics", "English", "Current Affairs"
+    "Geography", "Political Science", "Economics", "English", "Current Affairs", "Computer Science"
   ];
 
   const examTypes = [

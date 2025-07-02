@@ -2,7 +2,7 @@
 
 ## Overview
 
-Learnyzer is a comprehensive educational platform designed specifically for Indian students preparing for competitive entrance exams including JEE, NEET, UPSC, CLAT, and CUET. The platform combines AI-powered tutoring with gamification elements to create an engaging learning experience.
+Learnyzer is a comprehensive educational platform designed specifically for Indian students preparing for competitive entrance exams including JEE, NEET, UPSC, CLAT, CUET, and CSE. The platform combines AI-powered tutoring with gamification elements to create an engaging learning experience.
 
 ## System Architecture
 
@@ -63,7 +63,7 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
 - Grade-specific content filtering (3rd to 12th grade plus competitive exams)
 - Subject categorization with visual icons and progress tracking
 - Chapter-wise content organization with AI tutor integration
-- Exam-specific preparation tracks (JEE, NEET, UPSC, CLAT, CUET)
+- Exam-specific preparation tracks (JEE, NEET, UPSC, CLAT, CUET, CSE)
 
 ### Real-time Features
 - WebSocket implementation for live notifications
@@ -210,6 +210,12 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Advanced filtering and search capabilities across all feedback
   - Real-time statistics dashboard with feedback analytics
   - Complete database schema with proper relations and validation
+- July 02, 2025: CSE exam integration across the platform
+  - Added CSE (Computer Science Engineering) as new exam type
+  - Integrated CSE subjects in AI tutor (Programming, Data Structures, Algorithms, Networks, OS, Database)
+  - Added comprehensive CSE courses with detailed chapter content
+  - Updated all platform components to support CSE exam preparation
+  - Enhanced subject filters and search functionality to include Computer Science
 
 ## User Preferences
 

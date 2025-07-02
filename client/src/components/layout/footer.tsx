@@ -99,6 +99,11 @@ export function Footer() {
                   CUET
                 </a>
               </li>
+              <li>
+                <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                  CSE
+                </a>
+              </li>
             </ul>
           </div>
 
