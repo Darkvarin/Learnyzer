@@ -129,7 +129,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
     const ws = new WebSocket(wsUrl);
     
     ws.onopen = () => {
-      console.log('Real-time WebSocket connection established');
+
       setConnected(true);
       setReconnecting(false);
       
@@ -161,7 +161,7 @@ export function RealTimeProvider({ children }: { children: React.ReactNode }) {
     
     // Handle connection close and trigger reconnection
     ws.onclose = () => {
-      console.log('Real-time WebSocket connection closed');
+
       setConnected(false);
       
       // Don't attempt to reconnect if the user has logged out

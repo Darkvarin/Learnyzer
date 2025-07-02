@@ -69,9 +69,6 @@ export default function AiTutor() {
 
   // Function to check if user can access AI tools
   const checkExamSelection = () => {
-    console.log('Full user data check:', JSON.stringify(userData, null, 2));
-    console.log('User exam value:', userExam);
-    console.log('Checking exam selection:', { userData, userExam, isAuthenticated: !!userData });
     
     if (!userData) {
       toast({
@@ -82,16 +79,9 @@ export default function AiTutor() {
       return false;
     }
     if (!userExam) {
-      console.log('No exam selected, showing modal');
-      toast({
-        title: "Debug: Showing Exam Modal",
-        description: "User has no selectedExam, triggering modal",
-        variant: "default"
-      });
       setShowExamModal(true);
       return false;
     }
-    console.log('User has exam selected:', userExam);
     return true;
   };
   
