@@ -17,7 +17,7 @@ export function Footer() {
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
               AI-powered learning platform for Indian competitive exam preparation. 
-              Master JEE, NEET, UPSC, CLAT, and CUET with personalized AI tutoring.
+              Master JEE, NEET, UPSC, CLAT, CUET, and CSE with personalized AI tutoring.
             </p>
             <div className="flex space-x-4">
               <a href="https://twitter.com/learnyzer" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
