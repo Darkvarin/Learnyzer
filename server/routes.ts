@@ -79,6 +79,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test endpoint for Fast2SMS functionality
+  app.post('/api/test-sms', async (req, res) => {
+    try {
+      const { mobile } = req.body;
+      
+      if (!mobile) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Mobile number is required for SMS test' 
+        });
+      }
+
+      console.log('Testing Fast2SMS with mobile:', mobile);
+      const result = await otpService.sendOTP(mobile, 'login');
+      
+      res.json({
+        ...result,
+        message: `Fast2SMS test: ${result.message}`,
+        cost: '₹0.143 per SMS',
+        provider: 'Fast2SMS'
+      });
+    } catch (error) {
+      console.error('SMS test error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'SMS test failed' 
+      });
+    }
+  });
+
   // Authentication middleware for protected routes
   const requireAuth = (req: any, res: any, next: any) => {
     if (!req.isAuthenticated()) {
