@@ -29,6 +29,8 @@ export function Header() {
     else if (path.includes("/battle-zone")) setActiveLink("battle-zone");
     else if (path.includes("/ai-tutor")) setActiveLink("ai-tutor");
     else if (path.includes("/ai-tools")) setActiveLink("ai-tools");
+    else if (path.includes("/leaderboard")) setActiveLink("leaderboard");
+    else if (path.includes("/subscription")) setActiveLink("subscription");
     else setActiveLink("");
   }, []);
 
@@ -168,6 +170,13 @@ export function Header() {
                   setActive={() => setActiveLink("leaderboard")}
                 >
                   Leaderboard
+                </NavLink>
+                <NavLink 
+                  href="/subscription" 
+                  active={activeLink === "subscription"}
+                  setActive={() => setActiveLink("subscription")}
+                >
+                  Subscription
                 </NavLink>
               </nav>
             )}
