@@ -61,45 +61,87 @@ export class OTPService {
     }
   }
 
-  // Fast2SMS integration - ₹0.143/SMS (much cheaper than Firebase)
+  // SMS integration with fallback providers
   private async sendFast2SMS(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
     try {
-      // Check if Fast2SMS API key is configured
-      if (!process.env.FAST2SMS_API_KEY) {
-        console.log('Fast2SMS API key not configured, using development mode');
-        return { success: true, message: 'Development mode - SMS not sent' };
+      // Try Fast2SMS first
+      if (process.env.FAST2SMS_API_KEY) {
+        const fast2smsResult = await this.tryFast2SMS(mobile, otp, purpose);
+        if (fast2smsResult.success) {
+          return fast2smsResult;
+        }
+        console.log('Fast2SMS failed, trying MSG91 fallback...');
       }
 
-      const message = `Your Learnyzer ${purpose} OTP is ${otp}. Valid for 5 minutes. Do not share with anyone.`;
-      
-      const response = await fetch('https://www.fast2sms.com/dev/bulkV2', {
-        method: 'POST',
-        headers: {
-          'authorization': process.env.FAST2SMS_API_KEY,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          route: 'q',
-          sender_id: 'TXTIND',
-          message: message,
-          language: 'english',
-          flash: 0,
-          numbers: mobile.replace('+91', ''), // Remove country code if present
-        }),
-      });
-
-      const result = await response.json();
-      
-      if (response.ok && result.return === true) {
-        console.log('Fast2SMS OTP sent successfully:', result);
-        return { success: true, message: 'OTP sent successfully' };
-      } else {
-        console.error('Fast2SMS error:', result);
-        return { success: false, message: result.message || 'SMS sending failed' };
+      // Fallback to MSG91 if Fast2SMS fails
+      if (process.env.MSG91_API_KEY) {
+        return await this.tryMSG91(mobile, otp, purpose);
       }
+
+      console.log('No SMS API keys configured, using development mode');
+      return { success: true, message: 'Development mode - SMS not sent' };
     } catch (error) {
-      console.error('Fast2SMS API error:', error);
+      console.error('SMS service error:', error);
       return { success: false, message: 'SMS service temporarily unavailable' };
+    }
+  }
+
+  // Fast2SMS implementation
+  private async tryFast2SMS(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
+    const message = `Your Learnyzer ${purpose} OTP is ${otp}. Valid for 5 minutes. Do not share with anyone.`;
+    
+    const response = await fetch('https://www.fast2sms.com/dev/bulk', {
+      method: 'POST',
+      headers: {
+        'authorization': process.env.FAST2SMS_API_KEY!,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        route: 'q',
+        sender_id: 'TXTIND',
+        message: message,
+        language: 'english',
+        flash: 0,
+        numbers: mobile.replace('+91', ''),
+      }),
+    });
+
+    const result = await response.json();
+    
+    if (response.ok && result.return === true) {
+      console.log('Fast2SMS OTP sent successfully:', result);
+      return { success: true, message: 'OTP sent via Fast2SMS' };
+    } else {
+      console.error('Fast2SMS error:', result);
+      return { success: false, message: result.message || 'Fast2SMS failed' };
+    }
+  }
+
+  // MSG91 fallback - ₹0.16/SMS (reliable alternative)
+  private async tryMSG91(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(`https://control.msg91.com/api/v5/otp?mobile=91${mobile.replace('+91', '')}&otp=${otp}`, {
+      method: 'POST',
+      headers: {
+        'authkey': process.env.MSG91_API_KEY!,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        template_id: 'Your_Template_ID', // You'll need to register this
+        mobile: mobile.replace('+91', ''),
+        authkey: process.env.MSG91_API_KEY,
+        otp: otp,
+        company: 'Learnyzer'
+      }),
+    });
+
+    const result = await response.json();
+    
+    if (response.ok && result.type === 'success') {
+      console.log('MSG91 OTP sent successfully:', result);
+      return { success: true, message: 'OTP sent via MSG91' };
+    } else {
+      console.error('MSG91 error:', result);
+      return { success: false, message: 'MSG91 failed' };
     }
   }
 
