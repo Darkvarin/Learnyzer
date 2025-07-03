@@ -187,7 +187,7 @@ export default function SubscriptionPage() {
       return response.json();
     },
     onSuccess: (data) => {
-      if (data.orderId && data.amount) {
+      if (data.order_id && data.amount) {
         // Open Razorpay checkout
         openRazorpayCheckout(data);
       } else {
@@ -213,8 +213,8 @@ export default function SubscriptionPage() {
       amount: orderData.amount,
       currency: 'INR',
       name: 'Learnyzer',
-      description: `Subscription: ${orderData.planName}`,
-      order_id: orderData.orderId,
+      description: `Subscription: ${orderData.plan_name}`,
+      order_id: orderData.order_id,
       handler: function (response: any) {
         // Payment successful
         toast({
@@ -226,8 +226,8 @@ export default function SubscriptionPage() {
         verifyPayment(response);
       },
       prefill: {
-        name: 'Student',
-        email: 'student@example.com'
+        name: orderData.user_name || 'Student',
+        email: orderData.user_email || 'student@example.com'
       },
       theme: {
         color: '#4af3c0'
