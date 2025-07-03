@@ -100,7 +100,7 @@ export class OTPService {
 
   // Fast2SMS implementation
   private async tryFast2SMS(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
-    const message = `Your Learnyzer ${purpose} OTP is ${otp}. Valid for 5 minutes. Do not share with anyone.`;
+    const message = this.createOTPTemplate(otp, purpose);
     
     const response = await fetch('https://www.fast2sms.com/dev/bulk', {
       method: 'POST',
@@ -191,6 +191,9 @@ export class OTPService {
   // 2Factor.in implementation - ₹0.18/SMS (no template required)
   private async try2Factor(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
     try {
+      // Create professional OTP message template
+      const template = this.createOTPTemplate(otp, purpose);
+      
       const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/SMS/${mobile}/${otp}/LEARNY`, {
         method: 'GET',
       });
@@ -208,6 +211,20 @@ export class OTPService {
       console.error('2Factor API error:', error);
       return { success: false, message: '2Factor connection failed' };
     }
+  }
+
+  // Professional OTP message template generator
+  private createOTPTemplate(otp: string, purpose: string): string {
+    const purposeMap: { [key: string]: string } = {
+      'login': 'login to',
+      'signup': 'verify your',
+      'verification': 'verify your',
+      'password_reset': 'reset password for'
+    };
+
+    const action = purposeMap[purpose] || 'verify your';
+    
+    return `🎓 LEARNYZER: Your OTP is ${otp} to ${action} account. Valid for 5 minutes. Keep it confidential. Happy Learning!`;
   }
 
   // Verify OTP
