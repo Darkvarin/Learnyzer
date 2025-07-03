@@ -22,6 +22,13 @@ import {
   Gift
 } from "lucide-react";
 
+// Declare global window type for Razorpay
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
 interface PricingPlan {
   id: string;
   name: string;
@@ -170,16 +177,24 @@ export default function SubscriptionPage() {
 
   const upgradePlan = useMutation({
     mutationFn: async (planId: string) => {
-      const response = await apiRequest("POST", "/api/subscription/upgrade", { planId });
+      const response = await apiRequest("POST", "/api/payment/create-order", { 
+        planId: planId === "basic" ? "MONTHLY_BASIC" : 
+               planId === "pro" ? "MONTHLY_PRO" :
+               planId === "quarterly" ? "QUARTERLY" :
+               planId === "half_yearly" ? "HALF_YEARLY" :
+               planId === "yearly" ? "YEARLY" : "MONTHLY_BASIC"
+      });
       return response.json();
     },
     onSuccess: (data) => {
-      if (data.paymentUrl) {
-        window.location.href = data.paymentUrl;
+      if (data.orderId && data.amount) {
+        // Open Razorpay checkout
+        openRazorpayCheckout(data);
       } else {
         toast({
-          title: "Plan Upgraded",
-          description: "Your subscription has been updated successfully!",
+          title: "Order Creation Failed",
+          description: "Failed to create payment order. Please try again.",
+          variant: "destructive",
         });
       }
     },
@@ -191,6 +206,68 @@ export default function SubscriptionPage() {
       });
     },
   });
+
+  const openRazorpayCheckout = (orderData: any) => {
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_9YrKzZqaP7xJEV', // Use environment variable or fallback
+      amount: orderData.amount,
+      currency: 'INR',
+      name: 'Learnyzer',
+      description: `Subscription: ${orderData.planName}`,
+      order_id: orderData.orderId,
+      handler: function (response: any) {
+        // Payment successful
+        toast({
+          title: "Payment Successful!",
+          description: "Your subscription has been activated. Enjoy your premium features!",
+        });
+        
+        // Verify payment on server
+        verifyPayment(response);
+      },
+      prefill: {
+        name: 'Student',
+        email: 'student@example.com'
+      },
+      theme: {
+        color: '#4af3c0'
+      },
+      modal: {
+        ondismiss: function() {
+          toast({
+            title: "Payment Cancelled",
+            description: "Payment was cancelled. You can try again anytime.",
+            variant: "destructive",
+          });
+        }
+      }
+    };
+
+    if (window.Razorpay) {
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } else {
+      // Load Razorpay script and then open
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      };
+      document.head.appendChild(script);
+    }
+  };
+
+  const verifyPayment = async (paymentData: any) => {
+    try {
+      await apiRequest("POST", "/api/payment/verify-payment", paymentData);
+      
+      // Refresh the subscription data after successful payment
+      window.location.reload();
+    } catch (error) {
+      console.error("Payment verification failed:", error);
+    }
+  };
 
   const getTierIcon = (planId: string) => {
     return planId === "free" ? Zap : Crown;
