@@ -64,28 +64,30 @@ export class OTPService {
   // SMS integration with fallback providers
   private async sendFast2SMS(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
     try {
-      // Try Fast2SMS first
-      if (process.env.FAST2SMS_API_KEY) {
-        const fast2smsResult = await this.tryFast2SMS(mobile, otp, purpose);
-        if (fast2smsResult.success) {
-          return fast2smsResult;
-        }
-        console.log('Fast2SMS failed, trying MSG91 fallback...');
+      // Try 2Factor.in first (₹0.18/SMS - most reliable, no templates needed)
+      if (process.env.TWOFACTOR_API_KEY) {
+        console.log('Using 2Factor.in for SMS delivery...');
+        const twoFactorResult = await this.try2Factor(mobile, otp, purpose);
+        if (twoFactorResult.success) return twoFactorResult;
+        console.log('2Factor failed, trying MSG91 fallback...');
       }
 
-      // Try multiple providers as fallback
+      // Try MSG91 (₹0.16/SMS - working with templates)
       if (process.env.MSG91_API_KEY) {
         const msg91Result = await this.tryMSG91(mobile, otp, purpose);
         if (msg91Result.success) return msg91Result;
+        console.log('MSG91 failed, trying Fast2SMS fallback...');
+      }
+
+      // Try Fast2SMS (₹0.143/SMS - most cost-effective but IP blocked on Replit)
+      if (process.env.FAST2SMS_API_KEY) {
+        const fast2smsResult = await this.tryFast2SMS(mobile, otp, purpose);
+        if (fast2smsResult.success) return fast2smsResult;
       }
 
       if (process.env.SMSCOUNTRY_API_KEY) {
         const smsCountryResult = await this.trySMSCountry(mobile, otp, purpose);
         if (smsCountryResult.success) return smsCountryResult;
-      }
-
-      if (process.env.TWOFACTOR_API_KEY) {
-        return await this.try2Factor(mobile, otp, purpose);
       }
 
       console.log('No SMS API keys configured, using development mode');
