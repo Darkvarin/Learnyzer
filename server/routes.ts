@@ -122,6 +122,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 2Factor.in SMS callback endpoint for delivery reports
+  app.post('/api/sms/callback', (req, res) => {
+    try {
+      console.log('📞 2Factor.in SMS Callback received:', req.body);
+      console.log('📊 Delivery Status:', req.body.Status);
+      console.log('📱 Mobile:', req.body.To);
+      console.log('📋 Details:', req.body.Details);
+      
+      // Log delivery status for debugging
+      if (req.body.Status === 'Delivered') {
+        console.log('✅ SMS successfully delivered to', req.body.To);
+      } else if (req.body.Status === 'Failed') {
+        console.log('❌ SMS delivery failed to', req.body.To, 'Reason:', req.body.Reason);
+      }
+      
+      res.status(200).json({ received: true });
+    } catch (error) {
+      console.error('Callback error:', error);
+      res.status(500).json({ error: 'Callback processing failed' });
+    }
+  });
+
   // Authentication middleware for protected routes
   const requireAuth = (req: any, res: any, next: any) => {
     if (!req.isAuthenticated()) {

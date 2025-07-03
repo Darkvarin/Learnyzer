@@ -99,25 +99,21 @@ export class OTPService {
       // Professional SMS message template
       const smsMessage = `${otp} is your Learnyzer verification code. Valid for 5 minutes. Do not share with anyone.`;
       console.log(`📧 SMS Message: "${smsMessage}"`);
-      console.log(`🎯 Sending TEXT SMS (not voice) via TSMS endpoint`);
+      console.log(`🎯 Sending TEXT SMS (not voice) via SMS endpoint`);
       
-      // 2Factor.in SMS API with custom text message
-      const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/ADDON_SERVICES/SEND/TSMS`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          'From': 'LEARNY',
-          'To': cleanMobile,
-          'Msg': smsMessage
-        })
+      // Simple 2Factor.in SMS endpoint - should send SMS not voice
+      console.log('🔄 Using basic SMS endpoint to avoid voice calls...');
+      const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/SMS/${cleanMobile}/${otp}/LEARNY`, {
+        method: 'GET',
       });
 
       const result = await response.json();
       
-      if (response.ok && result.Status === 'Success') {
-        console.log('✅ 2Factor OTP sent successfully:', result);
+      console.log('📊 2Factor API Response:', result);
+      console.log('📊 Response Status:', response.status);
+      
+      if (response.ok && (result.Status === 'Success' || result.return === true)) {
+        console.log('✅ 2Factor SMS TEXT sent successfully:', result);
         // Wait a moment and check delivery status
         setTimeout(async () => {
           try {
