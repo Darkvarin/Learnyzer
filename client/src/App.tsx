@@ -32,6 +32,7 @@ import SubscriptionPage from "./pages/subscription";
 import TermsPage from "./pages/terms";
 import PrivacyPage from "./pages/privacy";
 import RefundPage from "./pages/refund";
+import ContactPage from "./pages/contact";
 
 function App() {
   return (
@@ -58,7 +59,8 @@ function App() {
                     <Route path="/feedback" component={CustomerFeedback} />
                     <Route path="/terms" component={TermsPage} />
                     <Route path="/privacy" component={PrivacyPage} />
-                    <Route path="/refund" component={RefundPage} />                
+                    <Route path="/refund" component={RefundPage} />
+                    <Route path="/contact" component={ContactPage} />                
                     <ProtectedRoute path="/profile" component={ProfileSettings} />
                     <ProtectedRoute path="/create-profile" component={CreateProfile} />
                     <ProtectedRoute path="/websocket-test" component={WebSocketTest} />

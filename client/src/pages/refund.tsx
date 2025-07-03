@@ -125,7 +125,7 @@ export default function RefundPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">How to Request Cancellation</h2>
             <ol className="list-decimal pl-6 mb-4 space-y-2">
-              <li>Contact our Customer Service team at <strong>support@learnyzer.com</strong></li>
+              <li>Contact our Customer Service team at <strong>learnyzer.ai@gmail.com</strong></li>
               <li>Include your account email and subscription details</li>
               <li>Clearly state your reason for cancellation</li>
               <li>Provide order ID or payment reference if available</li>
@@ -148,7 +148,8 @@ export default function RefundPage() {
           <section className="mb-8">
             <h2 className="text-2xl font-semibold mb-4">Contact Information</h2>
             <div className="bg-muted p-4 rounded-lg">
-              <p className="mb-2"><strong>Customer Support:</strong> support@learnyzer.com</p>
+              <p className="mb-2"><strong>Customer Support:</strong> learnyzer.ai@gmail.com</p>
+              <p className="mb-2"><strong>Phone Support:</strong> +91 9910601733</p>
               <p className="mb-2"><strong>Business Hours:</strong> Monday to Friday, 9:00 AM to 6:00 PM IST</p>
               <p className="mb-2"><strong>Response Time:</strong> Within 24-48 hours</p>
               <p><strong>Emergency Technical Issues:</strong> Same-day response guaranteed</p>

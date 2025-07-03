@@ -127,9 +127,9 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="mailto:support@learnyzer.com" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                   Contact Us
-                </a>
+                </Link>
               </li>
               <li>
                 <Link href="/terms" className="text-muted-foreground hover:text-primary transition-colors text-sm">
