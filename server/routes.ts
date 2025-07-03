@@ -102,16 +102,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({
         ...result,
+        message: `2Factor.in SMS: ${result.message}`,
         testDetails: {
           mobile: mobile,
           otp: process.env.NODE_ENV === 'development' ? testOTP : 'Hidden in production',
           timestamp: new Date().toISOString(),
-          providers: {
-            'twoFactor': !!process.env.TWOFACTOR_API_KEY,
-            'msg91': !!process.env.MSG91_API_KEY,
-            'fast2sms': !!process.env.FAST2SMS_API_KEY,
-            'smsCountry': !!process.env.SMSCOUNTRY_API_KEY
-          }
+          provider: '2Factor.in',
+          cost: '₹0.18 per SMS',
+          configured: !!process.env.TWOFACTOR_API_KEY
         }
       });
     } catch (error) {

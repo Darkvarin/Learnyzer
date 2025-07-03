@@ -34,8 +34,8 @@ export class OTPService {
         expiresAt,
       });
       
-      // Send SMS using Fast2SMS (cost-effective Indian SMS provider)
-      const smsResult = await this.sendFast2SMS(mobile, otp, purpose);
+      // Send SMS using 2Factor.in (reliable Indian SMS provider)
+      const smsResult = await this.send2FactorSMS(mobile, otp, purpose);
       
       if (smsResult.success) {
         return {
@@ -61,149 +61,32 @@ export class OTPService {
     }
   }
 
-  // SMS integration with fallback providers
-  private async sendFast2SMS(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
+  // SMS integration using 2Factor.in only
+  private async send2FactorSMS(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
     try {
-      // Try MSG91 first (₹0.16/SMS - reliable Indian provider with templates)
-      if (process.env.MSG91_API_KEY) {
-        console.log('Using MSG91 for SMS delivery...');
-        const msg91Result = await this.tryMSG91(mobile, otp, purpose);
-        if (msg91Result.success) return msg91Result;
-        console.log('MSG91 failed, trying 2Factor fallback...');
+      if (!process.env.TWOFACTOR_API_KEY) {
+        console.error('2Factor.in API key not configured');
+        return { success: false, message: '2Factor.in API key not configured' };
       }
 
-      // Try 2Factor.in (₹0.18/SMS - backup option)
-      if (process.env.TWOFACTOR_API_KEY) {
-        console.log('Using 2Factor.in for SMS delivery...');
-        const twoFactorResult = await this.try2Factor(mobile, otp, purpose);
-        if (twoFactorResult.success) return twoFactorResult;
-        console.log('2Factor failed, trying Fast2SMS fallback...');
-      }
-
-      // Try Fast2SMS (₹0.143/SMS - most cost-effective but IP blocked on Replit)
-      if (process.env.FAST2SMS_API_KEY) {
-        const fast2smsResult = await this.tryFast2SMS(mobile, otp, purpose);
-        if (fast2smsResult.success) return fast2smsResult;
-      }
-
-      if (process.env.SMSCOUNTRY_API_KEY) {
-        const smsCountryResult = await this.trySMSCountry(mobile, otp, purpose);
-        if (smsCountryResult.success) return smsCountryResult;
-      }
-
-      console.log('No SMS API keys configured, using development mode');
-      return { success: true, message: 'Development mode - SMS not sent' };
-    } catch (error) {
-      console.error('SMS service error:', error);
-      return { success: false, message: 'SMS service temporarily unavailable' };
-    }
-  }
-
-  // Fast2SMS implementation
-  private async tryFast2SMS(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
-    const message = this.createOTPTemplate(otp, purpose);
-    
-    const response = await fetch('https://www.fast2sms.com/dev/bulk', {
-      method: 'POST',
-      headers: {
-        'authorization': process.env.FAST2SMS_API_KEY!,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        route: 'q',
-        sender_id: 'TXTIND',
-        message: message,
-        language: 'english',
-        flash: 0,
-        numbers: mobile.replace('+91', ''),
-      }),
-    });
-
-    const result = await response.json();
-    
-    if (response.ok && result.return === true) {
-      console.log('Fast2SMS OTP sent successfully:', result);
-      return { success: true, message: 'OTP sent via Fast2SMS' };
-    } else {
-      console.error('Fast2SMS error:', result);
-      return { success: false, message: result.message || 'Fast2SMS failed' };
-    }
-  }
-
-  // MSG91 implementation - ₹0.16/SMS (reliable alternative)
-  private async tryMSG91(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
-    try {
-      // Clean mobile number format
-      const cleanMobile = mobile.replace(/\D/g, '').replace(/^91/, '').slice(-10);
+      console.log('Using 2Factor.in for SMS delivery...');
+      const twoFactorResult = await this.try2Factor(mobile, otp, purpose);
       
-      console.log(`📱 MSG91: Sending OTP ${otp} to ${cleanMobile}`);
-      
-      // Professional OTP message template
-      const template = this.createOTPTemplate(otp, purpose);
-      
-      // MSG91 simple SMS API (no templates needed)
-      const response = await fetch(`https://api.msg91.com/api/v2/sendsms`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'authkey': process.env.MSG91_API_KEY!,
-        },
-        body: JSON.stringify({
-          sender: 'LEARNY',
-          route: '4',
-          country: '91',
-          sms: [
-            {
-              message: template,
-              to: [cleanMobile]
-            }
-          ]
-        })
-      });
-
-      const result = await response.json();
-      
-      if (response.ok && (result.type === 'success' || result.message === 'SMS sent successfully.' || result.requestId)) {
-        console.log('✅ MSG91 SMS sent successfully:', result);
-        return { success: true, message: 'OTP sent via MSG91' };
+      if (twoFactorResult.success) {
+        return twoFactorResult;
       } else {
-        console.error('❌ MSG91 error:', result);
-        return { success: false, message: result.message || 'MSG91 failed' };
+        console.error('2Factor.in SMS delivery failed');
+        return { success: false, message: '2Factor.in SMS delivery failed' };
       }
     } catch (error) {
-      console.error('💥 MSG91 API error:', error);
-      return { success: false, message: 'MSG91 connection failed' };
+      console.error('2Factor.in SMS service error:', error);
+      return { success: false, message: '2Factor.in SMS service error' };
     }
   }
 
-  // SMSCountry implementation - ₹0.006/SMS (cheapest option)
-  private async trySMSCountry(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
-    const message = `Your Learnyzer ${purpose} OTP is ${otp}. Valid for 5 minutes. Do not share with anyone.`;
-    
-    const response = await fetch('https://restapi.smscountry.com/v0.1/Accounts/{SID}/SMSes/', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${Buffer.from(`${process.env.SMSCOUNTRY_SID}:${process.env.SMSCOUNTRY_TOKEN}`).toString('base64')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        Text: message,
-        Number: `91${mobile.replace('+91', '')}`,
-        SenderId: 'LEARNY',
-        Tool: 'API'
-      }),
-    });
 
-    const result = await response.json();
-    
-    if (response.ok && result.Success) {
-      console.log('SMSCountry OTP sent successfully:', result);
-      return { success: true, message: 'OTP sent via SMSCountry' };
-    } else {
-      console.error('SMSCountry error:', result);
-      return { success: false, message: 'SMSCountry failed' };
-    }
-  }
+
+
 
   // 2Factor.in implementation - ₹0.18/SMS (no template required)
   private async try2Factor(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
@@ -213,8 +96,8 @@ export class OTPService {
       
       console.log(`📱 2Factor.in: Sending OTP ${otp} to ${cleanMobile}`);
       
-      // 2Factor.in requires specific format for custom messages
-      const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/SMS/+91${cleanMobile}/${otp}`, {
+      // 2Factor.in SMS API (using OTP template for better delivery)
+      const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/SMS/${cleanMobile}/${otp}`, {
         method: 'GET',
       });
 
