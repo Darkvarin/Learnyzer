@@ -80,7 +80,12 @@ export class OTPService {
       }
 
       if (process.env.SMSCOUNTRY_API_KEY) {
-        return await this.trySMSCountry(mobile, otp, purpose);
+        const smsCountryResult = await this.trySMSCountry(mobile, otp, purpose);
+        if (smsCountryResult.success) return smsCountryResult;
+      }
+
+      if (process.env.TWOFACTOR_API_KEY) {
+        return await this.try2Factor(mobile, otp, purpose);
       }
 
       console.log('No SMS API keys configured, using development mode');
@@ -124,32 +129,31 @@ export class OTPService {
 
   // MSG91 implementation - ₹0.16/SMS (reliable alternative)
   private async tryMSG91(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
-    const message = `Your Learnyzer ${purpose} OTP is ${otp}. Valid for 5 minutes. Do not share with anyone.`;
-    
-    const response = await fetch('https://control.msg91.com/api/v5/otp', {
-      method: 'POST',
-      headers: {
-        'authkey': process.env.MSG91_API_KEY!,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        mobile: `91${mobile.replace('+91', '')}`,
-        message: message,
-        sender: 'LEARNY',
-        country: '91',
-        route: '4',
-        DLT_TE_ID: '1207162978925555814' // Generic OTP template
-      }),
-    });
+    try {
+      // Try the simple OTP endpoint first
+      const response = await fetch(`https://control.msg91.com/api/v5/otp?authkey=${process.env.MSG91_API_KEY}&mobile=91${mobile.replace('+91', '')}&otp=${otp}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    const result = await response.json();
-    
-    if (response.ok && result.type === 'success') {
-      console.log('MSG91 OTP sent successfully:', result);
-      return { success: true, message: 'OTP sent via MSG91' };
-    } else {
-      console.error('MSG91 error:', result);
-      return { success: false, message: 'MSG91 failed' };
+      const result = await response.json();
+      
+      if (response.ok) {
+        console.log('MSG91 OTP API response:', result);
+        
+        // Check for success in various response formats
+        if (result.type === 'success' || result.message === 'OTP sent successfully' || result.request_id) {
+          return { success: true, message: 'OTP sent via MSG91' };
+        }
+      }
+
+      console.error('MSG91 OTP API failed:', result);
+      return { success: false, message: result.message || 'MSG91 OTP API failed' };
+    } catch (error) {
+      console.error('MSG91 API error:', error);
+      return { success: false, message: 'MSG91 connection failed' };
     }
   }
 
@@ -179,6 +183,28 @@ export class OTPService {
     } else {
       console.error('SMSCountry error:', result);
       return { success: false, message: 'SMSCountry failed' };
+    }
+  }
+
+  // 2Factor.in implementation - ₹0.18/SMS (no template required)
+  private async try2Factor(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/SMS/${mobile}/${otp}/LEARNY`, {
+        method: 'GET',
+      });
+
+      const result = await response.json();
+      
+      if (response.ok && result.Status === 'Success') {
+        console.log('2Factor OTP sent successfully:', result);
+        return { success: true, message: 'OTP sent via 2Factor' };
+      } else {
+        console.error('2Factor error:', result);
+        return { success: false, message: '2Factor failed' };
+      }
+    } catch (error) {
+      console.error('2Factor API error:', error);
+      return { success: false, message: '2Factor connection failed' };
     }
   }
 
