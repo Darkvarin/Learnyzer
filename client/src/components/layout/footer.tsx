@@ -117,6 +117,11 @@ export function Footer() {
                 </a>
               </li>
               <li>
+                <Link href="/feedback" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                  Give Feedback
+                </Link>
+              </li>
+              <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                   Contact Us
                 </a>
