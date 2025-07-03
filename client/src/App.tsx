@@ -33,6 +33,7 @@ import TermsPage from "./pages/terms";
 import PrivacyPage from "./pages/privacy";
 import RefundPage from "./pages/refund";
 import ContactPage from "./pages/contact";
+import ShippingPage from "./pages/shipping";
 
 function App() {
   return (
@@ -60,7 +61,8 @@ function App() {
                     <Route path="/terms" component={TermsPage} />
                     <Route path="/privacy" component={PrivacyPage} />
                     <Route path="/refund" component={RefundPage} />
-                    <Route path="/contact" component={ContactPage} />                
+                    <Route path="/contact" component={ContactPage} />
+                    <Route path="/shipping" component={ShippingPage} />                
                     <ProtectedRoute path="/profile" component={ProfileSettings} />
                     <ProtectedRoute path="/create-profile" component={CreateProfile} />
                     <ProtectedRoute path="/websocket-test" component={WebSocketTest} />
