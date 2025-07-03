@@ -64,19 +64,20 @@ export class OTPService {
   // SMS integration with fallback providers
   private async sendFast2SMS(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
     try {
-      // Try 2Factor.in first (₹0.18/SMS - most reliable, no templates needed)
+      // Try MSG91 first (₹0.16/SMS - reliable Indian provider with templates)
+      if (process.env.MSG91_API_KEY) {
+        console.log('Using MSG91 for SMS delivery...');
+        const msg91Result = await this.tryMSG91(mobile, otp, purpose);
+        if (msg91Result.success) return msg91Result;
+        console.log('MSG91 failed, trying 2Factor fallback...');
+      }
+
+      // Try 2Factor.in (₹0.18/SMS - backup option)
       if (process.env.TWOFACTOR_API_KEY) {
         console.log('Using 2Factor.in for SMS delivery...');
         const twoFactorResult = await this.try2Factor(mobile, otp, purpose);
         if (twoFactorResult.success) return twoFactorResult;
-        console.log('2Factor failed, trying MSG91 fallback...');
-      }
-
-      // Try MSG91 (₹0.16/SMS - working with templates)
-      if (process.env.MSG91_API_KEY) {
-        const msg91Result = await this.tryMSG91(mobile, otp, purpose);
-        if (msg91Result.success) return msg91Result;
-        console.log('MSG91 failed, trying Fast2SMS fallback...');
+        console.log('2Factor failed, trying Fast2SMS fallback...');
       }
 
       // Try Fast2SMS (₹0.143/SMS - most cost-effective but IP blocked on Replit)
@@ -132,29 +133,45 @@ export class OTPService {
   // MSG91 implementation - ₹0.16/SMS (reliable alternative)
   private async tryMSG91(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
     try {
-      // Try the simple OTP endpoint first
-      const response = await fetch(`https://control.msg91.com/api/v5/otp?authkey=${process.env.MSG91_API_KEY}&mobile=91${mobile.replace('+91', '')}&otp=${otp}`, {
+      // Clean mobile number format
+      const cleanMobile = mobile.replace(/\D/g, '').replace(/^91/, '').slice(-10);
+      
+      console.log(`📱 MSG91: Sending OTP ${otp} to ${cleanMobile}`);
+      
+      // Professional OTP message template
+      const template = this.createOTPTemplate(otp, purpose);
+      
+      // MSG91 simple SMS API (no templates needed)
+      const response = await fetch(`https://api.msg91.com/api/v2/sendsms`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'authkey': process.env.MSG91_API_KEY!,
         },
+        body: JSON.stringify({
+          sender: 'LEARNY',
+          route: '4',
+          country: '91',
+          sms: [
+            {
+              message: template,
+              to: [cleanMobile]
+            }
+          ]
+        })
       });
 
       const result = await response.json();
       
-      if (response.ok) {
-        console.log('MSG91 OTP API response:', result);
-        
-        // Check for success in various response formats
-        if (result.type === 'success' || result.message === 'OTP sent successfully' || result.request_id) {
-          return { success: true, message: 'OTP sent via MSG91' };
-        }
+      if (response.ok && (result.type === 'success' || result.message === 'SMS sent successfully.' || result.requestId)) {
+        console.log('✅ MSG91 SMS sent successfully:', result);
+        return { success: true, message: 'OTP sent via MSG91' };
+      } else {
+        console.error('❌ MSG91 error:', result);
+        return { success: false, message: result.message || 'MSG91 failed' };
       }
-
-      console.error('MSG91 OTP API failed:', result);
-      return { success: false, message: result.message || 'MSG91 OTP API failed' };
     } catch (error) {
-      console.error('MSG91 API error:', error);
+      console.error('💥 MSG91 API error:', error);
       return { success: false, message: 'MSG91 connection failed' };
     }
   }
@@ -191,24 +208,40 @@ export class OTPService {
   // 2Factor.in implementation - ₹0.18/SMS (no template required)
   private async try2Factor(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
     try {
-      // Create professional OTP message template
-      const template = this.createOTPTemplate(otp, purpose);
+      // Clean mobile number format - ensure 10 digits only
+      const cleanMobile = mobile.replace(/\D/g, '').replace(/^91/, '').slice(-10);
       
-      const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/SMS/${mobile}/${otp}/LEARNY`, {
+      console.log(`📱 2Factor.in: Sending OTP ${otp} to ${cleanMobile}`);
+      
+      // 2Factor.in requires specific format for custom messages
+      const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/SMS/+91${cleanMobile}/${otp}`, {
         method: 'GET',
       });
 
       const result = await response.json();
       
       if (response.ok && result.Status === 'Success') {
-        console.log('2Factor OTP sent successfully:', result);
-        return { success: true, message: 'OTP sent via 2Factor' };
+        console.log('✅ 2Factor OTP sent successfully:', result);
+        // Wait a moment and check delivery status
+        setTimeout(async () => {
+          try {
+            const statusResponse = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/STATUS/${result.Details}`, {
+              method: 'GET',
+            });
+            const statusResult = await statusResponse.json();
+            console.log('📊 2Factor delivery status:', statusResult);
+          } catch (e) {
+            console.log('Could not check delivery status');
+          }
+        }, 3000);
+        
+        return { success: true, message: 'OTP sent via 2Factor.in' };
       } else {
-        console.error('2Factor error:', result);
+        console.error('❌ 2Factor error:', result);
         return { success: false, message: '2Factor failed' };
       }
     } catch (error) {
-      console.error('2Factor API error:', error);
+      console.error('💥 2Factor API error:', error);
       return { success: false, message: '2Factor connection failed' };
     }
   }

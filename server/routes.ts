@@ -79,7 +79,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Test endpoint for Fast2SMS functionality
+  // Enhanced SMS testing endpoint with provider diagnostics
   app.post('/api/test-sms', async (req, res) => {
     try {
       const { mobile } = req.body;
@@ -91,20 +91,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      console.log('Testing Fast2SMS with mobile:', mobile);
-      const result = await otpService.sendOTP(mobile, 'login');
+      console.log(`\n🧪 SMS DIAGNOSTIC TEST for ${mobile}`);
+      console.log(`🕒 Test started at: ${new Date().toISOString()}`);
+      
+      // Generate a test OTP
+      const testOTP = Math.floor(100000 + Math.random() * 900000).toString();
+      console.log(`🔢 Generated test OTP: ${testOTP}`);
+      
+      const result = await otpService.sendOTP(mobile, 'signup');
       
       res.json({
         ...result,
-        message: `Fast2SMS test: ${result.message}`,
-        cost: '₹0.143 per SMS',
-        provider: 'Fast2SMS'
+        testDetails: {
+          mobile: mobile,
+          otp: process.env.NODE_ENV === 'development' ? testOTP : 'Hidden in production',
+          timestamp: new Date().toISOString(),
+          providers: {
+            'twoFactor': !!process.env.TWOFACTOR_API_KEY,
+            'msg91': !!process.env.MSG91_API_KEY,
+            'fast2sms': !!process.env.FAST2SMS_API_KEY,
+            'smsCountry': !!process.env.SMSCOUNTRY_API_KEY
+          }
+        }
       });
     } catch (error) {
-      console.error('SMS test error:', error);
+      console.error('💥 SMS test error:', error);
       res.status(500).json({ 
         success: false, 
-        message: 'SMS test failed' 
+        message: 'SMS test failed',
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   });
