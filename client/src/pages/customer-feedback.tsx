@@ -215,16 +215,17 @@ export default function CustomerFeedback() {
               Submit Feedback
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
+          <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
+            <DialogHeader className="flex-shrink-0 pb-4">
               <DialogTitle>Submit Feedback</DialogTitle>
               <DialogDescription>
                 Share your thoughts, report bugs, or suggest new features
               </DialogDescription>
             </DialogHeader>
             
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex-1 overflow-y-auto">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-1">
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -302,7 +303,7 @@ export default function CustomerFeedback() {
                       <FormControl>
                         <Textarea 
                           placeholder="Provide detailed feedback, steps to reproduce (for bugs), or feature specifications"
-                          rows={5}
+                          rows={3}
                           {...field} 
                         />
                       </FormControl>
@@ -404,6 +405,7 @@ export default function CustomerFeedback() {
                 </div>
               </form>
             </Form>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
