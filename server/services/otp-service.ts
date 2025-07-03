@@ -79,8 +79,8 @@ export class OTPService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          route: 'otp',
-          sender_id: 'FTWSMS',
+          route: 'q',
+          sender_id: 'TXTIND',
           message: message,
           language: 'english',
           flash: 0,
