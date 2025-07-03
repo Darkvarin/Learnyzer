@@ -520,12 +520,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const offset = (parseInt(page as string) - 1) * parseInt(limit as string);
       
-      // Build query conditions
+      // Build query conditions - ignore "all_*" filter values
       const whereConditions = [];
-      if (type) whereConditions.push(eq(schema.customerFeedback.type, type as string));
-      if (status) whereConditions.push(eq(schema.customerFeedback.status, status as string));
-      if (priority) whereConditions.push(eq(schema.customerFeedback.priority, priority as string));
-      if (categoryId) whereConditions.push(eq(schema.customerFeedback.categoryId, parseInt(categoryId as string)));
+      if (type && type !== "all_types") whereConditions.push(eq(schema.customerFeedback.type, type as string));
+      if (status && status !== "all_statuses") whereConditions.push(eq(schema.customerFeedback.status, status as string));
+      if (priority && priority !== "all_priorities") whereConditions.push(eq(schema.customerFeedback.priority, priority as string));
+      if (categoryId && categoryId !== "all_categories" && !isNaN(parseInt(categoryId as string))) {
+        whereConditions.push(eq(schema.customerFeedback.categoryId, parseInt(categoryId as string)));
+      }
       if (isPublic !== undefined) whereConditions.push(eq(schema.customerFeedback.isPublic, isPublic === "true"));
 
       const feedback = await db.query.customerFeedback.findMany({
@@ -802,7 +804,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       .groupBy(schema.customerFeedback.priority);
 
       const averageRating = await db.select({
-        avgRating: sql<number>`avg(rating)`
+        avgRating: sql<number>`coalesce(avg(rating), 0)`
       })
       .from(schema.customerFeedback)
       .where(isNotNull(schema.customerFeedback.rating));
@@ -813,7 +815,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         resolved: resolvedFeedback,
         byType: feedbackByType,
         byPriority: feedbackByPriority,
-        averageRating: averageRating[0]?.avgRating || 0
+        averageRating: Number(averageRating[0]?.avgRating) || 0
       });
     } catch (error) {
       console.error("Error fetching feedback stats:", error);

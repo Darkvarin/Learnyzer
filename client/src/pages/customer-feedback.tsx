@@ -88,10 +88,10 @@ export default function CustomerFeedback() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState("browse");
   const [filters, setFilters] = useState({
-    type: "",
-    status: "",
-    priority: "",
-    categoryId: "",
+    type: "all_types",
+    status: "all_statuses",
+    priority: "all_priorities",
+    categoryId: "all_categories",
     page: 1
   });
 
@@ -434,7 +434,7 @@ export default function CustomerFeedback() {
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Types</SelectItem>
+                    <SelectItem value="all_types">All Types</SelectItem>
                     <SelectItem value="feedback">Feedback</SelectItem>
                     <SelectItem value="feature_request">Feature Request</SelectItem>
                     <SelectItem value="bug_report">Bug Report</SelectItem>
@@ -450,7 +450,7 @@ export default function CustomerFeedback() {
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Status</SelectItem>
+                    <SelectItem value="all_statuses">All Status</SelectItem>
                     <SelectItem value="open">Open</SelectItem>
                     <SelectItem value="under_review">Under Review</SelectItem>
                     <SelectItem value="in_progress">In Progress</SelectItem>
@@ -467,7 +467,7 @@ export default function CustomerFeedback() {
                     <SelectValue placeholder="Priority" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Priority</SelectItem>
+                    <SelectItem value="all_priorities">All Priority</SelectItem>
                     <SelectItem value="low">Low</SelectItem>
                     <SelectItem value="medium">Medium</SelectItem>
                     <SelectItem value="high">High</SelectItem>
@@ -483,7 +483,7 @@ export default function CustomerFeedback() {
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
+                    <SelectItem value="all_categories">All Categories</SelectItem>
                     {categories.map((category: any) => (
                       <SelectItem key={category.id} value={category.id.toString()}>
                         {category.name}
