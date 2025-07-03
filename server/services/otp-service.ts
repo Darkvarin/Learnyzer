@@ -73,9 +73,14 @@ export class OTPService {
         console.log('Fast2SMS failed, trying MSG91 fallback...');
       }
 
-      // Fallback to MSG91 if Fast2SMS fails
+      // Try multiple providers as fallback
       if (process.env.MSG91_API_KEY) {
-        return await this.tryMSG91(mobile, otp, purpose);
+        const msg91Result = await this.tryMSG91(mobile, otp, purpose);
+        if (msg91Result.success) return msg91Result;
+      }
+
+      if (process.env.SMSCOUNTRY_API_KEY) {
+        return await this.trySMSCountry(mobile, otp, purpose);
       }
 
       console.log('No SMS API keys configured, using development mode');
@@ -117,20 +122,23 @@ export class OTPService {
     }
   }
 
-  // MSG91 fallback - ₹0.16/SMS (reliable alternative)
+  // MSG91 implementation - ₹0.16/SMS (reliable alternative)
   private async tryMSG91(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
-    const response = await fetch(`https://control.msg91.com/api/v5/otp?mobile=91${mobile.replace('+91', '')}&otp=${otp}`, {
+    const message = `Your Learnyzer ${purpose} OTP is ${otp}. Valid for 5 minutes. Do not share with anyone.`;
+    
+    const response = await fetch('https://control.msg91.com/api/v5/otp', {
       method: 'POST',
       headers: {
         'authkey': process.env.MSG91_API_KEY!,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        template_id: 'Your_Template_ID', // You'll need to register this
-        mobile: mobile.replace('+91', ''),
-        authkey: process.env.MSG91_API_KEY,
-        otp: otp,
-        company: 'Learnyzer'
+        mobile: `91${mobile.replace('+91', '')}`,
+        message: message,
+        sender: 'LEARNY',
+        country: '91',
+        route: '4',
+        DLT_TE_ID: '1207162978925555814' // Generic OTP template
       }),
     });
 
@@ -142,6 +150,35 @@ export class OTPService {
     } else {
       console.error('MSG91 error:', result);
       return { success: false, message: 'MSG91 failed' };
+    }
+  }
+
+  // SMSCountry implementation - ₹0.006/SMS (cheapest option)
+  private async trySMSCountry(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
+    const message = `Your Learnyzer ${purpose} OTP is ${otp}. Valid for 5 minutes. Do not share with anyone.`;
+    
+    const response = await fetch('https://restapi.smscountry.com/v0.1/Accounts/{SID}/SMSes/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${Buffer.from(`${process.env.SMSCOUNTRY_SID}:${process.env.SMSCOUNTRY_TOKEN}`).toString('base64')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        Text: message,
+        Number: `91${mobile.replace('+91', '')}`,
+        SenderId: 'LEARNY',
+        Tool: 'API'
+      }),
+    });
+
+    const result = await response.json();
+    
+    if (response.ok && result.Success) {
+      console.log('SMSCountry OTP sent successfully:', result);
+      return { success: true, message: 'OTP sent via SMSCountry' };
+    } else {
+      console.error('SMSCountry error:', result);
+      return { success: false, message: 'SMSCountry failed' };
     }
   }
 
