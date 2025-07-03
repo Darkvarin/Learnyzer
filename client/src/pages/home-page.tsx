@@ -369,7 +369,7 @@ export default function HomePage() {
               
               {/* Free Trial Badge */}
               <div className="mb-6 flex justify-center lg:justify-start">
-                <div className="bg-[#4af3c0]/10 border border-[#4af3c0]/30 rounded-full px-4 py-2 flex items-center space-x-2">
+                <div className="bg-[#4af3c0]/10 border border-[#4af3c0]/30 rounded-full px-4 py-2 flex items-center space-x-2 glow-trial-badge">
                   <Zap className="h-4 w-4 text-[#4af3c0]" />
                   <span className="text-[#4af3c0] font-medium text-sm">Free 24-Hour Trial Available!</span>
                 </div>
