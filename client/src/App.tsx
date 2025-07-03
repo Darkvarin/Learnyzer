@@ -29,6 +29,9 @@ import SecurityDashboard from "./pages/security-dashboard";
 import LeadGeneration from "./pages/lead-generation";
 import CustomerFeedback from "./pages/customer-feedback";
 import SubscriptionPage from "./pages/subscription";
+import TermsPage from "./pages/terms";
+import PrivacyPage from "./pages/privacy";
+import RefundPage from "./pages/refund";
 
 function App() {
   return (
@@ -52,7 +55,10 @@ function App() {
                     <ProtectedRoute path="/subscription" component={SubscriptionPage} />
                     <ProtectedRoute path="/security-dashboard" component={SecurityDashboard} />
                     <ProtectedRoute path="/lead-generation" component={LeadGeneration} />
-                    <Route path="/feedback" component={CustomerFeedback} />                
+                    <Route path="/feedback" component={CustomerFeedback} />
+                    <Route path="/terms" component={TermsPage} />
+                    <Route path="/privacy" component={PrivacyPage} />
+                    <Route path="/refund" component={RefundPage} />                
                     <ProtectedRoute path="/profile" component={ProfileSettings} />
                     <ProtectedRoute path="/create-profile" component={CreateProfile} />
                     <ProtectedRoute path="/websocket-test" component={WebSocketTest} />
