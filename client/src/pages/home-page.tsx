@@ -183,6 +183,15 @@ export default function HomePage() {
                 <span className="absolute bottom-0 right-0 w-0 h-1 bg-gradient-to-l from-primary to-blue-500 group-hover:w-full transition-all duration-300"></span>
                 <span className="relative z-10">FAQs</span>
               </button>
+              <button 
+                onClick={() => navigate("/subscription")}
+                className="px-3 py-2 text-white hover:text-primary transition-all relative group font-gaming bg-transparent border-none overflow-hidden"
+              >
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md"></span>
+                <span className="absolute top-0 left-0 w-0 h-1 bg-gradient-to-r from-primary to-blue-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 right-0 w-0 h-1 bg-gradient-to-l from-primary to-blue-500 group-hover:w-full transition-all duration-300"></span>
+                <span className="relative z-10">Subscription</span>
+              </button>
               <Button 
                 onClick={() => user ? navigate("/dashboard") : navigate("/auth")}
                 className="relative overflow-hidden group bg-gradient-to-r from-primary/80 to-blue-600/80 hover:from-primary hover:to-blue-600 border-none transition-all duration-300 shadow-glow-sm"
@@ -260,6 +269,21 @@ export default function HomePage() {
               <span className="absolute right-0 bottom-0 w-1 h-0 bg-gradient-to-t from-primary to-blue-500 group-hover:h-full transition-all duration-300"></span>
               <div className="flex items-center">
                 <span className="relative z-10 ml-2">FAQs</span>
+              </div>
+              <span className="absolute bottom-0 left-2 right-2 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></span>
+            </button>
+            <button 
+              className="text-left px-4 py-3 text-white hover:text-primary transition-all relative font-gaming bg-transparent border-none overflow-hidden"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                navigate("/subscription");
+              }}
+            >
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-md"></span>
+              <span className="absolute left-0 top-0 w-1 h-0 bg-gradient-to-b from-primary to-blue-500 group-hover:h-full transition-all duration-300"></span>
+              <span className="absolute right-0 bottom-0 w-1 h-0 bg-gradient-to-t from-primary to-blue-500 group-hover:h-full transition-all duration-300"></span>
+              <div className="flex items-center">
+                <span className="relative z-10 ml-2">Subscription</span>
               </div>
               <span className="absolute bottom-0 left-2 right-2 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></span>
             </button>
