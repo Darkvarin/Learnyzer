@@ -91,29 +91,39 @@ export default function AuthPage() {
 
     setIsOtpLoading(true);
     try {
-      const result = await firebasePhoneAuth.sendOTP(mobile, 'recaptcha-container');
+      const response = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mobile: mobile,
+          purpose: 'signup'
+        }),
+      });
+
+      const result = await response.json();
       
       if (result.success) {
         setOtpSent(true);
         setMobileForOTP(mobile);
-        if (result.otp) {
-          setGeneratedOTP(result.otp);
-        }
+        setGeneratedOTP(result.otp || ""); // For development mode
         toast({
-          title: "OTP Sent",
-          description: result.message,
+          title: "OTP Sent Successfully",
+          description: `Verification code sent to ${mobile}. Check your SMS!`,
         });
       } else {
         toast({
-          title: "Error",
-          description: result.message,
+          title: "Failed to Send OTP",
+          description: result.message || "Please try again",
           variant: "destructive",
         });
       }
-    } catch (error: any) {
+    } catch (error) {
+      console.error('OTP send error:', error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to send OTP. Please try again.",
+        title: "Network Error",
+        description: "Failed to send OTP. Please check your connection.",
         variant: "destructive",
       });
     } finally {
@@ -134,25 +144,38 @@ export default function AuthPage() {
 
     setIsOtpLoading(true);
     try {
-      const result = await firebasePhoneAuth.verifyOTP(otp);
+      const response = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mobile: mobileForOTP,
+          otp: otp,
+          purpose: 'signup'
+        }),
+      });
+
+      const result = await response.json();
       
       if (result.success) {
         setOtpVerified(true);
         toast({
-          title: "Phone Verified",
-          description: "Your phone number has been verified successfully",
+          title: "Phone Verified Successfully",
+          description: "Your mobile number has been verified. You can now complete registration.",
         });
       } else {
         toast({
           title: "Verification Failed",
-          description: result.message,
+          description: result.message || "Invalid OTP. Please try again.",
           variant: "destructive",
         });
       }
     } catch (error: any) {
+      console.error('OTP verification error:', error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to verify OTP. Please try again.",
+        title: "Verification Error",
+        description: "Failed to verify OTP. Please check your connection.",
         variant: "destructive",
       });
     } finally {
