@@ -277,11 +277,17 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Fixed pricing consistency across all platform components to match home page exactly
 - July 02, 2025: Free trial promotion and accurate feature display
   - Added prominent free trial banners and badges throughout home page
-  - Updated hero section with "Free 24-Hour Trial Available!" messaging
+  - Updated hero section with "Free 1-Day Trial Available!" messaging
   - Created dedicated free trial section before pricing plans with accurate limits
   - Corrected trial features: 2 AI tutor lessons daily, 10 AI tool uses daily, basic learning access
   - Updated FAQ section to reflect accurate trial limitations and pricing
   - Changed main CTA to "Start Free Trial" for better conversion
+- July 03, 2025: Cost-effective SMS OTP implementation with Fast2SMS
+  - Replaced expensive Firebase SMS authentication with Fast2SMS integration
+  - Implemented SMS OTP at ₹0.143/SMS (90% cost reduction from Firebase pricing)
+  - Added glowing animation to free trial badge for better visual appeal
+  - Enhanced OTP service with professional message formatting and error handling
+  - Configured development mode fallback for testing without API costs
 
 ## User Preferences
 

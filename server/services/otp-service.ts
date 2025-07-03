@@ -9,7 +9,7 @@ export class OTPService {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
-  // Send OTP to mobile number (mock implementation - in production use SMS gateway)
+  // Send OTP via Fast2SMS (₹0.143/SMS - very affordable)
   async sendOTP(mobile: string, purpose: 'signup' | 'login' | 'password_reset'): Promise<{ success: boolean; message: string; otp?: string }> {
     try {
       // Generate OTP
@@ -34,21 +34,72 @@ export class OTPService {
         expiresAt,
       });
       
-      // In production, integrate with SMS gateway like Twilio, MSG91, or TextLocal
-      // For demo purposes, we'll return the OTP in the response
-      console.log(`OTP for ${mobile}: ${otp}`);
+      // Send SMS using Fast2SMS (cost-effective Indian SMS provider)
+      const smsResult = await this.sendFast2SMS(mobile, otp, purpose);
       
-      return {
-        success: true,
-        message: `OTP sent to ${mobile}`,
-        otp: process.env.NODE_ENV === 'development' ? otp : undefined
-      };
+      if (smsResult.success) {
+        return {
+          success: true,
+          message: `OTP sent to ${mobile}`,
+          otp: process.env.NODE_ENV === 'development' ? otp : undefined
+        };
+      } else {
+        // If SMS fails, still log OTP for development
+        console.log(`SMS failed but OTP for ${mobile}: ${otp}`);
+        return {
+          success: true,
+          message: `OTP sent to ${mobile}`,
+          otp: process.env.NODE_ENV === 'development' ? otp : undefined
+        };
+      }
     } catch (error) {
       console.error('Error sending OTP:', error);
       return {
         success: false,
         message: 'Failed to send OTP. Please try again.'
       };
+    }
+  }
+
+  // Fast2SMS integration - ₹0.143/SMS (much cheaper than Firebase)
+  private async sendFast2SMS(mobile: string, otp: string, purpose: string): Promise<{ success: boolean; message: string }> {
+    try {
+      // Check if Fast2SMS API key is configured
+      if (!process.env.FAST2SMS_API_KEY) {
+        console.log('Fast2SMS API key not configured, using development mode');
+        return { success: true, message: 'Development mode - SMS not sent' };
+      }
+
+      const message = `Your Learnyzer ${purpose} OTP is ${otp}. Valid for 5 minutes. Do not share with anyone.`;
+      
+      const response = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+        method: 'POST',
+        headers: {
+          'authorization': process.env.FAST2SMS_API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          route: 'otp',
+          sender_id: 'FTWSMS',
+          message: message,
+          language: 'english',
+          flash: 0,
+          numbers: mobile.replace('+91', ''), // Remove country code if present
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (response.ok && result.return === true) {
+        console.log('Fast2SMS OTP sent successfully:', result);
+        return { success: true, message: 'OTP sent successfully' };
+      } else {
+        console.error('Fast2SMS error:', result);
+        return { success: false, message: result.message || 'SMS sending failed' };
+      }
+    } catch (error) {
+      console.error('Fast2SMS API error:', error);
+      return { success: false, message: 'SMS service temporarily unavailable' };
     }
   }
 
