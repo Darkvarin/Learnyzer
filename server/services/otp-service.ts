@@ -101,16 +101,23 @@ export class OTPService {
       console.log(`📧 SMS Message: "${smsMessage}"`);
       console.log(`🎯 Sending TEXT SMS (not voice) via SMS endpoint`);
       
-      // Simple 2Factor.in SMS endpoint - should send SMS not voice
-      console.log('🔄 Using basic SMS endpoint to avoid voice calls...');
-      const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/SMS/${cleanMobile}/${otp}/LEARNY`, {
+      // 2Factor.in OTP SMS endpoint with explicit sender ID to force SMS
+      console.log('📱 Using SMS endpoint with sender ID...');
+      const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/SMS/${cleanMobile}/${otp}/AUTOGEN`, {
         method: 'GET',
       });
 
-      const result = await response.json();
-      
-      console.log('📊 2Factor API Response:', result);
+      const responseText = await response.text();
+      console.log('📊 2Factor Raw Response:', responseText);
       console.log('📊 Response Status:', response.status);
+      
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (e) {
+        console.log('❌ Failed to parse JSON response, raw response:', responseText);
+        result = { Status: 'Error', Message: responseText };
+      }
       
       if (response.ok && (result.Status === 'Success' || result.return === true)) {
         console.log('✅ 2Factor SMS TEXT sent successfully:', result);
