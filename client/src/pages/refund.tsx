@@ -44,25 +44,29 @@ export default function RefundPage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Limited Refund Scenarios</h2>
-            <p className="mb-4">
-              Given our free trial approach, refunds are only applicable in specific circumstances:
-            </p>
+            <h2 className="text-2xl font-semibold mb-4">No Refund Policy</h2>
+            <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+              <h3 className="text-xl font-semibold mb-3 text-red-800 dark:text-red-200">
+                All Sales Are Final - No Refunds
+              </h3>
+              <p className="text-red-700 dark:text-red-300 mb-3">
+                Since every user receives a free trial to evaluate our platform before purchasing, 
+                <strong> all subscription payments are final and non-refundable</strong>.
+              </p>
+            </div>
             
-            <h3 className="text-xl font-semibold mb-3">Technical Issues</h3>
+            <h3 className="text-xl font-semibold mb-3">Exceptions - Service Credits Only</h3>
+            <p className="mb-3">
+              The only exceptions where service credits (not refunds) may be provided:
+            </p>
             <ul className="list-disc pl-6 mb-4 space-y-2">
-              <li>Platform unavailability for more than 24 hours</li>
-              <li>AI tutoring services completely non-functional</li>
-              <li>Payment processing errors resulting in duplicate charges</li>
-              <li>Account access issues beyond user control</li>
+              <li>Duplicate charges due to payment processing errors</li>
+              <li>Platform completely unavailable for more than 72 consecutive hours</li>
+              <li>Unauthorized charges on your account due to security breaches</li>
             </ul>
-
-            <h3 className="text-xl font-semibold mb-3">Service Disruptions</h3>
-            <ul className="list-disc pl-6 mb-4 space-y-2">
-              <li>Extended service outages affecting subscription benefits</li>
-              <li>Major feature removals without advance notice</li>
-              <li>Significant changes to subscription terms mid-cycle</li>
-            </ul>
+            <p className="text-sm text-muted-foreground">
+              * Service credits extend your subscription period rather than providing monetary refunds
+            </p>
           </section>
 
           <section className="mb-8">
@@ -72,38 +76,37 @@ export default function RefundPage() {
             </p>
             <ul className="list-disc pl-6 mb-6 space-y-3">
               <li>
-                Cancellations will be considered only if the request is made within 
-                <strong> 7 days</strong> of placing the order in case of technical issues 
-                or service disruptions
+                <strong>Monthly subscriptions:</strong> Cancel anytime, effective at end of billing cycle. 
+                No refund for remaining days.
               </li>
               <li>
-                <strong>Monthly subscriptions:</strong> Cancel anytime, effective at end of billing cycle
-              </li>
-              <li>
-                <strong>Annual subscriptions:</strong> Cancel anytime, no refund but access continues 
-                until expiration
+                <strong>Annual subscriptions:</strong> Cancel anytime, no refund provided. 
+                Access continues until subscription expiration date.
               </li>
               <li>
                 All subscription benefits remain active until the end of your paid period
+              </li>
+              <li>
+                Cancellation only stops future billing - no money will be returned for current period
               </li>
             </ul>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Refund Processing Timeline</h2>
+            <h2 className="text-2xl font-semibold mb-4">Service Credit Processing (No Monetary Refunds)</h2>
             <ul className="list-disc pl-6 mb-6 space-y-3">
               <li>
-                In case of receipt of damaged or defective services, please report the same to our 
+                In case of technical issues affecting your service, please report the same to our 
                 Customer Service team within <strong>48 hours</strong> of experiencing the issue
               </li>
               <li>
                 If you feel that the service received is not as described, you must bring it to 
                 the notice of our customer service within <strong>7 days</strong> of subscription 
-                purchase
+                purchase for service credit consideration
               </li>
               <li>
-                In case of any refunds approved by Learnyzer Edtech, it'll take 
-                <strong> 5-7 business days</strong> for the refund to be processed to the end customer
+                In case of any service credits approved by Learnyzer Edtech, they will be applied 
+                to your account within <strong>2-3 business days</strong> as subscription extensions
               </li>
             </ul>
           </section>
