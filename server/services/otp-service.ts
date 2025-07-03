@@ -94,11 +94,24 @@ export class OTPService {
       // Clean mobile number format - ensure 10 digits only
       const cleanMobile = mobile.replace(/\D/g, '').replace(/^91/, '').slice(-10);
       
-      console.log(`📱 2Factor.in: Sending OTP ${otp} to ${cleanMobile}`);
+      console.log(`📱 2Factor.in: Sending SMS TEXT OTP ${otp} to ${cleanMobile}`);
       
-      // 2Factor.in SMS API (using OTP template for better delivery)
-      const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/SMS/${cleanMobile}/${otp}`, {
-        method: 'GET',
+      // Professional SMS message template
+      const smsMessage = `${otp} is your Learnyzer verification code. Valid for 5 minutes. Do not share with anyone.`;
+      console.log(`📧 SMS Message: "${smsMessage}"`);
+      console.log(`🎯 Sending TEXT SMS (not voice) via TSMS endpoint`);
+      
+      // 2Factor.in SMS API with custom text message
+      const response = await fetch(`https://2factor.in/API/V1/${process.env.TWOFACTOR_API_KEY}/ADDON_SERVICES/SEND/TSMS`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          'From': 'LEARNY',
+          'To': cleanMobile,
+          'Msg': smsMessage
+        })
       });
 
       const result = await response.json();
