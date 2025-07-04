@@ -334,7 +334,7 @@ export default function SubscriptionPage() {
 
           <TabsContent value="plans" className="space-y-8">
             {/* Pricing Plans Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div id="subscription-plans" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {pricingPlans.map((plan) => {
                 const Icon = getTierIcon(plan.id);
                 const isCurrentPlan = currentPlan === plan.id;
@@ -432,8 +432,8 @@ export default function SubscriptionPage() {
                   <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Sparkles className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Unlimited AI Access</h3>
-                  <p className="text-gray-400">Get unlimited access to our advanced AI tutoring system with personalized learning paths.</p>
+                  <h3 className="text-xl font-semibold text-white mb-2">Enhanced AI Access</h3>
+                  <p className="text-gray-400">Get higher daily limits for our advanced AI tutoring system with personalized learning paths.</p>
                 </div>
                 
                 <div className="text-center">
@@ -539,14 +539,19 @@ export default function SubscriptionPage() {
                         <Gift className="w-12 h-12 text-orange-400" />
                         <div className="flex-1">
                           <h3 className="text-lg font-semibold text-white mb-1">
-                            Upgrade for Unlimited Access
+                            Upgrade for Enhanced Access
                           </h3>
                           <p className="text-gray-300 text-sm">
-                            Get unlimited AI sessions, advanced features, and priority support.
+                            Get higher daily limits, advanced features, and priority support.
                           </p>
                         </div>
                         <Button 
-                          onClick={() => setSelectedPlan("basic")}
+                          onClick={() => {
+                            const plansSection = document.getElementById('subscription-plans');
+                            if (plansSection) {
+                              plansSection.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }}
                           className="bg-orange-600 hover:bg-orange-700"
                         >
                           View Plans
