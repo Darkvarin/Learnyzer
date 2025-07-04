@@ -8,7 +8,7 @@ export function TrialBanner() {
   const { data: stats } = useQuery<{
     tier: string;
     isActive: boolean;
-    subscriptionEndDate?: string;
+    expiresAt?: string;
   }>({
     queryKey: ["/api/subscription/usage-stats"],
   });
@@ -18,9 +18,9 @@ export function TrialBanner() {
   }
 
   const getTimeLeft = () => {
-    if (!stats.subscriptionEndDate) return "Unknown";
+    if (!stats.expiresAt) return "Unknown";
     
-    const endDate = new Date(stats.subscriptionEndDate);
+    const endDate = new Date(stats.expiresAt);
     const now = new Date();
     const timeLeft = endDate.getTime() - now.getTime();
     
