@@ -113,10 +113,11 @@ export class SimpleSubscriptionService {
       const limits = this.getSubscriptionLimits(effectiveTier);
       const featureLimit = this.getFeatureLimit(limits, featureType);
 
-      // Simplified usage tracking - always allow access during trial, none after
-      const currentUsage = 0;
-      const hasAccess = isInFreeTrial || featureLimit === -1;
-      const remaining = featureLimit === -1 ? -1 : Math.max(0, featureLimit - currentUsage);
+      // For the trial system, implement strict 24-hour cutoff
+      // If trial expired, no access to AI features
+      const hasAccess = isInFreeTrial;
+      const currentUsage = 0; // Reset for trial users
+      const remaining = isInFreeTrial ? featureLimit : 0;
 
       // Calculate reset time (next midnight)
       const resetTime = new Date();
