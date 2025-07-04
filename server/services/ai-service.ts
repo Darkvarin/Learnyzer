@@ -379,18 +379,30 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
     const schema = z.object({
       topic: z.string().min(2, "Topic must be at least 2 characters"),
       subject: z.string().optional(),
+      style: z.string().optional(),
+      level: z.string().optional(),
       examType: z.string().optional(),
       preferences: z.object({
         style: z.string().optional(),
+        level: z.string().optional(),
         length: z.string().optional(),
         includeExamples: z.boolean().optional(),
         focusAreas: z.array(z.string()).optional()
-      })
+      }).optional()
     });
     
     try {
-      const { topic, subject, examType, preferences } = schema.parse(req.body);
+      const { topic, subject, style, level, examType, preferences } = schema.parse(req.body);
       const userId = (req.user as any).id;
+      
+      // Merge top-level style/level with preferences object for backwards compatibility
+      const mergedPreferences = {
+        style: style || preferences?.style || 'concise',
+        level: level || preferences?.level || 'high_school',
+        length: preferences?.length,
+        includeExamples: preferences?.includeExamples,
+        focusAreas: preferences?.focusAreas
+      };
       const user = await storage.getUserById(userId);
       
       // Build a comprehensive, topic-focused prompt
@@ -418,31 +430,101 @@ Key Requirements:
 - Track: ${user?.track || 'General'}
 - Current Level: ${user?.level || 1}
 
-MANDATORY Structure:
-1. **Topic Overview** (2-3 lines defining the exact topic)
-2. **Key Concepts** (Core principles directly related to ${topic})
-3. **Important Formulas/Facts** (Specific to ${topic} only)
-4. **Exam-Specific Points** (How ${topic} appears in questions)
-5. **Memory Techniques** (Mnemonics for ${topic})
-6. **Common Mistakes** (Errors students make with ${topic})
-7. **Practice Strategy** (How to master ${topic})
+`;
+
+      // Adapt content structure and complexity based on note style and education level
+      const noteStyle = mergedPreferences.style || 'concise';
+      const educationLevel = mergedPreferences.level || 'high_school';
+      
+      // Define education level complexity
+      const levelComplexity = {
+        'elementary': 'very simple language, basic concepts, no complex formulas',
+        'middle_school': 'simple language, fundamental concepts, basic formulas with explanations', 
+        'high_school': 'moderate complexity, standard concepts, formulas with derivations',
+        'undergraduate': 'advanced language, detailed concepts, complex formulas and proofs',
+        'graduate': 'highly technical language, comprehensive analysis, advanced mathematical treatments',
+        'competitive_exam': 'exam-focused, formula-heavy, problem-solving oriented'
+      };
+      
+      // Define note style requirements
+      const styleRequirements = {
+        'concise': {
+          structure: `MANDATORY Structure:
+1. **Quick Overview** (1-2 lines)
+2. **Key Points** (Bullet format, 5-7 main points)
+3. **Essential Formulas** (Only most important ones)
+4. **Quick Tips** (Memory aids and shortcuts)`,
+          tone: 'Brief, direct, no fluff. Use bullet points and short sentences.'
+        },
+        'detailed': {
+          structure: `MANDATORY Structure:
+1. **Comprehensive Overview** (Detailed introduction)
+2. **Fundamental Concepts** (In-depth explanations)
+3. **Derivations & Proofs** (Step-by-step working)
+4. **Formulas & Applications** (Complete with examples)
+5. **Advanced Applications** (Real-world connections)
+6. **Problem-Solving Strategies** (Detailed approaches)
+7. **Common Pitfalls** (Detailed explanations)`,
+          tone: 'Thorough, explanatory, include reasoning behind concepts.'
+        },
+        'visual': {
+          structure: `MANDATORY Structure:
+1. **Visual Overview** (Describe what diagrams would show)
+2. **Concept Map** (How topics connect visually)
+3. **Flowchart Elements** (Process steps)
+4. **Diagram Descriptions** (For charts, graphs, models)
+5. **Visual Memory Aids** (Spatial learning techniques)
+6. **Infographic Style Points** (Data visualization approach)`,
+          tone: 'Descriptive, spatial, emphasize visual relationships and patterns.'
+        },
+        'question': {
+          structure: `MANDATORY Structure:
+1. **What is ${topic}?** (Definition and scope)
+2. **Why is ${topic} important?** (Significance and applications)
+3. **How does ${topic} work?** (Mechanisms and processes)
+4. **When is ${topic} used?** (Contexts and scenarios)
+5. **What are common questions about ${topic}?** (FAQ format)
+6. **How to solve ${topic} problems?** (Step-by-step approach)`,
+          tone: 'Interactive, question-driven, conversational format.'
+        },
+        'simplified': {
+          structure: `MANDATORY Structure:
+1. **Simple Explanation** (Like explaining to a friend)
+2. **Easy Examples** (Relatable, everyday analogies)
+3. **Basic Formulas** (Simplified presentation)
+4. **Memory Tricks** (Simple mnemonics)
+5. **Common Confusions** (What students mix up)
+6. **Practice Steps** (Easy-to-follow approach)`,
+          tone: 'Very simple language, analogies, avoid jargon, explain everything clearly.'
+        }
+      };
+      
+      const selectedStyle = styleRequirements[noteStyle as keyof typeof styleRequirements] || styleRequirements['concise'];
+      const complexity = levelComplexity[educationLevel as keyof typeof levelComplexity] || levelComplexity['high_school'];
+      
+      userPrompt += `CONTENT REQUIREMENTS:
+- Education Level: ${educationLevel.replace('_', ' ')} (Use ${complexity})
+- Note Style: ${noteStyle} format
+
+${selectedStyle.structure}
+
+STYLE GUIDELINES:
+${selectedStyle.tone}
+
+ADAPTATION RULES:
+- Adjust vocabulary complexity for ${educationLevel.replace('_', ' ')} level
+- Use examples appropriate for ${educationLevel.replace('_', ' ')} students
+- Include formulas at ${educationLevel.replace('_', ' ')} complexity level
+- Focus on concepts relevant to ${educationLevel.replace('_', ' ')} curriculum
 
 `;
       
-      if (preferences.style) {
-        userPrompt += `Style: ${preferences.style}\n`;
+      if (mergedPreferences.includeExamples) {
+        userPrompt += `Include specific examples and solved problems appropriate for ${educationLevel.replace('_', ' ')} level.\n`;
       }
       
-      if (preferences.length) {
-        userPrompt += `Length: ${preferences.length}\n`;
-      }
-      
-      if (preferences.includeExamples) {
-        userPrompt += `Include specific examples and solved problems related to ${topic}.\n`;
-      }
-      
-      if (preferences.focusAreas && preferences.focusAreas.length > 0) {
-        userPrompt += `Special focus areas within ${topic}: ${preferences.focusAreas.join(", ")}\n`;
+      if (mergedPreferences.focusAreas && mergedPreferences.focusAreas.length > 0) {
+        userPrompt += `Special focus areas within ${topic}: ${mergedPreferences.focusAreas.join(", ")}\n`;
       }
       
       userPrompt += `\nCRITICAL: Every piece of content must be directly related to "${topic}". Do not include general study advice or unrelated concepts. Focus exclusively on mastering this specific topic.`;
