@@ -175,6 +175,7 @@ export default function SubscriptionPage() {
   const { usageStats, pricing, isLoadingStats } = useSubscription();
   const [selectedPlan, setSelectedPlan] = useState<string>("basic");
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const [activeTab, setActiveTab] = useState<string>("plans");
 
   const upgradePlan = useMutation({
     mutationFn: async (planId: string) => {
@@ -326,7 +327,7 @@ export default function SubscriptionPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Tabs defaultValue="plans" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="plans">Pricing Plans</TabsTrigger>
             <TabsTrigger value="usage">Current Usage</TabsTrigger>
@@ -547,10 +548,15 @@ export default function SubscriptionPage() {
                         </div>
                         <Button 
                           onClick={() => {
-                            const plansSection = document.getElementById('subscription-plans');
-                            if (plansSection) {
-                              plansSection.scrollIntoView({ behavior: 'smooth' });
-                            }
+                            // Switch to plans tab first
+                            setActiveTab("plans");
+                            // Then scroll to plans section after a small delay
+                            setTimeout(() => {
+                              const plansSection = document.getElementById('subscription-plans');
+                              if (plansSection) {
+                                plansSection.scrollIntoView({ behavior: 'smooth' });
+                              }
+                            }, 100);
                           }}
                           className="bg-orange-600 hover:bg-orange-700"
                         >
