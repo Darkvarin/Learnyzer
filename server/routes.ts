@@ -848,9 +848,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Support Chatbot API endpoint
   app.post("/api/support/chat", async (req, res) => {
     try {
+      console.log("Chat API received body:", req.body);
       const { query } = req.body;
       
-      if (!query) {
+      if (!query || !query.trim()) {
         return res.status(400).json({ error: "Message is required" });
       }
 
