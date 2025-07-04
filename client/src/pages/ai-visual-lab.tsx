@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Header } from "@/components/layout/header";
+import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -166,7 +168,7 @@ export default function AIVisualLab() {
       setResults(response);
       toast({
         title: "Visual Package Created!",
-        description: `Generated ${response.totalComponents} learning components`
+        description: `Generated ${(response as any).totalComponents || 'multiple'} learning components`
       });
     } catch (error: any) {
       toast({
@@ -221,8 +223,11 @@ export default function AIVisualLab() {
   };
 
   return (
-    <SubscriptionGuard featureType="ai_visual_lab">
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <Header />
+      <MobileNavigation />
+      
+      <SubscriptionGuard featureType="ai_visual_lab">
       {/* Header */}
       <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600/20 to-purple-600/20 backdrop-blur-sm border-b border-cyan-500/20">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),transparent,transparent)]"></div>
@@ -721,7 +726,8 @@ export default function AIVisualLab() {
           </div>
         </DialogContent>
       </Dialog>
+      
+      </SubscriptionGuard>
       </div>
-    </SubscriptionGuard>
   );
 }

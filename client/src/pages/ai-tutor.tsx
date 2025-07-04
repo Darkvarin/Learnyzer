@@ -509,8 +509,7 @@ export default function AiTutor() {
   };
 
   return (
-    <SubscriptionGuard featureType="ai_tutor_session">
-      <div className="min-h-screen flex flex-col solo-bg relative overflow-hidden solo-page">
+    <div className="min-h-screen flex flex-col solo-bg relative overflow-hidden solo-page">
       {/* Solo Leveling background elements */}
       <div className="absolute inset-0 solo-grid z-0 opacity-30"></div>
       
@@ -526,7 +525,8 @@ export default function AiTutor() {
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 relative z-10">
+      <SubscriptionGuard featureType="ai_tutor_session">
+        <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 relative z-10">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-1 h-10 bg-gradient-to-b from-cyan-500/70 via-cyan-600/50 to-primary/20"></div>
           <h1 className="text-3xl font-gaming gaming-text text-glow">
@@ -540,17 +540,6 @@ export default function AiTutor() {
           </h1>
         </div>
 
-        <SubscriptionGuard 
-          featureType="ai_tutor_session" 
-          trackOnMount={false}
-          onAccessDenied={() => {
-            toast({
-              title: "Session Limit Reached",
-              description: "You've reached your daily AI tutor session limit. Upgrade to continue learning!",
-              variant: "destructive"
-            });
-          }}
-        >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Left sidebar with AI tutor info */}
           <div className="md:col-span-1">
@@ -1334,11 +1323,8 @@ export default function AiTutor() {
             </div>
           </div>
         </div>
-        </SubscriptionGuard>
-      </main>
-
-      {/* Exam Selection Modal */}
-      <Dialog open={showExamModal} onOpenChange={setShowExamModal}>
+          {/* Exam Selection Modal */}
+          <Dialog open={showExamModal} onOpenChange={setShowExamModal}>
         <DialogContent className="bg-dark-card border border-dark-border">
           <DialogHeader>
             <DialogTitle className="text-gradient-primary">Choose Your Entrance Exam</DialogTitle>
@@ -1433,7 +1419,8 @@ export default function AiTutor() {
           </div>
         </DialogContent>
       </Dialog>
-      </div>
-    </SubscriptionGuard>
+        </main>
+      </SubscriptionGuard>
+    </div>
   );
 }

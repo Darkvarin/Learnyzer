@@ -1,0 +1,7 @@
+        </DialogContent>
+      </Dialog>
+        </main>
+      </SubscriptionGuard>
+    </div>
+  );
+}
