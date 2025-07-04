@@ -206,7 +206,10 @@ export class SimpleSubscriptionService {
         where: eq(users.id, userId),
         columns: {
           id: true,
-          createdAt: true
+          createdAt: true,
+          subscriptionTier: true,
+          subscriptionStatus: true,
+          subscriptionEndDate: true
         }
       });
 
@@ -214,14 +217,41 @@ export class SimpleSubscriptionService {
         throw new Error('User not found');
       }
 
-      // Check if free trial period
-      const createdAt = new Date(user.createdAt);
+      // Check subscription status from database
+      const subscriptionTier = user.subscriptionTier || 'free';
+      const subscriptionStatus = user.subscriptionStatus || 'inactive';
+      const subscriptionEndDate = user.subscriptionEndDate;
+      
       const now = new Date();
-      const hoursSinceCreation = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
-      const isInFreeTrial = hoursSinceCreation <= 24;
+      let isSubscriptionActive = false;
+      
+      // Check if subscription is active and not expired
+      if (subscriptionStatus === 'active' && subscriptionEndDate) {
+        isSubscriptionActive = new Date(subscriptionEndDate) > now;
+      }
+      
+      // For free trial, check if it's expired
+      let isInFreeTrial = false;
+      if (subscriptionTier === 'free_trial') {
+        if (subscriptionEndDate) {
+          isInFreeTrial = new Date(subscriptionEndDate) > now;
+        } else {
+          // Fallback: check 24 hours from account creation
+          const createdAt = new Date(user.createdAt);
+          const hoursSinceCreation = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
+          isInFreeTrial = hoursSinceCreation <= 24;
+        }
+      }
 
-      const tier = isInFreeTrial ? 'free_trial' : 'free';
-      const isActive = true;
+      // Determine effective tier based on subscription status
+      let tier = 'free';
+      if (isSubscriptionActive) {
+        tier = subscriptionTier;
+      } else if (isInFreeTrial) {
+        tier = 'free_trial';
+      }
+
+      const isActive = isSubscriptionActive || isInFreeTrial || tier === 'free';
 
       const features = [
         'ai_chat',
@@ -246,10 +276,17 @@ export class SimpleSubscriptionService {
         };
       });
 
-      // Calculate expiry for trial users
-      const expiresAt = isInFreeTrial 
-        ? new Date(createdAt.getTime() + 24 * 60 * 60 * 1000)
-        : undefined;
+      // Calculate expiry based on subscription data
+      let expiresAt: Date | undefined;
+      if (isInFreeTrial && subscriptionEndDate) {
+        expiresAt = new Date(subscriptionEndDate);
+      } else if (isInFreeTrial) {
+        // Fallback: calculate from creation time
+        const userCreatedAt = new Date(user.createdAt);
+        expiresAt = new Date(userCreatedAt.getTime() + 24 * 60 * 60 * 1000);
+      } else if (isSubscriptionActive && subscriptionEndDate) {
+        expiresAt = new Date(subscriptionEndDate);
+      }
 
       return {
         tier,
