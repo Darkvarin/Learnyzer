@@ -56,6 +56,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ImageUploadCrop } from "@/components/ui/image-upload-crop";
 import { User, UploadCloud, Shield, Bell, LogOut, Lock, GraduationCap, AlertTriangle } from "lucide-react";
 
 // Validation schemas
@@ -515,57 +516,14 @@ export default function ProfileSettings() {
                           render={({ field }) => (
                             <FormItem className="relative">
                               <FormLabel className="text-purple-300 font-gaming">PROFILE IMAGE</FormLabel>
-                              <div className="grid grid-cols-1 gap-4">
-                                <FormControl>
-                                  <div className="relative">
-                                    <Input 
-                                      placeholder="https://example.com/your-image.jpg" 
-                                      {...field}
-                                      className="pl-3 bg-black/90 border-purple-500/40 focus:border-purple-400 shadow-glow-xs focus:shadow-glow-purple mb-2" 
-                                    />
-                                    <div className="absolute top-0 bottom-0 left-0 w-1 h-full bg-purple-500/50"></div>
-                                  </div>
-                                </FormControl>
-                                
-                                <div className="flex flex-col gap-4">
-                                  <div className="flex gap-2">
-                                    <Button 
-                                      type="button" 
-                                      variant="outline" 
-                                      onClick={() => field.onChange("https://api.dicebear.com/7.x/avataaars/svg?seed=" + Math.random())}
-                                      className="w-full bg-black/50 border-purple-500/30 text-purple-300 hover:bg-purple-950/30 font-gaming"
-                                    >
-                                      GENERATE RANDOM AVATAR
-                                    </Button>
-                                  </div>
-                                  
-                                  <div className="grid grid-cols-4 gap-2">
-                                    {["Warrior", "Mage", "Scholar", "Ninja"].map((avatar) => (
-                                      <Button
-                                        key={avatar}
-                                        type="button"
-                                        variant="outline"
-                                        className={`p-2 h-auto aspect-square bg-black/60 border-purple-500/30 hover:bg-purple-950/30 
-                                          ${field.value?.includes(avatar.toLowerCase()) ? 'ring-2 ring-purple-400 shadow-glow-xs' : ''}`}
-                                        onClick={() => field.onChange(`https://api.dicebear.com/7.x/avataaars/svg?seed=${avatar.toLowerCase()}`)}
-                                      >
-                                        <div className="flex flex-col items-center">
-                                          <div className="w-12 h-12 hex-clip overflow-hidden border border-purple-500/30">
-                                            <img 
-                                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${avatar.toLowerCase()}`} 
-                                              alt={avatar}
-                                              className="w-full h-full object-contain"
-                                            />
-                                          </div>
-                                          <span className="text-xs mt-1 font-gaming text-purple-300">{avatar}</span>
-                                        </div>
-                                      </Button>
-                                    ))}
-                                  </div>
-                                </div>
-                              </div>
+                              <FormControl>
+                                <ImageUploadCrop
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                />
+                              </FormControl>
                               <FormDescription className="text-gray-400 mt-2">
-                                Enter a URL, generate a random avatar, or select from options
+                                Upload an image from your device and crop it to create your profile picture
                               </FormDescription>
                               <FormMessage className="text-red-400" />
                             </FormItem>
