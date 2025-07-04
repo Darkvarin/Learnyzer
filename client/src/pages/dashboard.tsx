@@ -143,7 +143,9 @@ export default function Dashboard() {
               <p className="text-2xl font-bold font-gaming text-white">{userStats?.level || 0}</p>
               
               <div className="h-2 w-full bg-gray-800/50 mt-2 rounded-lg overflow-hidden">
-                <div className="h-2 bg-gradient-to-r from-primary to-purple-500 rounded-l animate-pulse-width" 
+                <div className={`h-2 bg-gradient-to-r from-primary to-purple-500 rounded-l ${
+                    userStats && userStats.currentXp > 0 ? 'animate-pulse-width' : ''
+                  }`} 
                   style={{
                     width: userStats ? 
                       `${(userStats.currentXp / userStats.nextLevelXp) * 100}%` : '0%'
