@@ -233,7 +233,18 @@ export const storage = {
    * Insert a new user
    */
   async insertUser(user: schema.InsertUser & { referralCode: string }) {
-    const [newUser] = await db.insert(schema.users).values(user).returning();
+    // Assign free trial to new users
+    const trialEndDate = new Date();
+    trialEndDate.setDate(trialEndDate.getDate() + 1); // 1 day trial
+    
+    const userWithTrial = {
+      ...user,
+      subscriptionTier: 'free_trial',
+      subscriptionStatus: 'active',
+      subscriptionEndDate: trialEndDate
+    };
+    
+    const [newUser] = await db.insert(schema.users).values(userWithTrial).returning();
     
     // Initialize user achievements
     const achievements = await db.query.achievements.findMany();

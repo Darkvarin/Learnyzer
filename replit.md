@@ -381,6 +381,12 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Enhanced UI with locked field styling using amber colors and lock icons
   - Updated backend profile route to handle mobile field updates while protecting email
   - Professional locked field design maintains security while allowing mobile updates
+- July 04, 2025: Fixed free trial assignment for new user registrations
+  - New users now automatically receive free_trial subscription tier with 1-day duration
+  - Updated insertUser function to assign trial subscription, status, and end date
+  - Fixed subscription service to properly recognize trial access for AI features
+  - Users immediately get trial access to AI Tutor, Visual Lab, and all premium features
+  - Existing user accounts updated retroactively to receive trial benefits
 
 ## User Preferences
 
