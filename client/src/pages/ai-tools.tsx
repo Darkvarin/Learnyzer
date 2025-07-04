@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AITool } from "@shared/schema";
+import { SubscriptionGuard } from "@/components/subscription/subscription-guard";
 
 export default function AITools() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -121,7 +122,8 @@ export default function AITools() {
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 pt-24 pb-20 md:pb-6 relative z-10">
+      <SubscriptionGuard featureType="ai_visual_lab">
+        <main className="flex-1 container mx-auto px-4 pt-24 pb-20 md:pb-6 relative z-10">
         <div className="relative monarch-card-glow p-6 rounded-xl mb-8">
           {/* Solo Leveling accent elements */}
           <div className="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-cyan-500/40 z-10"></div>
@@ -441,7 +443,8 @@ export default function AITools() {
             </Card>
           </div>
         </div>
-      </main>
+        </main>
+      </SubscriptionGuard>
     </div>
   );
 }
