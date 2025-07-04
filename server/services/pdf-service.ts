@@ -9,6 +9,16 @@ interface PDFGenerationOptions {
   examType?: string;
   includeHeader?: boolean;
   includeFooter?: boolean;
+  diagrams?: DiagramContent[];
+  contentType?: 'text' | 'diagram-heavy' | 'mixed';
+}
+
+interface DiagramContent {
+  type: 'flowchart' | 'mindmap' | 'concept-map' | 'process-diagram' | 'timeline';
+  title: string;
+  imageUrl: string;
+  description?: string;
+  position: 'before' | 'after' | 'inline';
 }
 
 export class PDFService {
@@ -157,6 +167,48 @@ export class PDFService {
             margin: 15px 0;
         }
         
+        .diagram-container {
+            margin: 25px 0;
+            text-align: center;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        
+        .diagram-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+        
+        .diagram-image {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 10px 0;
+        }
+        
+        .diagram-description {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .diagram-heavy-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .mixed-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
         .footer {
             margin-top: 40px;
             padding-top: 20px;
@@ -207,8 +259,8 @@ export class PDFService {
     </div>
     ` : ''}
     
-    <div class="content">
-        ${this.formatContent(content)}
+    <div class="content ${options.contentType === 'diagram-heavy' ? 'diagram-heavy-layout' : options.contentType === 'mixed' ? 'mixed-content' : ''}">
+        ${this.formatContentWithDiagrams(content, options.diagrams, options.contentType)}
     </div>
     
     ${includeFooter ? `
@@ -219,6 +271,80 @@ export class PDFService {
     ` : ''}
 </body>
 </html>`;
+  }
+
+  private static formatContentWithDiagrams(content: string, diagrams?: DiagramContent[], contentType?: string): string {
+    const formattedText = this.formatContent(content);
+    
+    if (!diagrams || diagrams.length === 0) {
+      return formattedText;
+    }
+
+    // Handle different content types
+    if (contentType === 'diagram-heavy') {
+      // For diagram-heavy content, prioritize diagrams with minimal text
+      const diagramsHtml = diagrams.map(diagram => this.generateDiagramHtml(diagram)).join('');
+      return `
+        <div class="text-section" style="margin-bottom: 20px;">
+          ${formattedText}
+        </div>
+        ${diagramsHtml}
+      `;
+    } else if (contentType === 'mixed') {
+      // For mixed content, alternate between text and diagrams
+      const beforeDiagrams = diagrams.filter(d => d.position === 'before');
+      const afterDiagrams = diagrams.filter(d => d.position === 'after');
+      const inlineDiagrams = diagrams.filter(d => d.position === 'inline');
+      
+      let result = '';
+      
+      // Add diagrams before content
+      result += beforeDiagrams.map(diagram => this.generateDiagramHtml(diagram)).join('');
+      
+      // Add main content with inline diagrams
+      if (inlineDiagrams.length > 0) {
+        const contentSections = formattedText.split('</p>');
+        const sectionsPerDiagram = Math.floor(contentSections.length / (inlineDiagrams.length + 1));
+        
+        let currentSection = 0;
+        let diagramIndex = 0;
+        
+        while (currentSection < contentSections.length) {
+          // Add content section
+          const sectionEnd = Math.min(currentSection + sectionsPerDiagram, contentSections.length);
+          result += contentSections.slice(currentSection, sectionEnd).join('</p>') + (sectionEnd < contentSections.length ? '</p>' : '');
+          
+          // Add diagram if available
+          if (diagramIndex < inlineDiagrams.length && currentSection + sectionsPerDiagram < contentSections.length) {
+            result += this.generateDiagramHtml(inlineDiagrams[diagramIndex]);
+            diagramIndex++;
+          }
+          
+          currentSection = sectionEnd;
+        }
+      } else {
+        result += formattedText;
+      }
+      
+      // Add diagrams after content
+      result += afterDiagrams.map(diagram => this.generateDiagramHtml(diagram)).join('');
+      
+      return result;
+    } else {
+      // Default: text-based with diagrams at the end
+      const diagramsHtml = diagrams.map(diagram => this.generateDiagramHtml(diagram)).join('');
+      return `${formattedText}${diagramsHtml}`;
+    }
+  }
+
+  private static generateDiagramHtml(diagram: DiagramContent): string {
+    return `
+      <div class="diagram-container">
+        <div class="diagram-title">${diagram.title}</div>
+        <img src="${diagram.imageUrl}" alt="${diagram.title}" class="diagram-image" />
+        ${diagram.description ? `<div class="diagram-description">${diagram.description}</div>` : ''}
+      </div>
+    `;
   }
 
   private static formatContent(content: string): string {

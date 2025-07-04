@@ -235,6 +235,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/ai/tools/answer-check", requireAuth, aiService.checkAnswer);
   app.post("/api/ai/tools/flashcards", requireAuth, aiService.generateFlashcards);
   app.post("/api/ai/tools/generate-pdf", requireAuth, PDFService.generatePDFFromNotes);
+  
+  // Diagram-heavy PDF generation endpoint
+  app.post("/api/ai/tools/generate-diagram-pdf", requireAuth, async (req, res) => {
+    try {
+      const { topic, contentType, diagramTypes, examType } = req.body;
+      
+      if (!topic || !contentType || !diagramTypes) {
+        return res.status(400).json({ message: "Topic, content type, and diagram types are required" });
+      }
+
+      const user = req.user as any;
+
+      // Generate educational content using GPT-3.5 Turbo
+      const contentResponse = await aiService.generateStudyNotes({
+        topic,
+        subject: 'General',
+        style: 'comprehensive',
+        level: 'high_school',
+        examType
+      });
+
+      // Generate diagrams using DALL-E 3 for each diagram type
+      const diagrams = [];
+      for (const diagramType of diagramTypes) {
+        try {
+          const imageResponse = await aiService.generateEducationalImage({
+            topic: `${diagramType} for ${topic}`,
+            description: `Create a detailed ${diagramType} explaining ${topic}`,
+            style: 'educational',
+            examType: examType || undefined
+          });
+
+          if (imageResponse.imageUrl) {
+            diagrams.push({
+              type: diagramType,
+              title: `${diagramType.charAt(0).toUpperCase() + diagramType.slice(1).replace('-', ' ')} - ${topic}`,
+              imageUrl: imageResponse.imageUrl,
+              description: `Visual representation of ${topic} using ${diagramType}`,
+              position: diagrams.length === 0 ? 'before' : diagrams.length % 2 === 0 ? 'inline' : 'after'
+            });
+          }
+        } catch (error) {
+          console.error(`Error generating ${diagramType}:`, error);
+        }
+      }
+
+      // Generate PDF with diagrams
+      const pdfOptions = {
+        title: `Visual Study Guide: ${topic}`,
+        content: contentResponse.notes,
+        subject: 'Visual Learning',
+        examType,
+        studentName: user.name,
+        includeHeader: true,
+        includeFooter: true,
+        diagrams,
+        contentType
+      };
+
+      const pdfBuffer = await PDFService.generateStudyNotesPDF(pdfOptions);
+      
+      // Set headers for PDF download
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${topic.replace(/[^a-zA-Z0-9]/g, '_')}_visual_guide.pdf"`);
+      res.setHeader('Content-Length', pdfBuffer.length);
+      
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error('Diagram PDF generation error:', error);
+      res.status(500).json({ message: 'Error generating visual PDF' });
+    }
+  });
   app.get("/api/ai/tools/analytics/:userId", requireAuth, aiService.getPerformanceAnalytics);
   app.post("/api/ai/battle/judge/:battleId", requireAuth, aiService.judgeBattle);
   app.post("/api/ai/generate-diagram", requireAuth, aiService.generateDiagram);
