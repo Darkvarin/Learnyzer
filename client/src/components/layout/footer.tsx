@@ -75,41 +75,35 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Exam Categories */}
+          {/* Contact Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold font-gaming text-foreground">Exam Prep</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/courses" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  JEE Main & Advanced
-                </Link>
-              </li>
-              <li>
-                <Link href="/courses" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  NEET
-                </Link>
-              </li>
-              <li>
-                <Link href="/courses" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  UPSC CSE
-                </Link>
-              </li>
-              <li>
-                <Link href="/courses" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  CLAT
-                </Link>
-              </li>
-              <li>
-                <Link href="/courses" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  CUET
-                </Link>
-              </li>
-              <li>
-                <Link href="/courses" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  CSE
-                </Link>
-              </li>
-            </ul>
+            <h3 className="text-lg font-semibold font-gaming text-foreground">Contact Support</h3>
+            <div className="space-y-3">
+              <div>
+                <p className="text-sm font-medium text-foreground mb-1">Email Support</p>
+                <a href="mailto:learnyzer.ai@gmail.com" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                  learnyzer.ai@gmail.com
+                </a>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground mb-1">Phone Support</p>
+                <a href="tel:+919910601733" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                  +91 9910601733
+                </a>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground mb-1">Support Hours</p>
+                <p className="text-muted-foreground text-sm">
+                  Mon-Fri: 9 AM - 6 PM IST
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground mb-1">Response Time</p>
+                <p className="text-muted-foreground text-sm">
+                  Within 2-4 hours
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Support */}
