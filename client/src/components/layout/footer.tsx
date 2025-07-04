@@ -49,7 +49,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/battles" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link href="/battle-zone" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                   Study Battles
                 </Link>
               </li>
