@@ -65,7 +65,7 @@ export const faqData: FAQ[] = [
     id: "subscription-plans",
     category: "Subscription",
     question: "What subscription plans are available?",
-    answer: "We offer multiple plans: Free Trial (1 day, 2 AI sessions + 10 tools), Basic (₹799/month, all AI tools 50 uses daily, no AI tutor), Pro (₹1500/month, 2 AI tutor sessions + 20 tools daily), Quarterly (₹4199, 3 AI tutor sessions + 40 tools daily), and Half-Yearly (₹7599, best value). All paid plans include analytics and advanced features.",
+    answer: "We offer multiple plans: Free Trial (1 day, 2 AI sessions + 10 tools), Basic (₹799/month, all AI tools 50 uses daily, no AI tutor), Pro (₹1500/month, 2 AI tutor sessions + 20 tools daily), Quarterly (₹4199, 3 AI tutor sessions + 40 tools daily), Half-Yearly (₹7599), and Yearly (₹12999, 3 AI tutor sessions + 40 tools daily, best value). All paid plans include analytics and advanced features.",
     keywords: ["subscription", "plans", "pricing", "cost", "monthly", "yearly", "basic", "pro"],
     priority: 5
   },
