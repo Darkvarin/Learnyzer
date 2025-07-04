@@ -80,7 +80,8 @@ export function SubscriptionGuard({
   if (!hasAccess) {
     // Access denied state
     return (
-      <Card className="max-w-2xl mx-auto">
+      <div className="container mx-auto px-4 pt-24 pb-20 md:pb-6">
+        <Card className="max-w-2xl mx-auto">
         <CardHeader className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <Lock className="w-8 h-8 text-white" />
@@ -129,7 +130,8 @@ export function SubscriptionGuard({
             </Link>
           </div>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     );
   }
 
