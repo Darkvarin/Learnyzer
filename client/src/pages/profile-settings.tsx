@@ -63,6 +63,7 @@ import { User, UploadCloud, Shield, Bell, LogOut, Lock, GraduationCap, AlertTria
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email"),
+  mobile: z.string().optional(),
   profileImage: z.string().optional(),
   selectedExam: z.string().optional(),
 });
@@ -107,6 +108,7 @@ export default function ProfileSettings() {
     defaultValues: {
       name: user?.name || "",
       email: user?.email || "",
+      mobile: (user as any)?.mobile || "",
       profileImage: user?.profileImage || "",
       selectedExam: (user as any)?.selectedExam || "",
     },
@@ -493,18 +495,52 @@ export default function ProfileSettings() {
                           name="email"
                           render={({ field }) => (
                             <FormItem className="relative">
-                              <FormLabel className="text-purple-300 font-gaming">EMAIL</FormLabel>
+                              <FormLabel className="text-purple-300 font-gaming flex items-center gap-2">
+                                EMAIL 
+                                <Lock className="w-4 h-4 text-amber-400" />
+                                <span className="text-xs text-amber-400">(Locked)</span>
+                              </FormLabel>
                               <FormControl>
                                 <div className="relative">
                                   <Input 
                                     type="email" 
                                     placeholder="Your email address" 
                                     {...field}
+                                    readOnly
+                                    className="pl-3 bg-gray-800/50 border-amber-500/40 text-gray-300 cursor-not-allowed" 
+                                  />
+                                  <div className="absolute top-0 bottom-0 left-0 w-1 h-full bg-amber-500/50"></div>
+                                  <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-amber-400" />
+                                </div>
+                              </FormControl>
+                              <FormDescription className="text-amber-200/70 text-xs">
+                                Email cannot be changed as it was used for registration
+                              </FormDescription>
+                              <FormMessage className="text-red-400" />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={profileForm.control}
+                          name="mobile"
+                          render={({ field }) => (
+                            <FormItem className="relative">
+                              <FormLabel className="text-purple-300 font-gaming">MOBILE NUMBER</FormLabel>
+                              <FormControl>
+                                <div className="relative">
+                                  <Input 
+                                    type="tel" 
+                                    placeholder="Your mobile number (optional)" 
+                                    {...field}
                                     className="pl-3 bg-black/90 border-purple-500/40 focus:border-purple-400 shadow-glow-xs focus:shadow-glow-purple" 
                                   />
                                   <div className="absolute top-0 bottom-0 left-0 w-1 h-full bg-purple-500/50"></div>
                                 </div>
                               </FormControl>
+                              <FormDescription className="text-gray-400 text-xs">
+                                Optional: Add your mobile number for SMS notifications
+                              </FormDescription>
                               <FormMessage className="text-red-400" />
                             </FormItem>
                           )}

@@ -250,10 +250,11 @@ export function setupAuth(app: Express) {
       const updatedUser = await db.update(users)
         .set({
           name: profileData.name,
-          email: profileData.email,
+          mobile: profileData.mobile || null,
           profileImage: profileData.profileImage || null,
           grade: profileData.class || profileData.grade, // Support both field names
           track: profileData.stream || profileData.track  // Support both field names
+          // Note: email is not updatable as it was used for registration
         })
         .where(eq(users.id, userId))
         .returning();
