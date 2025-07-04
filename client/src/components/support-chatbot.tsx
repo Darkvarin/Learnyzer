@@ -13,7 +13,9 @@ import {
   HelpCircle,
   Sparkles,
   Phone,
-  Mail
+  Mail,
+  ChevronDown,
+  ChevronRight
 } from "lucide-react";
 import { searchFAQs, type FAQ } from "@shared/faq-data";
 import { apiRequest } from "@/lib/queryClient";
@@ -38,10 +40,21 @@ export function SupportChatbot() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [expandedFaqs, setExpandedFaqs] = useState<Set<string>>(new Set());
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const toggleFaqExpansion = (faqId: string) => {
+    const newExpanded = new Set(expandedFaqs);
+    if (newExpanded.has(faqId)) {
+      newExpanded.delete(faqId);
+    } else {
+      newExpanded.add(faqId);
+    }
+    setExpandedFaqs(newExpanded);
   };
 
   useEffect(() => {
@@ -247,21 +260,36 @@ export function SupportChatbot() {
                     <Sparkles className="h-3 w-3 mr-1" />
                     Related help articles:
                   </p>
-                  {message.faqs.slice(0, 3).map((faq) => (
-                    <Card key={faq.id} className="bg-slate-800/50 border-slate-600">
-                      <CardContent className="p-3">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="text-sm font-medium text-white mb-1">{faq.question}</h4>
-                            <p className="text-xs text-gray-300 line-clamp-2">{faq.answer}</p>
+                  {message.faqs.slice(0, 3).map((faq) => {
+                    const isExpanded = expandedFaqs.has(faq.id);
+                    return (
+                      <Card 
+                        key={faq.id} 
+                        className="bg-slate-800/50 border-slate-600 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                        onClick={() => toggleFaqExpansion(faq.id)}
+                      >
+                        <CardContent className="p-3">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="text-sm font-medium text-white">{faq.question}</h4>
+                                {isExpanded ? 
+                                  <ChevronDown className="h-3 w-3 text-gray-400 flex-shrink-0" /> : 
+                                  <ChevronRight className="h-3 w-3 text-gray-400 flex-shrink-0" />
+                                }
+                              </div>
+                              <p className={`text-xs text-gray-300 ${isExpanded ? '' : 'line-clamp-2'}`}>
+                                {faq.answer}
+                              </p>
+                            </div>
+                            <Badge variant="outline" className="ml-2 text-xs">
+                              {faq.category}
+                            </Badge>
                           </div>
-                          <Badge variant="outline" className="ml-2 text-xs">
-                            {faq.category}
-                          </Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               )}
             </div>
