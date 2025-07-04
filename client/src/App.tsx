@@ -8,6 +8,7 @@ import { UserProvider } from "@/contexts/user-context";
 import { RealTimeProvider } from "@/contexts/real-time-context";
 import { ProtectedRoute } from "@/components/protected-route";
 import { Footer } from "@/components/layout/footer";
+import { ScrollToTop } from "@/components/scroll-to-top";
 
 import Dashboard from "@/pages/dashboard";
 import BattleZone from "@/pages/battle-zone";
@@ -43,6 +44,7 @@ function App() {
           <UserProvider>
             <RealTimeProvider>
               <div className="min-h-screen flex flex-col">
+                <ScrollToTop />
                 <main className="flex-1">
                   <Switch>
                     <Route path="/" component={HomePage} />
