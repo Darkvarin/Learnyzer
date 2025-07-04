@@ -92,7 +92,10 @@ export class SimpleSubscriptionService {
         where: eq(users.id, userId),
         columns: {
           id: true,
-          createdAt: true
+          createdAt: true,
+          subscriptionTier: true,
+          subscriptionStatus: true,
+          subscriptionEndDate: true
         }
       });
 
@@ -100,24 +103,56 @@ export class SimpleSubscriptionService {
         throw new Error('User not found');
       }
 
-      // Check if free trial period (24 hours from account creation)
-      const createdAt = new Date(user.createdAt);
+      // Check subscription status from database
+      const subscriptionTier = user.subscriptionTier || 'free';
+      const subscriptionStatus = user.subscriptionStatus || 'inactive';
+      const subscriptionEndDate = user.subscriptionEndDate;
+      
       const now = new Date();
-      const hoursSinceCreation = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
-      const isInFreeTrial = hoursSinceCreation <= 24;
+      let isSubscriptionActive = false;
+      
+      // Check if subscription is active and not expired
+      if (subscriptionStatus === 'active' && subscriptionEndDate) {
+        isSubscriptionActive = new Date(subscriptionEndDate) > now;
+      }
+      
+      // For free trial, check if it's expired
+      let isInFreeTrial = false;
+      if (subscriptionTier === 'free_trial') {
+        if (subscriptionEndDate) {
+          isInFreeTrial = new Date(subscriptionEndDate) > now;
+        } else {
+          // Fallback: check 24 hours from account creation
+          const createdAt = new Date(user.createdAt);
+          const hoursSinceCreation = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
+          isInFreeTrial = hoursSinceCreation <= 24;
+        }
+      }
 
-      // Determine effective tier
-      const effectiveTier = isInFreeTrial ? 'free_trial' : 'free';
+      // Determine effective tier based on subscription status
+      let effectiveTier = 'free';
+      if (isSubscriptionActive) {
+        effectiveTier = subscriptionTier;
+      } else if (isInFreeTrial) {
+        effectiveTier = 'free_trial';
+      }
 
       // Get limits for the tier
       const limits = this.getSubscriptionLimits(effectiveTier);
       const featureLimit = this.getFeatureLimit(limits, featureType);
 
-      // For the trial system, implement strict 24-hour cutoff
-      // If trial expired, no access to AI features
-      const hasAccess = isInFreeTrial;
+      // Determine access based on subscription status
+      let hasAccess = false;
+      if (isSubscriptionActive) {
+        hasAccess = true; // Active paid subscription
+      } else if (isInFreeTrial) {
+        hasAccess = true; // Valid free trial
+      } else {
+        hasAccess = featureLimit > 0; // Free tier with limited access
+      }
+
       const currentUsage = 0; // Reset for trial users
-      const remaining = isInFreeTrial ? featureLimit : 0;
+      const remaining = hasAccess ? featureLimit : 0;
 
       // Calculate reset time (next midnight)
       const resetTime = new Date();
