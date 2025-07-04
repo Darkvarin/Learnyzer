@@ -63,7 +63,7 @@ export function SupportChatbot() {
     
     // Check for pricing/cost queries
     if (query.includes('price') || query.includes('cost') || query.includes('subscription') || query.includes('plan') || query.includes('fee')) {
-      return "Our subscription plans are:\n• Free Trial: 1 day, 2 AI sessions daily\n• Basic: ₹799/month, 2 AI tutor sessions + 20 tools daily\n• Pro: ₹1299/month, 3 sessions + 30 tools daily\n• Quarterly: ₹2999 (3 months)\n• Yearly: ₹7999 (best value!)\n\nAll paid plans include higher daily limits and advanced features.";
+      return "Our subscription plans are:\n• Free Trial: 1 day, 2 AI sessions + 10 AI tools daily\n• Basic: ₹799/month, All AI tools (50 uses daily), no AI tutor\n• Pro: ₹1500/month, 2 AI tutor sessions + 20 AI tools daily\n• Quarterly: ₹4199 (3 AI tutor sessions + 40 tools daily)\n• Half-Yearly: ₹7599 (best value!)\n\nAll paid plans include analytics and advanced features.";
     }
     
     // Check for AI/tutoring queries
