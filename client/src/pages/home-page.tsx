@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Compass, Menu, X, Github, MessageCircle, Facebook, Twitter, Youtube, Instagram, Check, BellRing, Shield, Zap, Loader2 } from "lucide-react";
-import { SupportChatbot } from "@/components/support/support-chatbot";
+
 import { useRealTime } from "@/contexts/real-time-context";
 import { useToast } from "@/hooks/use-toast";
 import RazorpayCheckout from "@/components/razorpay-checkout";
@@ -997,9 +997,6 @@ export default function HomePage() {
       </section>
 
 
-      
-      {/* Support Chatbot */}
-      <SupportChatbot />
       
       {/* Razorpay Payment Modal */}
       <RazorpayCheckout
