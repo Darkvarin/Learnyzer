@@ -27,15 +27,14 @@ export const users = pgTable("users", {
   lastStreakDate: timestamp("last_streak_date"),
   referralCode: text("referral_code").notNull().unique(),
   // Subscription fields
-  // Subscription fields (temporarily commented for compatibility)
-  // subscriptionTier: text("subscription_tier").default("free").notNull(), // free, basic, pro, quarterly, half_yearly, yearly
-  // subscriptionStatus: text("subscription_status").default("inactive").notNull(), // inactive, active, expired, cancelled
-  // subscriptionStartDate: timestamp("subscription_start_date"),
-  // subscriptionEndDate: timestamp("subscription_end_date"),
-  // paymentId: text("payment_id"),
-  // razorpayOrderId: text("razorpay_order_id"),
-  // razorpayPaymentId: text("razorpay_payment_id"),
-  // autoRenewal: boolean("auto_renewal").default(false).notNull(),
+  subscriptionTier: text("subscription_tier").default("free").notNull(), // free, basic, pro, quarterly, half_yearly, yearly
+  subscriptionStatus: text("subscription_status").default("inactive").notNull(), // inactive, active, expired, cancelled
+  subscriptionStartDate: timestamp("subscription_start_date"),
+  subscriptionEndDate: timestamp("subscription_end_date"),
+  paymentId: text("payment_id"),
+  razorpayOrderId: text("razorpay_order_id"),
+  razorpayPaymentId: text("razorpay_payment_id"),
+  autoRenewal: boolean("auto_renewal").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
