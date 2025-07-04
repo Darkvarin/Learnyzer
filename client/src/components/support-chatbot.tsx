@@ -170,6 +170,8 @@ export function SupportChatbot() {
 
     try {
       // Try to use the enhanced API endpoint first
+      console.log("Sending chat request with query:", currentQuery);
+      console.log("Request payload:", { query: currentQuery });
       const response = await apiRequest("POST", "/api/support/chat", { query: currentQuery });
       
       const botMessage: ChatMessage = {
@@ -186,7 +188,9 @@ export function SupportChatbot() {
       
       // Fallback to local FAQ search and response generation
       const relevantFAQs = searchFAQs(currentQuery);
+      console.log("Generating local response for query:", currentQuery);
       const botResponse = generateBotResponse(currentQuery);
+      console.log("Generated local response:", botResponse);
       
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
