@@ -42,11 +42,7 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold font-gaming text-foreground">Quick Links</h3>
             <ul className="space-y-2">
-              <li>
-                <Link href="/courses" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Browse Courses
-                </Link>
-              </li>
+
               <li>
                 <Link href="/ai-tutor" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                   AI Tutor
@@ -110,11 +106,7 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold font-gaming text-foreground">Support</h3>
             <ul className="space-y-2">
-              <li>
-                <Link href="/feedback" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Help Center
-                </Link>
-              </li>
+
               <li>
                 <Link href="/feedback" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                   Give Feedback
