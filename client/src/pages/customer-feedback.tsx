@@ -100,6 +100,11 @@ export default function CustomerFeedback() {
     queryKey: ["/api/feedback/categories"],
   });
 
+  // Fetch category counts
+  const { data: categoryCounts = {} } = useQuery({
+    queryKey: ["/api/feedback/categories/counts"],
+  });
+
   // Fetch feedback with filters
   const { data: feedbackData, isLoading } = useQuery({
     queryKey: ["/api/feedback", filters],
@@ -717,23 +722,77 @@ export default function CustomerFeedback() {
         </TabsContent>
 
         <TabsContent value="categories" className="space-y-6">
+          <div className="mb-4">
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              Click on any category card to filter feedback by that category
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map((category: any) => (
-              <Card key={category.id} className="hover:shadow-md transition-shadow">
+              <Card 
+                key={category.id} 
+                className={`hover:shadow-lg transition-all cursor-pointer transform hover:scale-105 ${
+                  filters.categoryId === category.id.toString() 
+                    ? "ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20" 
+                    : "hover:shadow-md"
+                }`}
+                onClick={() => {
+                  setFilters(prev => ({ 
+                    ...prev, 
+                    categoryId: category.id.toString(), 
+                    page: 1 
+                  }));
+                  setSelectedTab("browse");
+                  toast({
+                    title: "Filter Applied",
+                    description: `Showing feedback for ${category.name}`,
+                  });
+                }}
+              >
                 <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    {getIcon(category.icon)}
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {category.name}
-                    </h3>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      {getIcon(category.icon)}
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        {category.name}
+                      </h3>
+                    </div>
+                    <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                      {(categoryCounts as any)[category.id] || 0} feedback
+                    </Badge>
                   </div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
                     {category.description}
                   </p>
+                  <div className="flex items-center justify-between mt-4">
+                    <Button variant="outline" size="sm" className="w-full">
+                      View {(categoryCounts as any)[category.id] || 0} Feedback
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
+          
+          {/* Clear Filter Button */}
+          {filters.categoryId !== "all_categories" && (
+            <div className="flex justify-center mt-6">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setFilters(prev => ({ ...prev, categoryId: "all_categories", page: 1 }));
+                  toast({
+                    title: "Filter Cleared",
+                    description: "Showing all feedback",
+                  });
+                }}
+                className="flex items-center gap-2"
+              >
+                <Filter className="w-4 h-4" />
+                Clear Category Filter
+              </Button>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>

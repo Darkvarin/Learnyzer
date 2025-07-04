@@ -503,6 +503,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get feedback counts by category
+  app.get("/api/feedback/categories/counts", async (req, res) => {
+    try {
+      const categoryCounts = await db
+        .select({
+          categoryId: schema.customerFeedback.categoryId,
+          count: sql<number>`count(*)::integer`,
+        })
+        .from(schema.customerFeedback)
+        .groupBy(schema.customerFeedback.categoryId);
+
+      const countsMap = Object.fromEntries(
+        categoryCounts.map(item => [item.categoryId, item.count])
+      );
+
+      res.json(countsMap);
+    } catch (error) {
+      console.error("Error fetching category counts:", error);
+      res.status(500).json({ error: "Failed to fetch category counts" });
+    }
+  });
+
   // Get all feedback with filtering and pagination
   app.get("/api/feedback", async (req, res) => {
     try {
