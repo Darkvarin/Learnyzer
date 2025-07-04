@@ -368,6 +368,13 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Professional styled checkbox with links to legal documents (/terms and /privacy routes)
   - Prevents registration form submission without accepting terms
   - Improved user registration compliance and legal protection for platform
+- July 04, 2025: Complete OTP authentication system removal
+  - Permanently removed 2Factor.in SMS OTP verification system from registration
+  - Simplified registration process to no longer require mobile number verification
+  - Cleaned up all OTP-related code: database schema, form fields, validation, and routes
+  - Updated insertUserSchema to make mobile field optional for flexible registration
+  - Users can now register with just name, username, email, password, and terms acceptance
+  - Maintained mobile field in database as optional for future functionality if needed
 
 ## User Preferences
 

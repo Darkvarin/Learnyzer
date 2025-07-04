@@ -17,6 +17,112 @@ const requireAuth = (req: Request, res: Response, next: () => void) => {
   next();
 };
 
+// Utility functions for generating content
+export const generateStudyNotesUtil = async (options: {
+  topic: string;
+  subject?: string;
+  style?: string;
+  level?: string;
+  examType?: string;
+  preferences?: any;
+}) => {
+  const { topic, subject, style, level, examType, preferences } = options;
+  
+  // Merge preferences for backwards compatibility
+  const mergedPreferences = {
+    style: style || preferences?.style || 'concise',
+    level: level || preferences?.level || 'high_school',
+    length: preferences?.length,
+    includeExamples: preferences?.includeExamples,
+    focusAreas: preferences?.focusAreas
+  };
+  
+  // Build a comprehensive, topic-focused prompt
+  const systemPrompt = `You are an expert Indian competitive exam tutor specializing in creating highly focused, exam-relevant study notes. Your expertise spans JEE, NEET, UPSC, CLAT, CUET, and CSE preparation.
+
+Key Requirements:
+1. Stay STRICTLY focused on the given topic
+2. Provide exam-relevant content only
+3. Include specific formulas, concepts, and facts
+4. Use Indian educational context and examples
+5. Structure content for optimal retention and understanding`;
+
+  let userPrompt = `Create comprehensive study notes specifically focused on "${topic}"`;
+  
+  if (subject) {
+    userPrompt += ` for ${subject}`;
+  }
+  
+  if (examType) {
+    userPrompt += ` targeting ${examType.toUpperCase()} exam preparation`;
+  }
+  
+  userPrompt += `
+  
+Style: ${mergedPreferences.style}
+Level: ${mergedPreferences.level}
+${mergedPreferences.length ? `Length: ${mergedPreferences.length}` : ''}
+${mergedPreferences.includeExamples ? 'Include practical examples and solved problems' : ''}
+${mergedPreferences.focusAreas ? `Focus areas: ${mergedPreferences.focusAreas.join(', ')}` : ''}
+
+Requirements:
+- Start directly with content about "${topic}"
+- Use clear headings and bullet points
+- Include key formulas and concepts
+- Provide exam-relevant insights
+- Use structured format for easy reading
+- Include memory techniques where applicable`;
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo", // Cost-optimized model for study notes
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt }
+    ],
+    temperature: 0.3, // Lower temperature for factual content
+    max_tokens: 2000
+  });
+
+  return response.choices[0].message.content;
+};
+
+export const generateEducationalImageUtil = async (options: {
+  topic: string;
+  description: string;
+  style?: string;
+  examType?: string;
+}) => {
+  const { topic, description, style = 'educational', examType } = options;
+  
+  // Build DALL-E 3 prompt for educational diagrams
+  let dallePrompt = `Create a clear, educational diagram about "${topic}". ${description}. 
+  
+Style requirements:
+- Clean, professional educational illustration
+- Clear labels and annotations
+- High contrast for readability
+- Academic textbook quality
+- Simple, focused design without clutter`;
+
+  if (examType) {
+    dallePrompt += `
+- Relevant for ${examType.toUpperCase()} exam preparation`;
+  }
+
+  const response = await openai.images.generate({
+    model: "dall-e-3",
+    prompt: dallePrompt,
+    n: 1,
+    size: "1024x1024",
+    quality: "standard",
+  });
+
+  return {
+    imageUrl: response.data?.[0]?.url || null,
+    prompt: dallePrompt
+  };
+};
+
 export const aiService = {
   /**
    * Get the AI tutor assigned to the user

@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { setupAuth } from "./auth";
 import { authService } from "./services/auth-service";
 import { userService } from "./services/user-service";
-import { aiService } from "./services/ai-service";
+import { aiService, generateStudyNotesUtil, generateEducationalImageUtil } from "./services/ai-service";
 import { courseService } from "./services/course-service";
 import { battleService } from "./services/battle-service";
 import { notificationService } from "./services/notification-service";
@@ -12,7 +12,7 @@ import { supportService } from "./services/support-service";
 import { wellnessService } from "./services/wellness-service";
 import { leaderboardService } from "./services/leaderboard-service";
 import { paymentService } from "./services/payment-service";
-import { otpService } from "./services/otp-service";
+
 import { SimpleSubscriptionService } from "./services/simple-subscription-service";
 import { setupSEORoutes } from "./services/sitemap-generator";
 import { PDFService } from "./services/pdf-service";
@@ -35,115 +35,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/logout", authService.logout);
   app.get("/api/auth/me", authService.getCurrentUser);
 
-  // OTP routes for mobile verification
-  app.post('/api/auth/send-otp', async (req, res) => {
-    try {
-      const { mobile, purpose } = req.body;
-      
-      if (!mobile || !purpose) {
-        return res.status(400).json({ 
-          success: false, 
-          message: 'Mobile number and purpose are required' 
-        });
-      }
 
-      const result = await otpService.sendOTP(mobile, purpose);
-      res.json(result);
-    } catch (error) {
-      console.error('Send OTP error:', error);
-      res.status(500).json({ 
-        success: false, 
-        message: 'Internal server error' 
-      });
-    }
-  });
-
-  app.post('/api/auth/verify-otp', async (req, res) => {
-    try {
-      const { mobile, otp, purpose } = req.body;
-      
-      if (!mobile || !otp || !purpose) {
-        return res.status(400).json({ 
-          success: false, 
-          message: 'Mobile number, OTP, and purpose are required' 
-        });
-      }
-
-      const result = await otpService.verifyOTP(mobile, otp, purpose);
-      res.json(result);
-    } catch (error) {
-      console.error('Verify OTP error:', error);
-      res.status(500).json({ 
-        success: false, 
-        message: 'Internal server error' 
-      });
-    }
-  });
-
-  // Enhanced SMS testing endpoint with provider diagnostics
-  app.post('/api/test-sms', async (req, res) => {
-    try {
-      const { mobile } = req.body;
-      
-      if (!mobile) {
-        return res.status(400).json({ 
-          success: false, 
-          message: 'Mobile number is required for SMS test' 
-        });
-      }
-
-      console.log(`\n🧪 SMS DIAGNOSTIC TEST for ${mobile}`);
-      console.log(`🕒 Test started at: ${new Date().toISOString()}`);
-      
-      // Generate a test OTP
-      const testOTP = Math.floor(100000 + Math.random() * 900000).toString();
-      console.log(`🔢 Generated test OTP: ${testOTP}`);
-      
-      const result = await otpService.sendOTP(mobile, 'signup');
-      
-      res.json({
-        ...result,
-        message: `2Factor.in SMS: ${result.message}`,
-        testDetails: {
-          mobile: mobile,
-          otp: process.env.NODE_ENV === 'development' ? testOTP : 'Hidden in production',
-          timestamp: new Date().toISOString(),
-          provider: '2Factor.in',
-          cost: '₹0.18 per SMS',
-          configured: !!process.env.TWOFACTOR_API_KEY
-        }
-      });
-    } catch (error) {
-      console.error('💥 SMS test error:', error);
-      res.status(500).json({ 
-        success: false, 
-        message: 'SMS test failed',
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-    }
-  });
-
-  // 2Factor.in SMS callback endpoint for delivery reports
-  app.post('/api/sms/callback', (req, res) => {
-    try {
-      console.log('📞 2Factor.in SMS Callback received:', req.body);
-      console.log('📊 Delivery Status:', req.body.Status);
-      console.log('📱 Mobile:', req.body.To);
-      console.log('📋 Details:', req.body.Details);
-      
-      // Log delivery status for debugging
-      if (req.body.Status === 'Delivered') {
-        console.log('✅ SMS successfully delivered to', req.body.To);
-      } else if (req.body.Status === 'Failed') {
-        console.log('❌ SMS delivery failed to', req.body.To, 'Reason:', req.body.Reason);
-      }
-      
-      res.status(200).json({ received: true });
-    } catch (error) {
-      console.error('Callback error:', error);
-      res.status(500).json({ error: 'Callback processing failed' });
-    }
-  });
 
   // Authentication middleware for protected routes
   const requireAuth = (req: any, res: any, next: any) => {
@@ -248,7 +140,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user as any;
 
       // Generate educational content using GPT-3.5 Turbo
-      const contentResponse = await aiService.generateStudyNotes({
+      const contentResponse = await generateStudyNotesUtil({
         topic,
         subject: 'General',
         style: 'comprehensive',
@@ -260,7 +152,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const diagrams = [];
       for (const diagramType of diagramTypes) {
         try {
-          const imageResponse = await aiService.generateEducationalImage({
+          const imageResponse = await generateEducationalImageUtil({
             topic: `${diagramType} for ${topic}`,
             description: `Create a detailed ${diagramType} explaining ${topic}`,
             style: 'educational',
@@ -269,11 +161,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
           if (imageResponse.imageUrl) {
             diagrams.push({
-              type: diagramType,
+              type: diagramType as 'flowchart' | 'mindmap' | 'concept-map' | 'process-diagram' | 'timeline',
               title: `${diagramType.charAt(0).toUpperCase() + diagramType.slice(1).replace('-', ' ')} - ${topic}`,
               imageUrl: imageResponse.imageUrl,
               description: `Visual representation of ${topic} using ${diagramType}`,
-              position: diagrams.length === 0 ? 'before' : diagrams.length % 2 === 0 ? 'inline' : 'after'
+              position: (diagrams.length === 0 ? 'before' : diagrams.length % 2 === 0 ? 'inline' : 'after') as 'before' | 'inline' | 'after'
             });
           }
         } catch (error) {
@@ -284,7 +176,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate PDF with diagrams
       const pdfOptions = {
         title: `Visual Study Guide: ${topic}`,
-        content: contentResponse.notes,
+        content: contentResponse || `# ${topic}\n\nStudy guide content could not be generated. Please try again.`,
         subject: 'Visual Learning',
         examType,
         studentName: user.name,

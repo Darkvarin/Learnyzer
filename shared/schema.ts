@@ -251,16 +251,7 @@ export const subscriptionLimits = pgTable("subscription_limits", {
 });
 */
 
-// OTP Verification Table for mobile authentication
-export const otpVerification = pgTable("otp_verification", {
-  id: serial("id").primaryKey(),
-  mobile: text("mobile").notNull(),
-  otp: text("otp").notNull(),
-  purpose: text("purpose").notNull(), // 'signup', 'login', 'password_reset'
-  verified: boolean("verified").default(false).notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull()
-});
+
 
 // Customer Feedback System Tables
 export const feedbackCategories = pgTable("feedback_categories", {
@@ -444,13 +435,10 @@ export const insertUserSchema = createInsertSchema(users, {
   username: (schema) => schema.min(3, "Username must be at least 3 characters"),
   password: (schema) => schema.min(6, "Password must be at least 6 characters"),
   name: (schema) => schema.min(2, "Name must be at least 2 characters"),
-  mobile: (schema) => schema.regex(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit Indian number"),
+  mobile: (schema) => schema.regex(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit Indian number").optional(),
 });
 
-export const insertOtpVerificationSchema = createInsertSchema(otpVerification, {
-  mobile: (schema) => schema.regex(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit Indian number"),
-  otp: (schema) => schema.length(6, "OTP must be exactly 6 digits"),
-});
+
 
 export const insertCourseSchema = createInsertSchema(courses, {
   title: (schema) => schema.min(3, "Title must be at least 3 characters"),
@@ -512,7 +500,6 @@ export const insertFeedbackCommentSchema = createInsertSchema(feedbackComments, 
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
-export type InsertOtpVerification = z.infer<typeof insertOtpVerificationSchema>;
 export type InsertFeedbackCategory = z.infer<typeof insertFeedbackCategorySchema>;
 export type InsertCustomerFeedback = z.infer<typeof insertCustomerFeedbackSchema>;
 export type InsertFeedbackVote = z.infer<typeof insertFeedbackVoteSchema>;
@@ -534,7 +521,7 @@ export type StreakGoal = typeof streakGoals.$inferSelect;
 export type UserStreakGoal = typeof userStreakGoals.$inferSelect;
 export type WellnessPreference = typeof wellnessPreferences.$inferSelect;
 export type WellnessBreak = typeof wellnessBreaks.$inferSelect;
-export type OtpVerification = typeof otpVerification.$inferSelect;
+
 // export type UsageTracking = typeof usageTracking.$inferSelect; // Temporarily commented for compatibility
 // export type SubscriptionLimits = typeof subscriptionLimits.$inferSelect; // Temporarily commented for compatibility
 export type FeedbackCategory = typeof feedbackCategories.$inferSelect;

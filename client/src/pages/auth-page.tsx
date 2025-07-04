@@ -24,10 +24,8 @@ const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   username: z.string().min(3, "Username must be at least 3 characters"),
   email: z.string().email("Please enter a valid email"),
-  mobile: z.string().regex(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit Indian number"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
-  otp: z.string().length(6, "OTP must be exactly 6 digits"),
   acceptTerms: z.boolean().refine((value) => value === true, {
     message: "You must accept the terms and conditions to register",
   }),
@@ -44,12 +42,7 @@ export default function AuthPage() {
   const [, navigate] = useLocation();
   const { user, loginMutation, registerMutation } = useAuth();
   
-  // OTP verification state
-  const [otpSent, setOtpSent] = useState(false);
-  const [mobileForOTP, setMobileForOTP] = useState("");
-  const [otpVerified, setOtpVerified] = useState(false);
-  const [isOtpLoading, setIsOtpLoading] = useState(false);
-  const [generatedOTP, setGeneratedOTP] = useState("");
+
 
   // Use useEffect for navigation instead of early return
   useEffect(() => {
@@ -74,119 +67,13 @@ export default function AuthPage() {
       name: "",
       username: "",
       email: "",
-      mobile: "",
       password: "",
       confirmPassword: "",
-      otp: "",
       acceptTerms: false,
     },
   });
 
-  // OTP verification functions
-  const sendOTP = async () => {
-    const mobile = registerForm.getValues("mobile");
-    if (!mobile || !/^[6-9]\d{9}$/.test(mobile)) {
-      toast({
-        title: "Invalid Mobile Number",
-        description: "Please enter a valid 10-digit Indian mobile number",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    setIsOtpLoading(true);
-    try {
-      const response = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          mobile: mobile,
-          purpose: 'signup'
-        }),
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        setOtpSent(true);
-        setMobileForOTP(mobile);
-        setGeneratedOTP(result.otp || ""); // For development mode
-        toast({
-          title: "OTP Sent Successfully",
-          description: `Verification code sent to ${mobile}. Check your SMS!`,
-        });
-      } else {
-        toast({
-          title: "Failed to Send OTP",
-          description: result.message || "Please try again",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error('OTP send error:', error);
-      toast({
-        title: "Network Error",
-        description: "Failed to send OTP. Please check your connection.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsOtpLoading(false);
-    }
-  };
-
-  const verifyOTP = async () => {
-    const otp = registerForm.getValues("otp");
-    if (!otp || otp.length !== 6) {
-      toast({
-        title: "Invalid OTP",
-        description: "Please enter the 6-digit OTP",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsOtpLoading(true);
-    try {
-      const response = await fetch('/api/auth/verify-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          mobile: mobileForOTP,
-          otp: otp,
-          purpose: 'signup'
-        }),
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        setOtpVerified(true);
-        toast({
-          title: "Phone Verified Successfully",
-          description: "Your mobile number has been verified. You can now complete registration.",
-        });
-      } else {
-        toast({
-          title: "Verification Failed",
-          description: result.message || "Invalid OTP. Please try again.",
-          variant: "destructive",
-        });
-      }
-    } catch (error: any) {
-      console.error('OTP verification error:', error);
-      toast({
-        title: "Verification Error",
-        description: "Failed to verify OTP. Please check your connection.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsOtpLoading(false);
-    }
-  };
 
   // Form submit handlers
   const onLoginSubmit = async (data: LoginForm) => {
@@ -203,33 +90,13 @@ export default function AuthPage() {
   };
 
   const onRegisterSubmit = async (data: RegisterForm) => {
-    // Check if mobile is verified before proceeding
-    if (!otpVerified) {
-      toast({
-        title: "Mobile Verification Required",
-        description: "Please verify your mobile number before creating an account.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     try {
-      await registerMutation.mutateAsync({
-        name: data.name,
-        username: data.username,
-        email: data.email,
-        mobile: data.mobile,
-        password: data.password,
-      });
+      await registerMutation.mutateAsync(data);
       toast({
         title: "Registration successful",
         description: "Welcome to Learnyzer! Your account has been created.",
       });
       navigate("/");
-      // Reset OTP state
-      setOtpSent(false);
-      setOtpVerified(false);
-      setMobileForOTP("");
     } catch (error) {
       // Error handling is done in the mutation callbacks
     }
@@ -419,89 +286,7 @@ export default function AuthPage() {
                           </FormItem>
                         )}
                       />
-                      
-                      {/* Mobile Number Field with OTP Verification */}
-                      <FormField
-                        control={registerForm.control}
-                        name="mobile"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-primary-foreground/90 flex items-center">
-                              <div className="w-1 h-4 bg-primary/50 mr-2"></div>
-                              Mobile Number
-                            </FormLabel>
-                            <FormControl>
-                              <div className="flex space-x-2">
-                                <Input 
-                                  className="cyber-input bg-background/40 border-primary/30 focus:border-primary transition-colors flex-1" 
-                                  type="tel" 
-                                  placeholder="9876543210" 
-                                  maxLength={10}
-                                  {...field} 
-                                />
-                                <Button
-                                  type="button"
-                                  onClick={sendOTP}
-                                  disabled={isOtpLoading || otpSent}
-                                  className="bg-[#47c1d6] hover:bg-[#47c1d6]/90 text-[#0a2a42] px-4"
-                                >
-                                  {isOtpLoading ? "Sending..." : otpSent ? "Sent" : "Send OTP"}
-                                </Button>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
 
-                      {/* OTP Code Display */}
-                      {otpSent && generatedOTP && (
-                        <div className="mb-4 p-4 bg-[#4af3c0]/10 border border-[#4af3c0]/30 rounded-lg">
-                          <div className="text-sm text-[#4af3c0] mb-2">Your OTP Code (for testing):</div>
-                          <div className="text-2xl font-mono font-bold text-[#4af3c0] tracking-wider">
-                            {generatedOTP}
-                          </div>
-                          <div className="text-xs text-primary-foreground/60 mt-2">
-                            Copy this code and paste it in the field below
-                          </div>
-                        </div>
-                      )}
-
-                      {/* OTP Verification Field */}
-                      {otpSent && (
-                        <FormField
-                          control={registerForm.control}
-                          name="otp"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-primary-foreground/90 flex items-center">
-                                <div className="w-1 h-4 bg-primary/50 mr-2"></div>
-                                Enter OTP {otpVerified && <span className="text-green-500 ml-2">✓ Verified</span>}
-                              </FormLabel>
-                              <FormControl>
-                                <div className="flex space-x-2">
-                                  <Input 
-                                    className="cyber-input bg-background/40 border-primary/30 focus:border-primary transition-colors flex-1" 
-                                    type="text" 
-                                    placeholder="123456" 
-                                    maxLength={6}
-                                    {...field} 
-                                  />
-                                  <Button
-                                    type="button"
-                                    onClick={verifyOTP}
-                                    disabled={isOtpLoading || otpVerified}
-                                    className="bg-[#4af3c0] hover:bg-[#4af3c0]/90 text-[#0a2a42] px-4"
-                                  >
-                                    {isOtpLoading ? "Verifying..." : otpVerified ? "Verified" : "Verify"}
-                                  </Button>
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      )}
                       <FormField
                         control={registerForm.control}
                         name="password"
