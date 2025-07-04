@@ -447,9 +447,9 @@ MANDATORY Structure:
       
       userPrompt += `\nCRITICAL: Every piece of content must be directly related to "${topic}". Do not include general study advice or unrelated concepts. Focus exclusively on mastering this specific topic.`;
       
-      // Get response from OpenAI
+      // Get response from OpenAI (using GPT-3.5 Turbo for cost optimization)
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-3.5-turbo",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
@@ -517,9 +517,9 @@ MANDATORY Structure:
         Format your response as JSON with the fields: score, feedback, correctAnswer (if needed), and improvements (as an array).
       `;
       
-      // Get response from OpenAI
+      // Get response from OpenAI (using GPT-3.5 Turbo for cost optimization)
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-3.5-turbo",
         messages: [
           { 
             role: "system", 
