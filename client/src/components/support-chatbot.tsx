@@ -69,19 +69,44 @@ export function SupportChatbot() {
       return "Hello! I'm here to help you with any questions about Learnyzer. You can ask me about our features, subscriptions, AI tutoring, or anything else!";
     }
     
-    // Check for contact requests (only when specifically asking for contact info)
-    if (query.includes('contact') || (query.includes('support') && (query.includes('email') || query.includes('phone') || query.includes('number')))) {
-      return "You can contact our support team at:\n📧 Email: learnyzer.ai@gmail.com\n📞 Phone: +91 9910601733\n\nI'm also here to answer any specific questions you have about our platform!";
+    // Smart contextual responses based on query analysis
+    const lowerQuery = query.toLowerCase();
+
+    // Intelligent contact queries
+    if (lowerQuery.includes('contact') || (lowerQuery.includes('support') && (lowerQuery.includes('email') || lowerQuery.includes('phone') || lowerQuery.includes('number')))) {
+      if (lowerQuery.includes('emergency') || lowerQuery.includes('urgent') || lowerQuery.includes('immediate')) {
+        return "For urgent issues, call us directly at +91 9910601733 - we respond fast! For non-urgent questions, email learnyzer.ai@gmail.com or continue chatting with me here. What's the specific issue you're facing?";
+      } else if (lowerQuery.includes('billing') || lowerQuery.includes('payment') || lowerQuery.includes('refund')) {
+        return "For billing or payment issues, email learnyzer.ai@gmail.com with your account details, or call +91 9910601733. We handle refunds quickly and offer 7-day money-back guarantee. What payment issue can I help with?";
+      } else {
+        return "You can reach our support team at:\n📧 learnyzer.ai@gmail.com (detailed questions)\n📞 +91 9910601733 (quick calls)\n\nI'm also here to help! What specific question do you have about Learnyzer?";
+      }
     }
     
-    // Check for pricing/cost queries
-    if (query.includes('price') || query.includes('cost') || query.includes('subscription') || query.includes('plan') || query.includes('fee')) {
-      return "Our subscription plans are:\n• Free Trial: 1 day, 2 AI sessions + 10 AI tools daily\n• Basic: ₹799/month, All AI tools (50 uses daily), no AI tutor\n• Pro: ₹1500/month, 2 AI tutor sessions + 20 AI tools daily\n• Quarterly: ₹4199 (3 AI tutor sessions + 40 tools daily)\n• Half-Yearly: ₹7599\n• Yearly: ₹12999 (3 AI tutor sessions + 40 tools daily, best value!)\n\nAll paid plans include analytics and advanced features.";
+    // Smart pricing queries with context
+    if (lowerQuery.includes('price') || lowerQuery.includes('cost') || lowerQuery.includes('subscription') || lowerQuery.includes('plan') || lowerQuery.includes('fee')) {
+      if (lowerQuery.includes('cheap') || lowerQuery.includes('affordable') || lowerQuery.includes('budget')) {
+        return "Budget-friendly options:\n• FREE Trial: 1 day with full features\n• Basic: ₹799/month (most affordable paid plan)\n• Yearly: ₹12999 (best savings vs monthly)\n\nThe free trial lets you test everything before spending money. Which exam are you preparing for?";
+      } else if (lowerQuery.includes('best') || lowerQuery.includes('recommend')) {
+        return "Most popular choice:\n• Pro Plan: ₹1500/month (2 AI tutor sessions + all tools daily)\n• Yearly Plan: ₹12999 (3 AI tutor sessions + maximum savings)\n\nPro is perfect for serious exam prep, Yearly for long-term students. Start with free trial to test first!";
+      } else if (lowerQuery.includes('difference') || lowerQuery.includes('compare')) {
+        return "Plan comparison:\n• Basic (₹799): All AI tools, no AI tutor\n• Pro (₹1500): + 2 AI tutor sessions daily\n• Yearly (₹12999): + 3 AI tutor sessions, big savings\n\nMain difference is AI tutor access. Which feature matters most to you?";
+      } else {
+        return "Smart pricing for students:\n• FREE Trial: 1 day (2 AI sessions + 10 tools)\n• Basic: ₹799/month (unlimited AI tools)\n• Pro: ₹1500/month (+ 2 AI tutor sessions daily)\n• Yearly: ₹12999 (+ 3 AI tutor sessions, best value!)\n\nAll include gamification and progress tracking. Which exam are you targeting?";
+      }
     }
     
-    // Check for AI/tutoring queries
-    if (query.includes('ai') || query.includes('tutor') || query.includes('chatbot') || query.includes('gpt')) {
-      return "Our AI tutor uses GPT-4o technology to provide personalized learning experiences. It includes voice interaction, visual learning with DALL-E 3, and adapts to your specific entrance exam needs (JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE). You can try it with our free trial!";
+    // Smart AI/tutoring queries
+    if (lowerQuery.includes('ai') || lowerQuery.includes('tutor') || lowerQuery.includes('chatbot') || lowerQuery.includes('gpt')) {
+      if (lowerQuery.includes('voice') || lowerQuery.includes('speak') || lowerQuery.includes('talk')) {
+        return "Yes! Our AI tutor has full voice interaction - you can literally talk to it and it talks back. It's powered by GPT-4o, so conversations feel natural. Perfect for hands-free learning while doing problems or taking notes. Try it in the free trial!";
+      } else if (lowerQuery.includes('smart') || lowerQuery.includes('intelligent') || lowerQuery.includes('good')) {
+        return "Our AI tutor is quite intelligent - it's built on GPT-4o (the latest model). It personalizes content to your specific exam (JEE, NEET, etc.), adapts to your learning style, creates visual diagrams with DALL-E 3, and tracks your weak areas. Much smarter than basic chatbots!";
+      } else if (lowerQuery.includes('help') || lowerQuery.includes('teach') || lowerQuery.includes('learn')) {
+        return "The AI tutor acts like your personal teacher - explains concepts step-by-step, creates visual diagrams for complex topics, answers doubts in real-time, gives practice problems, and adapts to your exam. It's like having a 24/7 expert tutor who knows your syllabus inside out.";
+      } else {
+        return "Our AI tutor uses cutting-edge GPT-4o technology - it's like having a super smart teacher available 24/7. It creates visual learning content with DALL-E 3, has voice interaction, and personalizes everything to your specific entrance exam. Way more advanced than basic chatbots!";
+      }
     }
     
     // Check for exam-related queries
