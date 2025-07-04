@@ -9,6 +9,7 @@ import { RealTimeProvider } from "@/contexts/real-time-context";
 import { ProtectedRoute } from "@/components/protected-route";
 import { Footer } from "@/components/layout/footer";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import { SupportChatbot } from "@/components/support-chatbot";
 
 import Dashboard from "@/pages/dashboard";
 import BattleZone from "@/pages/battle-zone";
@@ -74,6 +75,7 @@ function App() {
                   </Switch>
                 </main>
                 <Footer />
+                <SupportChatbot />
               </div>
               <Toaster />
             </RealTimeProvider>

@@ -845,6 +845,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Support Chatbot API endpoint
+  app.post("/api/support/chat", async (req, res) => {
+    try {
+      const { query } = req.body;
+      
+      if (!query) {
+        return res.status(400).json({ error: "Query is required" });
+      }
+
+      // Search FAQ data first
+      const { searchFAQs } = await import("../shared/faq-data");
+      const relevantFAQs = searchFAQs(query);
+      
+      // Use simple response logic for complex queries that don't match FAQs well
+      let aiResponse = null;
+      if (relevantFAQs.length === 0) {
+        // Generate a helpful response based on common patterns
+        const lowerQuery = query.toLowerCase();
+        if (lowerQuery.includes("pricing") || lowerQuery.includes("cost") || lowerQuery.includes("subscription")) {
+          aiResponse = "Our subscription plans start with a free 1-day trial, then Basic at ₹799/month and Pro at ₹1299/month. All plans include AI tutoring and study tools with different daily limits. Contact us at learnyzer.ai@gmail.com for detailed pricing information.";
+        } else if (lowerQuery.includes("ai") || lowerQuery.includes("tutor")) {
+          aiResponse = "Our AI tutor uses GPT-4o technology to provide personalized learning experiences. It includes voice interaction, visual learning with DALL-E 3, and adapts to your specific entrance exam needs. You can start with our free trial to experience it.";
+        } else if (lowerQuery.includes("exam") || lowerQuery.includes("support")) {
+          aiResponse = "Learnyzer supports JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE exam preparation. Our platform provides exam-specific content and AI tutoring tailored to your chosen entrance exam.";
+        } else {
+          aiResponse = "I'd be happy to help! For specific questions about our platform, features, or subscriptions, please contact our support team at learnyzer.ai@gmail.com or call +91 9910601733. They can provide detailed assistance with your query.";
+        }
+      }
+      
+      res.json({
+        query,
+        faqs: relevantFAQs.slice(0, 3),
+        aiResponse,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error in support chat:", error);
+      res.status(500).json({ error: "Support chat service temporarily unavailable" });
+    }
+  });
+
   // Payment routes
   app.post("/api/payment/create-order", paymentService.createOrder);
   app.post("/api/payment/verify-payment", paymentService.verifyPayment);
