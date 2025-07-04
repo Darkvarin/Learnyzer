@@ -848,10 +848,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Support Chatbot API endpoint
   app.post("/api/support/chat", async (req, res) => {
     try {
-      console.log("Chat API received body:", req.body);
+      console.log("=== CHAT API DEBUG ===");
+      console.log("Request method:", req.method);
+      console.log("Request headers:", req.headers);
+      console.log("Request body:", req.body);
+      console.log("Body type:", typeof req.body);
+      console.log("Body keys:", Object.keys(req.body || {}));
+      console.log("======================");
+      
       const { query } = req.body;
       
-      if (!query || !query.trim()) {
+      if (!query || typeof query !== 'string' || !query.trim()) {
+        console.log("Query validation failed:", { query, type: typeof query });
         return res.status(400).json({ error: "Message is required" });
       }
 
