@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { BackButton } from "@/components/ui/back-button";
 import { useLocation } from "wouter";
 import { 
   Send, 
@@ -527,6 +528,11 @@ export default function AiTutor() {
       
       <SubscriptionGuard featureType="ai_tutor_session">
         <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 relative z-10">
+        {/* Back button */}
+        <div className="mb-4">
+          <BackButton fallbackPath="/dashboard" className="text-white hover:text-cyan-400" />
+        </div>
+        
         <div className="flex items-center gap-3 mb-6">
           <div className="w-1 h-10 bg-gradient-to-b from-cyan-500/70 via-cyan-600/50 to-primary/20"></div>
           <h1 className="text-3xl font-gaming gaming-text text-glow">

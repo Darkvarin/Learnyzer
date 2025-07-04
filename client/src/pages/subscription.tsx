@@ -6,6 +6,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { BackButton } from "@/components/ui/back-button";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
@@ -298,6 +299,11 @@ export default function SubscriptionPage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)]"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {/* Back button */}
+          <div className="mb-6 text-left">
+            <BackButton fallbackPath="/dashboard" className="text-white hover:text-cyan-400" />
+          </div>
+          
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
               Upgrade Your Learning

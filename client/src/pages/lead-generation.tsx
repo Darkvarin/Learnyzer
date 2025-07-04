@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { BackButton } from "@/components/ui/back-button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -149,6 +150,11 @@ export default function LeadGeneration() {
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-900/20 to-green-900/20 backdrop-blur-sm border-b border-blue-500/20">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent,transparent)]"></div>
         <div className="container mx-auto px-6 py-8 relative">
+          {/* Back button */}
+          <div className="mb-4">
+            <BackButton fallbackPath="/dashboard" className="text-white hover:text-blue-400" />
+          </div>
+          
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">

@@ -35,6 +35,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { BackButton } from "@/components/ui/back-button";
 import { Switch } from "@/components/ui/switch";
 import { 
   Select, 
@@ -314,6 +315,11 @@ export default function ProfileSettings() {
       </div>
       
       <div className="max-w-6xl mx-auto relative z-10">
+        {/* Back button */}
+        <div className="mb-4">
+          <BackButton fallbackPath="/dashboard" className="text-cyan-400 hover:text-cyan-300" />
+        </div>
+        
         <header className="mb-8 relative">
           <div className="absolute -left-4 top-6 w-2 h-12 monarch-energy-bar"></div>
           <h1 className="text-3xl font-gaming text-cyan-400 mb-2 border-l-2 border-cyan-500/50 pl-4">PROFILE & SETTINGS</h1>

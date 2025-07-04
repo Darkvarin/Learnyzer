@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { BackButton } from "@/components/ui/back-button";
 import { Loader2, Image, BookOpen, Brain, Zap, Download, Share2, GraduationCap, Book, FileCheck, Target, Award, AlertTriangle, Building2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -232,6 +233,10 @@ export default function AIVisualLab() {
       <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600/20 to-purple-600/20 backdrop-blur-sm border-b border-cyan-500/20">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),transparent,transparent)]"></div>
         <div className="container mx-auto px-6 py-8 relative">
+          {/* Back button */}
+          <div className="mb-4">
+            <BackButton fallbackPath="/dashboard" className="text-white hover:text-cyan-400" />
+          </div>
           <div className="text-center">
             <h1 className="text-4xl font-bold text-white mb-4">
               AI Visual Learning Lab
