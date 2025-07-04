@@ -57,13 +57,38 @@ export function SupportChatbot() {
     }
     
     // Check for contact requests
-    if (query.includes('contact') || query.includes('support') || query.includes('help')) {
+    if (query.includes('contact') || query.includes('support') || query.includes('help') || query.includes('email') || query.includes('phone')) {
       return "You can contact our support team at:\n📧 Email: learnyzer.ai@gmail.com\n📞 Phone: +91 9910601733\n\nI'm also here to answer any specific questions you have about our platform!";
     }
     
     // Check for pricing/cost queries
-    if (query.includes('price') || query.includes('cost') || query.includes('subscription')) {
-      return "Our subscription plans are:\n• Free Trial: 1 day, 2 AI sessions daily\n• Basic: ₹799/month, 2 AI tutor sessions daily\n• Pro: ₹1299/month, 3 sessions daily\n• Quarterly: ₹2999 (6 months)\n• Yearly: ₹7999 (best value!)\n\nAll paid plans include higher daily limits and advanced features.";
+    if (query.includes('price') || query.includes('cost') || query.includes('subscription') || query.includes('plan') || query.includes('fee')) {
+      return "Our subscription plans are:\n• Free Trial: 1 day, 2 AI sessions daily\n• Basic: ₹799/month, 2 AI tutor sessions + 20 tools daily\n• Pro: ₹1299/month, 3 sessions + 30 tools daily\n• Quarterly: ₹2999 (3 months)\n• Yearly: ₹7999 (best value!)\n\nAll paid plans include higher daily limits and advanced features.";
+    }
+    
+    // Check for AI/tutoring queries
+    if (query.includes('ai') || query.includes('tutor') || query.includes('chatbot') || query.includes('gpt')) {
+      return "Our AI tutor uses GPT-4o technology to provide personalized learning experiences. It includes voice interaction, visual learning with DALL-E 3, and adapts to your specific entrance exam needs (JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE). You can try it with our free trial!";
+    }
+    
+    // Check for exam-related queries
+    if (query.includes('exam') || query.includes('entrance') || query.includes('jee') || query.includes('neet') || query.includes('upsc') || query.includes('clat') || query.includes('cuet') || query.includes('cse') || query.includes('cgle')) {
+      return "Learnyzer supports 7 major competitive exams: JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE. Each exam has specialized content, dedicated courses, and AI tutors designed specifically for that preparation track.";
+    }
+
+    // Check for mobile/app queries
+    if (query.includes('mobile') || query.includes('app') || query.includes('phone') || query.includes('android') || query.includes('ios')) {
+      return "Learnyzer works perfectly on mobile devices through your web browser. Our platform is fully responsive and optimized for mobile learning. You can access all features including AI tutoring and study tools on your smartphone or tablet.";
+    }
+
+    // Check for free trial queries
+    if (query.includes('free') || query.includes('trial') || query.includes('demo')) {
+      return "Yes! We offer a free 1-day trial that gives you access to 2 AI tutor sessions and 10 AI tool uses. This lets you experience our GPT-4o powered tutoring and visual learning features before subscribing. No credit card required!";
+    }
+
+    // Check for platform overview queries
+    if ((query.includes('what') && query.includes('learnyzer')) || query.includes('about') || query.includes('platform')) {
+      return "Learnyzer is an AI-powered educational platform for Indian students preparing for competitive entrance exams. We use GPT-4o for personalized tutoring, DALL-E 3 for visual learning, and gamification to make studying engaging.";
     }
     
     // Default response for unmatched queries
@@ -92,9 +117,9 @@ export function SupportChatbot() {
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        content: response.aiResponse || generateBotResponse(currentQuery),
+        content: (response as any).aiResponse || generateBotResponse(currentQuery),
         timestamp: new Date(),
-        faqs: response.faqs?.length > 0 ? response.faqs : undefined
+        faqs: (response as any).faqs?.length > 0 ? (response as any).faqs : undefined
       };
 
       setMessages(prev => [...prev, botMessage]);

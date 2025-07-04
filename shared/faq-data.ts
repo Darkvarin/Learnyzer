@@ -236,36 +236,60 @@ export const faqData: FAQ[] = [
 ];
 
 export function searchFAQs(query: string): FAQ[] {
-  const searchTerms = query.toLowerCase().split(' ');
+  const searchTerms = query.toLowerCase().split(/\s+/).filter(term => term.length > 2);
+  const queryLower = query.toLowerCase();
   
   return faqData
     .map(faq => {
       let score = 0;
       
-      // Check question match
-      const questionMatch = searchTerms.every(term => 
-        faq.question.toLowerCase().includes(term)
-      );
-      if (questionMatch) score += 10;
+      // Exact question match (highest priority)
+      if (queryLower.includes(faq.question.toLowerCase()) || faq.question.toLowerCase().includes(queryLower)) {
+        score += 20;
+      }
       
-      // Check keyword match
-      const keywordMatch = searchTerms.some(term =>
-        faq.keywords.some(keyword => keyword.includes(term))
+      // Individual term matches in question
+      const questionWords = faq.question.toLowerCase().split(/\s+/);
+      const questionMatches = searchTerms.filter(term => 
+        questionWords.some(word => word.includes(term) || term.includes(word))
       );
-      if (keywordMatch) score += 5;
+      score += questionMatches.length * 3;
       
-      // Check answer match
-      const answerMatch = searchTerms.some(term =>
+      // Keyword exact matches
+      const exactKeywordMatches = searchTerms.filter(term =>
+        faq.keywords.some(keyword => keyword.toLowerCase() === term)
+      );
+      score += exactKeywordMatches.length * 8;
+      
+      // Keyword partial matches
+      const partialKeywordMatches = searchTerms.filter(term =>
+        faq.keywords.some(keyword => keyword.toLowerCase().includes(term) || term.includes(keyword.toLowerCase()))
+      );
+      score += partialKeywordMatches.length * 4;
+      
+      // Answer content matches
+      const answerMatches = searchTerms.filter(term =>
         faq.answer.toLowerCase().includes(term)
       );
-      if (answerMatch) score += 3;
+      score += answerMatches.length * 2;
       
-      // Add priority bonus
-      score += faq.priority;
+      // Category boost for related terms
+      if (queryLower.includes('subscription') || queryLower.includes('price') || queryLower.includes('cost')) {
+        if (faq.category === 'Subscription' || faq.category === 'Billing') score += 5;
+      }
+      if (queryLower.includes('ai') || queryLower.includes('tutor') || queryLower.includes('chatbot')) {
+        if (faq.category === 'AI Tutor') score += 5;
+      }
+      if (queryLower.includes('technical') || queryLower.includes('mobile') || queryLower.includes('browser')) {
+        if (faq.category === 'Technical') score += 5;
+      }
+      
+      // Priority bonus (weighted)
+      score += faq.priority * 1.5;
       
       return { ...faq, score };
     })
-    .filter(faq => faq.score > 3)
+    .filter(faq => faq.score > 5)
     .sort((a, b) => b.score - a.score)
-    .slice(0, 5);
+    .slice(0, 3);
 }
