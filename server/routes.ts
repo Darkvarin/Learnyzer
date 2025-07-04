@@ -873,12 +873,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         aiResponse = "Learnyzer works perfectly on mobile devices through your web browser. Our platform is fully responsive and optimized for mobile learning. You can access all features including AI tutoring, voice interaction, and study tools on your smartphone or tablet.";
       } else if (lowerQuery.includes("free") || lowerQuery.includes("trial") || lowerQuery.includes("demo")) {
         aiResponse = "Yes! We offer a free 1-day trial that gives you access to 2 AI tutor sessions and 10 AI tool uses. This lets you experience our GPT-4o powered tutoring, voice interaction, and visual learning features before subscribing. No credit card required to start your trial.";
-      } else if (lowerQuery.includes("contact") || lowerQuery.includes("support") || lowerQuery.includes("help") || lowerQuery.includes("phone") || lowerQuery.includes("email")) {
+      } else if (lowerQuery.includes("contact") || (lowerQuery.includes("support") && (lowerQuery.includes("email") || lowerQuery.includes("phone") || lowerQuery.includes("number")))) {
         aiResponse = "You can contact our support team at learnyzer.ai@gmail.com or call +91 9910601733. We're here to help with any questions about our platform, subscriptions, or technical issues. You can also use this chat for quick answers to common questions.";
       } else if (lowerQuery.includes("what") && lowerQuery.includes("learnyzer")) {
         aiResponse = "Learnyzer is an AI-powered educational platform designed for Indian students preparing for competitive entrance exams. We use GPT-4o for personalized tutoring, DALL-E 3 for visual learning, and gamification to make studying engaging. Our platform supports JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE preparation with adaptive learning paths.";
+      } else if (lowerQuery.includes("feature") || lowerQuery.includes("what can") || lowerQuery.includes("functionality")) {
+        aiResponse = "Learnyzer offers: AI Tutoring with GPT-4o technology, Voice interaction for hands-free learning, Visual learning with DALL-E 3 image generation, Gamified learning with levels and achievements, Progress tracking and analytics, Competitive battles with other students, Personalized study plans, and Multi-exam support for JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE.";
+      } else if (lowerQuery.includes("how") && (lowerQuery.includes("work") || lowerQuery.includes("use") || lowerQuery.includes("start"))) {
+        aiResponse = "Getting started is simple: 1) Sign up for your free 1-day trial, 2) Choose your target entrance exam, 3) Complete your profile setup, 4) Start learning with our AI tutor, 5) Track your progress and earn achievements. Our AI adapts to your learning style and provides personalized content for your chosen exam.";
+      } else if (lowerQuery.includes("requirement") || lowerQuery.includes("system") || lowerQuery.includes("browser") || lowerQuery.includes("internet")) {
+        aiResponse = "Technical requirements are minimal: Any modern web browser (Chrome, Firefox, Safari, Edge), stable internet connection, works on desktop/laptop/tablet/mobile, no downloads required, and supports voice features on compatible devices. Our platform is web-based and works on any device with internet access.";
+      } else if (lowerQuery.includes("payment") || lowerQuery.includes("billing") || lowerQuery.includes("refund") || lowerQuery.includes("money back")) {
+        aiResponse = "Payment information: We accept all major credit/debit cards, secure payment processing through Razorpay, 7-day money-back guarantee on all plans, automatic billing for subscriptions, cancel anytime with immediate effect, and Indian pricing optimized for students. Your payment data is completely secure and encrypted.";
+      } else if (lowerQuery.includes("support") || lowerQuery.includes("help")) {
+        aiResponse = "I can help you with questions about Learnyzer's features, pricing, exams, technical requirements, or how to get started. What specific information would you like to know about our AI-powered learning platform? For complex technical issues, you can reach our team at learnyzer.ai@gmail.com.";
       } else {
-        aiResponse = "I'd be happy to help! For specific questions about our platform, features, or subscriptions, please contact our support team at learnyzer.ai@gmail.com or call +91 9910601733. They can provide detailed assistance with your query.";
+        aiResponse = "I can help you with questions about Learnyzer's features, pricing, exams, technical requirements, or how to get started. What specific information would you like to know about our AI-powered learning platform?";
       }
       
       res.json({

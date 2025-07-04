@@ -56,8 +56,8 @@ export function SupportChatbot() {
       return "Hello! I'm here to help you with any questions about Learnyzer. You can ask me about our features, subscriptions, AI tutoring, or anything else!";
     }
     
-    // Check for contact requests
-    if (query.includes('contact') || query.includes('support') || query.includes('help') || query.includes('email') || query.includes('phone')) {
+    // Check for contact requests (only when specifically asking for contact info)
+    if (query.includes('contact') || (query.includes('support') && (query.includes('email') || query.includes('phone') || query.includes('number')))) {
       return "You can contact our support team at:\n📧 Email: learnyzer.ai@gmail.com\n📞 Phone: +91 9910601733\n\nI'm also here to answer any specific questions you have about our platform!";
     }
     
@@ -90,9 +90,29 @@ export function SupportChatbot() {
     if ((query.includes('what') && query.includes('learnyzer')) || query.includes('about') || query.includes('platform')) {
       return "Learnyzer is an AI-powered educational platform for Indian students preparing for competitive entrance exams. We use GPT-4o for personalized tutoring, DALL-E 3 for visual learning, and gamification to make studying engaging.";
     }
+
+    // Check for features queries
+    if (query.includes('feature') || query.includes('what can') || query.includes('functionality')) {
+      return "Learnyzer offers:\n• AI Tutoring with GPT-4o technology\n• Voice interaction for hands-free learning\n• Visual learning with DALL-E 3 image generation\n• Gamified learning with levels, ranks, and achievements\n• Progress tracking and analytics\n• Competitive battles with other students\n• Personalized study plans\n• Multi-exam support (JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE)";
+    }
+
+    // Check for how it works queries
+    if (query.includes('how') && (query.includes('work') || query.includes('use') || query.includes('start'))) {
+      return "Getting started is easy:\n1. Sign up for your free 1-day trial\n2. Choose your target entrance exam\n3. Complete your profile setup\n4. Start learning with our AI tutor\n5. Track your progress and earn achievements\n\nOur AI adapts to your learning style and provides personalized content for your chosen exam.";
+    }
+
+    // Check for technical requirements
+    if (query.includes('requirement') || query.includes('system') || query.includes('browser') || query.includes('internet')) {
+      return "Technical requirements are minimal:\n• Any modern web browser (Chrome, Firefox, Safari, Edge)\n• Stable internet connection\n• Works on desktop, laptop, tablet, and mobile\n• No downloads or installations required\n• Supports voice features on compatible devices\n\nOur platform is web-based and works on any device with internet access.";
+    }
+
+    // Check for payment/billing queries
+    if (query.includes('payment') || query.includes('billing') || query.includes('refund') || query.includes('money back')) {
+      return "Payment information:\n• We accept all major credit/debit cards\n• Secure payment processing through Razorpay\n• 7-day money-back guarantee on all plans\n• Automatic billing for subscriptions\n• Cancel anytime with immediate effect\n• Indian pricing optimized for students\n\nYour payment data is completely secure and encrypted.";
+    }
     
-    // Default response for unmatched queries
-    return "I understand you're asking about something specific. Let me search our knowledge base for the most relevant information. You can also contact our support team directly for personalized assistance at learnyzer.ai@gmail.com or +91 9910601733.";
+    // Default response for unmatched queries - more helpful
+    return "I can help you with questions about Learnyzer's features, pricing, exams, technical requirements, or how to get started. What specific information would you like to know about our AI-powered learning platform?";
   };
 
   const handleSendMessage = async () => {
