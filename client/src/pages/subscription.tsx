@@ -22,6 +22,7 @@ import {
   ArrowRight,
   Gift
 } from "lucide-react";
+import { TrialBanner } from "@/components/trial/trial-banner";
 
 // Declare global window type for Razorpay
 declare global {
@@ -304,6 +305,9 @@ export default function SubscriptionPage() {
           <div className="mb-6 text-left">
             <BackButton fallbackPath="/dashboard" className="text-white hover:text-cyan-400" />
           </div>
+          
+          {/* Trial Banner */}
+          <TrialBanner />
           
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">

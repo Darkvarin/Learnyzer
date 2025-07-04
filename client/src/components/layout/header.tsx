@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { useMobile } from "@/hooks/use-mobile";
 import { Brain, Menu, X, ChevronDown, User, LogOut, Zap } from "lucide-react";
+import { TrialStatusBadge } from "@/components/trial/trial-status-badge";
 
 export function Header() {
   const { user, setUser } = useUser();
@@ -132,7 +133,8 @@ export function Header() {
             </div>
           </div>
           
-          <div className="flex items-center space-x-6">            
+          <div className="flex items-center space-x-4">
+            <TrialStatusBadge variant="compact" showTimeLeft={false} />            
             {!isMobile && (
               <nav className="flex items-center space-x-1">
                 <NavLink 

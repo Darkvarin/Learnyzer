@@ -7,6 +7,7 @@ import { StreakSection } from "@/components/dashboard/streak-section";
 import { RankSection } from "@/components/dashboard/rank-section";
 import { ReferralSection } from "@/components/dashboard/referral-section";
 import { BreaksRecommender } from "@/components/wellness/breaks-recommender";
+import { TrialBanner } from "@/components/trial/trial-banner";
 import { LayoutGrid, BarChart3, Zap, Award, Users, Brain, BookOpen, Target, Trophy } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
@@ -86,6 +87,9 @@ export default function Dashboard() {
       <MobileNavigation />
       
       <main className="flex-1 container mx-auto px-4 pt-20 pb-16 md:pb-6 relative z-10">
+        {/* Trial Banner */}
+        <TrialBanner />
+        
         {/* Welcome message with Solo Leveling inspiration */}
         <div className="mb-8 relative">
           <div className="mb-1 font-mono tracking-wider text-primary/80">STUDENT DASHBOARD</div>
