@@ -72,6 +72,59 @@ export default function StudyNotesGenerator() {
     }
   };
 
+  const downloadPDFMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch("/api/ai/tools/generate-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          title: `Study Notes: ${topic}`,
+          content: generatedNotes,
+          subject: subject || undefined,
+          examType: undefined // You can add exam type selection if needed
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('PDF generation failed');
+      }
+
+      return response.blob();
+    },
+    onSuccess: (blob) => {
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${topic.replace(/[^a-zA-Z0-9]/g, '_')}_notes.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "PDF Downloaded",
+        description: "Your study notes have been saved as a PDF file."
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Download Failed",
+        description: "There was an error generating the PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleDownloadPDF = () => {
+    if (generatedNotes && topic) {
+      downloadPDFMutation.mutate();
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!topic.trim() || !subject.trim()) {
@@ -317,10 +370,21 @@ export default function StudyNotesGenerator() {
                           </Button>
                           <Button
                             variant="outline"
+                            onClick={handleDownloadPDF}
+                            disabled={downloadPDFMutation.isPending}
                             className="bg-background/60 border-cyan-500/30 hover:bg-cyan-500/10 text-white/90 transition-colors"
                           >
-                            <FileDown className="mr-2 h-4 w-4 text-cyan-400" />
-                            Download as PDF
+                            {downloadPDFMutation.isPending ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Generating PDF...
+                              </>
+                            ) : (
+                              <>
+                                <FileDown className="mr-2 h-4 w-4 text-cyan-400" />
+                                Download as PDF
+                              </>
+                            )}
                           </Button>
                         </div>
                       </>

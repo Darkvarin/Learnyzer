@@ -15,6 +15,7 @@ import { paymentService } from "./services/payment-service";
 import { otpService } from "./services/otp-service";
 import { SimpleSubscriptionService } from "./services/simple-subscription-service";
 import { setupSEORoutes } from "./services/sitemap-generator";
+import { PDFService } from "./services/pdf-service";
 import { storage } from "./storage";
 import { db } from "../db";
 import { eq, and, asc, desc, isNotNull, sql } from "drizzle-orm";
@@ -233,6 +234,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/ai/tools/notes", requireAuth, aiService.generateStudyNotes);
   app.post("/api/ai/tools/answer-check", requireAuth, aiService.checkAnswer);
   app.post("/api/ai/tools/flashcards", requireAuth, aiService.generateFlashcards);
+  app.post("/api/ai/tools/generate-pdf", requireAuth, PDFService.generatePDFFromNotes);
   app.get("/api/ai/tools/analytics/:userId", requireAuth, aiService.getPerformanceAnalytics);
   app.post("/api/ai/battle/judge/:battleId", requireAuth, aiService.judgeBattle);
   app.post("/api/ai/generate-diagram", requireAuth, aiService.generateDiagram);
