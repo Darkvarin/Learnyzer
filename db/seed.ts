@@ -30,6 +30,13 @@ async function seed() {
         image: "https://cdn.jsdelivr.net/gh/lyqht/fake-api-images/avataaars/avatar3.svg",
         description: "Rahul excels in history, geography, literature, and languages, helping you with essay writing and critical analysis.",
         personalityTraits: JSON.stringify(["eloquent", "thoughtful", "supportive"])
+      },
+      {
+        name: "Priya",
+        specialty: "Your CGLE & Government Exams AI Tutor",
+        image: "https://cdn.jsdelivr.net/gh/lyqht/fake-api-images/avataaars/avatar4.svg",
+        description: "Priya specializes in government job preparation, focusing on general awareness, quantitative aptitude, and current affairs for CGLE.",
+        personalityTraits: JSON.stringify(["methodical", "updated", "motivating"])
       }
     ];
     
@@ -129,6 +136,10 @@ async function seed() {
       {
         name: "Central University Entrance",
         description: "Preparation material for CUET and other university entrance exams"
+      },
+      {
+        name: "Government Job Preparation",
+        description: "Preparation material for CGLE and other government recruitment exams"
       }
     ];
     
@@ -661,6 +672,74 @@ async function seed() {
           { title: "Chapter 8: Wireless Networks", description: "WiFi, cellular networks, and mobile computing." },
           { title: "Chapter 9: Network Performance", description: "QoS, traffic analysis, and optimization." },
           { title: "Chapter 10: Network Programming", description: "Socket programming and distributed applications." }
+        ])
+      },
+      
+      // CGLE Courses
+      {
+        title: "General Awareness for CGLE",
+        description: "Comprehensive current affairs, general knowledge, and awareness preparation for Combined Graduate Level Examination.",
+        subject: "General Awareness",
+        examType: "CGLE",
+        coverImage: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?ixlib=rb-4.0.3",
+        chapters: 10,
+        targetGrade: "Graduate",
+        difficulty: "Intermediate",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Current Affairs", description: "Recent developments in politics, economics, and international relations." },
+          { title: "Chapter 2: Indian History", description: "Ancient, medieval, and modern Indian history highlights." },
+          { title: "Chapter 3: Indian Geography", description: "Physical features, climate, natural resources, and economic geography." },
+          { title: "Chapter 4: Indian Polity", description: "Constitution, governance, fundamental rights, and political system." },
+          { title: "Chapter 5: Economics", description: "Basic economic concepts, Indian economy, and government schemes." },
+          { title: "Chapter 6: Science and Technology", description: "Recent developments, innovations, and scientific discoveries." },
+          { title: "Chapter 7: Environmental Studies", description: "Environmental issues, conservation, and sustainable development." },
+          { title: "Chapter 8: Sports and Culture", description: "Sports achievements, cultural heritage, and arts." },
+          { title: "Chapter 9: Awards and Honors", description: "National and international awards, recognition, and achievements." },
+          { title: "Chapter 10: Mock Tests", description: "Practice tests based on previous CGLE patterns." }
+        ])
+      },
+      {
+        title: "Quantitative Aptitude for CGLE",
+        description: "Mathematical reasoning, numerical ability, and problem-solving skills for government job examinations.",
+        subject: "Mathematics",
+        examType: "CGLE",
+        coverImage: "https://images.unsplash.com/photo-1453733190371-0a9bedd82893?ixlib=rb-4.0.3",
+        chapters: 12,
+        targetGrade: "Graduate",
+        difficulty: "Intermediate",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Number Systems", description: "Natural numbers, integers, rational numbers, and number properties." },
+          { title: "Chapter 2: Percentages and Ratios", description: "Percentage calculations, profit-loss, and ratio-proportion." },
+          { title: "Chapter 3: Simple and Compound Interest", description: "Interest calculations and financial mathematics." },
+          { title: "Chapter 4: Time and Work", description: "Work efficiency, time calculations, and partnership problems." },
+          { title: "Chapter 5: Speed, Time, and Distance", description: "Motion problems, relative speed, and distance calculations." },
+          { title: "Chapter 6: Algebra", description: "Linear equations, quadratic equations, and algebraic identities." },
+          { title: "Chapter 7: Geometry", description: "Areas, perimeters, volumes, and geometric properties." },
+          { title: "Chapter 8: Trigonometry", description: "Basic trigonometric ratios and identities." },
+          { title: "Chapter 9: Statistics and Probability", description: "Data interpretation, averages, and probability concepts." },
+          { title: "Chapter 10: Data Interpretation", description: "Charts, graphs, tables, and data analysis." },
+          { title: "Chapter 11: Logical Reasoning", description: "Sequence, coding-decoding, and logical puzzles." },
+          { title: "Chapter 12: Practice Sets", description: "Previous year questions and mock tests." }
+        ])
+      },
+      {
+        title: "English Language for CGLE",
+        description: "English comprehension, grammar, vocabulary, and communication skills for competitive examinations.",
+        subject: "English",
+        examType: "CGLE",
+        coverImage: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3",
+        chapters: 8,
+        targetGrade: "Graduate",
+        difficulty: "Intermediate",
+        chapterDetails: JSON.stringify([
+          { title: "Chapter 1: Reading Comprehension", description: "Passage reading, comprehension, and question solving." },
+          { title: "Chapter 2: Grammar Fundamentals", description: "Parts of speech, tenses, and sentence structure." },
+          { title: "Chapter 3: Vocabulary Building", description: "Synonyms, antonyms, word meanings, and usage." },
+          { title: "Chapter 4: Error Detection", description: "Identifying grammatical errors and sentence correction." },
+          { title: "Chapter 5: Cloze Test", description: "Fill in the blanks and context-based questions." },
+          { title: "Chapter 6: Para Jumbles", description: "Sentence rearrangement and paragraph formation." },
+          { title: "Chapter 7: Idioms and Phrases", description: "Common idioms, phrases, and their meanings." },
+          { title: "Chapter 8: Writing Skills", description: "Essay writing, letter writing, and precis writing." }
         ])
       }
     ];

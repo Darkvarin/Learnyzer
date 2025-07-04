@@ -2,7 +2,7 @@
 
 ## Overview
 
-Learnyzer is a comprehensive educational platform designed specifically for Indian students preparing for competitive entrance exams including JEE, NEET, UPSC, CLAT, CUET, and CSE. The platform combines AI-powered tutoring with gamification elements to create an engaging learning experience.
+Learnyzer is a comprehensive educational platform designed specifically for Indian students preparing for competitive entrance exams including JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE. The platform combines AI-powered tutoring with gamification elements to create an engaging learning experience.
 
 ## System Architecture
 
@@ -275,6 +275,15 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Maintained only "Ekansh" account as primary user for platform
   - Resolved duplicate subscription plans on subscription page causing React key warnings
   - Fixed pricing consistency across all platform components to match home page exactly
+- July 03, 2025: CGLE (Combined Graduate Level Examination) integration
+  - Added CGLE as new exam type across entire platform infrastructure
+  - Created comprehensive CGLE courses: General Awareness, Quantitative Aptitude, English Language
+  - Added CGLE-specific AI tutor "Priya" specializing in government exam preparation
+  - Updated exam selection modals in AI Tutor and AI Visual Lab to include CGLE option
+  - Added "Government Job Preparation" course category for CGLE and similar exams
+  - Complete database seed integration with 3 CGLE courses covering all major topics
+  - Updated profile settings to support CGLE exam selection and locking
+  - Platform now supports 7 major competitive exams: JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE
 - July 02, 2025: Free trial promotion and accurate feature display
   - Added prominent free trial banners and badges throughout home page
   - Updated hero section with "Free 1-Day Trial Available!" messaging

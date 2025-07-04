@@ -48,7 +48,8 @@ import {
   Award,
   Bookmark,
   Zap,
-  Target
+  Target,
+  Building2
 } from "lucide-react";
 
 export default function AiTutor() {
@@ -1407,6 +1408,16 @@ export default function AiTutor() {
               >
                 <Award className="h-4 w-4 mr-2" />
                 CSE
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile');
+                  setShowExamModal(false);
+                }}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white"
+              >
+                <Building2 className="h-4 w-4 mr-2" />
+                CGLE
               </Button>
             </div>
             

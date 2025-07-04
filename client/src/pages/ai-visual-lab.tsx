@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Image, BookOpen, Brain, Zap, Download, Share2, GraduationCap, Book, FileCheck, Target, Award, AlertTriangle } from "lucide-react";
+import { Loader2, Image, BookOpen, Brain, Zap, Download, Share2, GraduationCap, Book, FileCheck, Target, Award, AlertTriangle, Building2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -77,7 +77,7 @@ export default function AIVisualLab() {
 
   // Filter exam types based on user's locked exam
   const allExamTypes = [
-    "JEE Main", "JEE Advanced", "NEET", "UPSC", "CLAT", "CUET", "CSE",
+    "JEE Main", "JEE Advanced", "NEET", "UPSC", "CLAT", "CUET", "CSE", "CGLE",
     "GATE", "NDA", "CDS", "SSC", "Banking"
   ];
   
@@ -696,6 +696,16 @@ export default function AIVisualLab() {
               >
                 <Award className="h-4 w-4 mr-2" />
                 CSE
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate('/profile');
+                  setShowExamModal(false);
+                }}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white"
+              >
+                <Building2 className="h-4 w-4 mr-2" />
+                CGLE
               </Button>
             </div>
             

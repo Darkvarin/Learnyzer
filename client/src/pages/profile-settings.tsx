@@ -278,6 +278,11 @@ export default function ProfileSettings() {
         name: "CSE (Computer Science Engineering)",
         description: "For computer science competitive exams",
         icon: "💻"
+      },
+      cgle: {
+        name: "CGLE (Combined Graduate Level Examination)",
+        description: "For government job recruitment at graduate level",
+        icon: "🏢"
       }
     };
     return examInfo[examType] || { name: examType, description: "", icon: "📚" };
@@ -596,7 +601,7 @@ export default function ProfileSettings() {
                           ) : (
                             // Show exam selection grid
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                              {["jee", "neet", "upsc", "clat", "cuet", "cse"].map((examType) => {
+                              {["jee", "neet", "upsc", "clat", "cuet", "cse", "cgle"].map((examType) => {
                                 const examInfo = getExamDetails(examType);
                                 const isSelected = (user as any)?.selectedExam === examType;
                                 
