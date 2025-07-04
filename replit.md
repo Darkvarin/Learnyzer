@@ -343,6 +343,14 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Added PDF download functionality to Study Notes Generator with loading states
   - Students can now download AI-generated study notes as formatted PDF documents
   - Complete end-to-end solution: AI text generation → HTML formatting → PDF conversion → download
+- July 04, 2025: Enhanced study notes generator with diagram-heavy PDF functionality
+  - Integrated visual PDF generation directly into existing study notes page using "Visual & Diagram-heavy" style option
+  - Added diagram type selection interface (flowcharts, mind maps, concept maps, process diagrams, timelines)
+  - Enhanced UI with conditional diagram selection that appears when visual style is selected
+  - Updated PDF download logic to use existing note style dropdown instead of duplicate controls
+  - Smart button states and loading text based on selected style (text vs visual PDF)
+  - Seamless integration maintains existing workflow while adding DALL-E 3 visual content generation
+  - Students can now generate both traditional text PDFs and diagram-rich visual guides from same interface
 
 ## User Preferences
 
