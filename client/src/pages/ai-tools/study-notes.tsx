@@ -21,7 +21,12 @@ import {
   Check,
   Loader2,
   Info,
-  BrainCircuit
+  BrainCircuit,
+  FileImage,
+  Workflow,
+  GitBranch,
+  Network,
+  Clock
 } from "lucide-react";
 
 export default function StudyNotesGenerator() {
@@ -33,6 +38,8 @@ export default function StudyNotesGenerator() {
   const [level, setLevel] = useState("high_school");
   const [generatedNotes, setGeneratedNotes] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("input");
+  const [pdfType, setPdfType] = useState<"text" | "diagram-heavy">("text");
+  const [selectedDiagrams, setSelectedDiagrams] = useState<string[]>([]);
 
   const generateNotesMutation = useMutation({
     mutationFn: async () => {
@@ -119,11 +126,77 @@ export default function StudyNotesGenerator() {
     }
   });
 
+  const downloadDiagramPDFMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch("/api/ai/tools/generate-diagram-pdf", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          topic,
+          contentType: pdfType === "diagram-heavy" ? "diagram-heavy" : "mixed",
+          diagramTypes: selectedDiagrams,
+          examType: undefined
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Visual PDF generation failed');
+      }
+
+      return response.blob();
+    },
+    onSuccess: (blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${topic.replace(/[^a-zA-Z0-9]/g, '_')}_visual_guide.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "Visual PDF Downloaded",
+        description: "Your diagram-rich study guide has been saved!"
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Download Failed",
+        description: "There was an error generating the visual PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
   const handleDownloadPDF = () => {
     if (generatedNotes && topic) {
-      downloadPDFMutation.mutate();
+      if (pdfType === "diagram-heavy" && selectedDiagrams.length > 0) {
+        downloadDiagramPDFMutation.mutate();
+      } else {
+        downloadPDFMutation.mutate();
+      }
     }
   };
+
+  const handleDiagramToggle = (diagramType: string) => {
+    setSelectedDiagrams(prev => 
+      prev.includes(diagramType) 
+        ? prev.filter(d => d !== diagramType)
+        : [...prev, diagramType]
+    );
+  };
+
+  const diagramTypes = [
+    { value: "flowchart", label: "Flowchart", icon: Workflow },
+    { value: "mindmap", label: "Mind Map", icon: BrainCircuit },
+    { value: "concept-map", label: "Concept Map", icon: Network },
+    { value: "process-diagram", label: "Process Diagram", icon: GitBranch },
+    { value: "timeline", label: "Timeline", icon: Clock }
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -319,6 +392,85 @@ export default function StudyNotesGenerator() {
                           </Select>
                         </div>
                       </div>
+
+                      {/* PDF Type Selection */}
+                      <div className="space-y-4 pt-4 border-t border-cyan-500/20">
+                        <div>
+                          <label className="text-sm font-medium mb-3 block">PDF Output Type</label>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div
+                              onClick={() => setPdfType("text")}
+                              className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                                pdfType === "text"
+                                  ? 'border-cyan-400 bg-cyan-500/10'
+                                  : 'border-gray-600 hover:border-cyan-500/50'
+                              }`}
+                            >
+                              <div className="flex items-center space-x-2">
+                                <BookText className={`h-5 w-5 ${pdfType === "text" ? 'text-cyan-400' : 'text-gray-400'}`} />
+                                <div>
+                                  <div className={`font-medium ${pdfType === "text" ? 'text-cyan-400' : 'text-white'}`}>
+                                    Text-Based PDF
+                                  </div>
+                                  <div className="text-xs text-gray-400">Traditional study notes</div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div
+                              onClick={() => setPdfType("diagram-heavy")}
+                              className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                                pdfType === "diagram-heavy"
+                                  ? 'border-cyan-400 bg-cyan-500/10'
+                                  : 'border-gray-600 hover:border-cyan-500/50'
+                              }`}
+                            >
+                              <div className="flex items-center space-x-2">
+                                <FileImage className={`h-5 w-5 ${pdfType === "diagram-heavy" ? 'text-cyan-400' : 'text-gray-400'}`} />
+                                <div>
+                                  <div className={`font-medium ${pdfType === "diagram-heavy" ? 'text-cyan-400' : 'text-white'}`}>
+                                    Visual PDF
+                                  </div>
+                                  <div className="text-xs text-gray-400">With AI-generated diagrams</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Diagram Types Selection - Only show when diagram-heavy is selected */}
+                        {pdfType === "diagram-heavy" && (
+                          <div className="space-y-3">
+                            <label className="text-sm font-medium">Select Diagram Types</label>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                              {diagramTypes.map((diagram) => {
+                                const Icon = diagram.icon;
+                                const isSelected = selectedDiagrams.includes(diagram.value);
+                                
+                                return (
+                                  <div
+                                    key={diagram.value}
+                                    onClick={() => handleDiagramToggle(diagram.value)}
+                                    className={`flex items-center space-x-2 p-2 rounded-md border cursor-pointer transition-all ${
+                                      isSelected
+                                        ? 'border-cyan-400 bg-cyan-500/10 text-cyan-400'
+                                        : 'border-gray-600 hover:border-cyan-500/50 text-gray-400 hover:text-white'
+                                    }`}
+                                  >
+                                    <Icon className="h-4 w-4" />
+                                    <span className="text-xs font-medium">{diagram.label}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                            {selectedDiagrams.length === 0 && (
+                              <p className="text-xs text-orange-400">
+                                Select at least one diagram type for visual PDF generation
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
                       
                       <div className="pt-4">
                         <Button
@@ -371,18 +523,22 @@ export default function StudyNotesGenerator() {
                           <Button
                             variant="outline"
                             onClick={handleDownloadPDF}
-                            disabled={downloadPDFMutation.isPending}
+                            disabled={
+                              downloadPDFMutation.isPending || 
+                              downloadDiagramPDFMutation.isPending ||
+                              (pdfType === "diagram-heavy" && selectedDiagrams.length === 0)
+                            }
                             className="bg-background/60 border-cyan-500/30 hover:bg-cyan-500/10 text-white/90 transition-colors"
                           >
-                            {downloadPDFMutation.isPending ? (
+                            {(downloadPDFMutation.isPending || downloadDiagramPDFMutation.isPending) ? (
                               <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Generating PDF...
+                                {pdfType === "diagram-heavy" ? "Creating Visual PDF..." : "Generating PDF..."}
                               </>
                             ) : (
                               <>
                                 <FileDown className="mr-2 h-4 w-4 text-cyan-400" />
-                                Download as PDF
+                                {pdfType === "diagram-heavy" ? "Download Visual PDF" : "Download as PDF"}
                               </>
                             )}
                           </Button>
