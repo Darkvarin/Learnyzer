@@ -361,6 +361,13 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Backend processes images using GPT-4o Vision for accurate text extraction from handwriting
   - Complete OCR-to-evaluation pipeline: Image → Text Extraction → AI Analysis → Detailed Feedback
   - Maintains all existing answer evaluation features while adding visual input capability
+- July 04, 2025: Registration page terms and conditions compliance implementation
+  - Added mandatory terms and conditions checkbox to registration form
+  - Users must accept both Terms and Conditions and Privacy Policy before registration
+  - Enhanced form validation with Zod schema requiring checkbox acceptance
+  - Professional styled checkbox with links to legal documents (/terms and /privacy routes)
+  - Prevents registration form submission without accepting terms
+  - Improved user registration compliance and legal protection for platform
 
 ## User Preferences
 

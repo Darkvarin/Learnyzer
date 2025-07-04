@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
@@ -27,6 +28,9 @@ const registerSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
   otp: z.string().length(6, "OTP must be exactly 6 digits"),
+  acceptTerms: z.boolean().refine((value) => value === true, {
+    message: "You must accept the terms and conditions to register",
+  }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -74,6 +78,7 @@ export default function AuthPage() {
       password: "",
       confirmPassword: "",
       otp: "",
+      acceptTerms: false,
     },
   });
 
@@ -536,6 +541,46 @@ export default function AuthPage() {
                               />
                             </FormControl>
                             <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      {/* Terms and Conditions Checkbox */}
+                      <FormField
+                        control={registerForm.control}
+                        name="acceptTerms"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-primary/20 p-4 bg-background/20">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel className="text-sm text-primary-foreground/90 cursor-pointer">
+                                I agree to the{" "}
+                                <a 
+                                  href="/terms" 
+                                  target="_blank" 
+                                  className="text-primary hover:text-primary/80 underline font-medium"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  Terms and Conditions
+                                </a>{" "}
+                                and{" "}
+                                <a 
+                                  href="/privacy" 
+                                  target="_blank" 
+                                  className="text-primary hover:text-primary/80 underline font-medium"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  Privacy Policy
+                                </a>
+                              </FormLabel>
+                              <FormMessage />
+                            </div>
                           </FormItem>
                         )}
                       />
