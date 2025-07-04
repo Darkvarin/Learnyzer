@@ -179,8 +179,10 @@ export default function Dashboard() {
               <p className="text-2xl font-bold font-gaming text-white">{userStats?.rank || 'Bronze I'}</p>
               
               <div className="h-2 w-full bg-gray-800/50 mt-2 rounded-lg">
-                <div className="h-2 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-l shimmer-effect" 
-                  style={{width: '35%'}}>
+                <div className={`h-2 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-l ${
+                    userStats && userStats.rankPoints > 0 ? 'shimmer-effect' : ''
+                  }`} 
+                  style={{width: userStats?.rankPoints ? `${Math.min((userStats.rankPoints / 1000) * 100, 100)}%` : '0%'}}>
                 </div>
               </div>
               
