@@ -319,18 +319,16 @@ export default function Rewards() {
                         </div>
                         <div className="flex-1 flex items-center">
                           <div className="w-8 h-8 rounded-full bg-dark-hover mr-2">
-                            <img
-                              src="https://images.unsplash.com/photo-1529665253569-6d01c0eaf7b6?auto=format&fit=crop&w=32&h=32"
-                              alt="Leaderboard user"
-                              className="w-full h-full rounded-full object-cover"
-                            />
+                            <span className="flex items-center justify-center h-full text-xs font-bold">
+                              ?
+                            </span>
                           </div>
                           <div>
-                            <h3 className="font-bold text-sm">Aryan Sharma</h3>
-                            <p className="text-xs text-gray-400">Gold II</p>
+                            <h3 className="font-bold text-sm">More Users Coming Soon</h3>
+                            <p className="text-xs text-gray-400">Join the leaderboard!</p>
                           </div>
                           <div className="ml-auto text-warning-400 font-bold">
-                            9,547 XP
+                            --
                           </div>
                         </div>
                       </div>
