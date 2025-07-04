@@ -391,10 +391,11 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Created TrialStatusBadge component with compact/full variants showing time remaining
   - Added TrialBanner component with countdown timer and upgrade prompts
   - Integrated trial status badge in navigation header for constant visibility
-  - Added trial banner to dashboard, subscription page for prominent display
+  - Added trial banner to subscription page for prominent display
   - Visual indicators change color when trial is expiring soon (red warning state)
   - Clear calls-to-action directing users to upgrade when trial is active
   - Real-time countdown shows hours and minutes remaining in trial period
+  - Removed trial banner from dashboard for cleaner interface, keeping only header badge
 
 ## User Preferences
 
