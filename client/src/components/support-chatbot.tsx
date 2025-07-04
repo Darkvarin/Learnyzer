@@ -223,7 +223,10 @@ export function SupportChatbot() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 shadow-xl border-2 border-white/20 animate-pulse flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105"
+        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 shadow-xl border-2 border-white/20 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105"
+        style={{
+          boxShadow: '0 0 20px rgba(251, 146, 60, 0.4), 0 0 40px rgba(236, 72, 153, 0.3), 0 8px 32px rgba(0, 0, 0, 0.3)'
+        }}
       >
         <MessageCircle className="h-6 w-6 text-white" />
       </button>
