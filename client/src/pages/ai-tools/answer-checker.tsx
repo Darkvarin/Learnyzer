@@ -22,7 +22,10 @@ import {
   ThumbsDown,
   Copy,
   AlertCircle,
-  Sparkles
+  Sparkles,
+  Upload,
+  Camera,
+  X
 } from "lucide-react";
 
 export default function AnswerChecker() {
@@ -32,6 +35,8 @@ export default function AnswerChecker() {
   const [answer, setAnswer] = useState("");
   const [subject, setSubject] = useState("mathematics");
   const [activeTab, setActiveTab] = useState("input");
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [inputMode, setInputMode] = useState<"text" | "image">("text");
   const [feedback, setFeedback] = useState<{
     score: number;
     feedback: string;
@@ -39,13 +44,43 @@ export default function AnswerChecker() {
     improvements: string[];
   } | null>(null);
 
+  // Handle image upload and OCR
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast({
+          title: "File too large",
+          description: "Please upload an image smaller than 5MB.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target?.result as string;
+        setUploadedImage(base64);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const checkAnswerMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/ai/tools/answer-check", {
+      const payload: any = {
         question,
-        answer,
-        subject
-      });
+        subject,
+        inputMode
+      };
+      
+      if (inputMode === "text") {
+        payload.answer = answer;
+      } else {
+        payload.imageData = uploadedImage;
+      }
+      
+      const response = await apiRequest("POST", "/api/ai/tools/answer-check", payload);
       return response.json();
     },
     onSuccess: (data) => {
@@ -68,14 +103,34 @@ export default function AnswerChecker() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!question.trim() || !answer.trim()) {
+    
+    if (!question.trim()) {
       toast({
-        title: "Missing information",
-        description: "Please enter both the question and your answer.",
+        title: "Missing Question",
+        description: "Please provide the question to evaluate.",
         variant: "destructive",
       });
       return;
     }
+    
+    if (inputMode === "text" && !answer.trim()) {
+      toast({
+        title: "Missing Answer",
+        description: "Please provide your written answer.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (inputMode === "image" && !uploadedImage) {
+      toast({
+        title: "Missing Image",
+        description: "Please upload an image of your answer.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     checkAnswerMutation.mutate();
   };
 
@@ -148,6 +203,10 @@ export default function AnswerChecker() {
                         <Check className="text-green-400 w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
                         <span>Improvement suggestions</span>
                       </li>
+                      <li className="text-sm text-gray-400 flex items-start">
+                        <Check className="text-green-400 w-4 h-4 mr-2 mt-0.5 flex-shrink-0" />
+                        <span>OCR support for handwritten answers</span>
+                      </li>
                     </ul>
                   </div>
                   
@@ -157,8 +216,8 @@ export default function AnswerChecker() {
                       <div>
                         <h3 className="text-sm font-medium text-blue-400 mb-1">How to use</h3>
                         <p className="text-xs text-gray-300">
-                          Enter the question and your answer, then select the subject area. 
-                          Our AI will evaluate your answer and provide detailed feedback and suggestions 
+                          Enter the question and your answer (typed or upload an image), then select the subject area. 
+                          Our AI uses OCR to read handwritten answers and provides detailed feedback with suggestions 
                           for improvement.
                         </p>
                       </div>
@@ -226,18 +285,90 @@ export default function AnswerChecker() {
                         />
                       </div>
                       
-                      <div className="space-y-2">
-                        <label htmlFor="answer" className="text-sm font-medium">
-                          Your Answer
-                        </label>
-                        <Textarea
-                          id="answer"
-                          placeholder="Enter your answer here..."
-                          value={answer}
-                          onChange={(e) => setAnswer(e.target.value)}
-                          className="bg-background/60 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20 min-h-[150px]"
-                          required
-                        />
+                      <div className="space-y-3">
+                        <label className="text-sm font-medium">Your Answer</label>
+                        
+                        {/* Input Mode Selector */}
+                        <div className="flex space-x-2 p-1 bg-background/40 rounded-lg border border-cyan-500/20">
+                          <Button
+                            type="button"
+                            variant={inputMode === "text" ? "default" : "ghost"}
+                            size="sm"
+                            onClick={() => setInputMode("text")}
+                            className={inputMode === "text" ? "bg-cyan-500/80 text-white" : "text-gray-400 hover:text-gray-200"}
+                          >
+                            <FileCheck className="w-4 h-4 mr-2" />
+                            Type Answer
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={inputMode === "image" ? "default" : "ghost"}
+                            size="sm"
+                            onClick={() => setInputMode("image")}
+                            className={inputMode === "image" ? "bg-cyan-500/80 text-white" : "text-gray-400 hover:text-gray-200"}
+                          >
+                            <Camera className="w-4 h-4 mr-2" />
+                            Upload Image
+                          </Button>
+                        </div>
+
+                        {/* Text Input Mode */}
+                        {inputMode === "text" && (
+                          <Textarea
+                            id="answer"
+                            placeholder="Enter your answer here..."
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            className="bg-background/60 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20 min-h-[150px]"
+                            required
+                          />
+                        )}
+
+                        {/* Image Upload Mode */}
+                        {inputMode === "image" && (
+                          <div className="space-y-3">
+                            {!uploadedImage ? (
+                              <div className="border-2 border-dashed border-cyan-500/30 rounded-lg p-8 text-center hover:border-cyan-400/50 transition-colors">
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleImageUpload}
+                                  className="hidden"
+                                  id="image-upload"
+                                />
+                                <label htmlFor="image-upload" className="cursor-pointer">
+                                  <Upload className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
+                                  <p className="text-sm text-gray-400 mb-2">
+                                    Click to upload an image of your handwritten answer
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    Supports JPG, PNG, WebP (max 5MB)
+                                  </p>
+                                </label>
+                              </div>
+                            ) : (
+                              <div className="relative border border-cyan-500/30 rounded-lg p-4 bg-background/40">
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setUploadedImage(null)}
+                                  className="absolute top-2 right-2 text-gray-400 hover:text-gray-200"
+                                >
+                                  <X className="w-4 h-4" />
+                                </Button>
+                                <img 
+                                  src={uploadedImage} 
+                                  alt="Uploaded answer" 
+                                  className="max-w-full h-auto rounded border border-cyan-500/20"
+                                />
+                                <p className="text-xs text-gray-400 mt-2">
+                                  ✓ Image uploaded successfully. Our AI will extract and evaluate your written answer.
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                       
                       <div className="pt-4">

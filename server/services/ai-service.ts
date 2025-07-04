@@ -577,18 +577,63 @@ ADAPTATION RULES:
     
     const schema = z.object({
       question: z.string().min(1, "Question cannot be empty"),
-      answer: z.string().min(1, "Answer cannot be empty"),
-      subject: z.string().min(1, "Subject cannot be empty")
+      subject: z.string().min(1, "Subject cannot be empty"),
+      inputMode: z.enum(["text", "image"]),
+      answer: z.string().optional(), // For text mode
+      imageData: z.string().optional() // For image mode (base64)
     });
     
     try {
-      const { question, answer, subject } = schema.parse(req.body);
+      const { question, subject, inputMode, answer, imageData } = schema.parse(req.body);
       
-      // Build the prompt
+      let studentAnswer = answer;
+      
+      // Handle OCR for image input
+      if (inputMode === "image") {
+        if (!imageData) {
+          return res.status(400).json({ message: "Image data is required for image mode" });
+        }
+        
+        // Extract text from image using GPT-4o Vision
+        const ocrCompletion = await openai.chat.completions.create({
+          model: "gpt-4o", // Use GPT-4o for vision capabilities
+          messages: [
+            {
+              role: "system",
+              content: "You are an expert at extracting text from handwritten student answers. Extract all text content from the image accurately, maintaining the structure and mathematical expressions. If you see mathematical formulas or equations, transcribe them clearly."
+            },
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text: "Please extract all the text content from this image of a student's handwritten answer. Include any mathematical formulas, equations, diagrams, or written explanations you see:"
+                },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: imageData
+                  }
+                }
+              ]
+            }
+          ],
+          max_tokens: 1000
+        });
+        
+        studentAnswer = ocrCompletion.choices[0].message.content || "";
+        
+        if (!studentAnswer.trim()) {
+          return res.status(400).json({ message: "Could not extract text from the uploaded image. Please ensure the image is clear and contains readable text." });
+        }
+      }
+      
+      // Build the evaluation prompt
       const prompt = `
         Question: ${question}
-        Student's Answer: ${answer}
+        Student's Answer: ${studentAnswer}
         Subject: ${subject}
+        ${inputMode === "image" ? "\n(Note: This answer was extracted from a handwritten image using OCR)" : ""}
         
         Evaluate the student's answer and provide:
         1. A score out of 10
