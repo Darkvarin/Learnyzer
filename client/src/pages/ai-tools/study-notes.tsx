@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -38,6 +38,15 @@ export default function StudyNotesGenerator() {
   const [level, setLevel] = useState("high_school");
   const [generatedNotes, setGeneratedNotes] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("input");
+
+  // Debug logging to track state changes
+  useEffect(() => {
+    console.log("Study Notes State:", { 
+      activeTab, 
+      hasNotes: !!generatedNotes,
+      notesLength: generatedNotes?.length || 0 
+    });
+  }, [activeTab, generatedNotes]);
   const [selectedDiagrams, setSelectedDiagrams] = useState<string[]>([]);
 
   // Get user data for exam selection check
@@ -244,6 +253,11 @@ export default function StudyNotesGenerator() {
   const handleReset = () => {
     setGeneratedNotes(null);
     setActiveTab("input");
+    setTopic("");
+    setSubject("");
+    setStyle("concise");
+    setLevel("high_school");
+    setSelectedDiagrams([]);
   };
 
   return (
