@@ -409,6 +409,16 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Added null safety checks in backend route to handle edge cases with user lookup
   - Prevented multiple API calls when exam is already confirmed and locked
   - System now properly blocks attempts to change locked exam selections
+- July 05, 2025: Comprehensive exam-specific subject filtering implementation
+  - Added green "EXAM Locked" status badges to AI Tutor and AI Visual Lab headers for clear visibility
+  - Implemented exam-specific subject filtering across all AI tools and components
+  - AI Visual Lab, Study Notes Generator, Answer Checker, and Courses page now show only relevant subjects
+  - NEET students see only Physics, Chemistry, Biology subjects when exam is locked
+  - JEE students see only Physics, Chemistry, Mathematics subjects when exam is locked
+  - Each exam type has tailored subject lists (UPSC: 8 subjects, CLAT: 5 subjects, CSE: 7 subjects, CGLE: 4 subjects)
+  - Fallback to all subjects when exam is not locked for flexibility
+  - Enhanced UI shows "(EXAM subjects only)" indicators throughout platform
+  - Complete content personalization ensures focused, exam-relevant learning experience
 
 ## User Preferences
 

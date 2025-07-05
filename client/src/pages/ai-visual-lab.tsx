@@ -73,10 +73,27 @@ export default function AIVisualLab() {
   // Filter exam types based on user's selected exam if locked
   const examLocked = (userData as any)?.examLocked;
 
-  const subjects = [
-    "Physics", "Chemistry", "Mathematics", "Biology", "History", 
-    "Geography", "Political Science", "Economics", "English", "Current Affairs", "Computer Science"
-  ];
+  // Get exam-specific subjects based on locked exam
+  const getSubjectsForExam = (examType: string) => {
+    const examSubjects: Record<string, string[]> = {
+      jee: ["Physics", "Chemistry", "Mathematics"],
+      neet: ["Physics", "Chemistry", "Biology"],
+      upsc: ["History", "Geography", "Political Science", "Economics", "Current Affairs", "Public Administration", "Sociology", "Philosophy"],
+      clat: ["English", "Current Affairs", "Legal Reasoning", "Logical Reasoning", "Quantitative Techniques"],
+      cuet: ["English", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Geography", "Political Science", "Economics"],
+      cse: ["Computer Science", "Programming", "Data Structures", "Algorithms", "Database Systems", "Operating Systems", "Computer Networks"],
+      cgle: ["General Awareness", "Quantitative Aptitude", "English Language", "Reasoning"]
+    };
+    return examSubjects[examType] || [];
+  };
+
+  // Filter subjects based on user's locked exam
+  const subjects = examLocked && userExam 
+    ? getSubjectsForExam(userExam.toLowerCase())
+    : [
+        "Physics", "Chemistry", "Mathematics", "Biology", "History", 
+        "Geography", "Political Science", "Economics", "English", "Current Affairs", "Computer Science"
+      ];
 
   // Filter exam types based on user's locked exam
   const allExamTypes = [

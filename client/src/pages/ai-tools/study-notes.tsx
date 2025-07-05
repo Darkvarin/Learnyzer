@@ -40,6 +40,37 @@ export default function StudyNotesGenerator() {
   const [activeTab, setActiveTab] = useState("input");
   const [selectedDiagrams, setSelectedDiagrams] = useState<string[]>([]);
 
+  // Get user data for exam selection check
+  const { data: userData } = useQuery({
+    queryKey: ['/api/auth/me'],
+  });
+
+  // Check if user has selected an exam
+  const userExam = (userData as any)?.selectedExam;
+  const examLocked = (userData as any)?.examLocked;
+
+  // Get exam-specific subjects based on locked exam
+  const getSubjectsForExam = (examType: string) => {
+    const examSubjects: Record<string, string[]> = {
+      jee: ["Physics", "Chemistry", "Mathematics"],
+      neet: ["Physics", "Chemistry", "Biology"],
+      upsc: ["History", "Geography", "Political Science", "Economics", "Current Affairs", "Public Administration", "Sociology", "Philosophy"],
+      clat: ["English", "Current Affairs", "Legal Reasoning", "Logical Reasoning", "Quantitative Techniques"],
+      cuet: ["English", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Geography", "Political Science", "Economics"],
+      cse: ["Computer Science", "Programming", "Data Structures", "Algorithms", "Database Systems", "Operating Systems", "Computer Networks"],
+      cgle: ["General Awareness", "Quantitative Aptitude", "English Language", "Reasoning"]
+    };
+    return examSubjects[examType] || [];
+  };
+
+  // Filter subjects based on user's locked exam
+  const subjects = examLocked && userExam 
+    ? getSubjectsForExam(userExam.toLowerCase())
+    : [
+        "Physics", "Chemistry", "Mathematics", "Biology", "History", 
+        "Geography", "Political Science", "Economics", "English", "Current Affairs", "Computer Science"
+      ];
+
   const generateNotesMutation = useMutation({
     mutationFn: async () => {
       const response = await apiRequest("POST", "/api/ai/tools/notes", {
@@ -341,16 +372,22 @@ export default function StudyNotesGenerator() {
                         
                         <div className="space-y-2">
                           <label htmlFor="subject" className="text-sm font-medium">
-                            Subject
+                            Subject {examLocked && userExam && (
+                              <span className="text-green-400 text-xs ml-2">
+                                ({userExam.toUpperCase()} subjects only)
+                              </span>
+                            )}
                           </label>
-                          <Input
-                            id="subject"
-                            placeholder="e.g. Biology, History"
-                            value={subject}
-                            onChange={(e) => setSubject(e.target.value)}
-                            className="bg-background/60 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20"
-                            required
-                          />
+                          <Select value={subject} onValueChange={setSubject}>
+                            <SelectTrigger className="bg-background/60 border-cyan-500/30 focus:border-cyan-400">
+                              <SelectValue placeholder="Select subject" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {subjects.map(subj => (
+                                <SelectItem key={subj} value={subj}>{subj}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                       

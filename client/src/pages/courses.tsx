@@ -34,6 +34,28 @@ export default function Courses() {
   
   // If exam is locked, only show that exam's content
   const examFilter = examLocked && userExam ? userExam : selectedExam;
+
+  // Get exam-specific subjects based on locked exam
+  const getSubjectsForExam = (examType: string) => {
+    const examSubjects: Record<string, string[]> = {
+      jee: ["Mathematics", "Physics", "Chemistry"],
+      neet: ["Physics", "Chemistry", "Biology"],
+      upsc: ["History", "Geography", "Political Science", "Economics", "Current Affairs", "Public Administration", "Sociology", "Philosophy"],
+      clat: ["English", "Current Affairs", "Legal Reasoning", "Logical Reasoning", "Quantitative Techniques"],
+      cuet: ["English", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Geography", "Political Science", "Economics"],
+      cse: ["Computer Science", "Programming", "Data Structures", "Algorithms", "Database Systems", "Operating Systems", "Computer Networks"],
+      cgle: ["General Awareness", "Quantitative Aptitude", "English Language", "Reasoning"]
+    };
+    return examSubjects[examType] || [];
+  };
+
+  // Filter subjects based on user's locked exam
+  const availableSubjects = examLocked && userExam 
+    ? getSubjectsForExam(userExam.toLowerCase())
+    : [
+        "Mathematics", "Physics", "Chemistry", "Biology", "History", 
+        "Geography", "Political Science", "Economics", "English", "Current Affairs", "Computer Science"
+      ];
   
   const { data: courses, isLoading: coursesLoading } = useQuery<Course[]>({
     queryKey: [`/api/courses?exam=${examFilter}&subject=${selectedSubject}&grade=${user?.grade || ''}`],
@@ -109,20 +131,14 @@ export default function Courses() {
                     <SelectValue placeholder="Select subject" />
                   </SelectTrigger>
                   <SelectContent className="bg-dark-surface border-dark-border">
-                    <SelectItem value="all">All Subjects</SelectItem>
-                    <SelectItem value="mathematics">Mathematics</SelectItem>
-                    <SelectItem value="physics">Physics</SelectItem>
-                    <SelectItem value="chemistry">Chemistry</SelectItem>
-                    <SelectItem value="biology">Biology</SelectItem>
-                    <SelectItem value="history">History</SelectItem>
-                    <SelectItem value="geography">Geography</SelectItem>
-                    <SelectItem value="polity">Indian Polity</SelectItem>
-                    <SelectItem value="economy">Indian Economy</SelectItem>
-                    <SelectItem value="aptitude">Logical Reasoning & Aptitude</SelectItem>
-                    <SelectItem value="legal">Legal Aptitude</SelectItem>
-                    <SelectItem value="general_knowledge">General Knowledge</SelectItem>
-                    <SelectItem value="current_affairs">Current Affairs</SelectItem>
-                    <SelectItem value="computer_science">Computer Science</SelectItem>
+                    <SelectItem value="all">
+                      {examLocked && userExam ? `All ${userExam.toUpperCase()} Subjects` : "All Subjects"}
+                    </SelectItem>
+                    {availableSubjects.map(subject => (
+                      <SelectItem key={subject} value={subject.toLowerCase().replace(/\s+/g, '_')}>
+                        {subject}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

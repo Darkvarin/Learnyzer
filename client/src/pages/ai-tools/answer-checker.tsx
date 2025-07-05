@@ -33,10 +33,38 @@ export default function AnswerChecker() {
   const queryClient = useQueryClient();
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
-  const [subject, setSubject] = useState("mathematics");
+  const [subject, setSubject] = useState("");
   const [activeTab, setActiveTab] = useState("input");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<"text" | "image">("text");
+
+  // Get user data for exam selection check
+  const { data: userData } = useQuery({
+    queryKey: ['/api/auth/me'],
+  });
+
+  // Check if user has selected an exam
+  const userExam = (userData as any)?.selectedExam;
+  const examLocked = (userData as any)?.examLocked;
+
+  // Get exam-specific subjects based on locked exam
+  const getSubjectsForExam = (examType: string) => {
+    const examSubjects: Record<string, string[]> = {
+      jee: ["Physics", "Chemistry", "Mathematics"],
+      neet: ["Physics", "Chemistry", "Biology"],
+      upsc: ["History", "Geography", "Political Science", "Economics", "Current Affairs", "Public Administration", "Sociology", "Philosophy"],
+      clat: ["English", "Current Affairs", "Legal Reasoning", "Logical Reasoning", "Quantitative Techniques"],
+      cuet: ["English", "Mathematics", "Physics", "Chemistry", "Biology", "History", "Geography", "Political Science", "Economics"],
+      cse: ["Computer Science", "Programming", "Data Structures", "Algorithms", "Database Systems", "Operating Systems", "Computer Networks"],
+      cgle: ["General Awareness", "Quantitative Aptitude", "English Language", "Reasoning"]
+    };
+    return examSubjects[examType] || [];
+  };
+
+  // Filter subjects based on user's locked exam
+  const subjects = examLocked && userExam 
+    ? getSubjectsForExam(userExam.toLowerCase())
+    : ["Mathematics", "Physics", "Chemistry", "Biology", "History", "Geography", "Political Science", "Economics", "English", "Current Affairs", "Computer Science"];
   const [feedback, setFeedback] = useState<{
     score: number;
     feedback: string;
@@ -251,22 +279,20 @@ export default function AnswerChecker() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div className="space-y-2">
                         <label htmlFor="subject" className="text-sm font-medium">
-                          Subject
+                          Subject {examLocked && userExam && (
+                            <span className="text-green-400 text-xs ml-2">
+                              ({userExam.toUpperCase()} subjects only)
+                            </span>
+                          )}
                         </label>
                         <Select value={subject} onValueChange={setSubject}>
                           <SelectTrigger className="bg-background/60 border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-400/20">
                             <SelectValue placeholder="Select a subject" />
                           </SelectTrigger>
                           <SelectContent className="bg-background/95 border-cyan-500/30">
-                            <SelectItem value="mathematics">Mathematics</SelectItem>
-                            <SelectItem value="physics">Physics</SelectItem>
-                            <SelectItem value="chemistry">Chemistry</SelectItem>
-                            <SelectItem value="biology">Biology</SelectItem>
-                            <SelectItem value="computer_science">Computer Science</SelectItem>
-                            <SelectItem value="economics">Economics</SelectItem>
-                            <SelectItem value="history">History</SelectItem>
-                            <SelectItem value="literature">Literature</SelectItem>
-                            <SelectItem value="language">Language</SelectItem>
+                            {subjects.map(subj => (
+                              <SelectItem key={subj} value={subj.toLowerCase().replace(/\s+/g, '_')}>{subj}</SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </div>
