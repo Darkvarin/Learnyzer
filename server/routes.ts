@@ -884,126 +884,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Support Chatbot API endpoint
+  // Support Chatbot API endpoint - Direct GPT-4o Integration
   app.post("/api/support/chat", async (req, res) => {
     try {
-      console.log("=== CHAT API DEBUG ===");
-      console.log("Request method:", req.method);
-      console.log("Request headers:", req.headers);
-      console.log("Request body:", req.body);
-      console.log("Body type:", typeof req.body);
-      console.log("Body keys:", Object.keys(req.body || {}));
-      console.log("======================");
-      
-      const { query, message } = req.body;
+      const { query, message } = req.body || {};
       const userMessage = query || message;
       
       if (!userMessage || typeof userMessage !== 'string' || !userMessage.trim()) {
-        console.log("Message validation failed:", { query, message, type: typeof userMessage });
         return res.status(400).json({ error: "Message is required" });
       }
 
-      // Enhanced pattern matching with contextual awareness
-      let aiResponse = null;
-      const lowerQuery = userMessage.toLowerCase();
-      
-      // Advanced pattern matching with natural, contextual responses
-      if (lowerQuery.includes("pricing") || lowerQuery.includes("cost") || lowerQuery.includes("subscription") || lowerQuery.includes("plan") || lowerQuery.includes("price")) {
-        if (lowerQuery.includes("cheap") || lowerQuery.includes("affordable") || lowerQuery.includes("budget")) {
-          aiResponse = "Great question! Our most affordable option is the free 1-day trial - perfect to test everything out. For ongoing access, our Basic plan at ₹799/month gives you unlimited AI tools (50 uses daily). If budget's tight, the yearly plan at ₹12999 saves you the most money compared to monthly billing.";
-        } else if (lowerQuery.includes("best") || lowerQuery.includes("recommend")) {
-          aiResponse = "For serious exam prep, I'd recommend the Pro plan (₹1500/month) - it includes 2 AI tutor sessions daily plus all the tools. If you're planning long-term study, the yearly plan (₹12999) offers the best value with 3 AI tutor sessions daily and massive savings over monthly payments.";
-        } else if (lowerQuery.includes("difference") || lowerQuery.includes("compare")) {
-          aiResponse = "Main differences: Basic (₹799) gives you all AI tools but no AI tutor sessions. Pro (₹1500) adds 2 AI tutor sessions daily. Long-term plans (Quarterly ₹4199, Half-yearly ₹7599, Yearly ₹12999) boost you to 3 AI tutor sessions daily plus better savings. All include gamification and progress tracking.";
-        } else {
-          aiResponse = "Here's our pricing: Start with a free 1-day trial (2 AI sessions + 10 tools). Then Basic at ₹799/month (unlimited AI tools, no tutor), Pro at ₹1500/month (2 AI tutor sessions daily), or save big with longer plans - Yearly at ₹12999 gives you 3 AI tutor sessions daily and maximum savings!";
-        }
-      } else if (lowerQuery.includes("ai") || lowerQuery.includes("tutor") || lowerQuery.includes("chatbot") || lowerQuery.includes("gpt")) {
-        if (lowerQuery.includes("voice") || lowerQuery.includes("speak") || lowerQuery.includes("talk")) {
-          aiResponse = "Yes! Our AI tutor has full voice interaction - you can literally talk to it and it talks back. It's powered by GPT-4o, so conversations feel natural. Perfect for hands-free learning while you're doing problems or taking notes. Try it in the free trial!";
-        } else if (lowerQuery.includes("smart") || lowerQuery.includes("intelligent") || lowerQuery.includes("good")) {
-          aiResponse = "Our AI tutor is quite intelligent - it's built on GPT-4o (the latest model). It personalizes content to your specific exam (JEE, NEET, etc.), adapts to your learning style, creates visual diagrams with DALL-E 3, and even tracks your weak areas to focus on. Much smarter than generic chatbots!";
-        } else if (lowerQuery.includes("help") || lowerQuery.includes("teach") || lowerQuery.includes("learn")) {
-          aiResponse = "The AI tutor acts like your personal teacher - explains concepts step-by-step, creates visual diagrams for complex topics, answers your doubts in real-time, gives practice problems, and adapts to your exam (JEE physics vs NEET biology, etc.). It's like having a 24/7 expert tutor who knows your syllabus inside out.";
-        } else {
-          aiResponse = "Our AI tutor uses cutting-edge GPT-4o technology - it's like having a super smart teacher available 24/7. It creates visual learning content with DALL-E 3, has voice interaction, and personalizes everything to your specific entrance exam. Way more advanced than basic chatbots!";
-        }
-      } else if (lowerQuery.includes("exam") || lowerQuery.includes("jee") || lowerQuery.includes("neet") || lowerQuery.includes("upsc") || lowerQuery.includes("clat") || lowerQuery.includes("cuet") || lowerQuery.includes("cse") || lowerQuery.includes("cgle")) {
-        if (lowerQuery.includes("which") || lowerQuery.includes("support") || lowerQuery.includes("available")) {
-          aiResponse = "We support all major competitive exams in India: JEE (Engineering), NEET (Medical), UPSC (Civil Services), CLAT (Law), CUET (University Entrance), CSE (Computer Science), and CGLE (Government Jobs). Each has dedicated content, specialized AI tutors, and exam-specific study paths.";
-        } else if (lowerQuery.includes("jee")) {
-          aiResponse = "For JEE prep, we have specialized Physics, Chemistry, and Math AI tutors with visual problem-solving, step-by-step solutions, and concept diagrams. Our gamified approach makes even the toughest JEE topics engaging. Start with the free trial to see how our AI explains JEE concepts!";
-        } else if (lowerQuery.includes("neet")) {
-          aiResponse = "NEET preparation includes specialized Biology, Chemistry, and Physics content with our AI creating detailed diagrams for anatomy, chemical structures, and physics concepts. Perfect for visual learners tackling NEET's vast syllabus. Try our free trial for NEET-specific AI tutoring!";
-        } else {
-          aiResponse = "We cover 7 major competitive exams with exam-specific AI tutors and content. Whether you're preparing for JEE's complex physics or UPSC's vast syllabus, our platform adapts to your chosen exam's unique requirements and patterns.";
-        }
-      } else if (lowerQuery.includes("mobile") || lowerQuery.includes("app") || lowerQuery.includes("phone") || lowerQuery.includes("android") || lowerQuery.includes("ios")) {
-        aiResponse = "Absolutely! Learnyzer works perfectly on your phone - just open it in any browser (Chrome, Safari, etc.). All features work on mobile: AI tutoring, voice interaction, visual learning, even competitive battles. No app download needed, and it's optimized for touch screens. Study anywhere!";
-      } else if (lowerQuery.includes("free") || lowerQuery.includes("trial") || lowerQuery.includes("demo")) {
-        if (lowerQuery.includes("how long") || lowerQuery.includes("duration")) {
-          aiResponse = "The free trial lasts 24 hours and gives you 2 AI tutor sessions plus 10 AI tool uses. It's enough to test the voice interaction, visual learning, and get a real feel for how our AI tutoring works for your specific exam. No credit card required to start!";
-        } else if (lowerQuery.includes("what") || lowerQuery.includes("include")) {
-          aiResponse = "Your free trial includes: 2 full AI tutor sessions (with voice), 10 AI tool uses (study notes, visual diagrams, etc.), access to all exam content, gamification features, and progress tracking. Basically everything except unlimited usage - perfect to test if Learnyzer fits your study style!";
-        } else {
-          aiResponse = "Yes! Start with a completely free 1-day trial - 2 AI tutor sessions and 10 AI tool uses. No credit card needed. It's enough time to test the voice interaction, visual learning, and see how our AI explains concepts for your specific exam. Try it risk-free!";
-        }
-      } else if (lowerQuery.includes("contact") || (lowerQuery.includes("support") && (lowerQuery.includes("email") || lowerQuery.includes("phone") || lowerQuery.includes("number")))) {
-        aiResponse = "Need human help? Reach us at learnyzer.ai@gmail.com or call +91 9910601733. We respond quickly to questions about subscriptions, technical issues, or anything else. Though I can handle most questions right here - what specific help do you need?";
-      } else if (lowerQuery.includes("what") && lowerQuery.includes("learnyzer")) {
-        aiResponse = "Learnyzer is like having the smartest tutor in India available 24/7! We use advanced AI (GPT-4o) to create personalized learning experiences for competitive exam prep. Think AI tutoring + voice interaction + visual learning + gamification - all tailored to your specific entrance exam needs.";
-      } else if (lowerQuery.includes("feature") || lowerQuery.includes("what can") || lowerQuery.includes("functionality")) {
-        aiResponse = "Key features that students love: AI Tutoring with voice conversation, Visual learning (AI creates diagrams for complex topics), Gamified progress with levels and achievements, Competitive battles with other students, Personalized study plans, Real-time doubt solving, and Multi-exam support. It's like a complete study ecosystem!";
-      } else if (lowerQuery.includes("how") && (lowerQuery.includes("work") || lowerQuery.includes("use") || lowerQuery.includes("start"))) {
-        aiResponse = "Super simple to start: Sign up for free trial → Choose your exam (JEE, NEET, etc.) → Set up your profile → Start chatting with your AI tutor! The AI learns your style and creates personalized content. You can use voice, ask for visual explanations, and track your progress as you go.";
-      } else if (lowerQuery.includes("requirement") || lowerQuery.includes("system") || lowerQuery.includes("browser") || lowerQuery.includes("internet")) {
-        aiResponse = "Very minimal requirements: Any smartphone, tablet, or computer with internet + a modern browser (Chrome, Firefox, Safari, Edge). That's it! No downloads, no installations. Voice features work on most devices too. If you can browse the web, you can use Learnyzer!";
-      } else if (lowerQuery.includes("payment") || lowerQuery.includes("billing") || lowerQuery.includes("refund") || lowerQuery.includes("money back")) {
-        if (lowerQuery.includes("refund") || lowerQuery.includes("money back") || lowerQuery.includes("guarantee")) {
-          aiResponse = "We offer a 7-day money-back guarantee on all plans - if you're not happy, we'll refund everything, no questions asked. Payments are secure through Razorpay (trusted by millions in India), and you can cancel anytime with immediate effect.";
-        } else if (lowerQuery.includes("safe") || lowerQuery.includes("secure") || lowerQuery.includes("trust")) {
-          aiResponse = "Absolutely secure! We use Razorpay (India's most trusted payment platform) with bank-level encryption. Your card details are never stored on our servers. Plus, we offer 7-day money-back guarantee, so there's zero risk trying our platform.";
-        } else {
-          aiResponse = "Payment is secure and simple: All major credit/debit cards accepted, processed through Razorpay (India's top payment platform), automatic billing with option to cancel anytime, 7-day money-back guarantee, and student-friendly Indian pricing. Your data stays completely secure!";
-        }
-      } else if (lowerQuery.includes("support") || lowerQuery.includes("help")) {
-        aiResponse = "I'm here to help with anything about Learnyzer! Ask me about features, pricing, how our AI works, which plan suits you, technical questions, or getting started. For complex issues, our team is available at learnyzer.ai@gmail.com. What would you like to know?";
-      } else if (lowerQuery.includes("study") || lowerQuery.includes("learn") || lowerQuery.includes("helps me") || lowerQuery.includes("benefit")) {
-        aiResponse = "Learnyzer helps you study through: AI Tutor that explains concepts 24/7 with voice interaction, Study Notes Generator for comprehensive PDF notes, Answer Checker with OCR for handwritten work feedback, Visual Learning with educational diagrams, Battle competitions for motivation, Progress tracking and analytics, Exam-specific content filtering. It's like having a personal teacher + study materials + practice tests all in one smart platform!";
-      } else {
-        // Fallback to enhanced GPT-3.5 Turbo when pattern matching doesn't cover the query
-        try {
-          const { supportService } = await import("./services/support-service");
-          const mockReq = { body: { message: userMessage } } as any;
-          const mockRes = {
-            status: (code: number) => ({
-              json: (data: any) => {
-                if (code === 200 && data.response) {
-                  aiResponse = data.response;
-                }
-                return mockRes;
-              }
-            }),
-            json: (data: any) => {
-              if (data.response) {
-                aiResponse = data.response;
-              }
-              return mockRes;
-            }
-          } as any;
-          
-          await supportService.getChatResponse(mockReq, mockRes);
-        } catch (error) {
-          console.error("GPT fallback failed:", error);
-          aiResponse = "I can help you with questions about Learnyzer's features, pricing, exams, technical requirements, or how to get started. What specific information would you like to know about our AI-powered learning platform?";
-        }
-      }
-      
-      res.json({
-        query: userMessage,
-        aiResponse,
-        timestamp: new Date().toISOString()
-      });
+      // Direct GPT-4o call for all questions
+      const { supportService } = await import("./services/support-service");
+      await supportService.getChatResponse(req, res);
     } catch (error) {
       console.error("Error in support chat:", error);
       res.status(500).json({ error: "Support chat service temporarily unavailable" });

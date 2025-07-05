@@ -10,9 +10,10 @@ export const supportService = {
    */
   async getChatResponse(req: Request, res: Response) {
     try {
-      const { message } = req.body;
+      const { message, query } = req.body;
+      const userMessage = message || query;
       
-      if (!message) {
+      if (!userMessage) {
         return res.status(400).json({ error: "Message is required" });
       }
 
@@ -46,7 +47,7 @@ Answer the user's specific question directly.`
           },
           {
             role: "user",
-            content: message
+            content: userMessage
           }
         ],
         max_tokens: 150,
