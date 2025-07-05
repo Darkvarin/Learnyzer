@@ -213,15 +213,16 @@ CRITICAL FORMATTING RULES:
 - Use **bold** for key terms and concepts
 - Use numbered lists (1., 2., 3.) for steps and sequences
 - Use bullet points (- ) for related items
-- Use proper mathematical notation with LaTeX (CRITICAL - follow exact syntax):
-  * For inline equations: $v^2 = u^2 + 2as$
-  * For simple formulas: $F = ma$ 
-  * For units: $9.8 \text{ m/s}^2$
-  * For fractions: $\frac{1}{2}mv^2$
-  * For display equations: $$E = mc^2$$
+- Use proper mathematical notation with LaTeX (EXTREMELY CRITICAL - follow exact syntax):
+  * ALWAYS surround inline math with single $ symbols: $F = ma$
+  * ALWAYS surround display math with double $$ symbols: $$E = mc^2$$
   * For electric dipole moment: $\mu = q \times d$
-  * NEVER use [ ] brackets for math - only use $ or $$
-  * ALWAYS use \text{ } for units and text within math
+  * For calculations: $\mu = (1.602 \times 10^{-19}) \times (10^{-10}) = 1.602 \times 10^{-29}$
+  * For units in math: $1.602 \times 10^{-19} \text{ C}$ and $10^{-10} \text{ m}$
+  * For fractions: $\frac{1}{2}mv^2$
+  * NEVER EVER use [ ] square brackets for math equations
+  * NEVER use ( ) parentheses around entire equations  
+  * Example of CORRECT format: The formula is $\mu = q \times d$ where $q = 1.602 \times 10^{-19} \text{ C}$
 - Always add line breaks between sections
 - Use > for important notes or tips
 - Use \`code\` formatting for constants or specific values

@@ -904,6 +904,24 @@ export default function AiTutor() {
                                 <div className="text-sm font-semibold text-primary-400 mb-1">{(aiTutor as any)?.name || "AI Tutor"}</div>
                                 <div className="bg-dark-surface text-gray-200 p-4 rounded-lg border border-dark-border">
                                   <div className="prose prose-invert prose-sm max-w-none prose-headings:text-cyan-200 prose-strong:text-white prose-code:text-cyan-300 prose-code:bg-black/30 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-black/50 prose-pre:border prose-pre:border-cyan-500/20 prose-blockquote:border-l-cyan-500/50 prose-blockquote:bg-cyan-500/5 prose-blockquote:text-cyan-100 prose-ul:text-gray-200 prose-ol:text-gray-200 prose-li:text-gray-200">
+                                    {/* Debug: Show raw content for mathematical formulas */}
+                                    {msg.content.includes('$') && (
+                                      <details className="mb-2 text-xs text-gray-500">
+                                        <summary>Debug: Raw LaTeX content</summary>
+                                        <pre className="whitespace-pre-wrap bg-gray-800 p-2 rounded text-xs overflow-auto">
+                                          {msg.content}
+                                        </pre>
+                                        <div className="mt-2 p-2 bg-green-900/20 rounded">
+                                          <strong>Test LaTeX Rendering:</strong>
+                                          <ReactMarkdown 
+                                            remarkPlugins={[remarkMath]}
+                                            rehypePlugins={[rehypeKatex]}
+                                          >
+                                            {`Test formula: $F = ma$ and display equation: $$E = mc^2$$`}
+                                          </ReactMarkdown>
+                                        </div>
+                                      </details>
+                                    )}
                                     <ReactMarkdown 
                                       remarkPlugins={[remarkGfm, remarkMath]}
                                       rehypePlugins={[rehypeKatex]}
