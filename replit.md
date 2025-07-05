@@ -427,6 +427,14 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Improved response accuracy with temperature optimization (0.2) for factual responses
   - Enhanced user experience with visual improvements and better conversation flow
   - Support chatbot now provides instant, accurate responses while maintaining cost efficiency
+- July 05, 2025: Support chatbot upgrade to GPT-4o with expert-level intelligence
+  - Upgraded from GPT-3.5 Turbo to GPT-4o for premium support experience
+  - Enhanced system prompt with comprehensive platform knowledge and technical specifications
+  - Added advanced capabilities including exam-specific guidance and AI model explanations
+  - Increased response quality with deeper understanding of educational requirements
+  - Enhanced troubleshooting capabilities with step-by-step technical guidance
+  - Optimized temperature to 0.3 and max tokens to 600 for detailed, nuanced responses
+  - Support chatbot now provides expert-level assistance matching premium platform quality
 
 ## User Preferences
 
