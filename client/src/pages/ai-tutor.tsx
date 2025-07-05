@@ -533,17 +533,29 @@ export default function AiTutor() {
           <BackButton fallbackPath="/dashboard" className="text-white hover:text-cyan-400" />
         </div>
         
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-1 h-10 bg-gradient-to-b from-cyan-500/70 via-cyan-600/50 to-primary/20"></div>
-          <h1 className="text-3xl font-gaming gaming-text text-glow">
-            <span className="gradient-text" style={{
-              background: "linear-gradient(90deg, #ff0000, #ffff00, #00ff00)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundSize: "200% auto",
-              animation: "gradient-animation 3s linear infinite"
-            }}>AI Entrance Exam Tutor</span>
-          </h1>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-10 bg-gradient-to-b from-cyan-500/70 via-cyan-600/50 to-primary/20"></div>
+            <h1 className="text-3xl font-gaming gaming-text text-glow">
+              <span className="gradient-text" style={{
+                background: "linear-gradient(90deg, #ff0000, #ffff00, #00ff00)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundSize: "200% auto",
+                animation: "gradient-animation 3s linear infinite"
+              }}>AI Entrance Exam Tutor</span>
+            </h1>
+          </div>
+          
+          {/* Exam Lock Status */}
+          {examLocked && userExam && (
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/20 border border-green-500/30 rounded-lg">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-green-400 text-sm font-medium">
+                {userExam.toUpperCase()} Locked
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

@@ -237,11 +237,23 @@ export default function AIVisualLab() {
           <div className="mb-4">
             <BackButton fallbackPath="/dashboard" className="text-white hover:text-cyan-400" />
           </div>
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-white mb-4">
-              AI Visual Learning Lab
-              <span className="text-cyan-400 ml-2">✨</span>
-            </h1>
+          <div className="text-center relative">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <h1 className="text-4xl font-bold text-white">
+                AI Visual Learning Lab
+                <span className="text-cyan-400 ml-2">✨</span>
+              </h1>
+              
+              {/* Exam Lock Status */}
+              {examLocked && userExam && (
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/20 border border-green-500/30 rounded-lg">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-green-400 text-sm font-medium">
+                    {userExam.toUpperCase()} Locked
+                  </span>
+                </div>
+              )}
+            </div>
             <p className="text-cyan-100 text-lg max-w-2xl mx-auto">
               Create immersive educational content with GPT-4o and DALL-E 3. 
               Generate stunning visuals, comprehensive study materials, and interactive learning experiences.
