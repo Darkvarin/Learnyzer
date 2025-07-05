@@ -534,6 +534,9 @@ export default function AIVisualLab() {
                   <div className="bg-green-500/20 p-4 rounded-lg mb-4">
                     <p className="text-green-400">Results received! Keys: {Object.keys(results || {}).join(', ')}</p>
                     <p className="text-white text-xs">ImageUrl exists: {!!results?.imageUrl}</p>
+                    {results?.imageUrl && (
+                      <p className="text-blue-400 text-xs break-all">URL: {results.imageUrl}</p>
+                    )}
                   </div>
                   {/* Image Results */}
                   {results.imageUrl && (
@@ -574,9 +577,16 @@ export default function AIVisualLab() {
                       </div>
                       <div className="rounded-lg overflow-hidden border border-slate-600">
                         <img 
-                          src={results.imageUrl} 
+                          src={`/api/proxy-image?url=${encodeURIComponent(results.imageUrl)}`}
                           alt={`Educational content for ${results.topic}`}
                           className="w-full h-auto"
+                          onLoad={() => console.log("Image loaded successfully!")}
+                          onError={(e) => {
+                            console.error("Image failed to load:", e);
+                            console.error("Original URL:", results.imageUrl);
+                            console.error("Proxy URL:", `/api/proxy-image?url=${encodeURIComponent(results.imageUrl)}`);
+                          }}
+                          style={{ display: 'block' }}
                         />
                       </div>
                       {results.explanation && (

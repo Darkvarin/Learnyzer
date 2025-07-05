@@ -116,6 +116,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Image proxy route to handle CORS issues
+  app.get("/api/proxy-image", async (req, res) => {
+    try {
+      const { url } = req.query;
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ message: "Image URL required" });
+      }
+
+      const fetch = (await import('node-fetch')).default;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        return res.status(404).json({ message: "Image not found" });
+      }
+
+      const buffer = await response.buffer();
+      const contentType = response.headers.get('content-type') || 'image/png';
+      
+      res.set('Content-Type', contentType);
+      res.set('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
+      res.send(buffer);
+    } catch (error) {
+      console.error("Image proxy error:", error);
+      res.status(500).json({ message: "Failed to proxy image" });
+    }
+  });
+
   // AI routes - Enhanced with GPT-4o and DALL-E 3
   app.get("/api/ai/tutor", requireAuth, aiService.getAITutor);
   app.post("/api/ai/tutor/respond", requireAuth, aiService.getAITutorResponse);
