@@ -436,7 +436,7 @@ export class PDFService {
         includeFooter: true
       };
 
-      const pdfBuffer = await this.generateStudyNotesPDF(pdfOptions);
+      const pdfBuffer = await PDFService.generateStudyNotesPDF(pdfOptions);
       
       // Set headers for PDF download
       res.setHeader('Content-Type', 'application/pdf');
