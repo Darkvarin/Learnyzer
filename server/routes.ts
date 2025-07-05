@@ -1002,7 +1002,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({
         query,
-        faqs: relevantFAQs.slice(0, 3),
         aiResponse,
         timestamp: new Date().toISOString()
       });

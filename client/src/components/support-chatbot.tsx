@@ -11,13 +11,9 @@ import {
   Bot, 
   User, 
   HelpCircle,
-  Sparkles,
   Phone,
-  Mail,
-  ChevronDown,
-  ChevronRight
+  Mail
 } from "lucide-react";
-import { searchFAQs, type FAQ } from "@shared/faq-data";
 import { apiRequest } from "@/lib/queryClient";
 
 interface ChatMessage {
@@ -25,7 +21,6 @@ interface ChatMessage {
   type: 'user' | 'bot';
   content: string;
   timestamp: Date;
-  faqs?: FAQ[];
 }
 
 export function SupportChatbot() {
@@ -40,7 +35,7 @@ export function SupportChatbot() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [expandedFaqs, setExpandedFaqs] = useState<Set<string>>(new Set());
+
   const [showQuickActions, setShowQuickActions] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -56,15 +51,7 @@ export function SupportChatbot() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const toggleFaqExpansion = (faqId: string) => {
-    const newExpanded = new Set(expandedFaqs);
-    if (newExpanded.has(faqId)) {
-      newExpanded.delete(faqId);
-    } else {
-      newExpanded.add(faqId);
-    }
-    setExpandedFaqs(newExpanded);
-  };
+
 
   useEffect(() => {
     scrollToBottom();
@@ -194,16 +181,14 @@ export function SupportChatbot() {
         id: (Date.now() + 1).toString(),
         type: 'bot',
         content: (response as any).aiResponse || generateBotResponse(currentQuery),
-        timestamp: new Date(),
-        faqs: (response as any).faqs?.length > 0 ? (response as any).faqs : undefined
+        timestamp: new Date()
       };
 
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error("API error, falling back to local response:", error);
       
-      // Fallback to local FAQ search and response generation
-      const relevantFAQs = searchFAQs(currentQuery);
+      // Fallback to local response generation
       console.log("Generating local response for query:", currentQuery);
       const botResponse = generateBotResponse(currentQuery);
       console.log("Generated local response:", botResponse);
@@ -212,8 +197,7 @@ export function SupportChatbot() {
         id: (Date.now() + 1).toString(),
         type: 'bot',
         content: botResponse,
-        timestamp: new Date(),
-        faqs: relevantFAQs.length > 0 ? relevantFAQs : undefined
+        timestamp: new Date()
       };
 
       setMessages(prev => [...prev, botMessage]);
@@ -299,45 +283,7 @@ export function SupportChatbot() {
                 )}
               </div>
 
-              {/* FAQ Suggestions */}
-              {message.faqs && message.faqs.length > 0 && (
-                <div className="ml-8 space-y-2">
-                  <p className="text-xs text-gray-400 flex items-center">
-                    <Sparkles className="h-3 w-3 mr-1" />
-                    Related help articles:
-                  </p>
-                  {message.faqs.slice(0, 3).map((faq) => {
-                    const isExpanded = expandedFaqs.has(faq.id);
-                    return (
-                      <Card 
-                        key={faq.id} 
-                        className="bg-slate-800/50 border-slate-600 cursor-pointer hover:bg-slate-700/50 transition-colors"
-                        onClick={() => toggleFaqExpansion(faq.id)}
-                      >
-                        <CardContent className="p-3">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h4 className="text-sm font-medium text-white">{faq.question}</h4>
-                                {isExpanded ? 
-                                  <ChevronDown className="h-3 w-3 text-gray-400 flex-shrink-0" /> : 
-                                  <ChevronRight className="h-3 w-3 text-gray-400 flex-shrink-0" />
-                                }
-                              </div>
-                              <p className={`text-xs text-gray-300 ${isExpanded ? '' : 'line-clamp-2'}`}>
-                                {faq.answer}
-                              </p>
-                            </div>
-                            <Badge variant="outline" className="ml-2 text-xs">
-                              {faq.category}
-                            </Badge>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-              )}
+
             </div>
           ))}
 
@@ -363,7 +309,7 @@ export function SupportChatbot() {
       {showQuickActions && (
         <div className="p-4 border-t border-slate-700">
           <p className="text-xs text-gray-400 mb-3 flex items-center">
-            <Sparkles className="h-3 w-3 mr-1" />
+            <HelpCircle className="h-3 w-3 mr-1" />
             Quick answers:
           </p>
           <div className="grid grid-cols-2 gap-2">
