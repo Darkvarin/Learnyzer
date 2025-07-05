@@ -1164,6 +1164,99 @@ Analyze this student's performance data and provide comprehensive analytics:
   },
 
   /**
+   * Generate teaching voice explanation for any topic or response
+   */
+  async generateTeachingVoice(req: Request, res: Response) {
+    const user = req.user as any;
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+      const { topic, userMessage, aiResponse, subject } = req.body;
+
+      if (!topic && !userMessage) {
+        return res.status(400).json({ message: "Topic or user message is required" });
+      }
+
+      // Get user's exam and grade for personalized teaching
+      const userData = await storage.getUserById(user.id);
+      const userExam = userData?.track;
+      const userGrade = userData?.grade;
+
+      const teachingPrompt = `You are an expert AI teacher providing voice explanations for students preparing for ${userExam || 'competitive'} exams.
+
+TEACHING VOICE GUIDELINES:
+- Speak in a conversational, engaging tone as if you're personally teaching the student
+- Break down complex concepts into simple, digestible parts
+- Use analogies and real-world examples to make concepts memorable
+- Focus on WHY things work, not just WHAT they are
+- Keep explanations between 30-60 seconds when spoken
+- Use encouraging language and build student confidence
+- Make mathematical concepts intuitive and visual
+
+STUDENT CONTEXT:
+- Exam: ${userExam || 'Competitive exam'}
+- Grade: ${userGrade || 'Advanced'}
+- Subject: ${subject || 'General'}
+
+${userMessage ? `
+STUDENT QUESTION: "${userMessage}"
+${aiResponse ? `AI RESPONSE SUMMARY: "${aiResponse.substring(0, 200)}..."` : ''}
+
+Create a teaching voice explanation that:
+1. Acknowledges the student's question
+2. Explains the concept in an engaging, personal way
+3. Uses examples relevant to ${userExam || 'competitive'} exam preparation
+4. Guides the student through the thinking process
+` : `
+TOPIC TO TEACH: "${topic}"
+
+Create a teaching voice explanation that:
+1. Introduces the topic in an engaging way
+2. Explains the core concept with examples
+3. Shows practical applications for ${userExam || 'competitive'} exam prep
+4. Motivates continued learning
+`}
+
+Generate ONLY the spoken explanation text (no markdown, no formatting). Make it sound natural and conversational.`;
+
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // Using GPT-4o for high-quality teaching explanations
+        messages: [
+          {
+            role: "system",
+            content: teachingPrompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 400
+      });
+
+      const teachingExplanation = response.choices[0].message.content;
+
+      res.json({
+        success: true,
+        teachingExplanation,
+        metadata: {
+          exam: userExam,
+          grade: userGrade,
+          subject: subject
+        }
+      });
+
+    } catch (error) {
+      console.error("Error generating teaching voice:", error);
+      res.status(500).json({
+        message: "Failed to generate teaching voice explanation",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  },
+
+  /**
    * Generate an interactive diagram for entrance exam learning
    */
   async generateDiagram(req: Request, res: Response) {

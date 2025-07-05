@@ -5,6 +5,7 @@ import { CanvasRenderer } from "@/components/CanvasRenderer";
 import { useUser } from "@/contexts/user-context";
 import { useToast } from "@/hooks/use-toast";
 import { useVoice } from "@/hooks/useVoice";
+import { useTeachingVoice } from "@/hooks/useTeachingVoice";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { SubscriptionGuard, useSubscriptionTracking } from "@/components/subscription/subscription-guard";
@@ -106,6 +107,16 @@ export default function AiTutor() {
     speak, 
     stopSpeaking 
   } = useVoice();
+
+  // Teaching voice functionality - generates intelligent explanations
+  const {
+    teachConcept,
+    stopTeaching,
+    isGenerating: isGeneratingTeaching,
+    isTeaching,
+    error: teachingError,
+    lastResponse: lastTeachingResponse
+  } = useTeachingVoice();
   
   // Parse URL parameters if coming from course page
   const searchParams = new URLSearchParams(window.location.search);
@@ -901,8 +912,51 @@ export default function AiTutor() {
                                     </ReactMarkdown>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                                <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
                                   <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                                  {voiceEnabled && (
+                                    <div className="flex items-center gap-2">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => teachConcept({
+                                          userMessage: (conversation as any).messages[idx - 1]?.content || "",
+                                          aiResponse: msg.content,
+                                          subject: currentSubject
+                                        })}
+                                        disabled={isGeneratingTeaching || isTeaching}
+                                        className="text-xs bg-primary-500/10 border-primary-500/30 text-primary-300 hover:bg-primary-500/20"
+                                      >
+                                        {isGeneratingTeaching ? (
+                                          <>
+                                            <div className="w-3 h-3 mr-1 border border-primary-400 border-t-transparent rounded-full animate-spin" />
+                                            Generating...
+                                          </>
+                                        ) : isTeaching ? (
+                                          <>
+                                            <VolumeX className="h-3 w-3 mr-1" />
+                                            Teaching...
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Volume2 className="h-3 w-3 mr-1" />
+                                            Teach Me
+                                          </>
+                                        )}
+                                      </Button>
+                                      {isTeaching && (
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={stopTeaching}
+                                          className="text-xs bg-red-500/10 border-red-500/30 text-red-300 hover:bg-red-500/20"
+                                        >
+                                          <VolumeX className="h-3 w-3 mr-1" />
+                                          Stop
+                                        </Button>
+                                      )}
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </>
@@ -1039,20 +1093,26 @@ export default function AiTutor() {
                           <span>Speech-to-text: {isListening ? 'Listening...' : 'Ready'}</span>
                         </div>
                         <div className="flex items-center gap-2 text-gray-400">
-                          <VolumeX className={`h-3 w-3 ${isSpeaking ? 'text-green-400' : ''}`} />
-                          <span>Text-to-speech: {isSpeaking ? 'Speaking...' : voiceEnabled ? 'Enabled' : 'Disabled'}</span>
+                          <VolumeX className={`h-3 w-3 ${isSpeaking || isTeaching ? 'text-green-400' : ''}`} />
+                          <span>AI Teaching Voice: {isTeaching ? 'Teaching...' : isSpeaking ? 'Speaking...' : voiceEnabled ? 'Enabled' : 'Disabled'}</span>
                         </div>
                       </div>
-                      {isSpeaking && (
+                      {(isSpeaking || isTeaching) && (
                         <div className="mt-2 flex justify-center">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={stopSpeaking}
+                            onClick={() => {
+                              if (isTeaching) {
+                                stopTeaching();
+                              } else {
+                                stopSpeaking();
+                              }
+                            }}
                             className="bg-red-500/20 border-red-500/50 text-red-300 hover:bg-red-500/30"
                           >
                             <VolumeX className="h-3 w-3 mr-1" />
-                            Stop Speaking
+                            {isTeaching ? 'Stop Teaching' : 'Stop Speaking'}
                           </Button>
                         </div>
                       )}

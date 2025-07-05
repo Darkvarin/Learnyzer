@@ -229,6 +229,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/ai/tools/analytics/:userId", requireAuth, aiService.getPerformanceAnalytics);
   app.post("/api/ai/battle/judge/:battleId", requireAuth, aiService.judgeBattle);
   app.post("/api/ai/generate-diagram", requireAuth, aiService.generateDiagram);
+  app.post("/api/ai/teaching-voice", requireAuth, aiService.generateTeachingVoice);
   
   // New enhanced AI visual learning routes
   app.post("/api/ai/generate-image", requireAuth, aiService.generateEducationalImage);
