@@ -17,41 +17,29 @@ export const supportService = {
         return res.status(400).json({ error: "Message is required" });
       }
 
+      // Get FAQ data for natural conversation context
+      const { faqData } = await import("@shared/faq-data");
+      const faqContext = faqData.map(faq => `Q: ${faq.question}\nA: ${faq.answer}`).join('\n\n');
+
       const response = await openai.chat.completions.create({
         model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
         messages: [
           {
             role: "system",
-            content: `You are Learnyzer's support assistant. Answer user questions directly and clearly.
+            content: `You are a helpful support assistant for Learnyzer. Answer questions naturally like talking to a human.
 
-KEY RULES:
-- Answer exactly what the user asks
-- Be concise but helpful
-- NO phone numbers ever
-- Email: learnyzer.ai@gmail.com for detailed support
+LEARNYZER FAQ DATABASE:
+${faqContext}
 
-HOW LEARNYZER HELPS STUDENTS:
-• AI Tutor: Personal teacher available 24/7 with voice interaction
-• Study Notes: AI generates comprehensive notes with PDF download
-• Answer Checker: Upload handwritten answers for instant feedback
-• Visual Learning: Canvas diagrams and educational content
-• Practice: Battle competitions and gamified learning
-• Tracking: Progress monitoring and performance analytics
-• Exam Focus: Content locked to your specific entrance exam
-
-PRICING: Free trial (1 day), Basic ₹299/month, Pro ₹799/month, Premium ₹1,299/month
-
-EXAMS: JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE
-
-Answer the user's specific question directly.`
+Use this information to answer user questions. Be conversational, helpful, and direct. Answer like a human would.`
           },
           {
             role: "user",
             content: userMessage
           }
         ],
-        max_tokens: 150,
-        temperature: 0.2
+        max_tokens: 300,
+        temperature: 0.4
       });
 
       const responseText = response.choices[0].message.content || "I'm sorry, I couldn't generate a response.";
