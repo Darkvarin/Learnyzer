@@ -34,14 +34,23 @@ export function SupportChatbot() {
     {
       id: '1',
       type: 'bot',
-      content: '👋 Hi! I\'m your Learnyzer support assistant. I can help you with questions about our platform, subscriptions, AI features, and more. How can I assist you today?',
+      content: '👋 Hi! I\'m your Learnyzer support assistant powered by advanced AI. I can help you with:\n\n• Pricing and subscription plans\n• AI tutoring and features\n• Exam preparation guidance\n• Technical support\n• Getting started tips\n\nWhat would you like to know about our platform?',
       timestamp: new Date()
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [expandedFaqs, setExpandedFaqs] = useState<Set<string>>(new Set());
+  const [showQuickActions, setShowQuickActions] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const quickActions = [
+    { text: "Pricing Plans", query: "What are your pricing plans?" },
+    { text: "AI Features", query: "What AI features do you offer?" },
+    { text: "Free Trial", query: "Tell me about the free trial" },
+    { text: "Supported Exams", query: "Which exams do you support?" },
+    { text: "Contact Support", query: "How can I contact support?" }
+  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -153,19 +162,26 @@ export function SupportChatbot() {
     return "I can help you with questions about Learnyzer's features, pricing, exams, technical requirements, or how to get started. What specific information would you like to know about our AI-powered learning platform?";
   };
 
-  const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+  const handleQuickAction = (query: string) => {
+    setShowQuickActions(false);
+    handleSendMessage(query);
+  };
+
+  const handleSendMessage = async (predefinedQuery?: string) => {
+    const queryToSend = predefinedQuery || inputValue.trim();
+    if (!queryToSend) return;
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       type: 'user',
-      content: inputValue,
+      content: queryToSend,
       timestamp: new Date()
     };
 
     setMessages(prev => [...prev, userMessage]);
-    const currentQuery = inputValue;
-    setInputValue('');
+    const currentQuery = queryToSend;
+    if (!predefinedQuery) setInputValue('');
+    setShowQuickActions(false);
     setIsTyping(true);
 
     try {
@@ -343,21 +359,21 @@ export function SupportChatbot() {
         <div ref={messagesEndRef} />
       </ScrollArea>
 
-      {/* Quick Questions */}
-      {messages.length === 1 && (
+      {/* Quick Action Buttons */}
+      {showQuickActions && (
         <div className="p-4 border-t border-slate-700">
-          <p className="text-xs text-gray-400 mb-2 flex items-center">
-            <HelpCircle className="h-3 w-3 mr-1" />
-            Quick questions:
+          <p className="text-xs text-gray-400 mb-3 flex items-center">
+            <Sparkles className="h-3 w-3 mr-1" />
+            Quick answers:
           </p>
-          <div className="space-y-1">
-            {quickQuestions.slice(0, 3).map((question, index) => (
+          <div className="grid grid-cols-2 gap-2">
+            {quickActions.map((action, index) => (
               <button
                 key={index}
-                onClick={() => handleQuickQuestion(question)}
-                className="w-full text-left text-xs p-2 rounded bg-slate-800 hover:bg-slate-700 text-gray-300 hover:text-white transition-colors"
+                onClick={() => handleQuickAction(action.query)}
+                className="text-left text-xs p-2 rounded bg-gradient-to-r from-cyan-600/20 to-purple-600/20 hover:from-cyan-600/30 hover:to-purple-600/30 text-cyan-300 hover:text-cyan-200 transition-colors border border-cyan-600/30"
               >
-                {question}
+                {action.text}
               </button>
             ))}
           </div>
@@ -375,7 +391,7 @@ export function SupportChatbot() {
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           />
           <Button
-            onClick={handleSendMessage}
+            onClick={() => handleSendMessage()}
             disabled={!inputValue.trim() || isTyping}
             className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700"
           >

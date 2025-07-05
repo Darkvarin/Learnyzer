@@ -873,12 +873,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { searchFAQs } = await import("../shared/faq-data");
       const relevantFAQs = searchFAQs(query);
       
-      // Generate intelligent, contextual responses based on query analysis
+      // Enhanced pattern matching with contextual awareness
       let aiResponse = null;
       const lowerQuery = query.toLowerCase();
       
-      // Smart pattern matching with natural, conversational responses
-      if (lowerQuery.includes("pricing") || lowerQuery.includes("cost") || lowerQuery.includes("subscription") || lowerQuery.includes("plan")) {
+      // Advanced pattern matching with natural, contextual responses
+      if (lowerQuery.includes("pricing") || lowerQuery.includes("cost") || lowerQuery.includes("subscription") || lowerQuery.includes("plan") || lowerQuery.includes("price")) {
         if (lowerQuery.includes("cheap") || lowerQuery.includes("affordable") || lowerQuery.includes("budget")) {
           aiResponse = "Great question! Our most affordable option is the free 1-day trial - perfect to test everything out. For ongoing access, our Basic plan at ₹799/month gives you unlimited AI tools (50 uses daily). If budget's tight, the yearly plan at ₹12999 saves you the most money compared to monthly billing.";
         } else if (lowerQuery.includes("best") || lowerQuery.includes("recommend")) {
@@ -939,7 +939,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else if (lowerQuery.includes("support") || lowerQuery.includes("help")) {
         aiResponse = "I'm here to help with anything about Learnyzer! Ask me about features, pricing, how our AI works, which plan suits you, technical questions, or getting started. For complex issues, our team is available at learnyzer.ai@gmail.com. What would you like to know?";
       } else {
-        aiResponse = "I can help you with questions about Learnyzer's features, pricing, exams, technical requirements, or how to get started. What specific information would you like to know about our AI-powered learning platform?";
+        // Fallback to enhanced GPT-3.5 Turbo when pattern matching doesn't cover the query
+        try {
+          const { supportService } = await import("./services/support-service");
+          const mockReq = { body: { message: query } } as any;
+          const mockRes = {
+            status: (code: number) => ({
+              json: (data: any) => {
+                if (code === 200 && data.response) {
+                  aiResponse = data.response;
+                }
+                return mockRes;
+              }
+            }),
+            json: (data: any) => {
+              if (data.response) {
+                aiResponse = data.response;
+              }
+              return mockRes;
+            }
+          } as any;
+          
+          await supportService.getChatResponse(mockReq, mockRes);
+        } catch (error) {
+          console.error("GPT fallback failed:", error);
+          aiResponse = "I can help you with questions about Learnyzer's features, pricing, exams, technical requirements, or how to get started. What specific information would you like to know about our AI-powered learning platform?";
+        }
       }
       
       res.json({

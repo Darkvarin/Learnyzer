@@ -419,6 +419,14 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Fallback to all subjects when exam is not locked for flexibility
   - Enhanced UI shows "(EXAM subjects only)" indicators throughout platform
   - Complete content personalization ensures focused, exam-relevant learning experience
+- July 05, 2025: Advanced GPT-3.5 Turbo prompt engineering for support chatbot
+  - Completely redesigned system prompts with structured information hierarchy for GPT-3.5 Turbo
+  - Enhanced contextual awareness with specific pricing, features, and exam details
+  - Implemented hybrid pattern-matching with GPT-3.5 fallback for comprehensive coverage
+  - Added quick action buttons for instant answers to common questions
+  - Improved response accuracy with temperature optimization (0.2) for factual responses
+  - Enhanced user experience with visual improvements and better conversation flow
+  - Support chatbot now provides instant, accurate responses while maintaining cost efficiency
 
 ## User Preferences
 
