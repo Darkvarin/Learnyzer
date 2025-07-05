@@ -1176,20 +1176,84 @@ Analyze this student's performance data and provide comprehensive analytics:
       const { topic, subject, style, examType, customPrompt } = schema.parse(req.body);
       const userId = (req.user as any).id;
 
-      // Create topic-focused educational image prompt for DALL-E 3
-      let imagePrompt = customPrompt || `Create a highly specific educational ${style || 'diagram'} exclusively about "${topic}" in ${subject}${examType ? ` for ${examType} competitive exam` : ''}. 
+      // Create highly specific, educational DALL-E 3 prompt focused on actual diagrams
+      let imagePrompt = customPrompt;
+      
+      if (!customPrompt) {
+        // Build subject-specific educational image prompts based on the topic and subject
+        const subjectSpecificPrompts = {
+          'Physics': `Create a detailed physics ${style || 'diagram'} showing "${topic}" with:
+- Clear labeled force vectors, fields, or particle movements
+- Mathematical equations and formulas overlaid on the diagram
+- Step-by-step process flow with arrows and annotations
+- Measurement units and numerical values where relevant
+- Cross-sectional views or 3D representations if applicable
+- Color-coded components for easy understanding
+- Professional scientific illustration style like in physics textbooks`,
 
-CRITICAL REQUIREMENTS FOR "${topic}":
-- Show ONLY concepts, formulas, and principles directly related to ${topic}
-- Include specific step-by-step breakdown of ${topic} processes
-- Add precise labels and annotations explaining ${topic} components
-- Use visual elements that directly teach ${topic}
-- Include key formulas, equations, or facts specific to ${topic}
-- Show how ${topic} appears in competitive exam questions
-- Make it comprehensive for complete ${topic} understanding
-- Use Indian educational context and standards
+          'Chemistry': `Create a comprehensive chemistry ${style || 'diagram'} illustrating "${topic}" featuring:
+- Molecular structures with proper atomic symbols and bonds
+- Chemical equations and reaction mechanisms
+- Electron configurations or orbital diagrams
+- Laboratory apparatus and experimental setups
+- pH scales, energy diagrams, or reaction coordinates
+- Color-coded atoms following standard conventions
+- Professional chemistry textbook illustration style`,
 
-Create a focused visual learning tool that teaches ${topic} completely. Every element must be directly relevant to mastering ${topic}.`;
+          'Biology': `Create a detailed biological ${style || 'diagram'} showing "${topic}" with:
+- Anatomical structures with clear labels and annotations
+- Cellular components and organelles with proper scale
+- Biological processes shown step-by-step
+- Cross-sectional views of organs or tissues
+- Molecular pathways or genetic processes
+- Scientific nomenclature and classification
+- Medical textbook quality illustration style`,
+
+          'Mathematics': `Create a mathematical ${style || 'diagram'} demonstrating "${topic}" including:
+- Geometric constructions with precise measurements
+- Coordinate systems with labeled axes and points
+- Graph functions with clear domain and range
+- Step-by-step solution processes
+- Formula derivations or proof diagrams
+- Visual representation of abstract concepts
+- Clean, precise mathematical illustration style`,
+
+          'General Science': `Create an educational ${style || 'diagram'} explaining "${topic}" with:
+- Clear scientific principles and laws
+- Real-world applications and examples
+- Step-by-step processes or cycles
+- Cause-and-effect relationships
+- Scientific terminology and definitions
+- Visual metaphors for complex concepts
+- Educational science textbook style`,
+
+          'Computer Science': `Create a technical ${style || 'diagram'} showing "${topic}" with:
+- Algorithm flowcharts or data structures
+- Network topologies or system architectures
+- Code snippets or pseudocode examples
+- Input/output relationships
+- Performance metrics or complexity analysis
+- Professional computer science textbook style`
+        };
+
+        // Select appropriate prompt based on subject, with fallback to general
+        const basePrompt = subjectSpecificPrompts[subject as keyof typeof subjectSpecificPrompts] || 
+                          subjectSpecificPrompts['General Science'];
+        
+        imagePrompt = `${basePrompt}
+
+CRITICAL SPECIFICATIONS for "${topic}":
+- Focus EXCLUSIVELY on "${topic}" - no unrelated content
+- Include specific formulas, laws, or principles for ${topic}
+- Show practical applications relevant to ${examType || 'competitive exams'}
+- Use Indian educational standards and terminology
+- Make every visual element educational and informative
+- Professional academic illustration quality
+- Clear, readable text and labels throughout
+- Suitable for ${examType || 'competitive exam'} preparation
+
+Style: Clean, professional, educational textbook quality with clear labels and annotations.`;
+      }
 
       // Generate image using DALL-E 3
       const imageResponse = await openai.images.generate({
