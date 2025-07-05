@@ -435,6 +435,15 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Enhanced troubleshooting capabilities with step-by-step technical guidance
   - Optimized temperature to 0.3 and max tokens to 600 for detailed, nuanced responses
   - Support chatbot now provides expert-level assistance matching premium platform quality
+- July 05, 2025: MAJOR ARCHITECTURAL CHANGE - Canvas-based diagram generation system
+  - Completely replaced DALL-E 3 image generation with Canvas-based diagram rendering
+  - AI now generates structured drawing instructions (JSON) instead of images for better educational content
+  - Created CanvasRenderer component with support for text, circles, rectangles, lines, and arrows
+  - GPT-4o provides precise drawing commands while frontend renders perfect, clear diagrams
+  - Enhanced educational value with readable text, proper labels, and exam-focused content
+  - Students get clear, customizable diagrams instead of unpredictable AI-generated images
+  - Canvas diagrams are downloadable, shareable, and always have readable text
+  - Resolved core issue where DALL-E text was unreadable for actual studying
 
 ## User Preferences
 

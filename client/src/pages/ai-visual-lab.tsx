@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { SubscriptionGuard, useSubscriptionTracking } from "@/components/subscription/subscription-guard";
+import { CanvasRenderer } from "@/components/CanvasRenderer";
 // import { TrialLockdown } from "@/components/trial/trial-lockdown"; // Replaced with existing SubscriptionGuard
 
 export default function AIVisualLab() {
@@ -150,8 +151,8 @@ export default function AIVisualLab() {
       console.log("Response keys:", Object.keys(responseData));
       setResults(responseData);
       toast({
-        title: "Image Generated!",
-        description: "Your educational image has been created successfully"
+        title: "Diagram Generated!",
+        description: "Your educational diagram has been created successfully"
       });
     } catch (error: any) {
       toast({
@@ -410,7 +411,7 @@ export default function AIVisualLab() {
                     className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
                   >
                     {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Image className="h-4 w-4 mr-2" />}
-                    Generate Educational Image
+                    Generate Educational Diagram
                   </Button>
                 </TabsContent>
 
@@ -536,21 +537,24 @@ export default function AIVisualLab() {
               ) : results ? (
                 <div className="space-y-6">
                   {console.log("Rendering results:", results)}
-                  {/* Image Results */}
-                  {results.imageUrl && (
+                  {/* Canvas Diagram Results */}
+                  {results.canvasInstructions && (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-white">Educational Image</h3>
+                        <h3 className="text-lg font-semibold text-white">Educational Diagram</h3>
                         <div className="flex gap-2">
                           <Button 
                             size="sm" 
                             variant="outline" 
                             className="border-slate-600"
                             onClick={() => {
-                              const link = document.createElement('a');
-                              link.href = results.imageUrl;
-                              link.download = `${results.topic || 'educational-image'}.png`;
-                              link.click();
+                              const canvas = document.querySelector('canvas');
+                              if (canvas) {
+                                const link = document.createElement('a');
+                                link.href = canvas.toDataURL();
+                                link.download = `${results.topic || 'educational-diagram'}.png`;
+                                link.click();
+                              }
                             }}
                           >
                             <Download className="h-4 w-4 mr-1" />
@@ -561,11 +565,19 @@ export default function AIVisualLab() {
                             variant="outline" 
                             className="border-slate-600"
                             onClick={() => {
-                              navigator.clipboard.writeText(results.imageUrl);
-                              toast({
-                                title: "Link Copied!",
-                                description: "Image link copied to clipboard"
-                              });
+                              const canvas = document.querySelector('canvas');
+                              if (canvas) {
+                                canvas.toBlob((blob) => {
+                                  if (blob) {
+                                    const url = URL.createObjectURL(blob);
+                                    navigator.clipboard.writeText(url);
+                                    toast({
+                                      title: "Diagram Copied!",
+                                      description: "Diagram copied to clipboard"
+                                    });
+                                  }
+                                });
+                              }
                             }}
                           >
                             <Share2 className="h-4 w-4 mr-1" />
@@ -573,39 +585,10 @@ export default function AIVisualLab() {
                           </Button>
                         </div>
                       </div>
-                      <div className="rounded-lg overflow-hidden border border-slate-600 bg-slate-700/50">
-                        <div className="p-4">
-                          <p className="text-slate-300 mb-3">Generated Educational Image:</p>
-                          <a 
-                            href={results.imageUrl} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition-colors"
-                          >
-                            <Image className="h-4 w-4" />
-                            View Image in New Tab
-                          </a>
-                        </div>
-                        <img 
-                          src={results.imageUrl ? `/api/proxy-image?url=${encodeURIComponent(results.imageUrl)}` : ''}
-                          alt={`Educational illustration for ${results.topic}`}
-                          className="w-full h-auto rounded-lg border border-slate-600"
-                          onLoad={() => console.log("Image loaded successfully via proxy!")}
-                          onError={(e) => {
-                            console.error("Image failed to load via proxy, trying direct URL");
-                            // Fallback to direct URL
-                            const img = e.target as HTMLImageElement;
-                            if (img.src.includes('/api/proxy-image')) {
-                              img.src = results.imageUrl;
-                            } else {
-                              // Even direct URL failed, show fallback
-                              img.style.display = 'none';
-                              const fallback = document.createElement('div');
-                              fallback.className = 'w-full h-40 bg-slate-700 rounded-lg flex items-center justify-center text-slate-400';
-                              fallback.innerHTML = '<p>Image temporarily unavailable. <a href="' + results.imageUrl + '" target="_blank" class="text-cyan-400 underline">View directly</a></p>';
-                              img.parentNode?.appendChild(fallback);
-                            }
-                          }}
+                      <div className="rounded-lg overflow-hidden border border-slate-600 bg-white p-4">
+                        <CanvasRenderer 
+                          instructions={results.canvasInstructions}
+                          className="w-full"
                         />
                       </div>
                       {results.explanation && (

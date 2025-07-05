@@ -1258,17 +1258,78 @@ CRITICAL TEXT READABILITY REQUIREMENTS for "${topic}":
 Style: Simple, clean educational diagram with LARGE, BOLD, READABLE text throughout.`;
       }
 
-      // Generate image using DALL-E 3
-      const imageResponse = await openai.images.generate({
-        model: "dall-e-3",
-        prompt: imagePrompt,
-        n: 1,
-        size: "1024x1024",
-        quality: "standard",
-        style: "natural"
+      // Generate Canvas drawing instructions using GPT-4o
+      const canvasPrompt = `Create detailed Canvas drawing instructions for "${topic}" in ${subject}. 
+
+REQUIREMENTS:
+- Return a JSON object with canvas drawing commands
+- Use simple shapes, text, arrows, and lines
+- Make text large and readable (minimum 16px font)
+- Use high contrast colors (black text on white background)
+- Include clear labels and annotations
+- Show key formulas and concepts visually
+- Make it educational and exam-focused
+
+Return JSON format:
+{
+  "title": "${topic}",
+  "canvasWidth": 800,
+  "canvasHeight": 600,
+  "backgroundColor": "#ffffff",
+  "elements": [
+    {
+      "type": "text",
+      "x": 100,
+      "y": 50,
+      "text": "Example Text",
+      "fontSize": 20,
+      "fontWeight": "bold",
+      "color": "#000000"
+    },
+    {
+      "type": "circle",
+      "x": 200,
+      "y": 150,
+      "radius": 30,
+      "fillColor": "#e0e0e0",
+      "strokeColor": "#000000",
+      "strokeWidth": 2
+    },
+    {
+      "type": "line",
+      "x1": 100,
+      "y1": 200,
+      "x2": 300,
+      "y2": 200,
+      "strokeColor": "#000000",
+      "strokeWidth": 2
+    },
+    {
+      "type": "arrow",
+      "x1": 150,
+      "y1": 250,
+      "x2": 250,
+      "y2": 250,
+      "strokeColor": "#000000",
+      "strokeWidth": 2
+    }
+  ]
+}
+
+Create a comprehensive diagram for ${topic} showing all key concepts, formulas, and visual elements that will help students understand this topic completely.`;
+
+      const canvasResponse = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { role: "system", content: "You are an expert educational diagram designer. Create detailed Canvas drawing instructions for educational topics. Always return valid JSON with precise drawing commands." },
+          { role: "user", content: canvasPrompt }
+        ],
+        response_format: { type: "json_object" },
+        max_tokens: 2000,
+        temperature: 0.3
       });
 
-      const imageUrl = imageResponse.data[0].url;
+      const canvasInstructions = JSON.parse(canvasResponse.choices[0].message.content || '{}');
 
       // Generate explanation for the image
       const explanationPrompt = `Explain this educational image about "${topic}" in ${subject}. Describe:
@@ -1307,7 +1368,7 @@ Keep the explanation concise and exam-oriented.`;
 
       return res.status(200).json({
         success: true,
-        imageUrl,
+        canvasInstructions,
         explanation,
         topic,
         subject,
