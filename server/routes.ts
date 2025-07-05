@@ -971,6 +971,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       } else if (lowerQuery.includes("support") || lowerQuery.includes("help")) {
         aiResponse = "I'm here to help with anything about Learnyzer! Ask me about features, pricing, how our AI works, which plan suits you, technical questions, or getting started. For complex issues, our team is available at learnyzer.ai@gmail.com. What would you like to know?";
+      } else if (lowerQuery.includes("study") || lowerQuery.includes("learn") || lowerQuery.includes("helps me") || lowerQuery.includes("benefit")) {
+        aiResponse = "Learnyzer helps you study through: AI Tutor that explains concepts 24/7 with voice interaction, Study Notes Generator for comprehensive PDF notes, Answer Checker with OCR for handwritten work feedback, Visual Learning with educational diagrams, Battle competitions for motivation, Progress tracking and analytics, Exam-specific content filtering. It's like having a personal teacher + study materials + practice tests all in one smart platform!";
       } else {
         // Fallback to enhanced GPT-3.5 Turbo when pattern matching doesn't cover the query
         try {
