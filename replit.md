@@ -402,6 +402,13 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Added event propagation control to footer links to prevent scroll conflicts
   - Enhanced Link components with block display and proper click handling
   - Footer navigation now works seamlessly without unwanted scrolling effects
+- July 05, 2025: Fixed exam locking system functionality
+  - Added "cgle" to allowed exam types in backend validation for CGLE exam support
+  - Implemented proper duplicate lock protection in API endpoint to prevent multiple confirmations
+  - Enhanced error handling in frontend to properly display "already locked" messages
+  - Added null safety checks in backend route to handle edge cases with user lookup
+  - Prevented multiple API calls when exam is already confirmed and locked
+  - System now properly blocks attempts to change locked exam selections
 
 ## User Preferences
 

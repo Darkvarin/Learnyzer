@@ -239,14 +239,29 @@ export default function ProfileSettings() {
       
       toast({
         title: "Entrance Exam Confirmed",
-        description: `${selectedExamForConfirmation} has been set as your entrance exam. This selection is now locked.`,
+        description: `${selectedExamForConfirmation?.toUpperCase()} has been set as your entrance exam. This selection is now locked.`,
       });
-    } catch (error) {
-      toast({
-        title: "Failed to confirm exam",
-        description: "An error occurred while confirming your exam selection.",
-        variant: "destructive",
-      });
+    } catch (error: any) {
+      console.error("Exam confirmation error:", error);
+      
+      // Handle specific error cases
+      if (error.message?.includes("already locked")) {
+        toast({
+          title: "Exam Already Locked",
+          description: "Your entrance exam selection is already confirmed and locked.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Failed to confirm exam",
+          description: "An error occurred while confirming your exam selection.",
+          variant: "destructive",
+        });
+      }
+      
+      // Close dialog and reset state
+      setShowConfirmationDialog(false);
+      setSelectedExamForConfirmation("");
     }
   };
 

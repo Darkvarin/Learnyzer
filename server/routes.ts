@@ -238,8 +238,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { selectedExam } = req.body;
       const userId = req.user.id;
 
-      if (!selectedExam || !["jee", "neet", "upsc", "clat", "cuet", "cse"].includes(selectedExam)) {
+      if (!selectedExam || !["jee", "neet", "upsc", "clat", "cuet", "cse", "cgle"].includes(selectedExam)) {
         return res.status(400).json({ message: "Invalid exam selection" });
+      }
+
+      // Check if user already has an exam locked
+      const currentUser = await storage.getUserById(userId);
+      if (!currentUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      if (currentUser.examLocked === true) {
+        return res.status(400).json({ 
+          message: "Exam selection is already locked",
+          currentExam: currentUser.selectedExam 
+        });
       }
 
       // Update user with selected exam and lock it
