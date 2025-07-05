@@ -248,7 +248,7 @@ REMEMBER: Every response must be directly tied to the student's specific query. 
       // Save enhanced conversation
       await storage.saveConversation({
         userId,
-        tutorId: tutor.id,
+        aiTutorId: tutor.id,
         messages: [
           { role: 'user', content: message, timestamp: new Date() },
           { role: 'assistant', content: aiResponse || '', timestamp: new Date() }
@@ -288,35 +288,52 @@ REMEMBER: Every response must be directly tied to the student's specific query. 
    */
   async generateVisualSuggestions(userMessage: string, subject: string, aiResponse: string) {
     try {
-      const visualPrompt = `Analyze this educational interaction and suggest specific visual aids that would enhance understanding:
+      const canvasPrompt = `Create Canvas drawing instructions for an educational diagram based on this conversation:
 
 Subject: ${subject}
 Student Question: ${userMessage}
 AI Response: ${aiResponse}
 
-Provide a JSON response with practical visual suggestions:
+Generate precise Canvas drawing instructions that will create a clear, educational diagram. Use JSON format with these drawing commands:
+- text: {x, y, content, fontSize, color, align}
+- circle: {x, y, radius, fillColor, strokeColor, strokeWidth}
+- rectangle: {x, y, width, height, fillColor, strokeColor, strokeWidth}
+- line: {x1, y1, x2, y2, strokeColor, strokeWidth}
+- arrow: {x1, y1, x2, y2, strokeColor, strokeWidth}
+
+Canvas size: 800x600 pixels. Use these colors:
+- Primary text: "#FFFFFF" 
+- Secondary text: "#CCCCCC"
+- Accent: "#00A3FF"
+- Background elements: "#2A2A3A"
+- Highlight: "#FFD700"
+
+Respond with JSON:
 {
-  "diagrams": ["specific diagram descriptions that would help visualize concepts"],
-  "illustrations": ["educational illustrations that would clarify complex ideas"],
-  "charts": ["types of charts/graphs that would organize information better"],
-  "conceptMaps": ["concept mapping suggestions for connecting ideas"],
-  "generateImage": true/false,
-  "imagePrompt": "specific DALL-E prompt if an image would be most helpful"
-}
+  "title": "Diagram title",
+  "description": "What this diagram teaches",
+  "hasVisual": true,
+  "drawingInstructions": [
+    {"type": "text", "x": 400, "y": 50, "content": "Title", "fontSize": 24, "color": "#FFFFFF", "align": "center"},
+    {"type": "rectangle", "x": 100, "y": 100, "width": 200, "height": 80, "fillColor": "#2A2A3A", "strokeColor": "#00A3FF", "strokeWidth": 2}
+  ],
+  "educationalValue": "How this diagram helps understanding"
+}`;
 
-Focus on visuals that directly support Indian competitive exam preparation.`;
-
-      const visualResponse = await openai.chat.completions.create({
+      const canvasResponse = await openai.chat.completions.create({
         model: "gpt-4o",
-        messages: [{ role: "user", content: visualPrompt }],
-        max_tokens: 600,
+        messages: [
+          { role: "system", content: "You are an expert educational diagram designer who creates precise Canvas drawing instructions for Indian competitive exam preparation." },
+          { role: "user", content: canvasPrompt }
+        ],
+        max_tokens: 1000,
         temperature: 0.3,
         response_format: { type: "json_object" }
       });
 
-      return JSON.parse(visualResponse.choices[0].message.content || '{}');
+      return JSON.parse(canvasResponse.choices[0].message.content || '{}');
     } catch (error) {
-      console.error('Visual suggestions generation error:', error);
+      console.error('Canvas instructions generation error:', error);
       return null;
     }
   },

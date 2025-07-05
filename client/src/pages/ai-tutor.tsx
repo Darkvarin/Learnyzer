@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
+import { CanvasRenderer } from "@/components/CanvasRenderer";
 import { useUser } from "@/contexts/user-context";
 import { useToast } from "@/hooks/use-toast";
 import { useVoice } from "@/hooks/useVoice";
@@ -119,6 +120,8 @@ export default function AiTutor() {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [diagramUrl, setDiagramUrl] = useState<string | null>(null);
+  const [canvasInstructions, setCanvasInstructions] = useState<any>(null);
+  const [showVisual, setShowVisual] = useState(false);
   
   // Canvas display functionality for AI-generated content
   useEffect(() => {
@@ -367,10 +370,65 @@ export default function AiTutor() {
         throw new Error("Usage limit exceeded");
       }
       
-      return apiRequest("POST", "/api/ai/tutor/respond", { message });
+      return apiRequest("POST", "/api/ai/tutor/respond", { 
+        message,
+        subject: currentSubject,
+        includeVisuals: true,
+        difficulty: "intermediate"
+      });
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       setMessage("");
+      
+      // Handle AI response with voice TTS
+      if (data.response && voiceEnabled) {
+        // Auto-speak the AI response when voice is enabled
+        setTimeout(() => {
+          speak(data.response);
+        }, 500);
+      }
+      
+      // Handle Canvas visual instructions if available
+      if (data.visualSuggestions && data.visualSuggestions.drawingInstructions) {
+        const instructions = {
+          title: data.visualSuggestions.title || "Educational Diagram",
+          canvasWidth: 800,
+          canvasHeight: 600,
+          backgroundColor: "#1E1E24",
+          elements: data.visualSuggestions.drawingInstructions.map((instruction: any) => ({
+            type: instruction.type,
+            x: instruction.x,
+            y: instruction.y,
+            x1: instruction.x1,
+            y1: instruction.y1,
+            x2: instruction.x2,
+            y2: instruction.y2,
+            text: instruction.content,
+            fontSize: instruction.fontSize,
+            color: instruction.color,
+            radius: instruction.radius,
+            width: instruction.width,
+            height: instruction.height,
+            fillColor: instruction.fillColor,
+            strokeColor: instruction.strokeColor,
+            strokeWidth: instruction.strokeWidth
+          }))
+        };
+        
+        setCanvasInstructions(instructions);
+        setShowVisual(true);
+        
+        // Auto-switch to canvas tab if visual is generated
+        setTimeout(() => {
+          setActiveTab("canvas");
+        }, 1000);
+        
+        toast({
+          title: "Visual diagram generated",
+          description: "Check the Canvas tab to see the AI-generated diagram",
+        });
+      }
+      
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation/recent'] });
       queryClient.invalidateQueries({ queryKey: ['/api/user/stats'] });
     },
@@ -1051,25 +1109,28 @@ export default function AiTutor() {
                         </div>
                         
                         <div className="relative aspect-video w-full bg-[#1E1E24] rounded-lg overflow-hidden">
-                          {diagramUrl && (
-                            <img 
-                              src={diagramUrl} 
-                              alt="AI Generated Diagram" 
-                              className="absolute top-0 left-0 w-full h-full object-contain opacity-70 z-10" 
-                            />
+                          {canvasInstructions && showVisual ? (
+                            <div className="w-full h-full">
+                              <CanvasRenderer 
+                                instructions={canvasInstructions}
+                                className="w-full h-full"
+                              />
+                            </div>
+                          ) : (
+                            <div className="flex items-center justify-center h-full text-gray-400">
+                              <div className="text-center">
+                                <ImageIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                                <p className="text-sm">AI-generated diagrams will appear here</p>
+                                <p className="text-xs mt-1">Ask a question in the chat to generate visuals</p>
+                              </div>
+                            </div>
                           )}
-                          <canvas 
-                            ref={canvasRef} 
-                            width={800} 
-                            height={500} 
-                            className="absolute top-0 left-0 w-full h-full z-20"
-                          ></canvas>
                           
-                          {isGeneratingDiagram && (
+                          {sendMessageMutation.isPending && (
                             <div className="absolute inset-0 flex items-center justify-center bg-dark-card/80 z-30">
                               <div className="flex flex-col items-center">
                                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mb-4"></div>
-                                <p className="text-gray-300">Generating interactive diagrams for {currentSubject.replace('_', ' ')}...</p>
+                                <p className="text-gray-300">Generating AI visual explanation...</p>
                               </div>
                             </div>
                           )}

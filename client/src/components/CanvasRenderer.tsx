@@ -86,7 +86,14 @@ export function CanvasRenderer({ instructions, className = "" }: CanvasRendererP
 
     ctx.fillStyle = element.color || '#000000';
     ctx.font = `${element.fontWeight || 'normal'} ${element.fontSize || 16}px Arial`;
-    ctx.textAlign = 'left';
+    
+    // Handle text alignment from the data
+    if (element.text.includes('center')) {
+      ctx.textAlign = 'center';
+    } else {
+      ctx.textAlign = 'left';
+    }
+    
     ctx.textBaseline = 'top';
     ctx.fillText(element.text, element.x, element.y);
   };
