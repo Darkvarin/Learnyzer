@@ -124,14 +124,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Image URL required" });
       }
 
-      const fetch = (await import('node-fetch')).default;
       const response = await fetch(url);
       
       if (!response.ok) {
         return res.status(404).json({ message: "Image not found" });
       }
 
-      const buffer = await response.buffer();
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
       const contentType = response.headers.get('content-type') || 'image/png';
       
       res.set('Content-Type', contentType);

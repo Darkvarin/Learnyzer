@@ -575,18 +575,28 @@ export default function AIVisualLab() {
                           </Button>
                         </div>
                       </div>
-                      <div className="rounded-lg overflow-hidden border border-slate-600">
-                        <img 
-                          src={`/api/proxy-image?url=${encodeURIComponent(results.imageUrl)}`}
-                          alt={`Educational content for ${results.topic}`}
-                          className="w-full h-auto"
+                      <div className="rounded-lg overflow-hidden border border-slate-600 bg-slate-700/50">
+                        <div className="p-4">
+                          <p className="text-slate-300 mb-3">Generated Educational Image:</p>
+                          <a 
+                            href={results.imageUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition-colors"
+                          >
+                            <Image className="h-4 w-4" />
+                            View Image in New Tab
+                          </a>
+                        </div>
+                        <iframe 
+                          src={results.imageUrl}
+                          className="w-full h-96 border-0"
+                          title={`Educational content for ${results.topic}`}
                           onLoad={() => console.log("Image loaded successfully!")}
                           onError={(e) => {
                             console.error("Image failed to load:", e);
-                            console.error("Original URL:", results.imageUrl);
-                            console.error("Proxy URL:", `/api/proxy-image?url=${encodeURIComponent(results.imageUrl)}`);
+                            console.error("Image URL:", results.imageUrl);
                           }}
-                          style={{ display: 'block' }}
                         />
                       </div>
                       {results.explanation && (
