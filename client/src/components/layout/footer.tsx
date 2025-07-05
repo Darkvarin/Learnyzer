@@ -44,27 +44,58 @@ export function Footer() {
             <ul className="space-y-2">
 
               <li>
-                <Link href="/ai-tutor" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link 
+                  href="/ai-tutor" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm block"
+                  onClick={(e) => {
+                    // Ensure proper navigation without scroll conflicts
+                    e.stopPropagation();
+                  }}
+                >
                   AI Tutor
                 </Link>
               </li>
               <li>
-                <Link href="/battle-zone" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link 
+                  href="/battle-zone" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm block"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   Study Battles
                 </Link>
               </li>
               <li>
-                <Link href="/ai-visual-lab" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link 
+                  href="/ai-visual-lab" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm block"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   Visual Learning Lab
                 </Link>
               </li>
               <li>
-                <Link href="/profile" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link 
+                  href="/profile" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm block"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   Profile
                 </Link>
               </li>
               <li>
-                <Link href="/subscription" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link 
+                  href="/subscription" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm block"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   Subscription Plans
                 </Link>
               </li>
@@ -108,32 +139,68 @@ export function Footer() {
             <ul className="space-y-2">
 
               <li>
-                <Link href="/feedback" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link 
+                  href="/feedback" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm block"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   Give Feedback
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link 
+                  href="/contact" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm block"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link 
+                  href="/terms" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm block"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link 
+                  href="/privacy" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm block"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/refund" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link 
+                  href="/refund" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm block"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   Refund Policy
                 </Link>
               </li>
               <li>
-                <Link href="/shipping" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                <Link 
+                  href="/shipping" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm block"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   Shipping & Delivery
                 </Link>
               </li>

@@ -5,8 +5,17 @@ export function ScrollToTop() {
   const [location] = useLocation();
 
   useEffect(() => {
-    // Scroll to top whenever the location changes
-    window.scrollTo(0, 0);
+    // Add a small delay to ensure proper page transition
+    const timer = setTimeout(() => {
+      // Scroll to top with smooth behavior
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }, 100); // Small delay to ensure DOM is ready
+
+    return () => clearTimeout(timer);
   }, [location]);
 
   return null; // This component doesn't render anything
