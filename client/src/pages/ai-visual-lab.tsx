@@ -141,6 +141,7 @@ export default function AIVisualLab() {
         examType: formData.examType
       });
 
+      console.log("Image generation response:", response);
       setResults(response);
       toast({
         title: "Image Generated!",
@@ -526,17 +527,39 @@ export default function AIVisualLab() {
                 </div>
               ) : results ? (
                 <div className="space-y-6">
+                  {console.log("Rendering results:", results)}
                   {/* Image Results */}
                   {results.imageUrl && (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold text-white">Educational Image</h3>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline" className="border-slate-600">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="border-slate-600"
+                            onClick={() => {
+                              const link = document.createElement('a');
+                              link.href = results.imageUrl;
+                              link.download = `${results.topic || 'educational-image'}.png`;
+                              link.click();
+                            }}
+                          >
                             <Download className="h-4 w-4 mr-1" />
                             Download
                           </Button>
-                          <Button size="sm" variant="outline" className="border-slate-600">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="border-slate-600"
+                            onClick={() => {
+                              navigator.clipboard.writeText(results.imageUrl);
+                              toast({
+                                title: "Link Copied!",
+                                description: "Image link copied to clipboard"
+                              });
+                            }}
+                          >
                             <Share2 className="h-4 w-4 mr-1" />
                             Share
                           </Button>
