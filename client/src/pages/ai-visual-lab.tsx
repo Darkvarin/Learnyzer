@@ -531,6 +531,24 @@ export default function AIVisualLab() {
               ) : results ? (
                 <div className="space-y-6">
                   {console.log("Rendering results:", results)}
+                  {/* EMERGENCY ACCESS BOX - Always visible */}
+                  {results?.imageUrl && (
+                    <div className="bg-red-900/30 border-4 border-red-500 rounded-lg p-6 text-center mb-6">
+                      <h2 className="text-2xl font-bold text-white mb-4">🚨 YOUR IMAGE IS READY! 🚨</h2>
+                      <a 
+                        href={results.imageUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-block w-full max-w-md py-4 px-8 bg-green-600 hover:bg-green-700 text-white text-xl font-bold rounded-lg transition-colors mb-4"
+                      >
+                        CLICK HERE TO VIEW IMAGE
+                      </a>
+                      <div className="text-slate-200 text-sm bg-slate-800 p-3 rounded">
+                        Direct URL: <span className="text-cyan-400 break-all font-mono">{results.imageUrl}</span>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="bg-green-500/20 p-4 rounded-lg mb-4">
                     <p className="text-green-400">Results received! Keys: {Object.keys(results || {}).join(', ')}</p>
                     <p className="text-white text-xs">ImageUrl exists: {!!results?.imageUrl}</p>
