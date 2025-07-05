@@ -526,16 +526,7 @@ export default function AiTutor() {
     }
   }, [chapterParam, subjectParam, courseParam]);
   
-  // Auto-speak AI responses when voice is enabled
-  useEffect(() => {
-    if ((conversation as any)?.messages && voiceEnabled) {
-      const messages = (conversation as any).messages;
-      const lastMessage = messages[messages.length - 1];
-      if (lastMessage?.role === 'assistant' && lastMessage.content) {
-        handleTextToSpeech(lastMessage.content);
-      }
-    }
-  }, [(conversation as any)?.messages, voiceEnabled]);
+  // Removed automatic TTS - user now has full control over when speech starts
 
   const handlePromptClick = (promptText: string) => {
     // Check if user has selected an exam before allowing AI tool usage
@@ -1112,7 +1103,7 @@ export default function AiTutor() {
                         </div>
                         <div className="flex items-center gap-2 text-gray-400">
                           <VolumeX className={`h-3 w-3 ${isSpeaking || isTeaching ? 'text-green-400' : ''}`} />
-                          <span>AI Teaching Voice: {isTeaching ? 'Teaching...' : isSpeaking ? 'Speaking...' : voiceEnabled ? 'Enabled' : 'Disabled'}</span>
+                          <span>AI Teaching Voice: {isTeaching ? 'Teaching...' : isSpeaking ? 'Speaking...' : voiceEnabled ? 'Ready (Manual)' : 'Disabled'}</span>
                         </div>
                       </div>
                       {(isSpeaking || isTeaching) && (
