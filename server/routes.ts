@@ -895,20 +895,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Body keys:", Object.keys(req.body || {}));
       console.log("======================");
       
-      const { query } = req.body;
+      const { query, message } = req.body;
+      const userMessage = query || message;
       
-      if (!query || typeof query !== 'string' || !query.trim()) {
-        console.log("Query validation failed:", { query, type: typeof query });
+      if (!userMessage || typeof userMessage !== 'string' || !userMessage.trim()) {
+        console.log("Message validation failed:", { query, message, type: typeof userMessage });
         return res.status(400).json({ error: "Message is required" });
       }
 
-      // Search FAQ data first
-      const { searchFAQs } = await import("../shared/faq-data");
-      const relevantFAQs = searchFAQs(query);
-      
       // Enhanced pattern matching with contextual awareness
       let aiResponse = null;
-      const lowerQuery = query.toLowerCase();
+      const lowerQuery = userMessage.toLowerCase();
       
       // Advanced pattern matching with natural, contextual responses
       if (lowerQuery.includes("pricing") || lowerQuery.includes("cost") || lowerQuery.includes("subscription") || lowerQuery.includes("plan") || lowerQuery.includes("price")) {
@@ -977,7 +974,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Fallback to enhanced GPT-3.5 Turbo when pattern matching doesn't cover the query
         try {
           const { supportService } = await import("./services/support-service");
-          const mockReq = { body: { message: query } } as any;
+          const mockReq = { body: { message: userMessage } } as any;
           const mockRes = {
             status: (code: number) => ({
               json: (data: any) => {
@@ -1003,7 +1000,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json({
-        query,
+        query: userMessage,
         aiResponse,
         timestamp: new Date().toISOString()
       });

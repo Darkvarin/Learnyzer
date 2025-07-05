@@ -180,7 +180,7 @@ export function SupportChatbot() {
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        content: (response as any).aiResponse || generateBotResponse(currentQuery),
+        content: (response as any).response || (response as any).aiResponse || generateBotResponse(currentQuery),
         timestamp: new Date()
       };
 
