@@ -221,6 +221,7 @@ REMEMBER: Every response must be directly tied to the student's specific query. 
         : [];
       
       // Generate enhanced AI response
+      console.log("Starting OpenAI API call...");
       const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
@@ -234,6 +235,7 @@ REMEMBER: Every response must be directly tied to the student's specific query. 
         frequency_penalty: 0.1
       });
       
+      console.log("OpenAI API call completed");
       const aiResponse = completion.choices[0].message.content;
       
       // Check if visual content would be helpful
@@ -242,7 +244,55 @@ REMEMBER: Every response must be directly tied to the student's specific query. 
       
       let visualSuggestions = null;
       if (needsVisuals) {
-        visualSuggestions = await this.generateVisualSuggestions(message, subject || '', aiResponse || '');
+        try {
+          const canvasPrompt = `Create Canvas drawing instructions for an educational diagram based on this conversation:
+
+Subject: ${subject || 'General'}
+Student Question: ${message}
+AI Response: ${aiResponse || ''}
+
+Generate precise Canvas drawing instructions that will create a clear, educational diagram. Use JSON format with these drawing commands:
+- text: {x, y, content, fontSize, color, align}
+- circle: {x, y, radius, fillColor, strokeColor, strokeWidth}
+- rectangle: {x, y, width, height, fillColor, strokeColor, strokeWidth}
+- line: {x1, y1, x2, y2, strokeColor, strokeWidth}
+- arrow: {x1, y1, x2, y2, strokeColor, strokeWidth}
+
+Canvas size: 800x600 pixels. Use these colors:
+- Primary text: "#FFFFFF" 
+- Secondary text: "#CCCCCC"
+- Accent: "#00A3FF"
+- Background elements: "#2A2A3A"
+- Highlight: "#FFD700"
+
+Respond with JSON:
+{
+  "title": "Diagram title",
+  "description": "What this diagram teaches",
+  "hasVisual": true,
+  "drawingInstructions": [
+    {"type": "text", "x": 400, "y": 50, "content": "Title", "fontSize": 24, "color": "#FFFFFF", "align": "center"},
+    {"type": "rectangle", "x": 100, "y": 100, "width": 200, "height": 80, "fillColor": "#2A2A3A", "strokeColor": "#00A3FF", "strokeWidth": 2}
+  ],
+  "educationalValue": "How this diagram helps understanding"
+}`;
+
+          const canvasResponse = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+              { role: "system", content: "You are an expert educational diagram designer who creates precise Canvas drawing instructions for Indian competitive exam preparation." },
+              { role: "user", content: canvasPrompt }
+            ],
+            max_tokens: 1000,
+            temperature: 0.3,
+            response_format: { type: "json_object" }
+          });
+
+          visualSuggestions = JSON.parse(canvasResponse.choices[0].message.content || '{}');
+        } catch (visualError) {
+          console.error('Canvas instructions generation error:', visualError);
+          visualSuggestions = null;
+        }
       }
       
       // Save enhanced conversation
