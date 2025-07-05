@@ -176,6 +176,18 @@ export function useVoice() {
     }
   }, []);
 
+  // Cleanup when hook is unmounted
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
   return {
     isListening,
     isSpeaking,

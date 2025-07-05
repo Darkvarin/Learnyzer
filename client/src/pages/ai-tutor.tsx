@@ -527,6 +527,18 @@ export default function AiTutor() {
   }, [chapterParam, subjectParam, courseParam]);
   
   // Removed automatic TTS - user now has full control over when speech starts
+  
+  // Cleanup TTS when component unmounts (user navigates away)
+  useEffect(() => {
+    return () => {
+      // Stop any ongoing speech when leaving the page
+      stopSpeaking();
+      stopTeaching();
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
 
   const handlePromptClick = (promptText: string) => {
     // Check if user has selected an exam before allowing AI tool usage

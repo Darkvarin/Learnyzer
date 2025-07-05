@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useVoice } from './useVoice';
@@ -54,6 +54,14 @@ export function useTeachingVoice() {
     stopSpeaking();
     setIsGenerating(false);
   };
+
+  // Cleanup when hook is unmounted
+  useEffect(() => {
+    return () => {
+      stopSpeaking();
+      setIsGenerating(false);
+    };
+  }, []);
 
   return {
     teachConcept,
