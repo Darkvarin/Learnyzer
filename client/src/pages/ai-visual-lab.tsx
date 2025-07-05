@@ -606,14 +606,20 @@ export default function AIVisualLab() {
                             View Image in New Tab
                           </a>
                         </div>
-                        <iframe 
+                        <img 
                           src={results.imageUrl}
-                          className="w-full h-96 border-0"
-                          title={`Educational content for ${results.topic}`}
+                          alt={`Educational illustration for ${results.topic}`}
+                          className="w-full h-auto rounded-lg border border-slate-600"
                           onLoad={() => console.log("Image loaded successfully!")}
                           onError={(e) => {
                             console.error("Image failed to load:", e);
                             console.error("Image URL:", results.imageUrl);
+                            // Show fallback message
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            const fallback = document.createElement('div');
+                            fallback.className = 'w-full h-40 bg-slate-700 rounded-lg flex items-center justify-center text-slate-400';
+                            fallback.innerHTML = '<p>Image temporarily unavailable. <a href="' + results.imageUrl + '" target="_blank" class="text-cyan-400 underline">View directly</a></p>';
+                            (e.target as HTMLImageElement).parentNode?.appendChild(fallback);
                           }}
                         />
                       </div>
