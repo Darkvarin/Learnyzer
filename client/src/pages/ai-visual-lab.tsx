@@ -134,6 +134,9 @@ export default function AIVisualLab() {
 
     setLoading(true);
     try {
+      // Track feature usage
+      await trackFeatureUsage("ai_visual_lab");
+      
       const response = await apiRequest("POST", "/api/ai/generate-image", {
         topic: formData.topic,
         subject: formData.subject,
@@ -528,6 +531,10 @@ export default function AIVisualLab() {
               ) : results ? (
                 <div className="space-y-6">
                   {console.log("Rendering results:", results)}
+                  <div className="bg-green-500/20 p-4 rounded-lg mb-4">
+                    <p className="text-green-400">Results received! Keys: {Object.keys(results || {}).join(', ')}</p>
+                    <p className="text-white text-xs">ImageUrl exists: {!!results?.imageUrl}</p>
+                  </div>
                   {/* Image Results */}
                   {results.imageUrl && (
                     <div className="space-y-3">
