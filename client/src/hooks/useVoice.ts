@@ -93,7 +93,22 @@ export function useVoice() {
       // Cancel any ongoing speech
       window.speechSynthesis.cancel();
       
-      const utterance = new SpeechSynthesisUtterance(text);
+      // Clean text for better TTS - remove markdown and make it speech-friendly
+      const cleanText = text
+        .replace(/#{1,6}\s+/g, '') // Remove markdown headers
+        .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
+        .replace(/\*(.*?)\*/g, '$1') // Remove italic markdown
+        .replace(/`(.*?)`/g, '$1') // Remove code markdown
+        .replace(/>\s+(.*?)$/gm, 'Note: $1') // Convert blockquotes to "Note:"
+        .replace(/\$\$(.*?)\$\$/g, (match, equation) => `The equation: ${equation.replace(/\^/g, ' to the power of ').replace(/\{([^}]+)\}/g, '$1').replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 divided by $2')}`) // Handle display math
+        .replace(/\$([^$]+)\$/g, (match, equation) => `${equation.replace(/\^/g, ' to the power of ').replace(/\{([^}]+)\}/g, '$1').replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 divided by $2')}`) // Handle inline math
+        .replace(/\d+\.\s+/g, '') // Remove numbered list markers
+        .replace(/[-*+]\s+/g, '') // Remove bullet points
+        .replace(/\n+/g, '. ') // Replace line breaks with periods
+        .replace(/\s+/g, ' ') // Normalize whitespace
+        .trim();
+      
+      const utterance = new SpeechSynthesisUtterance(cleanText);
       
       // Find Indian English voice if available
       const voices = window.speechSynthesis.getVoices();

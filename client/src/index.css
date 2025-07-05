@@ -1,6 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
 @import url('https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css');
 
+/* KaTeX CSS for mathematical formulas */
+@import 'katex/dist/katex.min.css';
+
+/* Custom KaTeX styling for dark mode */
+.katex {
+  color: #e2e8f0 !important;
+}
+
+.katex .mord {
+  color: #e2e8f0 !important;
+}
+
+.katex .mbin,
+.katex .mrel {
+  color: #00D4FF !important;
+}
+
+.katex .mop {
+  color: #FFD700 !important;
+}
+
+.katex .frac-line {
+  border-bottom-color: #e2e8f0 !important;
+}
+
+.katex .sqrt > .vlist-t > .vlist-r > .vlist > .vlist-elem:last-child > .pstrut::after {
+  border-color: #e2e8f0 !important;
+}
+
+.katex-display {
+  margin: 1em 0 !important;
+  padding: 0.5em !important;
+  background: rgba(0, 212, 255, 0.05) !important;
+  border: 1px solid rgba(0, 212, 255, 0.2) !important;
+  border-radius: 0.5rem !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
