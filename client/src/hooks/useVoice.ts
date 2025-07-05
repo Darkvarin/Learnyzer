@@ -100,8 +100,8 @@ export function useVoice() {
         .replace(/\*(.*?)\*/g, '$1') // Remove italic markdown
         .replace(/`(.*?)`/g, '$1') // Remove code markdown
         .replace(/>\s+(.*?)$/gm, 'Note: $1') // Convert blockquotes to "Note:"
-        .replace(/\$\$(.*?)\$\$/g, (match, equation) => `The equation: ${equation.replace(/\^/g, ' to the power of ').replace(/\{([^}]+)\}/g, '$1').replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 divided by $2')}`) // Handle display math
-        .replace(/\$([^$]+)\$/g, (match, equation) => `${equation.replace(/\^/g, ' to the power of ').replace(/\{([^}]+)\}/g, '$1').replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 divided by $2')}`) // Handle inline math
+        .replace(/\$\$(.*?)\$\$/g, (match, equation) => `The equation: ${equation.replace(/\\times/g, ' times ').replace(/\\text\{([^}]+)\}/g, '$1').replace(/\^/g, ' to the power of ').replace(/\{([^}]+)\}/g, '$1').replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 divided by $2').replace(/\\mu/g, 'mu').replace(/\\cdot/g, ' dot ')}`) // Handle display math
+        .replace(/\$([^$]+)\$/g, (match, equation) => `${equation.replace(/\\times/g, ' times ').replace(/\\text\{([^}]+)\}/g, '$1').replace(/\^/g, ' to the power of ').replace(/\{([^}]+)\}/g, '$1').replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 divided by $2').replace(/\\mu/g, 'mu').replace(/\\cdot/g, ' dot ')}`) // Handle inline math
         .replace(/\d+\.\s+/g, '') // Remove numbered list markers
         .replace(/[-*+]\s+/g, '') // Remove bullet points
         .replace(/\n+/g, '. ') // Replace line breaks with periods
@@ -144,6 +144,25 @@ export function useVoice() {
       utterance.onerror = (error) => {
         console.error('Speech synthesis error:', error);
         setIsSpeaking(false);
+        // Handle common speech synthesis errors gracefully
+        if (error.error === 'network') {
+          console.warn('Network error during speech synthesis - this is normal and can be ignored');
+        } else if (error.error === 'synthesis-failed') {
+          console.warn('Speech synthesis failed - retrying with fallback voice');
+          // Try again with system default voice
+          const fallbackUtterance = new SpeechSynthesisUtterance(cleanText);
+          fallbackUtterance.rate = options?.rate || 0.9;
+          fallbackUtterance.pitch = options?.pitch || 1.0;
+          fallbackUtterance.volume = options?.volume || 1.0;
+          fallbackUtterance.onend = () => setIsSpeaking(false);
+          fallbackUtterance.onerror = () => setIsSpeaking(false);
+          try {
+            window.speechSynthesis.speak(fallbackUtterance);
+          } catch (e) {
+            console.warn('Fallback speech synthesis also failed:', e);
+            setIsSpeaking(false);
+          }
+        }
       };
       
       window.speechSynthesis.speak(utterance);

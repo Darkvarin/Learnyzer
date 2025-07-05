@@ -32,10 +32,32 @@
 
 .katex-display {
   margin: 1em 0 !important;
-  padding: 0.5em !important;
-  background: rgba(0, 212, 255, 0.05) !important;
-  border: 1px solid rgba(0, 212, 255, 0.2) !important;
+  padding: 0.8em !important;
+  background: rgba(0, 212, 255, 0.08) !important;
+  border: 1px solid rgba(0, 212, 255, 0.25) !important;
   border-radius: 0.5rem !important;
+  text-align: center !important;
+}
+
+/* Enhanced inline math styling */
+.katex {
+  font-size: 1.1em !important;
+  background: rgba(0, 212, 255, 0.03) !important;
+  padding: 0.15rem 0.3rem !important;
+  border-radius: 0.25rem !important;
+  border: 1px solid rgba(0, 212, 255, 0.1) !important;
+}
+
+/* Better text rendering within math */
+.katex .mtext {
+  color: #cbd5e1 !important;
+  font-family: "Inter", sans-serif !important;
+}
+
+/* Enhanced fraction line visibility */
+.katex .frac-line {
+  border-bottom-width: 0.04em !important;
+  border-bottom-color: #00D4FF !important;
 }
 
 @tailwind base;
