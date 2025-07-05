@@ -177,10 +177,17 @@ export function SupportChatbot() {
       console.log("Request payload:", { query: currentQuery });
       const response = await apiRequest("POST", "/api/support/chat", { query: currentQuery });
       
+      console.log("API Response received:", response);
+      console.log("Response type:", typeof response);
+      console.log("Response keys:", Object.keys(response || {}));
+      
+      const botResponse = (response as any).response || (response as any).aiResponse;
+      console.log("Extracted bot response:", botResponse);
+      
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        content: (response as any).response || (response as any).aiResponse || generateBotResponse(currentQuery),
+        content: botResponse || generateBotResponse(currentQuery),
         timestamp: new Date()
       };
 
