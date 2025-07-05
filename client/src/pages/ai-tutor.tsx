@@ -8,6 +8,11 @@ import { useVoice } from "@/hooks/useVoice";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { SubscriptionGuard, useSubscriptionTracking } from "@/components/subscription/subscription-guard";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 // import { TrialLockdown, useTrialStatus } from "@/components/trial/trial-lockdown"; // Replaced with existing SubscriptionGuard
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -887,7 +892,14 @@ export default function AiTutor() {
                               <div className="flex-1">
                                 <div className="text-sm font-semibold text-primary-400 mb-1">{(aiTutor as any)?.name || "AI Tutor"}</div>
                                 <div className="bg-dark-surface text-gray-200 p-4 rounded-lg border border-dark-border">
-                                  {msg.content}
+                                  <div className="prose prose-invert prose-sm max-w-none prose-headings:text-cyan-200 prose-strong:text-white prose-code:text-cyan-300 prose-code:bg-black/30 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-black/50 prose-pre:border prose-pre:border-cyan-500/20 prose-blockquote:border-l-cyan-500/50 prose-blockquote:bg-cyan-500/5 prose-blockquote:text-cyan-100 prose-ul:text-gray-200 prose-ol:text-gray-200 prose-li:text-gray-200">
+                                    <ReactMarkdown 
+                                      remarkPlugins={[remarkGfm, remarkMath]}
+                                      rehypePlugins={[rehypeKatex]}
+                                    >
+                                      {msg.content}
+                                    </ReactMarkdown>
+                                  </div>
                                 </div>
                                 <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
                                   <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
