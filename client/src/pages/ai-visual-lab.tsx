@@ -144,8 +144,11 @@ export default function AIVisualLab() {
         examType: formData.examType
       });
 
-      console.log("Image generation response:", response);
-      setResults(response);
+      const responseData = await response.json();
+      console.log("Image generation response:", responseData);
+      console.log("Image URL:", responseData.imageUrl);
+      console.log("Response keys:", Object.keys(responseData));
+      setResults(responseData);
       toast({
         title: "Image Generated!",
         description: "Your educational image has been created successfully"
@@ -187,7 +190,8 @@ export default function AIVisualLab() {
         includeQuiz: formData.includeQuiz
       });
 
-      setResults(response);
+      const responseData = await response.json();
+      setResults(responseData);
       toast({
         title: "Visual Package Created!",
         description: `Generated ${(response as any).totalComponents || 'multiple'} learning components`
@@ -228,7 +232,8 @@ export default function AIVisualLab() {
         includeVisuals: formData.includeVisuals
       });
 
-      setResults(response);
+      const responseData = await response.json();
+      setResults(responseData);
       toast({
         title: "Study Session Ready!",
         description: `${formData.duration}-minute interactive session created`
@@ -607,19 +612,24 @@ export default function AIVisualLab() {
                           </a>
                         </div>
                         <img 
-                          src={results.imageUrl}
+                          src={results.imageUrl ? `/api/proxy-image?url=${encodeURIComponent(results.imageUrl)}` : ''}
                           alt={`Educational illustration for ${results.topic}`}
                           className="w-full h-auto rounded-lg border border-slate-600"
-                          onLoad={() => console.log("Image loaded successfully!")}
+                          onLoad={() => console.log("Image loaded successfully via proxy!")}
                           onError={(e) => {
-                            console.error("Image failed to load:", e);
-                            console.error("Image URL:", results.imageUrl);
-                            // Show fallback message
-                            (e.target as HTMLImageElement).style.display = 'none';
-                            const fallback = document.createElement('div');
-                            fallback.className = 'w-full h-40 bg-slate-700 rounded-lg flex items-center justify-center text-slate-400';
-                            fallback.innerHTML = '<p>Image temporarily unavailable. <a href="' + results.imageUrl + '" target="_blank" class="text-cyan-400 underline">View directly</a></p>';
-                            (e.target as HTMLImageElement).parentNode?.appendChild(fallback);
+                            console.error("Image failed to load via proxy, trying direct URL");
+                            // Fallback to direct URL
+                            const img = e.target as HTMLImageElement;
+                            if (img.src.includes('/api/proxy-image')) {
+                              img.src = results.imageUrl;
+                            } else {
+                              // Even direct URL failed, show fallback
+                              img.style.display = 'none';
+                              const fallback = document.createElement('div');
+                              fallback.className = 'w-full h-40 bg-slate-700 rounded-lg flex items-center justify-center text-slate-400';
+                              fallback.innerHTML = '<p>Image temporarily unavailable. <a href="' + results.imageUrl + '" target="_blank" class="text-cyan-400 underline">View directly</a></p>';
+                              img.parentNode?.appendChild(fallback);
+                            }
                           }}
                         />
                       </div>

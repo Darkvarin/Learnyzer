@@ -235,6 +235,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/ai/visual-package", requireAuth, aiService.generateVisualLearningPackage);
   app.post("/api/ai/study-session", requireAuth, aiService.generateInteractiveStudySession);
   
+  // Image proxy route to bypass CORS issues with OpenAI images
+  app.get("/api/proxy-image", async (req, res) => {
+    try {
+      const { url } = req.query;
+      if (!url || typeof url !== 'string') {
+        return res.status(400).json({ error: 'URL parameter is required' });
+      }
+
+      // Validate it's an OpenAI image URL
+      if (!url.startsWith('https://oaidalleapiprodscus.blob.core.windows.net/')) {
+        return res.status(400).json({ error: 'Invalid image URL source' });
+      }
+
+      const fetch = await import('node-fetch');
+      const response = await fetch.default(url);
+      
+      if (!response.ok) {
+        return res.status(404).json({ error: 'Image not found' });
+      }
+
+      const buffer = await response.buffer();
+      const contentType = response.headers.get('content-type') || 'image/png';
+
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      res.send(buffer);
+    } catch (error) {
+      console.error('Image proxy error:', error);
+      res.status(500).json({ error: 'Failed to proxy image' });
+    }
+  });
+  
   // Course routes
   app.get("/api/courses", courseService.getAllCourses);
   app.get("/api/courses/recent", courseService.getRecentCourses);
