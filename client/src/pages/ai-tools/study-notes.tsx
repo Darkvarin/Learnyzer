@@ -39,14 +39,7 @@ export default function StudyNotesGenerator() {
   const [generatedNotes, setGeneratedNotes] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("input");
 
-  // Debug logging to track state changes
-  useEffect(() => {
-    console.log("Study Notes State:", { 
-      activeTab, 
-      hasNotes: !!generatedNotes,
-      notesLength: generatedNotes?.length || 0 
-    });
-  }, [activeTab, generatedNotes]);
+
   const [selectedDiagrams, setSelectedDiagrams] = useState<string[]>([]);
 
   // Get user data for exam selection check
@@ -135,7 +128,9 @@ export default function StudyNotesGenerator() {
       });
 
       if (!response.ok) {
-        throw new Error('PDF generation failed');
+        const errorData = await response.json().catch(() => ({ message: 'PDF generation failed' }));
+        console.error('PDF API Error:', errorData);
+        throw new Error(errorData.message || 'PDF generation failed');
       }
 
       return response.blob();
@@ -156,10 +151,11 @@ export default function StudyNotesGenerator() {
         description: "Your study notes have been saved as a PDF file."
       });
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error('PDF Download Error:', error);
       toast({
         title: "Download Failed",
-        description: "There was an error generating the PDF. Please try again.",
+        description: error.message || "There was an error generating the PDF. Please try again.",
         variant: "destructive",
       });
     }
