@@ -1182,58 +1182,60 @@ Analyze this student's performance data and provide comprehensive analytics:
       if (!customPrompt) {
         // Build subject-specific educational image prompts based on the topic and subject
         const subjectSpecificPrompts = {
-          'Physics': `Create a detailed physics ${style || 'diagram'} showing "${topic}" with:
-- Clear labeled force vectors, fields, or particle movements
-- Mathematical equations and formulas overlaid on the diagram
-- Step-by-step process flow with arrows and annotations
-- Measurement units and numerical values where relevant
-- Cross-sectional views or 3D representations if applicable
-- Color-coded components for easy understanding
-- Professional scientific illustration style like in physics textbooks`,
+          'Physics': `Create a clear, simple physics ${style || 'diagram'} showing "${topic}" with LARGE, READABLE text:
+- LARGE labels and annotations that students can easily read
+- BIG, bold mathematical equations and formulas (at least 16pt font size)
+- Simple, clean arrows and force vectors with clear labels
+- BOLD text for all measurements, units, and values
+- High contrast colors (black text on white/light backgrounds)
+- Minimal clutter - focus on key concepts only
+- Large, clear diagrams similar to educational textbook illustrations
+- Each label should be easily readable from a distance`,
 
-          'Chemistry': `Create a comprehensive chemistry ${style || 'diagram'} illustrating "${topic}" featuring:
-- Molecular structures with proper atomic symbols and bonds
-- Chemical equations and reaction mechanisms
-- Electron configurations or orbital diagrams
-- Laboratory apparatus and experimental setups
-- pH scales, energy diagrams, or reaction coordinates
-- Color-coded atoms following standard conventions
-- Professional chemistry textbook illustration style`,
+          'Chemistry': `Create a clear, simple chemistry ${style || 'diagram'} illustrating "${topic}" with LARGE, READABLE text:
+- LARGE molecular structures with BIG atomic symbols and clear bonds
+- BIG, bold chemical equations and reaction arrows
+- LARGE labels for all atoms, molecules, and compounds
+- High contrast colors with black text on light backgrounds
+- Simple, clean molecular diagrams without clutter
+- BOLD text for all chemical formulas and names
+- Educational chemistry textbook style with large, clear labels`,
 
-          'Biology': `Create a detailed biological ${style || 'diagram'} showing "${topic}" with:
-- Anatomical structures with clear labels and annotations
-- Cellular components and organelles with proper scale
-- Biological processes shown step-by-step
-- Cross-sectional views of organs or tissues
-- Molecular pathways or genetic processes
-- Scientific nomenclature and classification
-- Medical textbook quality illustration style`,
+          'Biology': `Create a clear, simple biological ${style || 'diagram'} showing "${topic}" with LARGE, READABLE text:
+- LARGE anatomical labels and annotations that are easy to read
+- BIG, bold text for all biological terms and processes
+- Simple, clean diagrams with minimal clutter
+- High contrast colors (black text on white/light backgrounds)
+- LARGE arrows showing biological processes and flows
+- BOLD labels for all structures, organs, and systems
+- Medical textbook style with large, clear, readable text`,
 
-          'Mathematics': `Create a mathematical ${style || 'diagram'} demonstrating "${topic}" including:
-- Geometric constructions with precise measurements
-- Coordinate systems with labeled axes and points
-- Graph functions with clear domain and range
-- Step-by-step solution processes
-- Formula derivations or proof diagrams
-- Visual representation of abstract concepts
-- Clean, precise mathematical illustration style`,
+          'Mathematics': `Create a clear, simple mathematical ${style || 'diagram'} demonstrating "${topic}" with LARGE, READABLE text:
+- BIG, bold mathematical formulas and equations
+- LARGE numbers, variables, and mathematical symbols
+- Clear coordinate axes with LARGE labels and values
+- Simple, clean geometric constructions
+- High contrast colors with black text on white backgrounds
+- BOLD text for all measurements and calculations
+- Educational math textbook style with large, clear labels`,
 
-          'General Science': `Create an educational ${style || 'diagram'} explaining "${topic}" with:
-- Clear scientific principles and laws
-- Real-world applications and examples
-- Step-by-step processes or cycles
-- Cause-and-effect relationships
-- Scientific terminology and definitions
-- Visual metaphors for complex concepts
-- Educational science textbook style`,
+          'General Science': `Create a clear, simple educational ${style || 'diagram'} explaining "${topic}" with LARGE, READABLE text:
+- BIG, bold scientific principles and laws
+- LARGE labels for all processes and concepts
+- Simple, clean diagrams with minimal clutter
+- High contrast colors (black text on white/light backgrounds)
+- BOLD text for all scientific terms and definitions
+- Clear arrows and flow indicators
+- Educational science textbook style with large, readable labels`,
 
-          'Computer Science': `Create a technical ${style || 'diagram'} showing "${topic}" with:
-- Algorithm flowcharts or data structures
-- Network topologies or system architectures
-- Code snippets or pseudocode examples
-- Input/output relationships
-- Performance metrics or complexity analysis
-- Professional computer science textbook style`
+          'Computer Science': `Create a clear, simple technical ${style || 'diagram'} showing "${topic}" with LARGE, READABLE text:
+- LARGE flowchart boxes with BIG, bold text
+- Clear algorithm steps with readable labels
+- Simple data structure diagrams with large annotations
+- BIG, bold code snippets or pseudocode
+- High contrast colors with black text on light backgrounds
+- LARGE arrows and connecting lines
+- Professional computer science textbook style with clear, readable text`
         };
 
         // Select appropriate prompt based on subject, with fallback to general
@@ -1242,17 +1244,18 @@ Analyze this student's performance data and provide comprehensive analytics:
         
         imagePrompt = `${basePrompt}
 
-CRITICAL SPECIFICATIONS for "${topic}":
+CRITICAL TEXT READABILITY REQUIREMENTS for "${topic}":
+- ALL TEXT MUST BE LARGE AND BOLD (minimum 16pt font size equivalent)
+- Use HIGH CONTRAST: Black text on white/light backgrounds ONLY
+- MINIMAL TEXT - only essential labels and key formulas
+- SIMPLE, CLEAN design without visual clutter
 - Focus EXCLUSIVELY on "${topic}" - no unrelated content
-- Include specific formulas, laws, or principles for ${topic}
-- Show practical applications relevant to ${examType || 'competitive exams'}
-- Use Indian educational standards and terminology
-- Make every visual element educational and informative
-- Professional academic illustration quality
-- Clear, readable text and labels throughout
+- Include only the most important formulas/laws for ${topic}
+- Make it look like a simple, clear educational poster
+- Students should be able to read ALL text easily
 - Suitable for ${examType || 'competitive exam'} preparation
 
-Style: Clean, professional, educational textbook quality with clear labels and annotations.`;
+Style: Simple, clean educational diagram with LARGE, BOLD, READABLE text throughout.`;
       }
 
       // Generate image using DALL-E 3
