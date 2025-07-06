@@ -335,16 +335,24 @@ Respond with JSON:
         }
       }
       
-      // Save enhanced conversation
+      // Append new messages to existing conversation
+      const existingMessages = conversation?.messages ? 
+        (typeof conversation.messages === 'string' ? 
+          JSON.parse(conversation.messages) : 
+          conversation.messages) : [];
+      
+      const newMessages = [
+        ...existingMessages,
+        { role: 'user', content: message, timestamp: new Date() },
+        { role: 'assistant', content: aiResponse || '', timestamp: new Date() }
+      ];
+
       await storage.saveConversation({
         userId,
         aiTutorId: tutor.id,
-        messages: [
-          { role: 'user', content: message, timestamp: new Date() },
-          { role: 'assistant', content: aiResponse || '', timestamp: new Date() }
-        ],
+        messages: newMessages,
         subject: subject || 'General',
-        createdAt: new Date(),
+        createdAt: conversation?.createdAt || new Date(),
         updatedAt: new Date()
       });
       

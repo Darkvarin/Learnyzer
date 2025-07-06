@@ -128,6 +128,9 @@ export default function AiTutor() {
   const [activeTab, setActiveTab] = useState("chat");
   const [currentSubject, setCurrentSubject] = useState(subjectParam?.toLowerCase() || "jee_mathematics");
   
+  // Add ref for auto-scrolling chat
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  
   // Subscription tracking
   const { trackFeatureUsage } = useSubscriptionTracking();
   const [currentTopic, setCurrentTopic] = useState(chapterParam || "");
@@ -372,6 +375,14 @@ export default function AiTutor() {
     queryKey: ['/api/ai/conversation/recent'],
     enabled: !!user,
   });
+
+  // Auto-scroll to bottom when conversation updates
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      const scrollContainer = chatContainerRef.current;
+      scrollContainer.scrollTop = scrollContainer.scrollHeight;
+    }
+  }, [conversation]);
   
   const sendMessageMutation = useMutation({
     mutationFn: async (message: string) => {
@@ -445,8 +456,16 @@ export default function AiTutor() {
         });
       }
       
+      // Refresh conversation data and auto-scroll to bottom
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation/recent'] });
       queryClient.invalidateQueries({ queryKey: ['/api/user/stats'] });
+      
+      // Auto-scroll to bottom after a brief delay for DOM update
+      setTimeout(() => {
+        if (chatContainerRef.current) {
+          chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+      }, 100);
     },
     onError: (error) => {
       const errorMessage = error.message || "Unknown error";
@@ -884,7 +903,10 @@ export default function AiTutor() {
                 {/* Chat Tab */}
                 <TabsContent value="chat" className="flex-1 flex flex-col mt-0">
                   {/* Chat messages */}
-                  <div className="bg-dark-card rounded-lg p-4 flex-1 min-h-[400px] overflow-y-auto mb-4">
+                  <div 
+                    ref={chatContainerRef}
+                    className="bg-dark-card rounded-lg p-4 flex-1 min-h-[400px] max-h-[500px] overflow-y-auto mb-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
+                  >
                     {isLoadingConversation ? (
                       <>
                         <div className="flex items-start space-x-3 mb-4">

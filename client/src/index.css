@@ -2071,3 +2071,29 @@
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
 }
+
+/* Custom Chat Scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #4B5563;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #6B7280;
+}
+
+.scrollbar-thumb-gray-600::-webkit-scrollbar-thumb {
+  background: #4B5563;
+}
+
+.scrollbar-track-transparent::-webkit-scrollbar-track {
+  background: transparent;
+}

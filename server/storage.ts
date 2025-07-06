@@ -1298,10 +1298,11 @@ export const storage = {
     });
     
     if (existingConversation) {
-      // Update existing conversation
+      // Update existing conversation with new messages
       const [updated] = await db.update(schema.conversations)
         .set({
           messages: JSON.stringify(conversation.messages),
+          subject: conversation.subject || existingConversation.subject,
           updatedAt: new Date()
         })
         .where(eq(schema.conversations.id, existingConversation.id))
@@ -1313,7 +1314,9 @@ export const storage = {
       const [newConversation] = await db.insert(schema.conversations).values({
         userId: conversation.userId,
         aiTutorId: conversation.aiTutorId,
-        messages: JSON.stringify(conversation.messages)
+        messages: JSON.stringify(conversation.messages),
+        subject: conversation.subject || 'General',
+        createdAt: conversation.createdAt || new Date()
       }).returning();
       
       return newConversation;
