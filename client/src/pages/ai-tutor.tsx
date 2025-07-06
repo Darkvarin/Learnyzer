@@ -843,7 +843,7 @@ export default function AiTutor() {
                           title: "Opening Visual Learning Lab",
                           description: "Redirecting to advanced visual content generation..."
                         });
-                        setTimeout(() => navigate('/visual-lab'), 1000);
+                        setTimeout(() => navigate('/ai-visual-lab'), 1000);
                       }}
                     >
                       {/* Solo Leveling active tab effect */}
@@ -1324,7 +1324,7 @@ export default function AiTutor() {
                                     title: "Opening Visual Learning Lab",
                                     description: "Access advanced visual content generation tools"
                                   });
-                                  navigate('/visual-lab');
+                                  navigate('/ai-visual-lab');
                                 }}
                                 variant="outline"
                                 className="w-full bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50 text-purple-300 hover:bg-gradient-to-r hover:from-purple-600/30 hover:to-blue-600/30"
