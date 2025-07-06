@@ -864,21 +864,54 @@ export default function AiTutor() {
                     </div>
                     
                     {/* Quick Start Button */}
-                    <Button 
-                      size="sm"
-                      className="bg-gradient-to-r from-emerald-500/80 to-green-600/80 hover:from-emerald-500 hover:to-green-600 text-white mt-2"
-                      onClick={() => {
-                        setActiveTab("chat");
-                        setMessage("Create a personalized study plan for my upcoming exams");
-                        toast({
-                          title: "Quick Start Session",
-                          description: "Let's create your personalized study plan!"
-                        });
-                      }}
-                    >
-                      <Zap className="h-4 w-4 mr-2" />
-                      <span className="font-medium">Start Study Session</span>
-                    </Button>
+                    <div className="flex gap-2 mt-2">
+                      <Button 
+                        size="sm"
+                        className="bg-gradient-to-r from-emerald-500/80 to-green-600/80 hover:from-emerald-500 hover:to-green-600 text-white flex-1"
+                        onClick={() => {
+                          setActiveTab("chat");
+                          setMessage("Create a personalized study plan for my upcoming exams");
+                          toast({
+                            title: "Quick Start Session",
+                            description: "Let's create your personalized study plan!"
+                          });
+                        }}
+                      >
+                        <Zap className="h-4 w-4 mr-2" />
+                        <span className="font-medium">Start Study Session</span>
+                      </Button>
+                      
+                      <Button 
+                        size="sm"
+                        onClick={() => {
+                          // Test Indian accent and show available voices
+                          const voices = window.speechSynthesis.getVoices();
+                          const indianVoices = voices.filter(voice => 
+                            voice.lang.includes('en-IN') || 
+                            voice.name.toLowerCase().includes('indian') ||
+                            voice.name.toLowerCase().includes('ravi') ||
+                            voice.name.toLowerCase().includes('veena')
+                          );
+                          
+                          console.log("All available voices:", voices.map(v => ({ name: v.name, lang: v.lang })));
+                          console.log("Indian voices found:", indianVoices.map(v => ({ name: v.name, lang: v.lang })));
+                          
+                          speak("Hello! I am your AI tutor with Indian accent. Main aapka AI teacher hun. How can I help you today?", { rate: 0.8 });
+                          
+                          toast({
+                            title: "Voice Test",
+                            description: indianVoices.length > 0 ? 
+                              `Using Indian voice: ${indianVoices[0].name}` : 
+                              "Using default English voice (Indian accent may not be available)",
+                            duration: 3000
+                          });
+                        }}
+                        className="bg-blue-600/20 border border-blue-500/30 hover:bg-blue-600/30 text-blue-200 transition-all px-3"
+                        title="Test Indian Accent Voice"
+                      >
+                        🎤
+                      </Button>
+                    </div>
                   </div>
                   
                   {/* Add CSS for tooltips */}
