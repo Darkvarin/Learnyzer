@@ -88,7 +88,7 @@ export function useVoice() {
     }
   }, [isListening]);
 
-  const speak = useCallback((text: string, options?: { rate?: number; pitch?: number; volume?: number }) => {
+  const speak = useCallback((text: string, options?: { rate?: number; pitch?: number; volume?: number; voicePreference?: 'auto' | 'neerja' | 'prabhat'; language?: 'english' | 'hindi' }) => {
     if ('speechSynthesis' in window) {
       // Cancel any ongoing speech
       window.speechSynthesis.cancel();
@@ -110,40 +110,59 @@ export function useVoice() {
       
       const utterance = new SpeechSynthesisUtterance(cleanText);
       
-      // Find best Indian English voice if available
+      // Find best voice based on preferences
       const voices = window.speechSynthesis.getVoices();
+      const voicePreference = options?.voicePreference || 'auto';
+      const language = options?.language || 'english';
       
-      // Priority order for Indian voices (most authentic first)
-      const indianVoicePriority = [
-        // Microsoft Natural voices (best quality)
-        'Microsoft Neerja Online (Natural) - English (India)',
-        'Microsoft Prabhat Online (Natural) - English (India)', 
-        // Other Indian voices
-        'Ravi', 'Veena', 'Aditi', 'Kavya'
-      ];
+      let selectedVoice = null;
       
-      let indianVoice = null;
-      
-      // First, try to find voices by exact name match (highest priority)
-      for (const preferredName of indianVoicePriority) {
-        indianVoice = voices.find(voice => voice.name === preferredName);
-        if (indianVoice) break;
+      // Voice selection logic based on preference
+      if (voicePreference === 'neerja') {
+        selectedVoice = voices.find(voice => voice.name.includes('Neerja'));
+      } else if (voicePreference === 'prabhat') {
+        selectedVoice = voices.find(voice => voice.name.includes('Prabhat'));
+      } else {
+        // Auto selection - prefer Neerja, then Prabhat, then other Indian voices
+        const indianVoicePriority = [
+          'Microsoft Neerja Online (Natural) - English (India)',
+          'Microsoft Prabhat Online (Natural) - English (India)', 
+          'Ravi', 'Veena', 'Aditi', 'Kavya'
+        ];
+        
+        for (const preferredName of indianVoicePriority) {
+          selectedVoice = voices.find(voice => voice.name === preferredName);
+          if (selectedVoice) break;
+        }
+        
+        // If no exact match, try language and name patterns
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => 
+            voice.lang.includes('en-IN') || 
+            voice.name.toLowerCase().includes('indian') ||
+            voice.name.toLowerCase().includes('ravi') ||
+            voice.name.toLowerCase().includes('veena') ||
+            voice.name.toLowerCase().includes('aditi') ||
+            voice.name.toLowerCase().includes('kavya')
+          );
+        }
       }
       
-      // If no exact match, try language and name patterns
-      if (!indianVoice) {
-        indianVoice = voices.find(voice => 
-          voice.lang.includes('en-IN') || 
-          voice.name.toLowerCase().includes('indian') ||
-          voice.name.toLowerCase().includes('ravi') ||
-          voice.name.toLowerCase().includes('veena') ||
-          voice.name.toLowerCase().includes('aditi') ||
-          voice.name.toLowerCase().includes('kavya')
+      // For Hindi language, try to find Hindi voices or use Indian English voices
+      if (language === 'hindi') {
+        const hindiVoice = voices.find(voice => 
+          voice.lang.includes('hi-IN') || 
+          voice.lang.includes('hi') ||
+          voice.name.toLowerCase().includes('hindi')
         );
+        if (hindiVoice) {
+          selectedVoice = hindiVoice;
+        }
+        // If no Hindi voice found, use selected Indian English voice (they can speak Hindi too)
       }
       
-      if (indianVoice) {
-        utterance.voice = indianVoice;
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
       } else {
         // Fallback to any English voice
         const englishVoice = voices.find(voice => voice.lang.includes('en'));
