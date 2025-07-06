@@ -70,6 +70,12 @@ export class SimpleSubscriptionService {
         aiVisualLabLimit: 40,
         aiTutorSessionLimit: 3,
         visualPackageLimit: 40
+      },
+      premium: {
+        aiChatLimit: -1, // -1 means unlimited
+        aiVisualLabLimit: -1,
+        aiTutorSessionLimit: -1,
+        visualPackageLimit: -1
       }
     };
 
@@ -111,9 +117,13 @@ export class SimpleSubscriptionService {
       const now = new Date();
       let isSubscriptionActive = false;
       
-      // Check if subscription is active and not expired
-      if (subscriptionStatus === 'active' && subscriptionEndDate) {
-        isSubscriptionActive = new Date(subscriptionEndDate) > now;
+      // Check if subscription is active - Premium tier gets special treatment
+      if (subscriptionStatus === 'active') {
+        if (subscriptionTier === 'premium') {
+          isSubscriptionActive = true; // Premium tier has unlimited access
+        } else if (subscriptionEndDate) {
+          isSubscriptionActive = new Date(subscriptionEndDate) > now;
+        }
       }
       
       // For free trial, check if it's expired
@@ -152,7 +162,7 @@ export class SimpleSubscriptionService {
       }
 
       const currentUsage = 0; // Reset for trial users
-      const remaining = hasAccess ? featureLimit : 0;
+      const remaining = featureLimit === -1 ? -1 : (hasAccess ? featureLimit : 0); // -1 means unlimited
 
       // Calculate reset time (next midnight)
       const resetTime = new Date();
@@ -176,24 +186,6 @@ export class SimpleSubscriptionService {
         remaining: 0,
         tier: 'free'
       };
-    }
-  }
-
-  /**
-   * Get feature limit from tier configuration
-   */
-  private static getFeatureLimit(limits: any, featureType: string): number {
-    switch (featureType) {
-      case 'ai_chat':
-        return limits.aiChatLimit;
-      case 'ai_visual_lab':
-        return limits.aiVisualLabLimit;
-      case 'ai_tutor_session':
-        return limits.aiTutorSessionLimit;
-      case 'visual_package_generation':
-        return limits.visualPackageLimit;
-      default:
-        return 0;
     }
   }
 
@@ -225,9 +217,13 @@ export class SimpleSubscriptionService {
       const now = new Date();
       let isSubscriptionActive = false;
       
-      // Check if subscription is active and not expired
-      if (subscriptionStatus === 'active' && subscriptionEndDate) {
-        isSubscriptionActive = new Date(subscriptionEndDate) > now;
+      // Check if subscription is active - Premium tier gets special treatment
+      if (subscriptionStatus === 'active') {
+        if (subscriptionTier === 'premium') {
+          isSubscriptionActive = true; // Premium tier has unlimited access
+        } else if (subscriptionEndDate) {
+          isSubscriptionActive = new Date(subscriptionEndDate) > now;
+        }
       }
       
       // For free trial, check if it's expired
@@ -245,17 +241,20 @@ export class SimpleSubscriptionService {
 
       // Determine effective tier based on subscription status
       let tier = 'free';
+      let isActive = false;
+      
       if (isSubscriptionActive) {
         tier = subscriptionTier;
+        isActive = true;
       } else if (isInFreeTrial) {
         tier = 'free_trial';
+        isActive = true;
       }
 
-      const isActive = isSubscriptionActive || isInFreeTrial || tier === 'free';
-
+      // Define features to track
       const features = [
         'ai_chat',
-        'ai_visual_lab',
+        'ai_visual_lab', 
         'ai_tutor_session',
         'visual_package_generation'
       ];
@@ -305,25 +304,51 @@ export class SimpleSubscriptionService {
   }
 
   /**
+   * Get feature limit from tier configuration
+   */
+  private static getFeatureLimit(limits: any, featureType: string): number {
+    switch (featureType) {
+      case 'ai_chat':
+        return limits.aiChatLimit;
+      case 'ai_visual_lab':
+        return limits.aiVisualLabLimit;
+      case 'ai_tutor_session':
+        return limits.aiTutorSessionLimit;
+      case 'visual_package_generation':
+        return limits.visualPackageLimit;
+      default:
+        return 0;
+    }
+  }
+
+  /**
    * Get subscription pricing
    */
   static getSubscriptionPricing(): SubscriptionPricing {
     return {
-      basic: { monthly: 799, currency: "INR" },
-      pro: { monthly: 1500, currency: "INR" },
-      quarterly: { quarterly: 4199, currency: "INR", savings: "Save ₹1301 compared to monthly" },
-      half_yearly: { half_yearly: 7599, currency: "INR", savings: "Save ₹3401 compared to monthly" },
-      yearly: { yearly: 12999, currency: "INR", savings: "Save ₹5001 compared to monthly" }
+      basic: { 
+        monthly: 799, 
+        currency: "INR" 
+      },
+      pro: { 
+        monthly: 1299, 
+        currency: "INR" 
+      },
+      quarterly: { 
+        quarterly: 2999, 
+        currency: "INR", 
+        savings: "23%" 
+      },
+      half_yearly: { 
+        half_yearly: 5499, 
+        currency: "INR", 
+        savings: "30%" 
+      },
+      yearly: { 
+        yearly: 9999, 
+        currency: "INR", 
+        savings: "36%" 
+      }
     };
-  }
-
-  /**
-   * Track usage (simplified - no actual tracking without DB tables)
-   */
-  static async trackUsage(userId: number, featureType: string, metadata?: any): Promise<boolean> {
-    // Simplified - just return true for now
-    // Would implement actual tracking when subscription tables are enabled
-    console.log(`Usage tracked for user ${userId}, feature ${featureType}`);
-    return true;
   }
 }
