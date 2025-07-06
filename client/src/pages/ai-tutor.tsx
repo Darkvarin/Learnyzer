@@ -703,9 +703,37 @@ export default function AiTutor() {
                     <div className="absolute bottom-0 right-0 w-2 h-8 border-r-2 border-b-2 border-primary/30"></div>
                     
                     <h3 className="font-semibold mb-2 font-gaming text-cyan-200">About</h3>
-                    <p className="text-cyan-100/80 text-sm">
-                      {(aiTutor as any)?.description || "I'm your AI entrance exam coach for JEE, NEET, UPSC, CLAT, CUET and CSE, providing voice-based guidance with interactive diagrams and presentations for all exam subjects."}
+                    <p className="text-cyan-100/80 text-sm leading-relaxed">
+                      {(aiTutor as any)?.description ? 
+                        `${(aiTutor as any).description} I provide comprehensive entrance exam preparation with voice-based interactive teaching, visual learning aids, and personalized study strategies for JEE, NEET, UPSC, CLAT, CUET, and CSE.` :
+                        "I'm your dedicated AI entrance exam coach specializing in JEE, NEET, UPSC, CLAT, CUET and CSE preparation. I provide voice-based guidance with interactive diagrams, presentations, and personalized teaching strategies for all competitive exam subjects."
+                      }
                     </p>
+                    
+                    <div className="mt-4 p-3 bg-cyan-500/5 rounded-md border border-cyan-500/20">
+                      <h4 className="font-medium text-cyan-300 text-xs mb-2 flex items-center">
+                        <span className="w-2 h-2 bg-cyan-400 rounded-full mr-2 animate-pulse"></span>
+                        EXPERT CAPABILITIES
+                      </h4>
+                      <div className="grid grid-cols-2 gap-2 text-xs text-cyan-100/70">
+                        <div className="flex items-center gap-1">
+                          <span className="text-cyan-400">•</span>
+                          <span>Voice Teaching</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="text-cyan-400">•</span>
+                          <span>Visual Diagrams</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="text-cyan-400">•</span>
+                          <span>Study Plans</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span className="text-cyan-400">•</span>
+                          <span>Concept Analysis</span>
+                        </div>
+                      </div>
+                    </div>
                     
                     <h3 className="font-semibold mt-4 mb-2 font-gaming text-cyan-200">Specialties</h3>
                     <ul className="space-y-3">
@@ -766,46 +794,91 @@ export default function AiTutor() {
                     </ul>
                   </div>
                   
-                  <div className="flex justify-center gap-3 mt-6">
+                  <div className="flex flex-col gap-3 mt-6">
+                    {/* Primary Action Buttons */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button 
+                        size="sm"
+                        onClick={() => {
+                          setActiveTab("chat");
+                          handleVoiceInteraction();
+                          toast({
+                            title: "Voice Mode Activated",
+                            description: "Start speaking your entrance exam questions!"
+                          });
+                        }}
+                        className="bg-gradient-to-r from-cyan-500/80 to-cyan-600/80 hover:from-cyan-500 hover:to-cyan-600 text-white relative overflow-hidden"
+                      >
+                        <div className="absolute inset-0 cyan-aura opacity-0 hover:opacity-30 transition-opacity duration-200"></div>
+                        <Mic className="h-4 w-4 mr-2 relative z-10" />
+                        <span className="relative z-10 font-medium">Voice Chat</span>
+                      </Button>
+                      <Button 
+                        size="sm"
+                        variant="outline" 
+                        className="bg-background/60 hover:bg-background/80 text-white border-cyan-500/30 hover:border-cyan-500/50"
+                        onClick={() => {
+                          setActiveTab("chat");
+                          toast({
+                            title: "Text Chat Active",
+                            description: "Type your questions below for detailed explanations"
+                          });
+                        }}
+                      >
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        <span className="font-medium">Text Chat</span>
+                      </Button>
+                    </div>
+                    
+                    {/* Secondary Action Buttons */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button 
+                        size="sm"
+                        variant="outline" 
+                        className="bg-primary/10 hover:bg-primary/20 text-primary-300 border-primary/30 hover:border-primary/50"
+                        onClick={() => {
+                          navigate('/ai-visual-lab');
+                          toast({
+                            title: "Visual Learning Lab",
+                            description: "Creating diagrams and visual explanations..."
+                          });
+                        }}
+                      >
+                        <PenTool className="h-4 w-4 mr-2" />
+                        <span className="font-medium">Visual Lab</span>
+                      </Button>
+                      <Button 
+                        size="sm"
+                        variant="outline" 
+                        className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border-amber-500/30 hover:border-amber-500/50"
+                        onClick={() => {
+                          setActiveTab("performance");
+                          toast({
+                            title: "Performance Analytics",
+                            description: "View your learning progress and exam preparation stats"
+                          });
+                        }}
+                      >
+                        <BarChart4 className="h-4 w-4 mr-2" />
+                        <span className="font-medium">Progress</span>
+                      </Button>
+                    </div>
+                    
+                    {/* Quick Start Button */}
                     <Button 
-                      size="icon" 
-                      onClick={handleVoiceInteraction}
-                      className="bg-cyan-500/80 hover:bg-cyan-500 text-white relative overflow-hidden tooltip-wrapper"
-                    >
-                      {/* Solo Leveling button effect */}
-                      <div className="absolute inset-0 cyan-aura opacity-0 hover:opacity-30 transition-opacity duration-200"></div>
-                      <Mic className="h-4 w-4 relative z-10" />
-                      <span className="tooltip-text">Voice Interaction</span>
-                    </Button>
-                    <Button 
-                      size="icon" 
-                      variant="outline" 
-                      className="bg-background/60 hover:bg-background/80 text-white border-cyan-500/30 hover:border-cyan-500/50 tooltip-wrapper"
+                      size="sm"
+                      className="bg-gradient-to-r from-emerald-500/80 to-green-600/80 hover:from-emerald-500 hover:to-green-600 text-white mt-2"
                       onClick={() => {
                         setActiveTab("chat");
+                        setMessage("Create a personalized study plan for my upcoming exams");
                         toast({
-                          title: "Chat Mode Activated",
-                          description: "Ask your entrance exam questions using text chat"
+                          title: "Quick Start Session",
+                          description: "Let's create your personalized study plan!"
                         });
                       }}
                     >
-                      <MessageSquare className="h-4 w-4" />
-                      <span className="tooltip-text">Text Chat</span>
-                    </Button>
-                    <Button 
-                      size="icon" 
-                      variant="outline" 
-                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50 tooltip-wrapper"
-                      onClick={() => {
-                        setActiveTab("performance");
-                        toast({
-                          title: "Performance Dashboard",
-                          description: "Track your entrance exam preparation progress"
-                        });
-                      }}
-                    >
-                      <Settings2 className="h-4 w-4" />
-                      <span className="tooltip-text">Settings</span>
+                      <Zap className="h-4 w-4 mr-2" />
+                      <span className="font-medium">Start Study Session</span>
                     </Button>
                   </div>
                   
@@ -850,7 +923,7 @@ export default function AiTutor() {
               <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-primary/60"></div>
               <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-primary/60"></div>
 
-              <Tabs defaultValue="canvas" value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <Tabs defaultValue="chat" value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <div className="flex items-center justify-between mb-4">
                   <TabsList className="grid grid-cols-2 w-auto bg-background/30 border border-primary/20 p-1">
                     <TabsTrigger 
