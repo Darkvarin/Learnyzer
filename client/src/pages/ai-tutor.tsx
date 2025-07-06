@@ -881,36 +881,63 @@ export default function AiTutor() {
                         <span className="font-medium">Start Study Session</span>
                       </Button>
                       
-                      <Button 
-                        size="sm"
-                        onClick={() => {
-                          // Test Indian accent and show available voices
-                          const voices = window.speechSynthesis.getVoices();
-                          const indianVoices = voices.filter(voice => 
-                            voice.lang.includes('en-IN') || 
-                            voice.name.toLowerCase().includes('indian') ||
-                            voice.name.toLowerCase().includes('ravi') ||
-                            voice.name.toLowerCase().includes('veena')
-                          );
-                          
-                          console.log("All available voices:", voices.map(v => ({ name: v.name, lang: v.lang })));
-                          console.log("Indian voices found:", indianVoices.map(v => ({ name: v.name, lang: v.lang })));
-                          
-                          speak("Hello! I am your AI tutor with Indian accent. Main aapka AI teacher hun. How can I help you today?", { rate: 1.1 });
-                          
-                          toast({
-                            title: "Voice Test",
-                            description: indianVoices.length > 0 ? 
-                              `Using Indian voice: ${indianVoices[0].name}` : 
-                              "Using default English voice (Indian accent may not be available)",
-                            duration: 3000
-                          });
-                        }}
-                        className="bg-blue-600/20 border border-blue-500/30 hover:bg-blue-600/30 text-blue-200 transition-all px-3"
-                        title="Test Indian Accent Voice"
-                      >
-                        🎤
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button 
+                          size="sm"
+                          onClick={() => {
+                            // Test Neerja (female Indian voice)
+                            const voices = window.speechSynthesis.getVoices();
+                            const neerjaVoice = voices.find(voice => voice.name.includes('Neerja'));
+                            
+                            if (neerjaVoice) {
+                              const utterance = new SpeechSynthesisUtterance("Hello! I am Neerja, your female AI tutor with Indian accent. Namaste!");
+                              utterance.voice = neerjaVoice;
+                              utterance.rate = 1.1;
+                              window.speechSynthesis.speak(utterance);
+                              
+                              toast({
+                                title: "Voice Test - Female",
+                                description: `Using: ${neerjaVoice.name}`,
+                                duration: 3000
+                              });
+                            } else {
+                              speak("Female Indian voice not available", { rate: 1.1 });
+                            }
+                          }}
+                          className="bg-pink-600/20 border border-pink-500/30 hover:bg-pink-600/30 text-pink-200 transition-all px-2"
+                          title="Test Female Indian Voice (Neerja)"
+                        >
+                          👩
+                        </Button>
+                        
+                        <Button 
+                          size="sm"
+                          onClick={() => {
+                            // Test Prabhat (male Indian voice)
+                            const voices = window.speechSynthesis.getVoices();
+                            const prabhatVoice = voices.find(voice => voice.name.includes('Prabhat'));
+                            
+                            if (prabhatVoice) {
+                              const utterance = new SpeechSynthesisUtterance("Hello! I am Prabhat, your male AI tutor with Indian accent. Namaste!");
+                              utterance.voice = prabhatVoice;
+                              utterance.rate = 1.1;
+                              window.speechSynthesis.speak(utterance);
+                              
+                              toast({
+                                title: "Voice Test - Male",
+                                description: `Using: ${prabhatVoice.name}`,
+                                duration: 3000
+                              });
+                            } else {
+                              speak("Male Indian voice not available", { rate: 1.1 });
+                            }
+                          }}
+                          className="bg-blue-600/20 border border-blue-500/30 hover:bg-blue-600/30 text-blue-200 transition-all px-2"
+                          title="Test Male Indian Voice (Prabhat)"
+                        >
+                          👨
+                        </Button>
+                      </div>
                     </div>
                   </div>
                   

@@ -110,14 +110,37 @@ export function useVoice() {
       
       const utterance = new SpeechSynthesisUtterance(cleanText);
       
-      // Find Indian English voice if available
+      // Find best Indian English voice if available
       const voices = window.speechSynthesis.getVoices();
-      const indianVoice = voices.find(voice => 
-        voice.lang.includes('en-IN') || 
-        voice.name.toLowerCase().includes('indian') ||
-        voice.name.toLowerCase().includes('ravi') ||
-        voice.name.toLowerCase().includes('veena')
-      );
+      
+      // Priority order for Indian voices (most authentic first)
+      const indianVoicePriority = [
+        // Microsoft Natural voices (best quality)
+        'Microsoft Neerja Online (Natural) - English (India)',
+        'Microsoft Prabhat Online (Natural) - English (India)', 
+        // Other Indian voices
+        'Ravi', 'Veena', 'Aditi', 'Kavya'
+      ];
+      
+      let indianVoice = null;
+      
+      // First, try to find voices by exact name match (highest priority)
+      for (const preferredName of indianVoicePriority) {
+        indianVoice = voices.find(voice => voice.name === preferredName);
+        if (indianVoice) break;
+      }
+      
+      // If no exact match, try language and name patterns
+      if (!indianVoice) {
+        indianVoice = voices.find(voice => 
+          voice.lang.includes('en-IN') || 
+          voice.name.toLowerCase().includes('indian') ||
+          voice.name.toLowerCase().includes('ravi') ||
+          voice.name.toLowerCase().includes('veena') ||
+          voice.name.toLowerCase().includes('aditi') ||
+          voice.name.toLowerCase().includes('kavya')
+        );
+      }
       
       if (indianVoice) {
         utterance.voice = indianVoice;
