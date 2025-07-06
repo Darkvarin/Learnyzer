@@ -704,9 +704,8 @@ export default function AiTutor() {
                     
                     <h3 className="font-semibold mb-2 font-gaming text-cyan-200">About</h3>
                     <p className="text-cyan-100/80 text-sm leading-relaxed">
-                      {(aiTutor as any)?.description ? 
-                        `${(aiTutor as any).description} I provide comprehensive entrance exam preparation with voice-based interactive teaching, visual learning aids, and personalized study strategies.` :
-                        "I'm your dedicated AI entrance exam coach specializing in competitive exam preparation. I provide voice-based guidance with interactive diagrams, presentations, and personalized teaching strategies for all entrance exam subjects."
+                      {(aiTutor as any)?.description || 
+                        "Expert AI tutor for JEE, NEET, UPSC, CLAT, CUET & CSE. Provides voice-based teaching with interactive diagrams and personalized study strategies."
                       }
                     </p>
                     
