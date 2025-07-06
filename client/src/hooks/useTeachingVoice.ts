@@ -31,7 +31,7 @@ export function useTeachingVoice() {
     onSuccess: (response) => {
       if (response.teachingExplanation) {
         // Automatically speak the teaching explanation
-        speak(response.teachingExplanation, { rate: 0.9 });
+        speak(response.teachingExplanation, { rate: 1.1 });
       }
     },
     onError: (error) => {

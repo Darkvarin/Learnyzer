@@ -896,7 +896,7 @@ export default function AiTutor() {
                           console.log("All available voices:", voices.map(v => ({ name: v.name, lang: v.lang })));
                           console.log("Indian voices found:", indianVoices.map(v => ({ name: v.name, lang: v.lang })));
                           
-                          speak("Hello! I am your AI tutor with Indian accent. Main aapka AI teacher hun. How can I help you today?", { rate: 0.8 });
+                          speak("Hello! I am your AI tutor with Indian accent. Main aapka AI teacher hun. How can I help you today?", { rate: 1.1 });
                           
                           toast({
                             title: "Voice Test",

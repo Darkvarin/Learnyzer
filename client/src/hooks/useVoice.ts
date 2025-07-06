@@ -129,7 +129,7 @@ export function useVoice() {
         }
       }
       
-      utterance.rate = options?.rate || 0.9; // Slightly slower for better comprehension
+      utterance.rate = options?.rate || 1.1; // Natural speaking pace
       utterance.pitch = options?.pitch || 1.0;
       utterance.volume = options?.volume || 1.0;
       
