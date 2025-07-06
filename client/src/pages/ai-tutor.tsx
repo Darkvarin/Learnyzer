@@ -131,13 +131,9 @@ export default function AiTutor() {
   // Voice and language settings
   const [voiceLanguage, setVoiceLanguage] = useState<'english' | 'hindi'>('english');
   const [selectedVoice, setSelectedVoice] = useState<'neerja' | 'prabhat' | 'auto'>('auto');
-  const [showVoiceSettings, setShowVoiceSettings] = useState(false);
   
   // Add ref for auto-scrolling chat
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  
-  // Voice settings panel ref for click outside
-  const voiceSettingsRef = useRef<HTMLDivElement>(null);
   
   // Subscription tracking
   const { trackFeatureUsage } = useSubscriptionTracking();
@@ -392,17 +388,7 @@ export default function AiTutor() {
     }
   }, [conversation]);
   
-  // Close voice settings when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (voiceSettingsRef.current && !voiceSettingsRef.current.contains(event.target as Node)) {
-        setShowVoiceSettings(false);
-      }
-    };
-    
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+
   
   const sendMessageMutation = useMutation({
     mutationFn: async (message: string) => {
@@ -904,137 +890,6 @@ export default function AiTutor() {
                         <Zap className="h-4 w-4 mr-2" />
                         <span className="font-medium">Start Study Session</span>
                       </Button>
-                      
-                      {/* Voice Settings Panel */}
-                      <div className="relative" ref={voiceSettingsRef}>
-                        <Button 
-                          size="sm"
-                          onClick={() => setShowVoiceSettings(!showVoiceSettings)}
-                          className="bg-purple-600/20 border border-purple-500/30 hover:bg-purple-600/30 text-purple-200 transition-all px-3"
-                          title="Voice & Language Settings"
-                        >
-                          🎙️ Voice
-                        </Button>
-                        
-                        {showVoiceSettings && (
-                          <div className="absolute top-full left-0 mt-2 p-4 bg-slate-900/95 border border-cyan-500/30 rounded-lg shadow-2xl backdrop-blur-sm z-50 min-w-[280px]">
-                            {/* Voice Settings Header */}
-                            <div className="flex items-center justify-between mb-3 pb-2 border-b border-cyan-500/20">
-                              <h3 className="font-semibold text-cyan-200 text-sm">Voice & Language</h3>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => setShowVoiceSettings(false)}
-                                className="h-6 w-6 p-0 text-cyan-400 hover:text-cyan-300"
-                              >
-                                ✕
-                              </Button>
-                            </div>
-                            
-                            {/* Language Toggle */}
-                            <div className="mb-4">
-                              <label className="text-xs text-cyan-300 mb-2 block">Teaching Language</label>
-                              <div className="flex gap-1 p-1 bg-slate-800/50 rounded-md border border-cyan-500/20">
-                                <button
-                                  onClick={() => setVoiceLanguage('english')}
-                                  className={`flex-1 px-3 py-1 text-xs rounded transition-all ${
-                                    voiceLanguage === 'english'
-                                      ? 'bg-cyan-500/30 text-cyan-100 border border-cyan-400/30'
-                                      : 'text-cyan-400 hover:text-cyan-300 hover:bg-slate-700/50'
-                                  }`}
-                                >
-                                  🇬🇧 English
-                                </button>
-                                <button
-                                  onClick={() => setVoiceLanguage('hindi')}
-                                  className={`flex-1 px-3 py-1 text-xs rounded transition-all ${
-                                    voiceLanguage === 'hindi'
-                                      ? 'bg-orange-500/30 text-orange-100 border border-orange-400/30'
-                                      : 'text-orange-400 hover:text-orange-300 hover:bg-slate-700/50'
-                                  }`}
-                                >
-                                  🇮🇳 हिंदी
-                                </button>
-                              </div>
-                            </div>
-                            
-                            {/* Voice Selection */}
-                            <div className="mb-4">
-                              <label className="text-xs text-cyan-300 mb-2 block">Voice Preference</label>
-                              <div className="space-y-1">
-                                {[
-                                  { id: 'auto', label: '🎯 Auto (Best Available)', desc: 'Smart selection' },
-                                  { id: 'neerja', label: '👩 Neerja (Female)', desc: 'Indian female voice' },
-                                  { id: 'prabhat', label: '👨 Prabhat (Male)', desc: 'Indian male voice' }
-                                ].map((option) => (
-                                  <button
-                                    key={option.id}
-                                    onClick={() => setSelectedVoice(option.id as any)}
-                                    className={`w-full text-left px-3 py-2 rounded text-xs transition-all ${
-                                      selectedVoice === option.id
-                                        ? 'bg-blue-500/30 text-blue-100 border border-blue-400/30'
-                                        : 'text-blue-400 hover:text-blue-300 hover:bg-slate-700/50 border border-transparent'
-                                    }`}
-                                  >
-                                    <div className="font-medium">{option.label}</div>
-                                    <div className="text-xs opacity-70">{option.desc}</div>
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                            
-                            {/* Voice Test Buttons */}
-                            <div className="border-t border-cyan-500/20 pt-3">
-                              <label className="text-xs text-cyan-300 mb-2 block">Test Voices</label>
-                              <div className="flex gap-2">
-                                <Button 
-                                  size="sm"
-                                  onClick={() => {
-                                    const voices = window.speechSynthesis.getVoices();
-                                    const neerjaVoice = voices.find(voice => voice.name.includes('Neerja'));
-                                    
-                                    const testText = voiceLanguage === 'hindi' 
-                                      ? "नमस्ते! मैं नीरजा हूँ, आपकी AI शिक्षिका।" 
-                                      : "Hello! I am Neerja, your AI tutor with Indian accent.";
-                                    
-                                    if (neerjaVoice) {
-                                      const utterance = new SpeechSynthesisUtterance(testText);
-                                      utterance.voice = neerjaVoice;
-                                      utterance.rate = 1.1;
-                                      window.speechSynthesis.speak(utterance);
-                                    }
-                                  }}
-                                  className="flex-1 bg-pink-600/20 border border-pink-500/30 hover:bg-pink-600/30 text-pink-200"
-                                >
-                                  👩 Neerja
-                                </Button>
-                                
-                                <Button 
-                                  size="sm"
-                                  onClick={() => {
-                                    const voices = window.speechSynthesis.getVoices();
-                                    const prabhatVoice = voices.find(voice => voice.name.includes('Prabhat'));
-                                    
-                                    const testText = voiceLanguage === 'hindi' 
-                                      ? "नमस्ते! मैं प्रभात हूँ, आपका AI शिक्षक।" 
-                                      : "Hello! I am Prabhat, your AI tutor with Indian accent.";
-                                    
-                                    if (prabhatVoice) {
-                                      const utterance = new SpeechSynthesisUtterance(testText);
-                                      utterance.voice = prabhatVoice;
-                                      utterance.rate = 1.1;
-                                      window.speechSynthesis.speak(utterance);
-                                    }
-                                  }}
-                                  className="flex-1 bg-blue-600/20 border border-blue-500/30 hover:bg-blue-600/30 text-blue-200"
-                                >
-                                  👨 Prabhat
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
                     </div>
                   </div>
                   
@@ -1111,6 +966,114 @@ export default function AiTutor() {
                   </TabsList>
                   
                   <div className="flex items-center gap-2">
+                    {/* Voice Controls - Compact Header Version */}
+                    <div className="flex items-center gap-2 bg-background/40 rounded-lg px-3 py-1.5 border border-primary/20">
+                      {/* Language Toggle */}
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => setVoiceLanguage('english')}
+                          className={`px-2 py-1 text-xs rounded transition-all ${
+                            voiceLanguage === 'english'
+                              ? 'bg-cyan-500/30 text-cyan-100'
+                              : 'text-cyan-400 hover:text-cyan-300'
+                          }`}
+                          title="English Mode"
+                        >
+                          🇬🇧
+                        </button>
+                        <button
+                          onClick={() => setVoiceLanguage('hindi')}
+                          className={`px-2 py-1 text-xs rounded transition-all ${
+                            voiceLanguage === 'hindi'
+                              ? 'bg-orange-500/30 text-orange-100'
+                              : 'text-orange-400 hover:text-orange-300'
+                          }`}
+                          title="Hindi Mode - हिंदी"
+                        >
+                          🇮🇳
+                        </button>
+                      </div>
+                      
+                      <div className="w-px h-4 bg-primary/20"></div>
+                      
+                      {/* Voice Selection */}
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => setSelectedVoice('neerja')}
+                          className={`px-2 py-1 text-xs rounded transition-all ${
+                            selectedVoice === 'neerja'
+                              ? 'bg-pink-500/30 text-pink-100'
+                              : 'text-pink-400 hover:text-pink-300'
+                          }`}
+                          title="Neerja - Female Voice"
+                        >
+                          👩
+                        </button>
+                        <button
+                          onClick={() => setSelectedVoice('prabhat')}
+                          className={`px-2 py-1 text-xs rounded transition-all ${
+                            selectedVoice === 'prabhat'
+                              ? 'bg-blue-500/30 text-blue-100'
+                              : 'text-blue-400 hover:text-blue-300'
+                          }`}
+                          title="Prabhat - Male Voice"
+                        >
+                          👨
+                        </button>
+                        <button
+                          onClick={() => setSelectedVoice('auto')}
+                          className={`px-2 py-1 text-xs rounded transition-all ${
+                            selectedVoice === 'auto'
+                              ? 'bg-green-500/30 text-green-100'
+                              : 'text-green-400 hover:text-green-300'
+                          }`}
+                          title="Auto Selection"
+                        >
+                          🎯
+                        </button>
+                      </div>
+                      
+                      <div className="w-px h-4 bg-primary/20"></div>
+                      
+                      {/* Voice Enable/Disable & Test */}
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => setVoiceEnabled(!voiceEnabled)}
+                          className={`px-2 py-1 text-xs rounded transition-all ${
+                            voiceEnabled
+                              ? 'bg-green-500/30 text-green-100'
+                              : 'bg-red-500/30 text-red-300'
+                          }`}
+                          title={voiceEnabled ? 'Voice Enabled' : 'Voice Disabled'}
+                        >
+                          {voiceEnabled ? '🔊' : '🔇'}
+                        </button>
+                        <button
+                          onClick={() => {
+                            const testText = voiceLanguage === 'hindi' 
+                              ? "नमस्ते! मैं आपकी AI शिक्षिका हूँ।" 
+                              : "Hello! I am your AI tutor with Indian accent.";
+                            
+                            speak(testText, {
+                              voicePreference: selectedVoice,
+                              language: voiceLanguage,
+                              rate: 1.1
+                            });
+                            
+                            toast({
+                              title: "Voice Test",
+                              description: `Testing ${selectedVoice} voice in ${voiceLanguage}`,
+                              duration: 2000
+                            });
+                          }}
+                          className="px-2 py-1 text-xs rounded bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 transition-all"
+                          title="Test Current Voice Settings"
+                        >
+                          🎤
+                        </button>
+                      </div>
+                    </div>
+                    
                     <Button 
                       variant="outline" 
                       size="sm" 
@@ -1348,37 +1311,26 @@ export default function AiTutor() {
                     </Button>
                   </div>
                   
-                  {/* Voice Settings */}
-                  {isVoiceSupported && (
-                    <div className="mt-6 bg-dark-card rounded-lg p-4 border border-dark-border">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <Volume2 className="h-4 w-4 text-primary-400" />
-                          <h4 className="font-medium text-primary-400">Voice Controls</h4>
+                  {/* Voice Status - Minimal footer */}
+                  {isVoiceSupported && (isSpeaking || isTeaching || isListening) && (
+                    <div className="mt-4 bg-dark-card/50 rounded-lg p-2 border border-primary/20">
+                      <div className="flex items-center justify-between text-xs text-gray-400">
+                        <div className="flex items-center gap-4">
+                          {isListening && (
+                            <div className="flex items-center gap-1">
+                              <Mic className="h-3 w-3 text-red-400 animate-pulse" />
+                              <span>Listening...</span>
+                            </div>
+                          )}
+                          {(isSpeaking || isTeaching) && (
+                            <div className="flex items-center gap-1">
+                              <Volume2 className="h-3 w-3 text-green-400" />
+                              <span>{isTeaching ? 'Teaching...' : 'Speaking...'}</span>
+                              <span className="text-cyan-300">({selectedVoice} • {voiceLanguage})</span>
+                            </div>
+                          )}
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setVoiceEnabled(!voiceEnabled)}
-                            className={`text-xs ${voiceEnabled ? 'bg-primary-500/20 border-primary-500/50 text-primary-300' : 'bg-gray-500/20 border-gray-500/50 text-gray-400'}`}
-                          >
-                            {voiceEnabled ? 'Voice On' : 'Voice Off'}
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-2 text-gray-400">
-                          <Mic className={`h-3 w-3 ${isListening ? 'text-red-400' : ''}`} />
-                          <span>Speech-to-text: {isListening ? 'Listening...' : 'Ready'}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-400">
-                          <VolumeX className={`h-3 w-3 ${isSpeaking || isTeaching ? 'text-green-400' : ''}`} />
-                          <span>AI Teaching Voice: {isTeaching ? 'Teaching...' : isSpeaking ? 'Speaking...' : voiceEnabled ? 'Ready (Manual)' : 'Disabled'}</span>
-                        </div>
-                      </div>
-                      {(isSpeaking || isTeaching) && (
-                        <div className="mt-2 flex justify-center">
+                        {(isSpeaking || isTeaching) && (
                           <Button
                             variant="outline"
                             size="sm"
@@ -1389,13 +1341,13 @@ export default function AiTutor() {
                                 stopSpeaking();
                               }
                             }}
-                            className="bg-red-500/20 border-red-500/50 text-red-300 hover:bg-red-500/30"
+                            className="bg-red-500/20 border-red-500/50 text-red-300 hover:bg-red-500/30 h-6 px-2 text-xs"
                           >
                             <VolumeX className="h-3 w-3 mr-1" />
-                            {isTeaching ? 'Stop Teaching' : 'Stop Speaking'}
+                            Stop
                           </Button>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   )}
                 </TabsContent>
