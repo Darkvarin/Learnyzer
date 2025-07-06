@@ -837,11 +837,19 @@ export default function AiTutor() {
                     <TabsTrigger 
                       value="canvas" 
                       className="text-sm px-4 data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=active]:shadow-glow relative overflow-hidden"
+                      onClick={() => {
+                        // Auto-navigate to Visual Labs when this tab is selected
+                        toast({
+                          title: "Opening Visual Learning Lab",
+                          description: "Redirecting to advanced visual content generation..."
+                        });
+                        setTimeout(() => navigate('/visual-lab'), 1000);
+                      }}
                     >
                       {/* Solo Leveling active tab effect */}
                       <div className="absolute inset-0 primary-aura opacity-0 group-data-[state=active]:opacity-20"></div>
                       <PenTool className="h-4 w-4 mr-2" />
-                      <span className="relative z-10">Entrance Exam Session</span>
+                      <span className="relative z-10">Visual Learning Lab</span>
                     </TabsTrigger>
                     <TabsTrigger 
                       value="performance" 
@@ -1297,17 +1305,34 @@ export default function AiTutor() {
                               />
                             </div>
                             
-                            <Button 
-                              onClick={handleStartTeaching}
-                              className="w-full bg-primary-600 hover:bg-primary-500"
-                              disabled={isGeneratingDiagram}
-                            >
-                              {isGeneratingDiagram ? (
-                                <>Generating... <span className="ml-2 animate-pulse">⏳</span></>
-                              ) : (
-                                <>Generate Interactive Content</>
-                              )}
-                            </Button>
+                            <div className="space-y-2">
+                              <Button 
+                                onClick={handleStartTeaching}
+                                className="w-full bg-primary-600 hover:bg-primary-500"
+                                disabled={isGeneratingDiagram}
+                              >
+                                {isGeneratingDiagram ? (
+                                  <>Generating... <span className="ml-2 animate-pulse">⏳</span></>
+                                ) : (
+                                  <>Generate Interactive Content</>
+                                )}
+                              </Button>
+                              
+                              <Button 
+                                onClick={() => {
+                                  toast({
+                                    title: "Opening Visual Learning Lab",
+                                    description: "Access advanced visual content generation tools"
+                                  });
+                                  navigate('/visual-lab');
+                                }}
+                                variant="outline"
+                                className="w-full bg-gradient-to-r from-purple-600/20 to-blue-600/20 border-purple-500/50 text-purple-300 hover:bg-gradient-to-r hover:from-purple-600/30 hover:to-blue-600/30"
+                              >
+                                <ImageIcon className="h-4 w-4 mr-2" />
+                                Open Visual Learning Lab
+                              </Button>
+                            </div>
                           </div>
                           
                           {weakPoints.length > 0 && (

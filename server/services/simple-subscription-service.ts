@@ -322,6 +322,19 @@ export class SimpleSubscriptionService {
   }
 
   /**
+   * Track feature usage (simplified - no actual tracking for premium users)
+   */
+  static async trackUsage(userId: number, featureType: string, metadata?: any): Promise<boolean> {
+    try {
+      const access = await this.hasFeatureAccess(userId, featureType);
+      return access.hasAccess;
+    } catch (error) {
+      console.error('Error tracking usage:', error);
+      return false;
+    }
+  }
+
+  /**
    * Get subscription pricing
    */
   static getSubscriptionPricing(): SubscriptionPricing {
