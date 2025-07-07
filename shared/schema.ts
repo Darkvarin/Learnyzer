@@ -89,6 +89,9 @@ export const conversations = pgTable("conversations", {
   userId: integer("user_id").references(() => users.id).notNull(),
   aiTutorId: integer("ai_tutor_id").references(() => aiTutors.id).notNull(),
   messages: jsonb("messages").notNull(),
+  title: text("title"), // Added for better conversation identification
+  subject: text("subject").default("General"), // Added subject field
+  isActive: boolean("is_active").default(true), // To track active vs archived conversations
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });

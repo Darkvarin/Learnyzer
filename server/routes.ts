@@ -149,6 +149,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/ai/conversation/recent", requireAuth, aiService.getRecentConversation);
   app.post("/api/ai/conversation", requireAuth, aiService.saveConversation);
   app.post("/api/ai/conversation/new", requireAuth, aiService.createNewConversation);
+  app.get("/api/ai/conversation/history", requireAuth, aiService.getConversationHistory);
+  app.get("/api/ai/conversation/:id", requireAuth, aiService.loadConversation);
   app.get("/api/ai/tools", requireAuth, aiService.getAITools);
   app.get("/api/ai/tools/:id", requireAuth, aiService.getAITool);
   app.post("/api/ai/tools/notes", requireAuth, aiService.generateStudyNotes);

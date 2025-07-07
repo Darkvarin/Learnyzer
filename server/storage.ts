@@ -1288,21 +1288,32 @@ export const storage = {
    * Save or update a conversation
    */
   async saveConversation(conversation: any) {
-    // Check if there's an existing conversation
+    // Check if there's an existing active conversation
     const existingConversation = await db.query.conversations.findFirst({
       where: and(
         eq(schema.conversations.userId, conversation.userId),
-        eq(schema.conversations.aiTutorId, conversation.aiTutorId)
+        eq(schema.conversations.aiTutorId, conversation.aiTutorId),
+        eq(schema.conversations.isActive, true)
       ),
       orderBy: desc(schema.conversations.updatedAt)
     });
     
     if (existingConversation) {
+      // Generate title if messages exist and no title is set
+      let title = existingConversation.title;
+      if (!title && conversation.messages && conversation.messages.length > 0) {
+        const firstUserMessage = conversation.messages.find((msg: any) => msg.role === 'user');
+        if (firstUserMessage) {
+          title = firstUserMessage.content.substring(0, 50) + (firstUserMessage.content.length > 50 ? '...' : '');
+        }
+      }
+      
       // Update existing conversation with new messages
       const [updated] = await db.update(schema.conversations)
         .set({
           messages: JSON.stringify(conversation.messages),
           subject: conversation.subject || existingConversation.subject,
+          title: title,
           updatedAt: new Date()
         })
         .where(eq(schema.conversations.id, existingConversation.id))
@@ -1310,17 +1321,82 @@ export const storage = {
       
       return updated;
     } else {
+      // Generate title from first user message
+      let title = 'New Conversation';
+      if (conversation.messages && conversation.messages.length > 0) {
+        const firstUserMessage = conversation.messages.find((msg: any) => msg.role === 'user');
+        if (firstUserMessage) {
+          title = firstUserMessage.content.substring(0, 50) + (firstUserMessage.content.length > 50 ? '...' : '');
+        }
+      }
+      
       // Create new conversation
       const [newConversation] = await db.insert(schema.conversations).values({
         userId: conversation.userId,
         aiTutorId: conversation.aiTutorId,
         messages: JSON.stringify(conversation.messages),
         subject: conversation.subject || 'General',
+        title: title,
+        isActive: true,
         createdAt: conversation.createdAt || new Date()
       }).returning();
       
       return newConversation;
     }
+  },
+
+  /**
+   * Get conversation history for a user
+   */
+  async getConversationHistory(userId: number, limit: number = 10) {
+    const conversations = await db.query.conversations.findMany({
+      where: eq(schema.conversations.userId, userId),
+      orderBy: desc(schema.conversations.updatedAt),
+      limit: limit
+    });
+    
+    return conversations;
+  },
+
+  /**
+   * Get a specific conversation by ID
+   */
+  async getConversationById(conversationId: number, userId: number) {
+    const conversation = await db.query.conversations.findFirst({
+      where: and(
+        eq(schema.conversations.id, conversationId),
+        eq(schema.conversations.userId, userId)
+      )
+    });
+    
+    return conversation;
+  },
+
+  /**
+   * Archive current conversation and start a new one
+   */
+  async archiveAndCreateNewConversation(userId: number, aiTutorId: number) {
+    // Archive the current active conversation
+    await db.update(schema.conversations)
+      .set({ isActive: false })
+      .where(and(
+        eq(schema.conversations.userId, userId),
+        eq(schema.conversations.aiTutorId, aiTutorId),
+        eq(schema.conversations.isActive, true)
+      ));
+    
+    // Create new active conversation
+    const [newConversation] = await db.insert(schema.conversations).values({
+      userId,
+      aiTutorId,
+      messages: JSON.stringify([]),
+      subject: 'General',
+      title: 'New Conversation',
+      isActive: true,
+      createdAt: new Date()
+    }).returning();
+    
+    return newConversation;
   },
   
   /**

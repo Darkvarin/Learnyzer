@@ -571,17 +571,8 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
         return res.status(404).json({ message: 'AI tutor not found' });
       }
       
-      // Create a new conversation with empty messages (this replaces the old one)
-      const newConversation = {
-        userId,
-        aiTutorId: aiTutor.id,
-        messages: [],
-        subject: 'General',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      
-      await storage.saveConversation(newConversation);
+      // Archive current conversation and create a new one
+      const newConversation = await storage.archiveAndCreateNewConversation(userId, aiTutor.id);
       
       return res.status(200).json({ 
         message: 'New conversation started', 
@@ -590,6 +581,56 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
     } catch (error) {
       console.error('Error creating new conversation:', error);
       return res.status(500).json({ message: 'Failed to create new conversation' });
+    }
+  },
+
+  /**
+   * Get conversation history for a user
+   */
+  async getConversationHistory(req: Request, res: Response) {
+    if (!req.isAuthenticated() || !req.user) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    try {
+      const userId = (req.user as any).id;
+      const limit = parseInt(req.query.limit as string) || 10;
+      
+      const conversations = await storage.getConversationHistory(userId, limit);
+      
+      return res.status(200).json(conversations);
+    } catch (error) {
+      console.error('Error fetching conversation history:', error);
+      return res.status(500).json({ message: 'Failed to fetch conversation history' });
+    }
+  },
+
+  /**
+   * Load a specific conversation by ID
+   */
+  async loadConversation(req: Request, res: Response) {
+    if (!req.isAuthenticated() || !req.user) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    try {
+      const userId = (req.user as any).id;
+      const conversationId = parseInt(req.params.id);
+      
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: 'Invalid conversation ID' });
+      }
+      
+      const conversation = await storage.getConversationById(conversationId, userId);
+      
+      if (!conversation) {
+        return res.status(404).json({ message: 'Conversation not found' });
+      }
+      
+      return res.status(200).json(conversation);
+    } catch (error) {
+      console.error('Error loading conversation:', error);
+      return res.status(500).json({ message: 'Failed to load conversation' });
     }
   },
   

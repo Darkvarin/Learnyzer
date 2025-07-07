@@ -48,9 +48,10 @@ import {
   MicOff,
   Volume2,
   VolumeX,
+  History,
+  Clock,
   Bell,
   Lightbulb,
-  Clock,
   BookOpen,
   Play,
   Award,
@@ -77,6 +78,10 @@ export default function AiTutor() {
 
   // State for exam selection modal
   const [showExamModal, setShowExamModal] = useState(false);
+  
+  // State for chat history modal
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [selectedHistoryConversation, setSelectedHistoryConversation] = useState<any>(null);
 
   // Function to check if user can access AI tools
   const checkExamSelection = () => {
@@ -378,6 +383,12 @@ export default function AiTutor() {
   const { data: conversation, isLoading: isLoadingConversation } = useQuery({
     queryKey: ['/api/ai/conversation/recent'],
     enabled: !!user,
+  });
+
+  // Query for conversation history
+  const { data: conversationHistory, isLoading: isLoadingHistory } = useQuery({
+    queryKey: ['/api/ai/conversation/history'],
+    enabled: !!user && showHistoryModal,
   });
 
   // Auto-scroll to bottom when conversation updates
@@ -1130,6 +1141,15 @@ export default function AiTutor() {
                     >
                       New Session
                     </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50"
+                      onClick={() => setShowHistoryModal(true)}
+                    >
+                      <History className="h-4 w-4 mr-2" />
+                      History
+                    </Button>
                   </div>
                 </div>
                 
@@ -1838,6 +1858,129 @@ export default function AiTutor() {
               >
                 Cancel
               </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Chat History Modal */}
+      <Dialog open={showHistoryModal} onOpenChange={setShowHistoryModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden bg-dark-card border-dark-border">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-white">
+              <History className="h-5 w-5" />
+              Chat History
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Browse your previous conversations with the AI tutor
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex gap-4 h-[600px]">
+            {/* History List */}
+            <div className="w-1/3 border-r border-dark-border pr-4">
+              <h3 className="font-semibold mb-3 text-white">Previous Conversations</h3>
+              <div className="space-y-2 overflow-y-auto max-h-[550px]">
+                {isLoadingHistory ? (
+                  Array.from({ length: 5 }).map((_, idx) => (
+                    <div key={idx} className="p-3 rounded-lg bg-dark-surface border border-dark-border">
+                      <Skeleton className="h-4 w-3/4 mb-2" />
+                      <Skeleton className="h-3 w-1/2 mb-1" />
+                      <Skeleton className="h-3 w-16" />
+                    </div>
+                  ))
+                ) : conversationHistory && conversationHistory.length > 0 ? (
+                  conversationHistory.map((conv: any) => (
+                    <div
+                      key={conv.id}
+                      className={`p-3 rounded-lg cursor-pointer transition-colors border ${
+                        selectedHistoryConversation?.id === conv.id
+                          ? 'bg-primary-600/20 border-primary-500'
+                          : 'bg-dark-surface border-dark-border hover:bg-dark-hover'
+                      }`}
+                      onClick={() => setSelectedHistoryConversation(conv)}
+                    >
+                      <div className="font-medium text-white text-sm mb-1">
+                        {conv.title || 'Untitled Conversation'}
+                      </div>
+                      <div className="text-xs text-gray-400 mb-2">
+                        {conv.subject || 'General'}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <Clock className="h-3 w-3" />
+                        {new Date(conv.updatedAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center text-gray-400 py-8">
+                    <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                    <p>No chat history found</p>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Conversation Preview */}
+            <div className="w-2/3 pl-4">
+              {selectedHistoryConversation ? (
+                <div className="h-full flex flex-col">
+                  <div className="mb-4 pb-3 border-b border-dark-border">
+                    <h3 className="font-semibold text-white">
+                      {selectedHistoryConversation.title || 'Untitled Conversation'}
+                    </h3>
+                    <p className="text-sm text-gray-400">
+                      {selectedHistoryConversation.subject} • {new Date(selectedHistoryConversation.updatedAt).toLocaleString()}
+                    </p>
+                  </div>
+                  
+                  <div className="flex-1 overflow-y-auto space-y-4">
+                    {JSON.parse(selectedHistoryConversation.messages || '[]').map((msg: any, idx: number) => (
+                      <div key={idx} className="flex items-start space-x-3">
+                        {msg.role === 'assistant' ? (
+                          <>
+                            <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                              <Robot className="h-4 w-4 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="text-sm font-semibold text-primary-400 mb-1">AI Tutor</div>
+                              <div className="bg-dark-surface text-gray-200 p-3 rounded-lg border border-dark-border text-sm">
+                                <div className="prose prose-invert prose-sm max-w-none">
+                                  <ReactMarkdown 
+                                    remarkPlugins={[remarkGfm, remarkMath]}
+                                    rehypePlugins={[rehypeKatex]}
+                                  >
+                                    {msg.content}
+                                  </ReactMarkdown>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="w-8 h-8 bg-dark-surface rounded-full flex items-center justify-center flex-shrink-0 border border-dark-border">
+                              <UserCircle className="h-5 w-5 text-gray-400" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="text-sm font-semibold mb-1 text-white">You</div>
+                              <div className="bg-primary-900/20 text-gray-200 p-3 rounded-lg text-sm">
+                                {msg.content}
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="h-full flex items-center justify-center text-gray-400">
+                  <div className="text-center">
+                    <MessageSquare className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                    <p>Select a conversation to view its history</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </DialogContent>
