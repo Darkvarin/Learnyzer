@@ -204,21 +204,12 @@ export function useVoice() {
       
       if (selectedVoice) {
         utterance.voice = selectedVoice;
-        console.log(`✅ Selected voice: ${selectedVoice.name} (${selectedVoice.lang}) for preference: ${voicePreference}`);
       } else {
         // Fallback to any English voice
         const englishVoice = voices.find(voice => voice.lang.includes('en'));
         if (englishVoice) {
           utterance.voice = englishVoice;
-          console.log(`⚠️ Fallback voice: ${englishVoice.name} (${englishVoice.lang})`);
         }
-      }
-      
-      // Debug: Log all available voices so we can see what's available
-      if (voices.length > 0) {
-        console.log(`🎙️ Available voices (${voices.length} total):`, 
-          voices.map(v => `${v.name} (${v.lang})`).slice(0, 10)
-        );
       }
       
       utterance.rate = options?.rate || 1.1; // Natural speaking pace

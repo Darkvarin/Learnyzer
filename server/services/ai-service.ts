@@ -555,6 +555,45 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
   },
   
   /**
+   * Create new conversation (clears chat history)
+   */
+  async createNewConversation(req: Request, res: Response) {
+    if (!req.isAuthenticated() || !req.user) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    try {
+      const userId = (req.user as any).id;
+      
+      // Get the user's current AI tutor
+      const aiTutor = await storage.getAITutorForUser(userId);
+      if (!aiTutor) {
+        return res.status(404).json({ message: 'AI tutor not found' });
+      }
+      
+      // Create a new conversation with empty messages (this replaces the old one)
+      const newConversation = {
+        userId,
+        aiTutorId: aiTutor.id,
+        messages: [],
+        subject: 'General',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      await storage.saveConversation(newConversation);
+      
+      return res.status(200).json({ 
+        message: 'New conversation started', 
+        conversation: newConversation 
+      });
+    } catch (error) {
+      console.error('Error creating new conversation:', error);
+      return res.status(500).json({ message: 'Failed to create new conversation' });
+    }
+  },
+  
+  /**
    * Get all available AI tools
    */
   async getAITools(req: Request, res: Response) {
