@@ -119,11 +119,52 @@ export function useVoice() {
       
       // Voice selection logic based on preference
       if (voicePreference === 'neerja') {
-        selectedVoice = voices.find(voice => voice.name.includes('Neerja'));
+        // Look for female voices - Neerja or any female-sounding name
+        const femaleVoiceNames = [
+          'neerja', 'aditi', 'kavya', 'priya', 'shreya', 'riya', 'ananya', 'siri', 
+          'samantha', 'victoria', 'susan', 'karen', 'zira', 'heera', 'female'
+        ];
+        
+        selectedVoice = voices.find(voice => 
+          femaleVoiceNames.some(name => 
+            voice.name.toLowerCase().includes(name)
+          )
+        );
+        
+        // If no female name found, try pitch/gender detection by looking at voice characteristics
+        if (!selectedVoice) {
+          // Often female voices are the first in each language group
+          const indianVoices = voices.filter(voice => 
+            voice.lang.includes('en-IN') || voice.lang.includes('en')
+          );
+          // Try to pick voices that are likely female (often have higher pitch characteristics in name)
+          selectedVoice = indianVoices.find((voice, index) => index % 2 === 0);
+        }
+        
       } else if (voicePreference === 'prabhat') {
-        selectedVoice = voices.find(voice => voice.name.includes('Prabhat'));
+        // Look for male voices - Prabhat or any male-sounding name  
+        const maleVoiceNames = [
+          'prabhat', 'ravi', 'arjun', 'vikash', 'mukul', 'alex', 'daniel', 'mark', 
+          'david', 'paul', 'adam', 'male', 'man'
+        ];
+        
+        selectedVoice = voices.find(voice => 
+          maleVoiceNames.some(name => 
+            voice.name.toLowerCase().includes(name)
+          )
+        );
+        
+        // If no male name found, try to pick voices that are likely male
+        if (!selectedVoice) {
+          const indianVoices = voices.filter(voice => 
+            voice.lang.includes('en-IN') || voice.lang.includes('en')
+          );
+          // Try to pick voices that are likely male (often odd-indexed or deeper sounding)
+          selectedVoice = indianVoices.find((voice, index) => index % 2 === 1);
+        }
+        
       } else {
-        // Auto selection - prefer Neerja, then Prabhat, then other Indian voices
+        // Auto selection - prefer actual Indian voices first
         const indianVoicePriority = [
           'Microsoft Neerja Online (Natural) - English (India)',
           'Microsoft Prabhat Online (Natural) - English (India)', 
@@ -163,12 +204,21 @@ export function useVoice() {
       
       if (selectedVoice) {
         utterance.voice = selectedVoice;
+        console.log(`✅ Selected voice: ${selectedVoice.name} (${selectedVoice.lang}) for preference: ${voicePreference}`);
       } else {
         // Fallback to any English voice
         const englishVoice = voices.find(voice => voice.lang.includes('en'));
         if (englishVoice) {
           utterance.voice = englishVoice;
+          console.log(`⚠️ Fallback voice: ${englishVoice.name} (${englishVoice.lang})`);
         }
+      }
+      
+      // Debug: Log all available voices so we can see what's available
+      if (voices.length > 0) {
+        console.log(`🎙️ Available voices (${voices.length} total):`, 
+          voices.map(v => `${v.name} (${v.lang})`).slice(0, 10)
+        );
       }
       
       utterance.rate = options?.rate || 1.1; // Natural speaking pace

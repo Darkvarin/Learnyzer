@@ -1005,7 +1005,7 @@ export default function AiTutor() {
                               ? 'bg-pink-500/30 text-pink-100'
                               : 'text-pink-400 hover:text-pink-300'
                           }`}
-                          title="Neerja - Female Voice"
+                          title="Female Voice - Indian Accent"
                         >
                           👩
                         </button>
@@ -1016,7 +1016,7 @@ export default function AiTutor() {
                               ? 'bg-blue-500/30 text-blue-100'
                               : 'text-blue-400 hover:text-blue-300'
                           }`}
-                          title="Prabhat - Male Voice"
+                          title="Male Voice - Indian Accent"
                         >
                           👨
                         </button>
@@ -1050,9 +1050,23 @@ export default function AiTutor() {
                         </button>
                         <button
                           onClick={() => {
-                            const testText = voiceLanguage === 'hindi' 
-                              ? "नमस्ते! मैं आपकी AI शिक्षिका हूँ।" 
-                              : "Hello! I am your AI tutor with Indian accent.";
+                            const testTexts = {
+                              hindi: {
+                                female: "नमस्ते! मैं आपकी AI शिक्षिका हूँ। क्या आप तैयार हैं?",
+                                male: "नमस्ते! मैं आपका AI शिक्षक हूँ। आइए शुरू करें।",
+                                auto: "नमस्ते! मैं आपका AI ट्यूटर हूँ।"
+                              },
+                              english: {
+                                female: "Hello! I am your female AI tutor with Indian accent. How are you today?",
+                                male: "Hello! I am your male AI tutor with Indian accent. Ready to learn?",
+                                auto: "Hello! I am your AI tutor with authentic Indian accent."
+                              }
+                            };
+                            
+                            const genderKey = selectedVoice === 'neerja' ? 'female' : 
+                                            selectedVoice === 'prabhat' ? 'male' : 'auto';
+                            
+                            const testText = testTexts[voiceLanguage][genderKey];
                             
                             speak(testText, {
                               voicePreference: selectedVoice,
@@ -1062,8 +1076,8 @@ export default function AiTutor() {
                             
                             toast({
                               title: "Voice Test",
-                              description: `Testing ${selectedVoice} voice in ${voiceLanguage}`,
-                              duration: 2000
+                              description: `Testing ${genderKey} voice in ${voiceLanguage} with Indian accent`,
+                              duration: 3000
                             });
                           }}
                           className="px-2 py-1 text-xs rounded bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 transition-all"
