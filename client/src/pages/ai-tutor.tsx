@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { CanvasRenderer } from "@/components/CanvasRenderer";
+import { MCQComponent } from "@/components/MCQComponent";
 import { useUser } from "@/contexts/user-context";
 import { useToast } from "@/hooks/use-toast";
 import { useVoice } from "@/hooks/useVoice";
@@ -122,6 +123,37 @@ export default function AiTutor() {
     error: teachingError,
     lastResponse: lastTeachingResponse
   } = useTeachingVoice();
+
+  // MCQ Generation function
+  const generateMCQForMessage = async (messageIndex: number, messageContent: string) => {
+    setMcqLoading(prev => ({...prev, [messageIndex]: true}));
+    
+    try {
+      // Extract topic from the message content (simplified approach)
+      const topic = currentTopic || 'Current Topic';
+      
+      const response = await apiRequest('POST', '/api/ai/mcq/generate', {
+        topic,
+        subject: currentSubject?.replace('_', ' ') || 'General',
+        examType: userExam || 'general',
+        difficulty: 'medium',
+        questionType: 'mixed'
+      });
+
+      const mcqData = await response.json();
+      setGeneratedMCQs(prev => ({...prev, [messageIndex]: mcqData}));
+      setShowMCQForMessage(messageIndex);
+    } catch (error) {
+      console.error('Error generating MCQ:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate test question. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setMcqLoading(prev => ({...prev, [messageIndex]: false}));
+    }
+  };
   
   // Parse URL parameters if coming from course page
   const searchParams = new URLSearchParams(window.location.search);
@@ -150,6 +182,11 @@ export default function AiTutor() {
   const [diagramUrl, setDiagramUrl] = useState<string | null>(null);
   const [canvasInstructions, setCanvasInstructions] = useState<any>(null);
   const [showVisual, setShowVisual] = useState(false);
+  
+  // MCQ state
+  const [showMCQForMessage, setShowMCQForMessage] = useState<number | null>(null);
+  const [generatedMCQs, setGeneratedMCQs] = useState<{[key: number]: any}>({});
+  const [mcqLoading, setMcqLoading] = useState<{[key: number]: boolean}>({});
   
   // Canvas display functionality for AI-generated content
   useEffect(() => {
@@ -1198,6 +1235,26 @@ export default function AiTutor() {
                                     </ReactMarkdown>
                                   </div>
                                 </div>
+                                
+                                {/* Test Knowledge Button for AI responses */}
+                                <div className="flex gap-2 mt-3">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => generateMCQForMessage(idx, msg.content)}
+                                    disabled={mcqLoading[idx] || showMCQForMessage === idx}
+                                    className="bg-green-600/20 border-green-500/50 text-green-300 hover:bg-green-600/30 h-8 px-3 text-xs"
+                                  >
+                                    {mcqLoading[idx] ? (
+                                      <>Generating... <span className="ml-1 animate-pulse">🧠</span></>
+                                    ) : showMCQForMessage === idx ? (
+                                      <>Question Ready <Check className="h-3 w-3 ml-1" /></>
+                                    ) : (
+                                      <>Test Knowledge <Brain className="h-3 w-3 ml-1" /></>
+                                    )}
+                                  </Button>
+                                </div>
+                                
                                 <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
                                   <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
                                   {voiceEnabled && (
@@ -1245,6 +1302,34 @@ export default function AiTutor() {
                                   )}
                                 </div>
                               </div>
+                              
+                              {/* Show MCQ Component if generated */}
+                              {showMCQForMessage === idx && generatedMCQs[idx] && (
+                                <div className="mt-4">
+                                  <MCQComponent
+                                    question={generatedMCQs[idx].question}
+                                    options={generatedMCQs[idx].options}
+                                    correctAnswer={generatedMCQs[idx].correct_answer}
+                                    explanation={generatedMCQs[idx].explanation}
+                                    topic={currentTopic || 'Current Topic'}
+                                    subject={currentSubject?.replace('_', ' ') || 'General'}
+                                    onComplete={(isCorrect) => {
+                                      if (isCorrect) {
+                                        toast({
+                                          title: "Excellent!",
+                                          description: "You're mastering the concept. Keep going!",
+                                        });
+                                      } else {
+                                        toast({
+                                          title: "Learning Opportunity", 
+                                          description: "Review the explanation and try similar questions.",
+                                          variant: "destructive",
+                                        });
+                                      }
+                                    }}
+                                  />
+                                </div>
+                              )}
                             </>
                           ) : (
                             <>
@@ -1953,8 +2038,55 @@ export default function AiTutor() {
                                     {msg.content}
                                   </ReactMarkdown>
                                 </div>
+                                
+                                {/* Test Knowledge Button for AI responses */}
+                                <div className="flex gap-2 mt-3">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => generateMCQForMessage(idx, msg.content)}
+                                    disabled={mcqLoading[idx] || showMCQForMessage === idx}
+                                    className="bg-green-600/20 border-green-500/50 text-green-300 hover:bg-green-600/30 h-8 px-3 text-xs"
+                                  >
+                                    {mcqLoading[idx] ? (
+                                      <>Generating... <span className="ml-1 animate-pulse">🧠</span></>
+                                    ) : showMCQForMessage === idx ? (
+                                      <>Question Ready <Check className="h-3 w-3 ml-1" /></>
+                                    ) : (
+                                      <>Test Knowledge <Brain className="h-3 w-3 ml-1" /></>
+                                    )}
+                                  </Button>
+                                </div>
                               </div>
                             </div>
+                            
+                            {/* Show MCQ Component if generated */}
+                            {showMCQForMessage === idx && generatedMCQs[idx] && (
+                              <div className="ml-13 mt-4">
+                                <MCQComponent
+                                  question={generatedMCQs[idx].question}
+                                  options={generatedMCQs[idx].options}
+                                  correctAnswer={generatedMCQs[idx].correct_answer}
+                                  explanation={generatedMCQs[idx].explanation}
+                                  topic={currentTopic || 'Current Topic'}
+                                  subject={currentSubject?.replace('_', ' ') || 'General'}
+                                  onComplete={(isCorrect) => {
+                                    if (isCorrect) {
+                                      toast({
+                                        title: "Excellent!",
+                                        description: "You're mastering the concept. Keep going!",
+                                      });
+                                    } else {
+                                      toast({
+                                        title: "Learning Opportunity",
+                                        description: "Review the explanation and try similar questions.",
+                                        variant: "destructive",
+                                      });
+                                    }
+                                  }}
+                                />
+                              </div>
+                            )}
                           </>
                         ) : (
                           <>

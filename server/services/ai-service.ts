@@ -17,6 +17,62 @@ const requireAuth = (req: Request, res: Response, next: () => void) => {
   next();
 };
 
+// MCQ Generation utility
+export const generateMCQUtil = async (options: {
+  topic: string;
+  subject?: string;
+  examType?: string;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  questionType?: 'conceptual' | 'application' | 'mixed';
+}) => {
+  const { topic, subject = 'General', examType = 'general', difficulty = 'medium', questionType = 'mixed' } = options;
+
+  const prompt = `Generate 1 high-quality multiple choice question for ${examType} exam preparation.
+
+Topic: ${topic}
+Subject: ${subject}  
+Difficulty: ${difficulty}
+Type: ${questionType}
+
+Requirements:
+1. Question must be exam-focused and directly test understanding of ${topic}
+2. Provide exactly 4 options (A, B, C, D)
+3. Include brief explanation for correct answer
+4. Keep explanation concise (2-3 lines max)
+5. Match ${examType} exam pattern and difficulty
+
+Respond with JSON in this exact format:
+{
+  "question": "Question text here?",
+  "options": {
+    "A": "Option A text",
+    "B": "Option B text", 
+    "C": "Option C text",
+    "D": "Option D text"
+  },
+  "correct_answer": "A",
+  "explanation": "Brief explanation why this answer is correct."
+}`;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" },
+      temperature: 0.3,
+      max_tokens: 500
+    });
+
+    const content = response.choices[0].message.content;
+    if (!content) throw new Error('No content received from OpenAI');
+    
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error generating MCQ:', error);
+    throw new Error('Failed to generate MCQ');
+  }
+};
+
 // Utility functions for generating content
 export const generateStudyNotesUtil = async (options: {
   topic: string;
@@ -631,6 +687,89 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
     } catch (error) {
       console.error('Error loading conversation:', error);
       return res.status(500).json({ message: 'Failed to load conversation' });
+    }
+  },
+
+  /**
+   * Generate MCQ for assessment
+   */
+  async generateMCQ(req: Request, res: Response) {
+    if (!req.isAuthenticated() || !req.user) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    try {
+      const { topic, subject, examType, difficulty = 'medium', questionType = 'mixed' } = req.body;
+      
+      if (!topic) {
+        return res.status(400).json({ message: 'Topic is required' });
+      }
+      
+      const mcq = await generateMCQUtil({
+        topic,
+        subject,
+        examType,
+        difficulty,
+        questionType
+      });
+      
+      return res.status(200).json(mcq);
+    } catch (error) {
+      console.error('Error generating MCQ:', error);
+      return res.status(500).json({ message: 'Failed to generate MCQ' });
+    }
+  },
+
+  /**
+   * Evaluate MCQ answer and provide feedback
+   */
+  async evaluateMCQAnswer(req: Request, res: Response) {
+    if (!req.isAuthenticated() || !req.user) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    try {
+      const { question, selectedAnswer, correctAnswer, options, topic, subject } = req.body;
+      
+      if (!question || !selectedAnswer || !correctAnswer) {
+        return res.status(400).json({ message: 'Question, selected answer, and correct answer are required' });
+      }
+      
+      const isCorrect = selectedAnswer === correctAnswer;
+      
+      // Generate personalized feedback
+      const feedbackPrompt = `Student answered a multiple choice question ${isCorrect ? 'correctly' : 'incorrectly'}.
+
+Question: ${question}
+Selected Answer: ${selectedAnswer}. ${options[selectedAnswer]}
+Correct Answer: ${correctAnswer}. ${options[correctAnswer]}
+Topic: ${topic}
+Subject: ${subject}
+
+Provide ${isCorrect ? 'encouraging feedback and additional insight' : 'corrective feedback and explanation'} in 2-3 lines maximum. Be supportive and educational like a real teacher.
+
+${isCorrect ? 
+  'Since they got it right, briefly explain why their answer is correct and add one interesting related fact.' : 
+  'Since they got it wrong, briefly explain why the correct answer is right and why their choice was incorrect. Be encouraging.'}`;
+
+      const feedbackResponse = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [{ role: "user", content: feedbackPrompt }],
+        temperature: 0.3,
+        max_tokens: 150
+      });
+
+      const feedback = feedbackResponse.choices[0].message.content || '';
+      
+      return res.status(200).json({
+        isCorrect,
+        feedback,
+        correctAnswer,
+        selectedAnswer
+      });
+    } catch (error) {
+      console.error('Error evaluating MCQ answer:', error);
+      return res.status(500).json({ message: 'Failed to evaluate answer' });
     }
   },
   
