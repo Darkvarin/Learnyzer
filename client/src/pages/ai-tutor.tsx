@@ -1102,11 +1102,15 @@ export default function AiTutor() {
                       className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50"
                       onClick={async () => {
                         try {
+                          console.log('Starting new conversation...');
+                          
                           // Clear conversation by creating a new one
-                          await apiRequest('POST', '/api/ai/conversation/new');
+                          const response = await apiRequest('POST', '/api/ai/conversation/new');
+                          console.log('New conversation response:', response);
                           
                           // Invalidate and refetch conversation
-                          queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation/recent'] });
+                          await queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation/recent'] });
+                          console.log('Queries invalidated successfully');
                           
                           toast({
                             title: "New Session Started",
