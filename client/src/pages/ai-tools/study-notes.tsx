@@ -133,18 +133,37 @@ export default function StudyNotesGenerator() {
         throw new Error(errorData.message || 'PDF generation failed');
       }
 
-      return response.blob();
+      // Check response headers
+      const contentType = response.headers.get('content-type');
+      const contentLength = response.headers.get('content-length');
+      console.log('PDF Response - Content-Type:', contentType, 'Content-Length:', contentLength);
+
+      const blob = await response.blob();
+      console.log('PDF Blob - Size:', blob.size, 'Type:', blob.type);
+      
+      if (blob.size === 0) {
+        throw new Error('Received empty PDF file');
+      }
+
+      return blob;
     },
     onSuccess: (blob) => {
+      console.log('Creating download with blob size:', blob.size);
+      
       // Create download link
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `${topic.replace(/[^a-zA-Z0-9]/g, '_')}_notes.pdf`;
+      a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
+      
+      // Clean up after a delay
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }, 100);
       
       toast({
         title: "PDF Downloaded",

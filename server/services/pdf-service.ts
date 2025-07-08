@@ -45,10 +45,10 @@ export class PDFService {
             box-sizing: border-box;
         }
         
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        /* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'); */
         
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
             line-height: 1.7;
             color: #1a1a1a;
             max-width: 210mm;
@@ -498,19 +498,36 @@ export class PDFService {
       const html = await this.generateHTML(options);
       
       // Launch Puppeteer with system Chromium
-      browser = await puppeteer.launch({
-        headless: true,
-        executablePath: '/nix/store/zi4f80l169xlmivz8vja8wlphq74qqk0-chromium-125.0.6422.141/bin/chromium',
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-gpu',
-          '--no-first-run',
-          '--no-zygote',
-          '--disable-extensions'
-        ]
-      });
+      try {
+        browser = await puppeteer.launch({
+          headless: true,
+          executablePath: '/nix/store/zi4f80l169xlmivz8vja8wlphq74qqk0-chromium-125.0.6422.141/bin/chromium',
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--no-first-run',
+            '--no-zygote',
+            '--disable-extensions',
+            '--disable-background-timer-throttling',
+            '--disable-background-networking',
+            '--disable-background-timer-throttling'
+          ]
+        });
+      } catch (launchError) {
+        console.error('Failed to launch Chromium, trying default:', launchError);
+        // Fallback to default Puppeteer Chromium
+        browser = await puppeteer.launch({
+          headless: true,
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu'
+          ]
+        });
+      }
       
       const page = await browser.newPage();
       await page.setContent(html, { waitUntil: 'networkidle0' });
@@ -524,10 +541,19 @@ export class PDFService {
           bottom: '20mm',
           left: '15mm'
         },
-        timeout: 30000
+        timeout: 30000,
+        preferCSSPageSize: false,
+        displayHeaderFooter: false
       });
 
       await browser.close();
+      
+      // Validate PDF buffer
+      if (!pdfBuffer || pdfBuffer.length === 0) {
+        throw new Error('Generated PDF buffer is empty');
+      }
+      
+      console.log(`PDF generated successfully. Size: ${pdfBuffer.length} bytes`);
       return pdfBuffer;
     } catch (error) {
       if (browser) {
@@ -566,12 +592,16 @@ export class PDFService {
 
       const pdfBuffer = await PDFService.generateStudyNotesPDF(pdfOptions);
       
+      console.log(`Generated PDF size: ${pdfBuffer.length} bytes for title: ${title}`);
+      
       // Set headers for PDF download
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="${title.replace(/[^a-zA-Z0-9]/g, '_')}.pdf"`);
       res.setHeader('Content-Length', pdfBuffer.length);
+      res.setHeader('Cache-Control', 'no-cache');
       
-      res.send(pdfBuffer);
+      // Send the PDF buffer
+      res.end(pdfBuffer, 'binary');
     } catch (error) {
       console.error('PDF generation error:', error);
       res.status(500).json({ message: 'Error generating PDF' });
