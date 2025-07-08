@@ -1,4 +1,4 @@
-import * as htmlPdf from 'html-pdf-node';
+import puppeteer from 'puppeteer';
 import { Request, Response } from 'express';
 
 interface PDFGenerationOptions {
@@ -45,77 +45,177 @@ export class PDFService {
             box-sizing: border-box;
         }
         
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.7;
+            color: #1a1a1a;
             max-width: 210mm;
             margin: 0 auto;
-            padding: 20mm;
-            background: #fff;
+            padding: 15mm;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+            z-index: 1000;
         }
         
         .header {
-            border-bottom: 3px solid #2563eb;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            margin: -15mm -15mm 30px -15mm;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
         }
         
         .header h1 {
-            color: #1e40af;
-            font-size: 28px;
+            color: white;
+            font-size: 32px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
         }
         
         .header .subtitle {
-            color: #64748b;
-            font-size: 16px;
-            margin-bottom: 5px;
+            color: rgba(255,255,255,0.9);
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
         }
         
         .header .meta {
-            color: #94a3b8;
-            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
         }
         
         .content {
-            font-size: 14px;
+            background: white;
+            padding: 30px;
+            margin: 0 -15mm;
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            font-size: 16px;
             line-height: 1.8;
-            color: #374151;
+            color: #2d3748;
+            position: relative;
+        }
+        
+        .content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-radius: 12px 12px 0 0;
         }
         
         .content h1, .content h2, .content h3 {
-            color: #1e40af;
+            color: #2d3748;
             margin-top: 25px;
             margin-bottom: 15px;
+            font-weight: 600;
         }
         
         .content h1 {
-            font-size: 22px;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 8px;
+            font-size: 24px;
+            color: #1a202c;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
         }
         
         .content h2 {
-            font-size: 18px;
-            color: #2563eb;
+            font-size: 20px;
+            color: #2d3748;
         }
         
         .content h3 {
-            font-size: 16px;
-            color: #3b82f6;
+            font-size: 18px;
+            color: #4a5568;
         }
         
         .content p {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             text-align: justify;
         }
         
         .content ul, .content ol {
             margin: 15px 0;
             padding-left: 25px;
+        }
+        
+        .content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        
+        .formula-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-left: 4px solid #0ea5e9;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .important-note {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 25px;
+            margin: 30px -15mm -15mm -15mm;
+            text-align: center;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+        }
+        
+        .footer .logo {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .footer .tagline {
+            font-size: 12px;
+            color: #94a3b8;
         }
         
         .content li {
@@ -209,19 +309,9 @@ export class PDFService {
             align-items: center;
         }
         
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 2px solid #e5e7eb;
-            text-align: center;
-            color: #64748b;
+        .footer .tagline {
             font-size: 12px;
-        }
-        
-        .footer .brand {
-            color: #2563eb;
-            font-weight: 600;
-            margin-bottom: 5px;
+            color: #94a3b8;
         }
         
         @media print {
@@ -265,8 +355,8 @@ export class PDFService {
     
     ${includeFooter ? `
     <div class="footer">
-        <div class="brand">Learnyzer - AI-Powered Learning Platform</div>
-        <div>Your success in competitive exams starts here</div>
+        <div class="logo">Learnyzer AI</div>
+        <div class="tagline">Empowering Students • Competitive Exam Preparation • AI-Powered Learning</div>
     </div>
     ` : ''}
 </body>
@@ -382,10 +472,29 @@ export class PDFService {
   }
 
   static async generateStudyNotesPDF(options: PDFGenerationOptions): Promise<Buffer> {
+    let browser;
     try {
       const html = await this.generateHTML(options);
       
-      const pdfOptions = {
+      // Launch Puppeteer with system Chromium
+      browser = await puppeteer.launch({
+        headless: true,
+        executablePath: '/nix/store/zi4f80l169xlmivz8vja8wlphq74qqk0-chromium-125.0.6422.141/bin/chromium',
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--no-first-run',
+          '--no-zygote',
+          '--disable-extensions'
+        ]
+      });
+      
+      const page = await browser.newPage();
+      await page.setContent(html, { waitUntil: 'networkidle0' });
+      
+      const pdfBuffer = await page.pdf({
         format: 'A4',
         printBackground: true,
         margin: {
@@ -395,14 +504,15 @@ export class PDFService {
           left: '15mm'
         },
         timeout: 30000
-      };
+      });
 
-      const file = { content: html };
-      const pdfBuffer = await htmlPdf.generatePdf(file, pdfOptions);
-      
+      await browser.close();
       return pdfBuffer;
     } catch (error) {
-      console.error('PDF generation error with html-pdf-node:', error);
+      if (browser) {
+        await browser.close();
+      }
+      console.error('PDF generation error with Puppeteer:', error);
       throw new Error('Failed to generate PDF: ' + error.message);
     }
   }
