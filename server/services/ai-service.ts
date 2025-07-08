@@ -101,7 +101,9 @@ Key Requirements:
 2. Provide exam-relevant content only
 3. Include specific formulas, concepts, and facts
 4. Use Indian educational context and examples
-5. Structure content for optimal retention and understanding`;
+5. Structure content for optimal retention and understanding
+6. Use NUMBERED HEADINGS instead of markdown # headers
+7. Format sections as: "1. Introduction", "2. Key Concepts", "3. Important Formulas", etc.`;
 
   let userPrompt = `Create comprehensive study notes specifically focused on "${topic}"`;
   
@@ -852,6 +854,8 @@ Key Requirements:
 1. Stay STRICTLY focused on the given topic
 2. Provide exam-relevant content only
 3. Include specific formulas, concepts, and facts
+4. Use NUMBERED HEADINGS instead of markdown # headers
+5. Format sections as: "1. Introduction", "2. Key Concepts", "3. Important Formulas", etc.
 4. Use Indian educational context and examples
 5. Structure content for optimal retention and understanding`;
 
@@ -889,64 +893,66 @@ Key Requirements:
       // Define note style requirements
       const styleRequirements = {
         'concise': {
-          structure: `MANDATORY Structure (must include proper markdown headings):
-# ${topic}
+          structure: `MANDATORY Structure (use NUMBERED HEADINGS, NOT markdown #):
 
-## Quick Overview
+${topic}
+
+1. Quick Overview
 (1-2 lines introduction)
 
-## Key Points
-- Point 1
-- Point 2
-- Point 3
-- Point 4
-- Point 5
+2. Key Points
+• Point 1
+• Point 2  
+• Point 3
+• Point 4
+• Point 5
 
-## Essential Formulas
-- Formula 1: explanation
-- Formula 2: explanation
+3. Essential Formulas
+• Formula 1: explanation
+• Formula 2: explanation
 
-## Quick Tips
-- Memory aid 1
-- Shortcut 2`,
+4. Quick Tips
+• Memory aid 1
+• Shortcut 2`,
           tone: 'Brief, direct, no fluff. Use bullet points and short sentences.'
         },
         'detailed': {
-          structure: `MANDATORY Structure (must include proper markdown headings):
-# ${topic}
+          structure: `MANDATORY Structure (use NUMBERED HEADINGS, NOT markdown #):
 
-## Comprehensive Overview
+${topic}
+
+1. Comprehensive Overview
 (Detailed introduction to the topic)
 
-## Fundamental Concepts
-### Concept 1
-(Detailed explanation)
-### Concept 2
-(Detailed explanation)
+2. Fundamental Concepts
+   2.1 Concept 1
+   (Detailed explanation)
+   2.2 Concept 2
+   (Detailed explanation)
 
-## Derivations & Proofs
-### Derivation 1
-(Step-by-step working)
+3. Derivations & Proofs
+   3.1 Derivation 1
+   (Step-by-step working)
 
-## Formulas & Applications
-### Formula 1
-- Formula: [mathematical expression]
-- Application: [example]
-### Formula 2
-- Formula: [mathematical expression]  
-- Application: [example]
+4. Formulas & Applications
+   4.1 Formula 1
+   • Formula: [mathematical expression]
+   • Application: [example]
+   4.2 Formula 2
+   • Formula: [mathematical expression]  
+   • Application: [example]
 
-## Advanced Applications
+5. Advanced Applications
 (Real-world connections and advanced uses)
 
-## Problem-Solving Strategies
-1. Strategy 1
-2. Strategy 2
-3. Strategy 3
+6. Problem-Solving Strategies
+   6.1 Strategy 1
+   6.2 Strategy 2
+   6.3 Strategy 3
 
-## Common Pitfalls
-- Pitfall 1: [explanation]
-- Pitfall 2: [explanation]`,
+7. Common Pitfalls
+• Pitfall 1: [explanation]
+• Pitfall 2: [explanation]`,
           tone: 'Thorough, explanatory, include reasoning behind concepts.'
         },
         'visual': {
