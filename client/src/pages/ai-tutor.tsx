@@ -1268,7 +1268,7 @@ export default function AiTutor() {
                                           aiResponse: msg.content,
                                           subject: currentSubject
                                         })}
-                                        disabled={isGeneratingTeaching || isTeaching}
+                                        disabled={isGeneratingTeaching}
                                         className="text-xs bg-primary-500/10 border-primary-500/30 text-primary-300 hover:bg-primary-500/20"
                                       >
                                         {isGeneratingTeaching ? (
@@ -1279,7 +1279,7 @@ export default function AiTutor() {
                                         ) : isTeaching ? (
                                           <>
                                             <VolumeX className="h-3 w-3 mr-1" />
-                                            Teaching...
+                                            Stop Teaching
                                           </>
                                         ) : (
                                           <>
@@ -1288,17 +1288,7 @@ export default function AiTutor() {
                                           </>
                                         )}
                                       </Button>
-                                      {isTeaching && (
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          onClick={stopTeaching}
-                                          className="text-xs bg-red-500/10 border-red-500/30 text-red-300 hover:bg-red-500/20"
-                                        >
-                                          <VolumeX className="h-3 w-3 mr-1" />
-                                          Stop
-                                        </Button>
-                                      )}
+
                                     </div>
                                   )}
                                 </div>

@@ -40,6 +40,13 @@ export function useTeachingVoice() {
   });
 
   const teachConcept = async (data: TeachingVoiceRequest) => {
+    // If already speaking/teaching, stop it
+    if (isSpeaking || isGenerating) {
+      stopSpeaking();
+      setIsGenerating(false);
+      return;
+    }
+
     setIsGenerating(true);
     try {
       await generateTeachingVoice.mutateAsync(data);
