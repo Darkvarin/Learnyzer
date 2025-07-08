@@ -1,5 +1,4 @@
-import puppeteer from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
+import * as htmlPdf from 'html-pdf-node';
 import { Request, Response } from 'express';
 
 interface PDFGenerationOptions {
@@ -383,20 +382,10 @@ export class PDFService {
   }
 
   static async generateStudyNotesPDF(options: PDFGenerationOptions): Promise<Buffer> {
-    const browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-    });
-
     try {
-      const page = await browser.newPage();
       const html = await this.generateHTML(options);
       
-      await page.setContent(html, { waitUntil: 'networkidle0' });
-      
-      const pdfBuffer = await page.pdf({
+      const pdfOptions = {
         format: 'A4',
         printBackground: true,
         margin: {
@@ -404,12 +393,17 @@ export class PDFService {
           right: '15mm',
           bottom: '20mm',
           left: '15mm'
-        }
-      });
+        },
+        timeout: 30000
+      };
 
-      return Buffer.from(pdfBuffer);
-    } finally {
-      await browser.close();
+      const file = { content: html };
+      const pdfBuffer = await htmlPdf.generatePdf(file, pdfOptions);
+      
+      return pdfBuffer;
+    } catch (error) {
+      console.error('PDF generation error with html-pdf-node:', error);
+      throw new Error('Failed to generate PDF: ' + error.message);
     }
   }
 
