@@ -445,9 +445,30 @@ export class PDFService {
       .replace(/## (.*$)/gim, '<h2>$1</h2>')
       .replace(/# (.*$)/gim, '<h1>$1</h1>')
       
-      // Convert bold and italic
+      // Convert bold and italic (but preserve multiplication signs)
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/(?<!\*)\*(?!\*)([^*]+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>')
+      
+      // Convert mathematical symbols
+      .replace(/\s\*\s/g, ' × ')  // Convert standalone asterisks to multiplication sign
+      .replace(/(\d+)\s?\*\s?(\d+)/g, '$1 × $2')  // Convert number*number to number × number
+      .replace(/([a-zA-Z])\s?\*\s?([a-zA-Z])/g, '$1 × $2')  // Convert variable*variable to variable × variable
+      .replace(/([a-zA-Z])\s?\*\s?(\d+)/g, '$1 × $2')  // Convert variable*number to variable × number
+      .replace(/(\d+)\s?\*\s?([a-zA-Z])/g, '$1 × $2')  // Convert number*variable to number × variable
+      
+      // Convert division signs
+      .replace(/\s\/\s/g, ' ÷ ')
+      .replace(/(\d+)\s?\?\s?(\d+)/g, '$1 ÷ $2')
+      
+      // Convert other mathematical symbols
+      .replace(/\+\-/g, '±')
+      .replace(/<=>/g, '⇔')
+      .replace(/<=/g, '≤')
+      .replace(/>=/g, '≥')
+      .replace(/!=/g, '≠')
+      .replace(/\^2/g, '²')
+      .replace(/\^3/g, '³')
+      .replace(/sqrt\(/g, '√(')
       
       // Convert lists
       .replace(/^\d+\.\s(.*)$/gim, '<li>$1</li>')
