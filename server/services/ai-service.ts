@@ -889,22 +889,64 @@ Key Requirements:
       // Define note style requirements
       const styleRequirements = {
         'concise': {
-          structure: `MANDATORY Structure:
-1. **Quick Overview** (1-2 lines)
-2. **Key Points** (Bullet format, 5-7 main points)
-3. **Essential Formulas** (Only most important ones)
-4. **Quick Tips** (Memory aids and shortcuts)`,
+          structure: `MANDATORY Structure (must include proper markdown headings):
+# ${topic}
+
+## Quick Overview
+(1-2 lines introduction)
+
+## Key Points
+- Point 1
+- Point 2
+- Point 3
+- Point 4
+- Point 5
+
+## Essential Formulas
+- Formula 1: explanation
+- Formula 2: explanation
+
+## Quick Tips
+- Memory aid 1
+- Shortcut 2`,
           tone: 'Brief, direct, no fluff. Use bullet points and short sentences.'
         },
         'detailed': {
-          structure: `MANDATORY Structure:
-1. **Comprehensive Overview** (Detailed introduction)
-2. **Fundamental Concepts** (In-depth explanations)
-3. **Derivations & Proofs** (Step-by-step working)
-4. **Formulas & Applications** (Complete with examples)
-5. **Advanced Applications** (Real-world connections)
-6. **Problem-Solving Strategies** (Detailed approaches)
-7. **Common Pitfalls** (Detailed explanations)`,
+          structure: `MANDATORY Structure (must include proper markdown headings):
+# ${topic}
+
+## Comprehensive Overview
+(Detailed introduction to the topic)
+
+## Fundamental Concepts
+### Concept 1
+(Detailed explanation)
+### Concept 2
+(Detailed explanation)
+
+## Derivations & Proofs
+### Derivation 1
+(Step-by-step working)
+
+## Formulas & Applications
+### Formula 1
+- Formula: [mathematical expression]
+- Application: [example]
+### Formula 2
+- Formula: [mathematical expression]  
+- Application: [example]
+
+## Advanced Applications
+(Real-world connections and advanced uses)
+
+## Problem-Solving Strategies
+1. Strategy 1
+2. Strategy 2
+3. Strategy 3
+
+## Common Pitfalls
+- Pitfall 1: [explanation]
+- Pitfall 2: [explanation]`,
           tone: 'Thorough, explanatory, include reasoning behind concepts.'
         },
         'visual': {
@@ -1467,6 +1509,8 @@ Generate ONLY the spoken explanation text (no markdown, no formatting). Make it 
       });
 
       const teachingExplanation = response.choices[0].message.content;
+
+      console.log('Generated teaching explanation:', teachingExplanation);
 
       res.json({
         success: true,
