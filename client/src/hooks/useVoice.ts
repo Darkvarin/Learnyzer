@@ -217,10 +217,12 @@ export function useVoice() {
       utterance.volume = options?.volume || 1.0;
       
       utterance.onstart = () => {
+        console.log('TTS started speaking');
         setIsSpeaking(true);
       };
       
       utterance.onend = () => {
+        console.log('TTS finished speaking');
         setIsSpeaking(false);
       };
       
@@ -248,6 +250,8 @@ export function useVoice() {
         }
       };
       
+      console.log('Starting TTS with text:', cleanText.substring(0, 100) + '...');
+      console.log('Selected voice:', selectedVoice?.name || 'default');
       window.speechSynthesis.speak(utterance);
     }
   }, []);

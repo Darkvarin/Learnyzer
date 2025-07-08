@@ -29,7 +29,9 @@ export function useTeachingVoice() {
       return apiRequest('POST', '/api/ai/teaching-voice', data);
     },
     onSuccess: (response) => {
+      console.log('Teaching voice response:', response);
       if (response.teachingExplanation) {
+        console.log('Starting speech synthesis:', response.teachingExplanation);
         // Automatically speak the teaching explanation
         speak(response.teachingExplanation, { rate: 1.1, voicePreference: 'auto', language: 'english' });
       }
