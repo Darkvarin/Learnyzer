@@ -154,166 +154,165 @@ export default function StudyNotesGenerator() {
     onError: (error: any) => {
       console.error('PDF Download Error:', error);
       
-      // Fallback to client-side PDF generation
+      // Fallback to client-side HTML download
       try {
-        const printWindow = window.open('', '_blank');
-        if (printWindow) {
-          const htmlContent = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-              <title>${topic} - Study Notes</title>
-              <style>
-                @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-                
-                * { margin: 0; padding: 0; box-sizing: border-box; }
-                
-                body { 
-                  font-family: 'Inter', system-ui, sans-serif; 
-                  line-height: 1.7; 
-                  margin: 0; 
-                  color: #1a1a1a; 
-                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                  min-height: 100vh;
-                }
-                
-                .container {
-                  max-width: 800px;
-                  margin: 0 auto;
-                  background: white;
-                  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-                  border-radius: 20px;
-                  overflow: hidden;
-                  position: relative;
-                }
-                
-                .header { 
-                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                  color: white;
-                  padding: 40px;
-                  text-align: center;
-                  position: relative;
-                  overflow: hidden;
-                }
-                
-                .header::before {
-                  content: '';
-                  position: absolute;
-                  top: -50%;
-                  left: -50%;
-                  width: 200%;
-                  height: 200%;
-                  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-                  animation: rotate 20s linear infinite;
-                }
-                
-                @keyframes rotate {
-                  0% { transform: rotate(0deg); }
-                  100% { transform: rotate(360deg); }
-                }
-                
-                .header h1 { 
-                  font-size: 2.5rem; 
-                  font-weight: 700; 
-                  margin-bottom: 15px;
-                  text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                  position: relative;
-                  z-index: 1;
-                }
-                
-                .header .meta { 
-                  font-size: 1.1rem; 
-                  opacity: 0.9;
-                  font-weight: 300;
-                  position: relative;
-                  z-index: 1;
-                }
-                
-                .content { 
-                  padding: 50px;
-                  background: white;
-                  font-size: 1.1rem;
-                  white-space: pre-wrap;
-                  position: relative;
-                }
-                
-                .content::before {
-                  content: '';
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  right: 0;
-                  height: 4px;
-                  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
-                }
-                
-                .footer {
-                  background: #f8fafc;
-                  padding: 30px;
-                  text-align: center;
-                  color: #64748b;
-                  border-top: 1px solid #e2e8f0;
-                  font-size: 0.9rem;
-                }
-                
-                .logo {
-                  font-weight: 700;
-                  color: #667eea;
-                  font-size: 1.2rem;
-                }
-                
-                @media print { 
-                  body { 
-                    margin: 0; 
-                    background: white !important;
-                  }
-                  .container {
-                    box-shadow: none;
-                    border-radius: 0;
-                  }
-                  .header::before {
-                    display: none;
-                  }
-                }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <div class="header">
-                  <h1>${topic}</h1>
-                  <div class="meta">
-                    <strong>Subject:</strong> ${subject} | <strong>Style:</strong> ${style} | <strong>Level:</strong> ${level}<br>
-                    <strong>Generated:</strong> ${new Date().toLocaleDateString('en-IN', { 
-                      year: 'numeric', month: 'long', day: 'numeric' 
-                    })}
-                  </div>
-                </div>
-                <div class="content">${generatedNotes || ''}</div>
-                <div class="footer">
-                  <div class="logo">Learnyzer AI</div>
-                  <div>Empowering Students • Competitive Exam Preparation • AI-Powered Learning</div>
-                </div>
-              </div>
-            </body>
-            </html>
-          `;
+        const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>${topic} - Study Notes</title>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body { 
+      font-family: 'Inter', system-ui, sans-serif; 
+      line-height: 1.7; 
+      margin: 20px; 
+      color: #1a1a1a; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .header { 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: rotate 20s linear infinite;
+    }
+    
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .header h1 { 
+      font-size: 2.5rem; 
+      font-weight: 700; 
+      margin-bottom: 15px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .header .meta { 
+      font-size: 1.1rem; 
+      opacity: 0.9;
+      font-weight: 300;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .content { 
+      padding: 50px;
+      background: white;
+      font-size: 1.1rem;
+      white-space: pre-wrap;
+      position: relative;
+    }
+    
+    .content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    }
+    
+    .footer {
+      background: #f8fafc;
+      padding: 30px;
+      text-align: center;
+      color: #64748b;
+      border-top: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+    }
+    
+    .logo {
+      font-weight: 700;
+      color: #667eea;
+      font-size: 1.2rem;
+    }
+    
+    @media print { 
+      body { 
+        margin: 0; 
+        background: white !important;
+      }
+      .container {
+        box-shadow: none;
+        border-radius: 0;
+      }
+      .header::before {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>${topic}</h1>
+      <div class="meta">
+        <strong>Subject:</strong> ${subject} | <strong>Style:</strong> ${style} | <strong>Level:</strong> ${level}<br>
+        <strong>Generated:</strong> ${new Date().toLocaleDateString('en-IN', { 
+          year: 'numeric', month: 'long', day: 'numeric' 
+        })}
+      </div>
+    </div>
+    <div class="content">${generatedNotes || ''}</div>
+    <div class="footer">
+      <div class="logo">Learnyzer AI</div>
+      <div>Empowering Students • Competitive Exam Preparation • AI-Powered Learning</div>
+    </div>
+  </div>
+</body>
+</html>`;
 
-          printWindow.document.write(htmlContent);
-          printWindow.document.close();
-          
-          setTimeout(() => {
-            printWindow.print();
-            setTimeout(() => printWindow.close(), 1000);
-          }, 500);
+        // Create a blob and download it as HTML file
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${topic.replace(/[^a-zA-Z0-9]/g, '_')}_study_notes.html`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
 
-          toast({
-            title: "Alternative PDF Method",
-            description: "Use your browser's print dialog to save as PDF.",
-          });
-        } else {
-          throw new Error('Popup blocked');
-        }
+        toast({
+          title: "HTML File Downloaded",
+          description: "Study notes saved as HTML. Open in browser and use Ctrl+P to save as PDF.",
+        });
       } catch (fallbackError) {
+        console.error('Fallback download error:', fallbackError);
         toast({
           title: "Download Failed", 
           description: "PDF generation failed. Please copy the notes manually.",

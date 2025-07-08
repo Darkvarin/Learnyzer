@@ -480,6 +480,8 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Added animated background effects and professional branding for downloadable study materials
   - Enhanced error handling to automatically switch to browser print dialog when server PDF fails
   - Created container-based layout with rounded corners, shadows, and branded footer for premium feel
+  - Fixed PDF download behavior to properly download HTML files instead of opening in new tabs
+  - Users now get actual downloadable files that can be converted to PDF using browser's print function
 
 ## User Preferences
 
