@@ -33,49 +33,57 @@ export class SimpleSubscriptionService {
         aiChatLimit: 0,
         aiVisualLabLimit: 0,
         aiTutorSessionLimit: 0,
-        visualPackageLimit: 0
+        visualPackageLimit: 0,
+        mockTestGenerationLimit: 0
       },
       free_trial: {
         aiChatLimit: 5,
         aiVisualLabLimit: 3,
         aiTutorSessionLimit: 2,
-        visualPackageLimit: 1
+        visualPackageLimit: 1,
+        mockTestGenerationLimit: 1
       },
       basic: {
         aiChatLimit: 50,
         aiVisualLabLimit: 25,
         aiTutorSessionLimit: 0,
-        visualPackageLimit: 10
+        visualPackageLimit: 10,
+        mockTestGenerationLimit: 5
       },
       pro: {
         aiChatLimit: 20,
         aiVisualLabLimit: 20,
         aiTutorSessionLimit: 2,
-        visualPackageLimit: 20
+        visualPackageLimit: 20,
+        mockTestGenerationLimit: 15
       },
       quarterly: {
         aiChatLimit: 40,
         aiVisualLabLimit: 40,
         aiTutorSessionLimit: 3,
-        visualPackageLimit: 40
+        visualPackageLimit: 40,
+        mockTestGenerationLimit: 25
       },
       half_yearly: {
         aiChatLimit: 40,
         aiVisualLabLimit: 40,
         aiTutorSessionLimit: 3,
-        visualPackageLimit: 40
+        visualPackageLimit: 40,
+        mockTestGenerationLimit: 25
       },
       yearly: {
         aiChatLimit: 40,
         aiVisualLabLimit: 40,
         aiTutorSessionLimit: 3,
-        visualPackageLimit: 40
+        visualPackageLimit: 40,
+        mockTestGenerationLimit: 25
       },
       premium: {
         aiChatLimit: -1, // -1 means unlimited
         aiVisualLabLimit: -1,
         aiTutorSessionLimit: -1,
-        visualPackageLimit: -1
+        visualPackageLimit: -1,
+        mockTestGenerationLimit: -1
       }
     };
 

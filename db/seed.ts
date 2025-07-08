@@ -78,9 +78,22 @@ async function seed() {
         ])
       },
       {
+        name: "Mock Test Generator",
+        description: "Generate AI-powered practice tests for your exam preparation",
+        color: "warning",
+        features: JSON.stringify([
+          "Exam-specific question generation",
+          "Multiple choice and descriptive questions",
+          "Timed test environment",
+          "PDF download for offline practice",
+          "Answer key provided after completion",
+          "Performance analytics and insights"
+        ])
+      },
+      {
         name: "Flashcard Creator",
         description: "Generate study flashcards for quick revision",
-        color: "warning",
+        color: "info",
         features: JSON.stringify([
           "Automated card creation from your notes",
           "Spaced repetition scheduling",

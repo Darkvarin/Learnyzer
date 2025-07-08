@@ -25,6 +25,7 @@ import WebSocketTest from "./pages/websocket-test";
 import AiTutor from "./pages/ai-tutor";
 import StudyNotesGenerator from "./pages/ai-tools/study-notes";
 import AnswerChecker from "./pages/ai-tools/answer-checker";
+import MockTestGenerator from "./pages/ai-tools/mock-test-generator";
 import PerformanceAnalytics from "./pages/ai-tools/performance";
 import AIVisualLab from "./pages/ai-visual-lab";
 import SecurityDashboard from "./pages/security-dashboard";
@@ -54,6 +55,7 @@ function App() {
                     <ProtectedRoute path="/ai-tools" component={AiTools} />
                     <ProtectedRoute path="/ai-tools/study-notes" component={StudyNotesGenerator} />
                     <ProtectedRoute path="/ai-tools/answer-checker" component={AnswerChecker} />
+                    <ProtectedRoute path="/ai-tools/mock-test-generator" component={MockTestGenerator} />
                     <ProtectedRoute path="/ai-tools/performance" component={PerformanceAnalytics} />
                     <ProtectedRoute path="/ai-tutor" component={AiTutor} />
                     <ProtectedRoute path="/ai-visual-lab" component={AIVisualLab} />

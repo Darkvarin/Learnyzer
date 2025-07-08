@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, jsonb, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -308,6 +308,38 @@ export const feedbackComments = pgTable("feedback_comments", {
   createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
+// Mock Tests Table
+export const mockTests = pgTable("mock_tests", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  title: text("title").notNull(),
+  examType: text("exam_type").notNull(), // JEE, NEET, UPSC, etc.
+  subject: text("subject").notNull(),
+  difficulty: text("difficulty").notNull(), // Easy, Medium, Hard
+  duration: integer("duration").notNull(), // in minutes
+  totalQuestions: integer("total_questions").notNull(),
+  questions: jsonb("questions").notNull(), // Array of question objects
+  answerKey: jsonb("answer_key").notNull(), // Array of correct answers
+  isCompleted: boolean("is_completed").default(false).notNull(),
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+  score: integer("score"),
+  totalMarks: integer("total_marks").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Mock Test Submissions Table
+export const mockTestSubmissions = pgTable("mock_test_submissions", {
+  id: serial("id").primaryKey(),
+  mockTestId: integer("mock_test_id").references(() => mockTests.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  answers: jsonb("answers").notNull(), // User's submitted answers
+  score: integer("score").notNull(),
+  percentage: decimal("percentage", { precision: 5, scale: 2 }).notNull(),
+  timeTaken: integer("time_taken").notNull(), // in minutes
+  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+});
+
 // Relations
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -326,7 +358,9 @@ export const usersRelations = relations(users, ({ many }) => ({
   wellnessBreaks: many(wellnessBreaks),
   feedback: many(customerFeedback),
   feedbackVotes: many(feedbackVotes),
-  feedbackComments: many(feedbackComments)
+  feedbackComments: many(feedbackComments),
+  mockTests: many(mockTests),
+  mockTestSubmissions: many(mockTestSubmissions)
 }));
 
 export const coursesRelations = relations(courses, ({ many }) => ({
@@ -424,6 +458,16 @@ export const feedbackCommentsRelations = relations(feedbackComments, ({ one }) =
   user: one(users, { fields: [feedbackComments.userId], references: [users.id] })
 }));
 
+export const mockTestsRelations = relations(mockTests, ({ one, many }) => ({
+  user: one(users, { fields: [mockTests.userId], references: [users.id] }),
+  submissions: many(mockTestSubmissions)
+}));
+
+export const mockTestSubmissionsRelations = relations(mockTestSubmissions, ({ one }) => ({
+  mockTest: one(mockTests, { fields: [mockTestSubmissions.mockTestId], references: [mockTests.id] }),
+  user: one(users, { fields: [mockTestSubmissions.userId], references: [users.id] })
+}));
+
 // Usage Tracking Relations (temporarily commented for compatibility)
 /*
 export const usageTrackingRelations = relations(usageTracking, ({ one }) => ({
@@ -502,11 +546,24 @@ export const insertFeedbackCommentSchema = createInsertSchema(feedbackComments, 
   comment: (schema) => schema.min(3, "Comment must be at least 3 characters"),
 });
 
+export const insertMockTestSchema = createInsertSchema(mockTests, {
+  title: (schema) => schema.min(5, "Title must be at least 5 characters"),
+  duration: (schema) => schema.min(5, "Duration must be at least 5 minutes"),
+  totalQuestions: (schema) => schema.min(1, "Must have at least 1 question"),
+});
+
+export const insertMockTestSubmissionSchema = createInsertSchema(mockTestSubmissions, {
+  score: (schema) => schema.min(0, "Score cannot be negative"),
+  timeTaken: (schema) => schema.min(1, "Time taken must be at least 1 minute"),
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertFeedbackCategory = z.infer<typeof insertFeedbackCategorySchema>;
 export type InsertCustomerFeedback = z.infer<typeof insertCustomerFeedbackSchema>;
 export type InsertFeedbackVote = z.infer<typeof insertFeedbackVoteSchema>;
 export type InsertFeedbackComment = z.infer<typeof insertFeedbackCommentSchema>;
+export type InsertMockTest = z.infer<typeof insertMockTestSchema>;
+export type InsertMockTestSubmission = z.infer<typeof insertMockTestSubmissionSchema>;
 export type User = typeof users.$inferSelect;
 export type Course = typeof courses.$inferSelect;
 export type UserCourse = typeof userCourses.$inferSelect;
@@ -531,3 +588,5 @@ export type FeedbackCategory = typeof feedbackCategories.$inferSelect;
 export type CustomerFeedback = typeof customerFeedback.$inferSelect;
 export type FeedbackVote = typeof feedbackVotes.$inferSelect;
 export type FeedbackComment = typeof feedbackComments.$inferSelect;
+export type MockTest = typeof mockTests.$inferSelect;
+export type MockTestSubmission = typeof mockTestSubmissions.$inferSelect;

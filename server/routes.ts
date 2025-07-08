@@ -16,6 +16,7 @@ import { paymentService } from "./services/payment-service";
 import { SimpleSubscriptionService } from "./services/simple-subscription-service";
 import { setupSEORoutes } from "./services/sitemap-generator";
 import { PDFService } from "./services/pdf-service";
+import { MockTestService } from "./services/mock-test-service";
 import { storage } from "./storage";
 import { db } from "../db";
 import { eq, and, asc, desc, isNotNull, sql } from "drizzle-orm";
@@ -1020,6 +1021,186 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error processing upgrade:", error);
       res.status(500).json({ message: "Failed to process upgrade" });
+    }
+  });
+
+  // Mock Test routes
+  app.get("/api/mock-tests", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any).id;
+      
+      const mockTests = await db.query.mockTests.findMany({
+        where: eq(schema.mockTests.userId, userId),
+        orderBy: desc(schema.mockTests.createdAt),
+        with: {
+          submissions: true
+        }
+      });
+
+      // Transform to include completion status
+      const testsWithStatus = mockTests.map(test => ({
+        ...test,
+        isCompleted: test.submissions.length > 0,
+        score: test.submissions.length > 0 ? test.submissions[0].score : undefined
+      }));
+
+      res.json(testsWithStatus);
+    } catch (error) {
+      console.error("Error fetching mock tests:", error);
+      res.status(500).json({ error: "Failed to fetch mock tests" });
+    }
+  });
+
+  app.post("/api/ai/mock-test/generate", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any).id;
+      const { examType, subject, difficulty, questionCount, duration, topics } = req.body;
+
+      // Check subscription access
+      const hasAccess = await SimpleSubscriptionService.hasFeatureAccess(userId, "mock_test_generation");
+      if (!hasAccess.hasAccess) {
+        return res.status(403).json({ 
+          error: "Subscription required",
+          message: hasAccess.message || "Please upgrade your subscription to generate mock tests"
+        });
+      }
+
+      // Track usage
+      await SimpleSubscriptionService.trackUsage(userId, "mock_test_generation");
+
+      // Generate mock test using AI
+      const mockTestData = await MockTestService.generateMockTest({
+        examType,
+        subject,
+        difficulty,
+        questionCount,
+        duration,
+        topics
+      });
+
+      // Save to database
+      const [mockTest] = await db.insert(schema.mockTests)
+        .values({
+          userId,
+          title: mockTestData.title,
+          examType,
+          subject,
+          difficulty,
+          duration,
+          totalQuestions: questionCount,
+          totalMarks: mockTestData.totalMarks,
+          questions: JSON.stringify(mockTestData.questions),
+          answerKey: JSON.stringify(mockTestData.answerKey)
+        })
+        .returning();
+
+      res.json({
+        mockTest: {
+          ...mockTest,
+          isCompleted: false
+        }
+      });
+    } catch (error) {
+      console.error("Error generating mock test:", error);
+      res.status(500).json({ error: "Failed to generate mock test" });
+    }
+  });
+
+  app.get("/api/mock-test/:id/download-pdf", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any).id;
+      const { id } = req.params;
+
+      // Get mock test
+      const mockTest = await db.query.mockTests.findFirst({
+        where: and(
+          eq(schema.mockTests.id, parseInt(id)),
+          eq(schema.mockTests.userId, userId)
+        )
+      });
+
+      if (!mockTest) {
+        return res.status(404).json({ error: "Mock test not found" });
+      }
+
+      const questions = JSON.parse(mockTest.questions);
+      const htmlContent = await MockTestService.generateMockTestPDF(mockTest, questions);
+
+      // Generate PDF using Puppeteer
+      const pdfBuffer = await PDFService.generatePDFFromHTML(htmlContent);
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="mock_test_${id}.pdf"`);
+      res.setHeader('Content-Length', pdfBuffer.length);
+      
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error("Error downloading mock test PDF:", error);
+      res.status(500).json({ error: "Failed to generate PDF" });
+    }
+  });
+
+  app.post("/api/mock-test/:id/submit", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any).id;
+      const { id } = req.params;
+      const { answers, timeTaken } = req.body;
+
+      // Get mock test
+      const mockTest = await db.query.mockTests.findFirst({
+        where: and(
+          eq(schema.mockTests.id, parseInt(id)),
+          eq(schema.mockTests.userId, userId)
+        )
+      });
+
+      if (!mockTest) {
+        return res.status(404).json({ error: "Mock test not found" });
+      }
+
+      const questions = JSON.parse(mockTest.questions);
+      const answerKey = JSON.parse(mockTest.answerKey);
+
+      // Calculate score
+      let score = 0;
+      const results = questions.map((question: any, index: number) => {
+        const userAnswer = answers[question.id];
+        const isCorrect = userAnswer === answerKey[index];
+        if (isCorrect) {
+          score += question.marks;
+        }
+        return {
+          questionId: question.id,
+          userAnswer,
+          correctAnswer: answerKey[index],
+          isCorrect,
+          marks: isCorrect ? question.marks : 0
+        };
+      });
+
+      // Save submission
+      const [submission] = await db.insert(schema.mockTestSubmissions)
+        .values({
+          mockTestId: parseInt(id),
+          userId,
+          answers: JSON.stringify(answers),
+          score,
+          totalMarks: mockTest.totalMarks,
+          timeTaken,
+          percentage: (score / mockTest.totalMarks) * 100
+        })
+        .returning();
+
+      res.json({
+        submission,
+        results,
+        score,
+        totalMarks: mockTest.totalMarks,
+        percentage: (score / mockTest.totalMarks) * 100
+      });
+    } catch (error) {
+      console.error("Error submitting mock test:", error);
+      res.status(500).json({ error: "Failed to submit mock test" });
     }
   });
 
