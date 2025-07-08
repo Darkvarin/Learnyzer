@@ -59,7 +59,8 @@ import {
   Bookmark,
   Zap,
   Target,
-  Building2
+  Building2,
+  Brain
 } from "lucide-react";
 
 export default function AiTutor() {
