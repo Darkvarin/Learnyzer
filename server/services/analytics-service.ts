@@ -606,7 +606,8 @@ export class AnalyticsService {
         const user = await db.query.users.findFirst({
           where: eq(users.id, userId)
         });
-        examType = user?.track;
+        // Use selectedExam instead of track for exam-specific content
+        examType = user?.selectedExam || user?.track;
       }
     } catch (error) {
       // Use generic data if user lookup fails
@@ -810,6 +811,7 @@ export class AnalyticsService {
     let userName = 'Student';
     let userGrade = null;
     let userTrack = null;
+    let examType = null;
     
     try {
       const user = await db.query.users.findFirst({
@@ -819,16 +821,65 @@ export class AnalyticsService {
         userName = user.name;
         userGrade = user.grade;
         userTrack = user.track;
+        examType = user.selectedExam || user.track;
       }
     } catch (error) {
       // Use defaults
     }
 
+    // Get exam-specific strong/weak subjects
+    const getExamSubjects = (exam: string | null) => {
+      switch (exam) {
+        case 'neet':
+          return {
+            strongSubjects: ['biology', 'chemistry'],
+            weakSubjects: ['physics']
+          };
+        case 'jee':
+          return {
+            strongSubjects: ['mathematics', 'physics'],
+            weakSubjects: ['chemistry']
+          };
+        case 'upsc':
+          return {
+            strongSubjects: ['history', 'polity'],
+            weakSubjects: ['economy', 'geography']
+          };
+        case 'clat':
+          return {
+            strongSubjects: ['english', 'general_knowledge'],
+            weakSubjects: ['legal_reasoning']
+          };
+        case 'cuet':
+          return {
+            strongSubjects: ['english', 'chemistry'],
+            weakSubjects: ['physics']
+          };
+        case 'cse':
+          return {
+            strongSubjects: ['programming', 'data_structures'],
+            weakSubjects: ['algorithms']
+          };
+        case 'cgle':
+          return {
+            strongSubjects: ['general_awareness', 'english_language'],
+            weakSubjects: ['quantitative_aptitude']
+          };
+        default:
+          return {
+            strongSubjects: ['mathematics'],
+            weakSubjects: ['physics']
+          };
+      }
+    };
+
+    const subjects = getExamSubjects(examType);
+
     return {
       basic: {
         name: userName,
         grade: userGrade,
-        track: userTrack,
+        track: examType || userTrack,
         level: 1,
         xp: 100,
         rank: 'Bronze I'
@@ -836,8 +887,8 @@ export class AnalyticsService {
       learning: {
         style: 'visual',
         pace: 'medium',
-        strongSubjects: ['mathematics'],
-        weakSubjects: ['physics'],
+        strongSubjects: subjects.strongSubjects,
+        weakSubjects: subjects.weakSubjects,
         goals: ['improve_grades'],
         studyHours: 2,
         preferredTime: 'evening'
@@ -859,7 +910,8 @@ export class AnalyticsService {
         const user = await db.query.users.findFirst({
           where: eq(users.id, userId)
         });
-        examType = user?.track;
+        // Use selectedExam instead of track for exam-specific content
+        examType = user?.selectedExam || user?.track;
       }
     } catch (error) {
       // Use generic data if user lookup fails
