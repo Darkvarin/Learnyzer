@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { useAuth } from "@/hooks/use-auth";
@@ -91,36 +91,52 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
   // Use detailed test data if available, otherwise use the passed test
   const testData = detailedTest || test;
 
+  // Parse questions from JSON string with error handling - moved to useMemo for better performance
+  const { questions, answerKey } = useMemo(() => {
+    let questions: MockTestQuestion[] = [];
+    let answerKey: string[] = [];
+    
+    // Only try to parse if testData exists and has questions
+    if (!testData) {
+      return { questions, answerKey };
+    }
+    
+    try {
+      if (testData.questions) {
+        // The questions are stored as JSON strings in the database
+        const parsedQuestions = typeof testData.questions === 'string' ? JSON.parse(testData.questions) : testData.questions;
+        questions = Array.isArray(parsedQuestions) ? parsedQuestions : [];
+        console.log('Parsed questions:', questions.length, 'questions loaded');
+      }
+      if (testData.answerKey) {
+        // The answerKey is stored as JSON strings in the database
+        const parsedAnswerKey = typeof testData.answerKey === 'string' ? JSON.parse(testData.answerKey) : testData.answerKey;
+        answerKey = Array.isArray(parsedAnswerKey) ? parsedAnswerKey : [];
+        console.log('Parsed answer key:', answerKey.length, 'answers loaded');
+      }
+    } catch (error) {
+      console.error('Error parsing test data:', error, 'Test object:', testData);
+      toast({
+        title: "Error Loading Test",
+        description: "Unable to load test questions. Please try again.",
+        variant: "destructive",
+      });
+    }
+
+    // Debug: Check if questions are loaded
+    console.log('Test data:', testData);
+    console.log('Questions array length:', questions.length);
+    console.log('Answer key length:', answerKey.length);
+    
+    return { questions, answerKey };
+  }, [testData, toast]);
+
   // Initialize timer when test data is available
   useEffect(() => {
     if (testData?.duration && timeRemaining === 0) {
       setTimeRemaining(testData.duration * 60); // Convert minutes to seconds
     }
   }, [testData?.duration, timeRemaining]);
-
-  // Parse questions from JSON string with error handling
-  let questions: MockTestQuestion[] = [];
-  let answerKey: string[] = [];
-  
-  try {
-    if (testData.questions) {
-      // The questions are stored as JSON strings in the database
-      const parsedQuestions = typeof testData.questions === 'string' ? JSON.parse(testData.questions) : testData.questions;
-      questions = Array.isArray(parsedQuestions) ? parsedQuestions : [];
-    }
-    if (testData.answerKey) {
-      // The answerKey is stored as JSON strings in the database
-      const parsedAnswerKey = typeof testData.answerKey === 'string' ? JSON.parse(testData.answerKey) : testData.answerKey;
-      answerKey = Array.isArray(parsedAnswerKey) ? parsedAnswerKey : [];
-    }
-  } catch (error) {
-    console.error('Error parsing test data:', error, 'Test object:', testData);
-    toast({
-      title: "Error Loading Test",
-      description: "Unable to load test questions. Please try again.",
-      variant: "destructive",
-    });
-  }
 
   // Timer countdown effect
   useEffect(() => {
@@ -170,7 +186,7 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
     );
   }
 
-  const currentQuestion = questions[currentQuestionIndex];
+
 
   // Calculate score
   const calculateScore = () => {
@@ -267,12 +283,36 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
     submitTestMutation.mutate();
   };
 
-  if (!currentQuestion) {
+  // Show error state if no questions are found
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-dark-bg flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <FileText className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+          <h3 className="text-lg font-semibold text-white mb-2">No Questions Available</h3>
+          <p className="text-gray-400 mb-4">
+            This test appears to be empty or corrupted. Please try generating a new test or contact support.
+          </p>
+          <div className="space-y-2">
+            <p className="text-sm text-gray-500">Debug info:</p>
+            <p className="text-xs text-gray-600">Questions: {questions.length}</p>
+            <p className="text-xs text-gray-600">Test ID: {test.id}</p>
+          </div>
+          <Button onClick={onBack} className="mt-4">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Tests
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!questions[currentQuestionIndex]) {
     return (
       <div className="min-h-screen bg-dark-bg flex items-center justify-center">
         <div className="text-center">
           <FileText className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-          <p className="text-gray-400">No questions available</p>
+          <p className="text-gray-400">Question not found</p>
           <Button onClick={onBack} className="mt-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Tests
@@ -422,27 +462,27 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
                 Question {currentQuestionIndex + 1} of {questions.length}
               </CardTitle>
               <Badge variant="outline" className="text-xs">
-                {currentQuestion.marks} marks
+                {questions[currentQuestionIndex].marks} marks
               </Badge>
             </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <p className="text-gray-100 leading-relaxed">
-                {currentQuestion.question}
+                {questions[currentQuestionIndex].question}
               </p>
               
               <div className="space-y-3">
-                {currentQuestion.options.map((option, index) => {
+                {questions[currentQuestionIndex].options.map((option, index) => {
                   const optionLetter = option.charAt(0); // A, B, C, D
-                  const isSelected = userAnswers[currentQuestion.id.toString()] === optionLetter;
+                  const isSelected = userAnswers[questions[currentQuestionIndex].id.toString()] === optionLetter;
                   const isCorrect = showAnswers && answerKey[currentQuestionIndex] === optionLetter;
                   const isWrong = showAnswers && isSelected && !isCorrect;
                   
                   return (
                     <button
                       key={index}
-                      onClick={() => handleAnswerSelect(currentQuestion.id.toString(), optionLetter)}
+                      onClick={() => handleAnswerSelect(questions[currentQuestionIndex].id.toString(), optionLetter)}
                       disabled={showAnswers}
                       className={`w-full p-3 text-left rounded-lg border transition-colors flex items-center justify-between ${
                         isSelected 
@@ -477,24 +517,24 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
                 <div className="mt-6 space-y-4">
                   {/* Answer Status */}
                   <div className={`flex items-center gap-2 p-3 rounded-lg ${
-                    userAnswers[currentQuestion.id.toString()] === answerKey[currentQuestionIndex]
+                    userAnswers[questions[currentQuestionIndex].id.toString()] === answerKey[currentQuestionIndex]
                       ? 'bg-green-500/10 border border-green-500/20'
-                      : userAnswers[currentQuestion.id.toString()]
+                      : userAnswers[questions[currentQuestionIndex].id.toString()]
                       ? 'bg-red-500/10 border border-red-500/20'
                       : 'bg-yellow-500/10 border border-yellow-500/20'
                   }`}>
-                    {userAnswers[currentQuestion.id.toString()] === answerKey[currentQuestionIndex] ? (
+                    {userAnswers[questions[currentQuestionIndex].id.toString()] === answerKey[currentQuestionIndex] ? (
                       <>
                         <CheckCircle2 className="h-5 w-5 text-green-400" />
                         <span className="font-medium text-green-400">Correct!</span>
-                        <span className="text-green-300">+{currentQuestion.marks} marks</span>
+                        <span className="text-green-300">+{questions[currentQuestionIndex].marks} marks</span>
                       </>
-                    ) : userAnswers[currentQuestion.id.toString()] ? (
+                    ) : userAnswers[questions[currentQuestionIndex].id.toString()] ? (
                       <>
                         <XCircle className="h-5 w-5 text-red-400" />
                         <span className="font-medium text-red-400">Incorrect</span>
                         <span className="text-red-300">
-                          Your answer: {userAnswers[currentQuestion.id.toString()]} | 
+                          Your answer: {userAnswers[questions[currentQuestionIndex].id.toString()]} | 
                           Correct: {answerKey[currentQuestionIndex]}
                         </span>
                       </>
@@ -517,16 +557,16 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
                     </h4>
                     <div className="space-y-2">
                       <p className="text-gray-300 leading-relaxed">
-                        {currentQuestion.explanation}
+                        {questions[currentQuestionIndex].explanation}
                       </p>
                       
                       {/* Additional Learning Tips */}
                       <div className="mt-3 p-3 bg-purple-500/10 border border-purple-500/20 rounded-lg">
                         <h5 className="text-sm font-medium text-purple-400 mb-1">💡 Study Tip:</h5>
                         <p className="text-sm text-purple-300">
-                          {currentQuestion.difficulty === 'easy' ? 
+                          {questions[currentQuestionIndex].difficulty === 'easy' ? 
                             'Focus on understanding the basic concept. This is fundamental knowledge you should master.' :
-                            currentQuestion.difficulty === 'medium' ?
+                            questions[currentQuestionIndex].difficulty === 'medium' ?
                             'This requires application of concepts. Practice similar problems to strengthen your understanding.' :
                             'This is an advanced question. Break it down step by step and relate it to fundamental principles.'
                           }
