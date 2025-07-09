@@ -515,9 +515,18 @@ export default function AiTutor() {
         });
       }
       
+      // Show rewards notification
+      if (data.rewards && (data.rewards.xpEarned > 0 || data.rewards.rpEarned > 0)) {
+        toast({
+          title: "Learning Rewards Earned! 🎓",
+          description: `+${data.rewards.xpEarned} XP | +${data.rewards.rpEarned} RP for AI learning session`,
+        });
+      }
+      
       // Refresh conversation data and auto-scroll to bottom
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation/recent'] });
       queryClient.invalidateQueries({ queryKey: ['/api/user/stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/rank'] });
       
       // Auto-scroll to bottom after a brief delay for DOM update
       setTimeout(() => {

@@ -112,14 +112,18 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
       return response.json();
     },
     onSuccess: (data) => {
+      const { rewards } = data;
       toast({
-        title: "Test Submitted!",
-        description: `Score: ${data.score}/${data.totalMarks} (${Math.round(data.percentage)}%)`,
+        title: "Test Submitted! 🎉",
+        description: `Score: ${data.score}/${data.totalMarks} (${Math.round(data.percentage)}%) | +${rewards.xpEarned} XP | +${rewards.rpEarned} RP`,
       });
       setShowAnswers(true);
       // Invalidate and refetch mock tests to update completion status
       queryClient.invalidateQueries({ queryKey: ['/api/mock-tests'] });
       queryClient.invalidateQueries({ queryKey: ['/api/mock-test', test.id.toString()] });
+      // Refresh user stats to show updated XP and RP
+      queryClient.invalidateQueries({ queryKey: ['/api/user/stats'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/rank'] });
     },
     onError: (error) => {
       toast({

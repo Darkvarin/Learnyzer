@@ -1224,6 +1224,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       });
 
+      // Calculate rewards based on performance
+      const percentage = (score / mockTest.totalMarks) * 100;
+      
+      // Base XP and RP rewards
+      let xpEarned = 0;
+      let rpEarned = 0;
+      
+      // Award XP based on completion and performance
+      xpEarned += 50; // Base completion reward
+      xpEarned += Math.floor(score * 5); // 5 XP per mark scored
+      
+      // Bonus XP for high performance
+      if (percentage >= 90) {
+        xpEarned += 100; // Excellent performance bonus
+      } else if (percentage >= 75) {
+        xpEarned += 50; // Good performance bonus
+      } else if (percentage >= 60) {
+        xpEarned += 25; // Decent performance bonus
+      }
+      
+      // Time bonus (if completed quickly)
+      const timePercentage = (timeTaken / mockTest.duration) * 100;
+      if (timePercentage <= 70) {
+        xpEarned += 30; // Quick completion bonus
+      }
+      
+      // Award RP based on performance
+      rpEarned += Math.floor(percentage / 10) * 5; // 5 RP per 10% score
+      
+      // Bonus RP for excellent performance
+      if (percentage >= 85) {
+        rpEarned += 25; // High performance RP bonus
+      }
+      
+      // Award the rewards
+      await storage.addUserXP(userId, xpEarned);
+      await storage.updateUserRankPoints(userId, (await storage.getUserById(userId))!.rankPoints + rpEarned);
+
       // Save submission
       const [submission] = await db.insert(schema.mockTestSubmissions)
         .values({
@@ -1242,7 +1280,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         results,
         score,
         totalMarks: mockTest.totalMarks,
-        percentage: (score / mockTest.totalMarks) * 100
+        percentage: (score / mockTest.totalMarks) * 100,
+        rewards: {
+          xpEarned,
+          rpEarned,
+          breakdown: {
+            baseCompletion: 50,
+            scoreBonus: Math.floor(score * 5),
+            performanceBonus: percentage >= 90 ? 100 : percentage >= 75 ? 50 : percentage >= 60 ? 25 : 0,
+            timeBonus: timePercentage <= 70 ? 30 : 0,
+            rpFromScore: Math.floor(percentage / 10) * 5,
+            rpFromPerformance: percentage >= 85 ? 25 : 0
+          }
+        }
       });
     } catch (error) {
       console.error("Error submitting mock test:", error);
