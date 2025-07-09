@@ -53,20 +53,27 @@ INSTRUCTIONS:
 2. Questions should be ${difficulty} level and exam-specific for ${examType}
 3. Include variety: conceptual, application, and analytical questions
 4. Each question should have exactly 4 options labeled A, B, C, D
-5. Provide detailed explanations for correct answers
-6. Assign appropriate marks per question (1-4 marks based on difficulty)
+5. Provide COMPREHENSIVE, educational explanations (minimum 2-3 sentences)
+6. Assign appropriate marks per question (2 marks for easy, 3 for medium, 4 for hard)
 7. Ensure questions cover breadth of ${subject} curriculum for ${examType}
+
+EXPLANATION REQUIREMENTS:
+- Explain WHY the correct answer is right
+- Briefly explain why other options are incorrect
+- Include relevant concepts or formulas when applicable
+- Add context or real-world applications where relevant
+- Use educational language that helps students learn
 
 RESPONSE FORMAT (JSON):
 {
-  "title": "Mock Test Title",
+  "title": "${examType} ${subject} Mock Test: [Specific Topic/Chapter]",
   "questions": [
     {
       "id": 1,
       "question": "Question text here?",
       "options": ["A) Option 1", "B) Option 2", "C) Option 3", "D) Option 4"],
       "correctAnswer": "A",
-      "explanation": "Detailed explanation of why this answer is correct and others are wrong",
+      "explanation": "Comprehensive explanation: The correct answer is A because [detailed reasoning]. Option B is incorrect because [reason]. Option C is wrong due to [reason]. Option D is incorrect as [reason]. This concept is important because [educational context or application].",
       "marks": 2,
       "difficulty": "${difficulty}"
     }
@@ -75,7 +82,7 @@ RESPONSE FORMAT (JSON):
   "totalMarks": 50
 }
 
-Generate high-quality, exam-standard questions that truly test student understanding.`;
+Generate high-quality, exam-standard questions with educational explanations that help students understand concepts deeply.`;
 
     try {
       const response = await openai.chat.completions.create({

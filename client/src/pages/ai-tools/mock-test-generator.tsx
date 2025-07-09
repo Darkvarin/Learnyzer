@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { useAuth } from "@/hooks/use-auth";
@@ -36,7 +36,11 @@ import {
   Play,
   ArrowLeft,
   Eye,
-  EyeOff
+  EyeOff,
+  ArrowRight,
+  CheckCircle2,
+  XCircle,
+  AlertCircle
 } from "lucide-react";
 import { SubscriptionGuard } from "@/components/subscription/subscription-guard";
 
@@ -71,6 +75,8 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
   const [showAnswers, setShowAnswers] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(test.duration * 60); // Convert minutes to seconds
+  const [isTimerActive, setIsTimerActive] = useState(true);
   const { toast } = useToast();
 
   // Fetch detailed test data with questions
@@ -105,6 +111,40 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
       variant: "destructive",
     });
   }
+
+  // Timer countdown effect
+  useEffect(() => {
+    if (!isTimerActive || timeRemaining <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev <= 1) {
+          setIsTimerActive(false);
+          toast({
+            title: "Time's Up!",
+            description: "The test has been automatically submitted.",
+            variant: "destructive",
+          });
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isTimerActive, timeRemaining, toast]);
+
+  // Format time display
+  const formatTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   // Show loading state
   if (isLoading) {
@@ -178,14 +218,32 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
               <ArrowLeft className="h-4 w-4" />
               Back to Tests
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => setShowAnswers(!showAnswers)}
-              className="flex items-center gap-2"
-            >
-              {showAnswers ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              {showAnswers ? 'Hide Answers' : 'Show Answers'}
-            </Button>
+            
+            <div className="flex items-center gap-4">
+              {/* Timer Display */}
+              <div className={`flex items-center gap-2 px-3 py-2 rounded-lg font-mono ${
+                timeRemaining < 300 ? 'bg-red-900/20 text-red-400 border border-red-800' : 
+                timeRemaining < 900 ? 'bg-yellow-900/20 text-yellow-400 border border-yellow-800' : 
+                'bg-green-900/20 text-green-400 border border-green-800'
+              }`}>
+                <Timer className="h-4 w-4" />
+                <span className="text-sm font-medium">
+                  {formatTime(timeRemaining)}
+                </span>
+                {timeRemaining < 300 && (
+                  <span className="text-xs ml-1 animate-pulse">⚠️</span>
+                )}
+              </div>
+              
+              <Button
+                variant="outline"
+                onClick={() => setShowAnswers(!showAnswers)}
+                className="flex items-center gap-2"
+              >
+                {showAnswers ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showAnswers ? 'Hide Answers' : 'Show Answers'}
+              </Button>
+            </div>
           </div>
           
           <div className="bg-dark-surface border border-dark-border rounded-lg p-4 mb-6">
@@ -236,26 +294,97 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
                     <button
                       key={index}
                       onClick={() => handleAnswerSelect(currentQuestion.id.toString(), optionLetter)}
-                      className={`w-full p-3 text-left rounded-lg border transition-colors ${
+                      disabled={showAnswers}
+                      className={`w-full p-3 text-left rounded-lg border transition-colors flex items-center justify-between ${
                         isSelected 
                           ? isWrong 
                             ? 'bg-red-500/20 border-red-500/30 text-red-400' 
                             : 'bg-primary/20 border-primary/30 text-primary'
                           : 'bg-dark-card border-dark-border hover:bg-dark-hover'
-                      } ${isCorrect ? 'bg-green-500/20 border-green-500/30 text-green-400' : ''}`}
+                      } ${isCorrect ? 'bg-green-500/20 border-green-500/30 text-green-400' : ''} ${
+                        showAnswers ? 'cursor-default' : 'cursor-pointer'
+                      }`}
                     >
-                      {option}
+                      <span>{option}</span>
+                      {showAnswers && (
+                        <div className="flex items-center">
+                          {isCorrect && (
+                            <CheckCircle2 className="h-5 w-5 text-green-400" />
+                          )}
+                          {isWrong && (
+                            <XCircle className="h-5 w-5 text-red-400" />
+                          )}
+                          {isSelected && !isWrong && !isCorrect && (
+                            <AlertCircle className="h-5 w-5 text-blue-400" />
+                          )}
+                        </div>
+                      )}
                     </button>
                   );
                 })}
               </div>
 
               {showAnswers && (
-                <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                  <h4 className="font-medium text-blue-400 mb-2">Explanation:</h4>
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    {currentQuestion.explanation}
-                  </p>
+                <div className="mt-6 space-y-4">
+                  {/* Answer Status */}
+                  <div className={`flex items-center gap-2 p-3 rounded-lg ${
+                    userAnswers[currentQuestion.id.toString()] === answerKey[currentQuestionIndex]
+                      ? 'bg-green-500/10 border border-green-500/20'
+                      : userAnswers[currentQuestion.id.toString()]
+                      ? 'bg-red-500/10 border border-red-500/20'
+                      : 'bg-yellow-500/10 border border-yellow-500/20'
+                  }`}>
+                    {userAnswers[currentQuestion.id.toString()] === answerKey[currentQuestionIndex] ? (
+                      <>
+                        <CheckCircle2 className="h-5 w-5 text-green-400" />
+                        <span className="font-medium text-green-400">Correct!</span>
+                        <span className="text-green-300">+{currentQuestion.marks} marks</span>
+                      </>
+                    ) : userAnswers[currentQuestion.id.toString()] ? (
+                      <>
+                        <XCircle className="h-5 w-5 text-red-400" />
+                        <span className="font-medium text-red-400">Incorrect</span>
+                        <span className="text-red-300">
+                          Your answer: {userAnswers[currentQuestion.id.toString()]} | 
+                          Correct: {answerKey[currentQuestionIndex]}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle className="h-5 w-5 text-yellow-400" />
+                        <span className="font-medium text-yellow-400">Not Attempted</span>
+                        <span className="text-yellow-300">
+                          Correct answer: {answerKey[currentQuestionIndex]}
+                        </span>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Detailed Explanation */}
+                  <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                    <h4 className="font-medium text-blue-400 mb-3 flex items-center gap-2">
+                      <Brain className="h-4 w-4" />
+                      Detailed Explanation
+                    </h4>
+                    <div className="space-y-2">
+                      <p className="text-gray-300 leading-relaxed">
+                        {currentQuestion.explanation}
+                      </p>
+                      
+                      {/* Additional Learning Tips */}
+                      <div className="mt-3 p-3 bg-purple-500/10 border border-purple-500/20 rounded-lg">
+                        <h5 className="text-sm font-medium text-purple-400 mb-1">💡 Study Tip:</h5>
+                        <p className="text-sm text-purple-300">
+                          {currentQuestion.difficulty === 'easy' ? 
+                            'Focus on understanding the basic concept. This is fundamental knowledge you should master.' :
+                            currentQuestion.difficulty === 'medium' ?
+                            'This requires application of concepts. Practice similar problems to strengthen your understanding.' :
+                            'This is an advanced question. Break it down step by step and relate it to fundamental principles.'
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
