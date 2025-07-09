@@ -80,18 +80,19 @@ export default function MockTestGenerator() {
   // Get exam-specific subjects
   const getExamSubjects = () => {
     const subjectMap: Record<string, string[]> = {
-      JEE: ["Physics", "Chemistry", "Mathematics"],
-      NEET: ["Physics", "Chemistry", "Biology"],
-      UPSC: ["General Studies", "History", "Geography", "Polity", "Economics", "Environment", "Science & Technology", "Current Affairs"],
-      CLAT: ["English", "General Knowledge", "Legal Reasoning", "Logical Reasoning", "Quantitative Techniques"],
-      CUET: ["General Test", "Domain Subjects", "Language"],
-      CSE: ["Programming", "Data Structures", "Algorithms", "Computer Networks", "Operating Systems", "Database Systems", "Computer Architecture"],
-      CGLE: ["General Awareness", "Quantitative Aptitude", "English Language", "Reasoning"]
+      jee: ["Physics", "Chemistry", "Mathematics"],
+      neet: ["Physics", "Chemistry", "Biology"],
+      upsc: ["General Studies", "History", "Geography", "Polity", "Economics", "Environment", "Science & Technology", "Current Affairs"],
+      clat: ["English", "General Knowledge", "Legal Reasoning", "Logical Reasoning", "Quantitative Techniques"],
+      cuet: ["General Test", "Domain Subjects", "Language"],
+      cse: ["Programming", "Data Structures", "Algorithms", "Computer Networks", "Operating Systems", "Database Systems", "Computer Architecture"],
+      cgle: ["General Awareness", "Quantitative Aptitude", "English Language", "Reasoning"]
     };
     
-    // If user has selected an exam, return exam-specific subjects
-    if (user?.selectedExam && subjectMap[user.selectedExam]) {
-      return subjectMap[user.selectedExam];
+    // If user has selected an exam, return exam-specific subjects (convert to lowercase for matching)
+    const selectedExam = user?.selectedExam?.toLowerCase();
+    if (selectedExam && subjectMap[selectedExam]) {
+      return subjectMap[selectedExam];
     }
     
     // Fallback: return all subjects from all exams
@@ -213,7 +214,7 @@ export default function MockTestGenerator() {
             </div>
             {user?.selectedExam && (
               <Badge variant="outline" className="ml-auto bg-green-500/20 text-green-400 border-green-500/30">
-                {user.selectedExam} Locked
+                {user.selectedExam.toUpperCase()} Locked
               </Badge>
             )}
           </div>
@@ -243,7 +244,7 @@ export default function MockTestGenerator() {
                             <span className="text-sm text-amber-400 ml-2">(All subjects available)</span>
                           )}
                           {user?.selectedExam && (
-                            <span className="text-sm text-green-400 ml-2">({user.selectedExam} subjects only)</span>
+                            <span className="text-sm text-green-400 ml-2">({user.selectedExam.toUpperCase()} subjects only)</span>
                           )}
                         </Label>
                         <Select
