@@ -1161,7 +1161,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Mock test not found" });
       }
 
-      const questions = JSON.parse(mockTest.questions);
+      // Parse questions safely - might already be a parsed object
+      const questions = typeof mockTest.questions === 'string' 
+        ? JSON.parse(mockTest.questions) 
+        : mockTest.questions;
       const htmlContent = await MockTestService.generateMockTestPDF(mockTest, questions);
 
       // Generate PDF using Puppeteer
@@ -1196,8 +1199,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Mock test not found" });
       }
 
-      const questions = JSON.parse(mockTest.questions);
-      const answerKey = JSON.parse(mockTest.answerKey);
+      // Parse questions and answerKey safely - they might already be parsed objects
+      const questions = typeof mockTest.questions === 'string' 
+        ? JSON.parse(mockTest.questions) 
+        : mockTest.questions;
+      const answerKey = typeof mockTest.answerKey === 'string' 
+        ? JSON.parse(mockTest.answerKey) 
+        : mockTest.answerKey;
 
       // Calculate score
       let score = 0;
