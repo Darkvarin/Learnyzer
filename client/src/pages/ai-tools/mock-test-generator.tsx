@@ -77,6 +77,7 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
   const [showAnswers, setShowAnswers] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(test.duration * 60); // Convert minutes to seconds
   const [isTimerActive, setIsTimerActive] = useState(true);
+  const [autoAdvance, setAutoAdvance] = useState(true);
   const { toast } = useToast();
 
   // Fetch detailed test data with questions
@@ -160,11 +161,38 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  // Calculate score
+  const calculateScore = () => {
+    let totalScore = 0;
+    let maxScore = 0;
+    
+    questions.forEach((question, index) => {
+      maxScore += question.marks;
+      const userAnswer = userAnswers[question.id.toString()];
+      const correctAnswer = answerKey[index];
+      
+      if (userAnswer === correctAnswer) {
+        totalScore += question.marks;
+      }
+    });
+    
+    return { totalScore, maxScore };
+  };
+
   const handleAnswerSelect = (questionId: string, answer: string) => {
     setUserAnswers(prev => ({
       ...prev,
       [questionId]: answer
     }));
+
+    // Auto-advance to next question if enabled and not showing answers
+    if (autoAdvance && !showAnswers) {
+      setTimeout(() => {
+        if (currentQuestionIndex < questions.length - 1) {
+          setCurrentQuestionIndex(prev => prev + 1);
+        }
+      }, 800); // Small delay to show selection before advancing
+    }
   };
 
   const handleNext = () => {
@@ -219,7 +247,20 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
               Back to Tests
             </Button>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              {/* Score Display */}
+              {showAnswers && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-purple-900/20 border border-purple-800">
+                  <Trophy className="h-4 w-4 text-purple-400" />
+                  <span className="text-sm font-medium text-purple-400">
+                    Score: {calculateScore().totalScore}/{calculateScore().maxScore}
+                  </span>
+                  <span className="text-xs text-purple-300">
+                    ({Math.round((calculateScore().totalScore / calculateScore().maxScore) * 100)}%)
+                  </span>
+                </div>
+              )}
+              
               {/* Timer Display */}
               <div className={`flex items-center gap-2 px-3 py-2 rounded-lg font-mono ${
                 timeRemaining < 300 ? 'bg-red-900/20 text-red-400 border border-red-800' : 
@@ -234,6 +275,18 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
                   <span className="text-xs ml-1 animate-pulse">⚠️</span>
                 )}
               </div>
+              
+              {/* Auto-advance Toggle */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setAutoAdvance(!autoAdvance)}
+                className={`flex items-center gap-1 text-xs ${
+                  autoAdvance ? 'text-green-400' : 'text-gray-400'
+                }`}
+              >
+                {autoAdvance ? '⚡ Auto' : '⏸️ Manual'}
+              </Button>
               
               <Button
                 variant="outline"
@@ -263,6 +316,29 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
               </span>
             </div>
           </div>
+        </div>
+
+        {/* Question Progress Indicator */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {questions.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentQuestionIndex(index)}
+              className={`w-8 h-8 rounded-full text-xs font-medium transition-all ${
+                index === currentQuestionIndex
+                  ? 'bg-primary text-primary-foreground'
+                  : userAnswers[questions[index].id.toString()]
+                  ? showAnswers
+                    ? userAnswers[questions[index].id.toString()] === answerKey[index]
+                      ? 'bg-green-500 text-white'
+                      : 'bg-red-500 text-white'
+                    : 'bg-blue-500 text-white'
+                  : 'bg-gray-600 text-gray-300 hover:bg-gray-500'
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
         </div>
 
         {/* Question Display */}
@@ -391,6 +467,59 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
           </CardContent>
         </Card>
 
+        {/* Score Summary - only show when answers are visible */}
+        {showAnswers && (
+          <Card className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 border-purple-500/20 mb-6">
+            <CardContent className="pt-6">
+              <div className="text-center space-y-4">
+                <div className="flex items-center justify-center gap-4">
+                  <Trophy className="h-8 w-8 text-yellow-400" />
+                  <div>
+                    <h3 className="text-2xl font-bold text-purple-400">
+                      {calculateScore().totalScore}/{calculateScore().maxScore}
+                    </h3>
+                    <p className="text-sm text-gray-400">Total Score</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xl font-bold text-blue-400">
+                      {Math.round((calculateScore().totalScore / calculateScore().maxScore) * 100)}%
+                    </p>
+                    <p className="text-sm text-gray-400">Percentage</p>
+                  </div>
+                </div>
+                
+                <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${(calculateScore().totalScore / calculateScore().maxScore) * 100}%` }}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div className="text-center">
+                    <p className="font-medium text-green-400">
+                      {questions.filter((q, i) => userAnswers[q.id.toString()] === answerKey[i]).length}
+                    </p>
+                    <p className="text-gray-400">Correct</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-medium text-red-400">
+                      {questions.filter((q, i) => userAnswers[q.id.toString()] && userAnswers[q.id.toString()] !== answerKey[i]).length}
+                    </p>
+                    <p className="text-gray-400">Incorrect</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-medium text-yellow-400">
+                      {questions.filter((q) => !userAnswers[q.id.toString()]).length}
+                    </p>
+                    <p className="text-gray-400">Unanswered</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Navigation */}
         <div className="flex items-center justify-between">
           <Button
@@ -403,9 +532,14 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
             Previous
           </Button>
           
-          <span className="text-sm text-gray-400">
-            {currentQuestionIndex + 1} / {questions.length}
-          </span>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-400">
+              {currentQuestionIndex + 1} / {questions.length}
+            </span>
+            {autoAdvance && !showAnswers && (
+              <span className="text-xs text-green-400 animate-pulse">⚡ Auto-advance ON</span>
+            )}
+          </div>
           
           {currentQuestionIndex === questions.length - 1 ? (
             <Button
