@@ -91,6 +91,46 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
   // Use detailed test data if available, otherwise use the passed test
   const testData = detailedTest || test;
 
+  // Move submitTestMutation to the top with all other hooks
+  const submitTestMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch(`/api/mock-test/${test.id}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          answers: userAnswers,
+          timeTaken: Math.ceil((test.duration * 60 - timeRemaining) / 60) // Convert to minutes
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit test');
+      }
+
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Test Submitted!",
+        description: `Score: ${data.score}/${data.totalMarks} (${Math.round(data.percentage)}%)`,
+      });
+      setShowAnswers(true);
+      // Invalidate and refetch mock tests to update completion status
+      queryClient.invalidateQueries({ queryKey: ['/api/mock-tests'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/mock-test', test.id.toString()] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Submission Failed",
+        description: "Failed to submit test. Please try again.",
+        variant: "destructive",
+      });
+      console.error('Test submission error:', error);
+    }
+  });
+
   // Parse questions from JSON string with error handling - moved to useMemo for better performance
   const { questions, answerKey } = useMemo(() => {
     let questions: MockTestQuestion[] = [];
@@ -233,45 +273,6 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
       setCurrentQuestionIndex(prev => prev - 1);
     }
   };
-
-  const submitTestMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch(`/api/mock-test/${test.id}/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          answers: userAnswers,
-          timeTaken: Math.ceil((test.duration * 60 - timeRemaining) / 60) // Convert to minutes
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit test');
-      }
-
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "Test Submitted!",
-        description: `Score: ${data.score}/${data.totalMarks} (${Math.round(data.percentage)}%)`,
-      });
-      setShowAnswers(true);
-      // Invalidate and refetch mock tests to update completion status
-      queryClient.invalidateQueries({ queryKey: ['/api/mock-tests'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/mock-test', test.id.toString()] });
-    },
-    onError: (error) => {
-      toast({
-        title: "Submission Failed",
-        description: "Failed to submit test. Please try again.",
-        variant: "destructive",
-      });
-      console.error('Test submission error:', error);
-    }
-  });
 
   const handleSubmitTest = () => {
     if (submitTestMutation.isPending) return;
