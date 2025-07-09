@@ -75,7 +75,7 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
   const [showAnswers, setShowAnswers] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(test.duration * 60); // Convert minutes to seconds
+  const [timeRemaining, setTimeRemaining] = useState(0); // Initialize to 0, will be set when test data loads
   const [isTimerActive, setIsTimerActive] = useState(true);
   const [autoAdvance, setAutoAdvance] = useState(true);
   const { toast } = useToast();
@@ -88,6 +88,13 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
 
   // Use detailed test data if available, otherwise use the passed test
   const testData = detailedTest || test;
+
+  // Initialize timer when test data is available
+  useEffect(() => {
+    if (testData?.duration && timeRemaining === 0) {
+      setTimeRemaining(testData.duration * 60); // Convert minutes to seconds
+    }
+  }, [testData?.duration, timeRemaining]);
 
   // Parse questions from JSON string with error handling
   let questions: MockTestQuestion[] = [];
@@ -262,17 +269,17 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
               )}
               
               {/* Timer Display */}
-              <div className={`flex items-center gap-2 px-3 py-2 rounded-lg font-mono ${
-                timeRemaining < 300 ? 'bg-red-900/20 text-red-400 border border-red-800' : 
-                timeRemaining < 900 ? 'bg-yellow-900/20 text-yellow-400 border border-yellow-800' : 
-                'bg-green-900/20 text-green-400 border border-green-800'
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-lg font-mono border-2 ${
+                timeRemaining < 300 ? 'bg-red-900/30 text-red-300 border-red-600' : 
+                timeRemaining < 900 ? 'bg-yellow-900/30 text-yellow-300 border-yellow-600' : 
+                'bg-green-900/30 text-green-300 border-green-600'
               }`}>
-                <Timer className="h-4 w-4" />
-                <span className="text-sm font-medium">
-                  {formatTime(timeRemaining)}
+                <Timer className="h-5 w-5" />
+                <span className="text-lg font-bold tracking-wider">
+                  {timeRemaining > 0 ? formatTime(timeRemaining) : '00:00'}
                 </span>
-                {timeRemaining < 300 && (
-                  <span className="text-xs ml-1 animate-pulse">⚠️</span>
+                {timeRemaining < 300 && timeRemaining > 0 && (
+                  <span className="text-sm ml-1 animate-pulse font-bold">⚠️</span>
                 )}
               </div>
               
@@ -316,6 +323,34 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
               </span>
             </div>
           </div>
+        </div>
+
+        {/* Timer Display (Prominent) */}
+        <div className="text-center mb-6">
+          <Card className={`inline-block ${
+            timeRemaining < 300 ? 'bg-red-900/20 border-red-600' : 
+            timeRemaining < 900 ? 'bg-yellow-900/20 border-yellow-600' : 
+            'bg-green-900/20 border-green-600'
+          }`}>
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-center justify-center gap-3">
+                <Timer className="h-6 w-6 text-blue-400" />
+                <div>
+                  <p className="text-xs text-gray-400 mb-1">Time Remaining</p>
+                  <p className={`text-2xl font-bold font-mono tracking-wider ${
+                    timeRemaining < 300 ? 'text-red-400' : 
+                    timeRemaining < 900 ? 'text-yellow-400' : 
+                    'text-green-400'
+                  }`}>
+                    {timeRemaining > 0 ? formatTime(timeRemaining) : '00:00'}
+                  </p>
+                </div>
+                {timeRemaining < 300 && timeRemaining > 0 && (
+                  <span className="text-xl animate-pulse">⚠️</span>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Question Progress Indicator */}
