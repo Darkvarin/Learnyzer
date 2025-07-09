@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Check, X, Brain, Lightbulb } from 'lucide-react';
-import { apiRequest } from '@/lib/queryClient';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 
 interface MCQProps {
@@ -71,11 +71,23 @@ export function MCQComponent({
         onComplete(result.isCorrect);
       }
 
-      toast({
-        title: result.isCorrect ? "Correct!" : "Incorrect",
-        description: result.isCorrect ? "Great job! Keep it up." : "Don't worry, learning from mistakes is part of the process.",
-        variant: result.isCorrect ? "default" : "destructive",
-      });
+      // Show rewards notification for correct answers
+      if (result.isCorrect && result.rewards) {
+        toast({
+          title: "Correct Answer! Rewards Earned! 🎓",
+          description: `+${result.rewards.xpEarned} XP | +${result.rewards.rpEarned} RP for mastering the concept`,
+        });
+        
+        // Refresh user stats when rewards are earned
+        queryClient.invalidateQueries({ queryKey: ['/api/user/stats'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/user/rank'] });
+      } else {
+        toast({
+          title: result.isCorrect ? "Correct!" : "Incorrect",
+          description: result.isCorrect ? "Great job! Keep it up." : "Don't worry, learning from mistakes is part of the process.",
+          variant: result.isCorrect ? "default" : "destructive",
+        });
+      }
     } catch (error) {
       console.error('Error evaluating MCQ:', error);
       toast({

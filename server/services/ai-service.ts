@@ -417,40 +417,7 @@ Respond with JSON:
       // Update achievements
       await storage.incrementAISessionCount(userId);
       
-      // Award XP and RP for AI tutor interaction
-      const messageLength = message.length;
-      let xpEarned = 0;
-      let rpEarned = 0;
-      
-      // Base reward for AI interaction
-      xpEarned += 15; // Base learning reward
-      
-      // Bonus for longer, detailed questions
-      if (messageLength > 100) {
-        xpEarned += 10; // Detailed question bonus
-      }
-      if (messageLength > 200) {
-        xpEarned += 15; // Very detailed question bonus
-      }
-      
-      // Subject-specific bonus
-      if (subject && subject !== 'General') {
-        xpEarned += 5; // Subject focus bonus
-        rpEarned += 2; // Subject engagement RP
-      }
-      
-      // Visual learning bonus
-      if (visualSuggestions && visualSuggestions.hasVisual) {
-        xpEarned += 10; // Visual learning bonus
-        rpEarned += 3; // Advanced learning RP
-      }
-      
-      // Award the rewards
-      await storage.addUserXP(userId, xpEarned);
-      if (rpEarned > 0) {
-        const currentUser = await storage.getUserById(userId);
-        await storage.updateUserRankPoints(userId, (currentUser?.rankPoints || 0) + rpEarned);
-      }
+      // Note: XP and RP rewards are now only awarded when students correctly answer quiz questions
       
       return res.status(200).json({ 
         response: aiResponse,
@@ -462,19 +429,7 @@ Respond with JSON:
         visualSuggestions,
         personalized: true,
         studentLevel: user?.level || 1,
-        subject: subject || 'General',
-        rewards: {
-          xpEarned,
-          rpEarned,
-          breakdown: {
-            baseLearning: 15,
-            detailedQuestionBonus: messageLength > 100 ? (messageLength > 200 ? 25 : 10) : 0,
-            subjectFocusBonus: subject && subject !== 'General' ? 5 : 0,
-            visualLearningBonus: visualSuggestions && visualSuggestions.hasVisual ? 10 : 0,
-            subjectEngagementRP: subject && subject !== 'General' ? 2 : 0,
-            advancedLearningRP: visualSuggestions && visualSuggestions.hasVisual ? 3 : 0
-          }
-        }
+        subject: subject || 'General'
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -810,11 +765,51 @@ ${isCorrect ?
 
       const feedback = feedbackResponse.choices[0].message.content || '';
       
+      // Award XP and RP only for correct answers
+      let xpEarned = 0;
+      let rpEarned = 0;
+      
+      if (isCorrect) {
+        const userId = (req.user as any).id;
+        
+        // Base reward for correct answer
+        xpEarned += 15; // Base learning reward
+        
+        // Subject-specific bonus
+        if (subject && subject !== 'General' && subject !== 'general') {
+          xpEarned += 5; // Subject focus bonus
+          rpEarned += 2; // Subject engagement RP
+        }
+        
+        // Advanced topic bonus
+        if (topic && topic.length > 20) {
+          xpEarned += 5; // Complex topic bonus
+          rpEarned += 1; // Advanced learning RP
+        }
+        
+        // Award the rewards
+        await storage.addUserXP(userId, xpEarned);
+        if (rpEarned > 0) {
+          await storage.updateUserRankPoints(userId, rpEarned);
+        }
+      }
+      
       return res.status(200).json({
         isCorrect,
         feedback,
         correctAnswer,
-        selectedAnswer
+        selectedAnswer,
+        rewards: isCorrect ? {
+          xpEarned,
+          rpEarned,
+          breakdown: {
+            correctAnswerBonus: 15,
+            subjectFocusBonus: (subject && subject !== 'General' && subject !== 'general') ? 5 : 0,
+            complexTopicBonus: (topic && topic.length > 20) ? 5 : 0,
+            subjectEngagementRP: (subject && subject !== 'General' && subject !== 'general') ? 2 : 0,
+            advancedLearningRP: (topic && topic.length > 20) ? 1 : 0
+          }
+        } : null
       });
     } catch (error) {
       console.error('Error evaluating MCQ answer:', error);

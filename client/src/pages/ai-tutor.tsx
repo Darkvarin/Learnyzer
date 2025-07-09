@@ -515,13 +515,7 @@ export default function AiTutor() {
         });
       }
       
-      // Show rewards notification
-      if (data.rewards && (data.rewards.xpEarned > 0 || data.rewards.rpEarned > 0)) {
-        toast({
-          title: "Learning Rewards Earned! 🎓",
-          description: `+${data.rewards.xpEarned} XP | +${data.rewards.rpEarned} RP for AI learning session`,
-        });
-      }
+      // Note: Rewards are now only shown when students correctly answer quiz questions
       
       // Refresh conversation data and auto-scroll to bottom
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation/recent'] });
