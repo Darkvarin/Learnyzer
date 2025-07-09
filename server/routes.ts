@@ -1037,11 +1037,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
 
-      // Transform to include completion status
+      // Transform to include completion status and questions/answerKey
       const testsWithStatus = mockTests.map(test => ({
         ...test,
         isCompleted: test.submissions.length > 0,
-        score: test.submissions.length > 0 ? test.submissions[0].score : undefined
+        score: test.submissions.length > 0 ? test.submissions[0].score : undefined,
+        questions: test.questions, // Include questions JSON string
+        answerKey: test.answerKey  // Include answer key JSON string
       }));
 
       res.json(testsWithStatus);

@@ -33,7 +33,10 @@ import {
   Timer,
   Trophy,
   Lock,
-  Play
+  Play,
+  ArrowLeft,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import { SubscriptionGuard } from "@/components/subscription/subscription-guard";
 
@@ -59,6 +62,204 @@ interface MockTest {
   isCompleted: boolean;
   score?: number;
   createdAt: string;
+  questions?: string; // JSON string of questions
+  answerKey?: string; // JSON string of answer keys
+}
+
+// Mock Test Viewer Component
+function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }) {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
+  const [showAnswers, setShowAnswers] = useState(false);
+  const { toast } = useToast();
+
+  // Parse questions from JSON string
+  const questions: MockTestQuestion[] = test.questions ? JSON.parse(test.questions) : [];
+  const answerKey: string[] = test.answerKey ? JSON.parse(test.answerKey) : [];
+
+  const currentQuestion = questions[currentQuestionIndex];
+
+  const handleAnswerSelect = (questionId: string, answer: string) => {
+    setUserAnswers(prev => ({
+      ...prev,
+      [questionId]: answer
+    }));
+  };
+
+  const handleNext = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1);
+    }
+  };
+
+  const handleSubmitTest = () => {
+    toast({
+      title: "Test Submitted!",
+      description: "Your answers have been saved. You can now view the results.",
+    });
+    setShowAnswers(true);
+  };
+
+  if (!currentQuestion) {
+    return (
+      <div className="min-h-screen bg-dark-bg flex items-center justify-center">
+        <div className="text-center">
+          <FileText className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+          <p className="text-gray-400">No questions available</p>
+          <Button onClick={onBack} className="mt-4">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Tests
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-dark-bg">
+      <Header />
+      
+      <main className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
+        {/* Test Header */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <Button 
+              variant="ghost" 
+              onClick={onBack}
+              className="flex items-center gap-2 text-gray-400 hover:text-white"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Tests
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowAnswers(!showAnswers)}
+              className="flex items-center gap-2"
+            >
+              {showAnswers ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              {showAnswers ? 'Hide Answers' : 'Show Answers'}
+            </Button>
+          </div>
+          
+          <div className="bg-dark-surface border border-dark-border rounded-lg p-4 mb-6">
+            <h1 className="text-xl font-bold mb-2">{test.title}</h1>
+            <div className="flex items-center gap-6 text-sm text-gray-400">
+              <span className="flex items-center gap-1">
+                <Timer className="h-4 w-4" />
+                {test.duration} minutes
+              </span>
+              <span className="flex items-center gap-1">
+                <Target className="h-4 w-4" />
+                {test.totalQuestions} questions
+              </span>
+              <span className="flex items-center gap-1">
+                <Trophy className="h-4 w-4" />
+                {test.totalMarks} marks
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Question Display */}
+        <Card className="bg-dark-surface border-dark-border mb-6">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg">
+                Question {currentQuestionIndex + 1} of {questions.length}
+              </CardTitle>
+              <Badge variant="outline" className="text-xs">
+                {currentQuestion.marks} marks
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <p className="text-gray-100 leading-relaxed">
+                {currentQuestion.question}
+              </p>
+              
+              <div className="space-y-3">
+                {currentQuestion.options.map((option, index) => {
+                  const optionLetter = option.charAt(0); // A, B, C, D
+                  const isSelected = userAnswers[currentQuestion.id.toString()] === optionLetter;
+                  const isCorrect = showAnswers && answerKey[currentQuestionIndex] === optionLetter;
+                  const isWrong = showAnswers && isSelected && !isCorrect;
+                  
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleAnswerSelect(currentQuestion.id.toString(), optionLetter)}
+                      className={`w-full p-3 text-left rounded-lg border transition-colors ${
+                        isSelected 
+                          ? isWrong 
+                            ? 'bg-red-500/20 border-red-500/30 text-red-400' 
+                            : 'bg-primary/20 border-primary/30 text-primary'
+                          : 'bg-dark-card border-dark-border hover:bg-dark-hover'
+                      } ${isCorrect ? 'bg-green-500/20 border-green-500/30 text-green-400' : ''}`}
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {showAnswers && (
+                <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                  <h4 className="font-medium text-blue-400 mb-2">Explanation:</h4>
+                  <p className="text-gray-300 text-sm leading-relaxed">
+                    {currentQuestion.explanation}
+                  </p>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Navigation */}
+        <div className="flex items-center justify-between">
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            disabled={currentQuestionIndex === 0}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Previous
+          </Button>
+          
+          <span className="text-sm text-gray-400">
+            {currentQuestionIndex + 1} / {questions.length}
+          </span>
+          
+          {currentQuestionIndex === questions.length - 1 ? (
+            <Button
+              onClick={handleSubmitTest}
+              disabled={showAnswers}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              {showAnswers ? 'Test Completed' : 'Submit Test'}
+            </Button>
+          ) : (
+            <Button
+              onClick={handleNext}
+              className="flex items-center gap-2"
+            >
+              Next
+              <ArrowLeft className="h-4 w-4 rotate-180" />
+            </Button>
+          )}
+        </div>
+      </main>
+
+      <MobileNavigation />
+    </div>
+  );
 }
 
 export default function MockTestGenerator() {
@@ -197,6 +398,11 @@ export default function MockTestGenerator() {
     }
     generateTestMutation.mutate();
   };
+
+  // If a test is selected, show the test viewer
+  if (selectedTest) {
+    return <MockTestViewer test={selectedTest} onBack={() => setSelectedTest(null)} />;
+  }
 
   return (
     <div className="min-h-screen bg-dark-bg">
