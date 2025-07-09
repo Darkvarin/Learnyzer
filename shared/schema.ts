@@ -256,6 +256,65 @@ export const subscriptionLimits = pgTable("subscription_limits", {
 
 
 
+// Student Learning Analytics Tables
+export const learningAnalytics = pgTable("learning_analytics", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  activityType: text("activity_type").notNull(), // ai_tutor, mock_test, study_notes, answer_checker, visual_lab, course_progress
+  subject: text("subject").notNull(),
+  topic: text("topic"),
+  difficulty: text("difficulty"), // easy, medium, hard
+  examType: text("exam_type"), // jee, neet, upsc, etc.
+  performance: decimal("performance", { precision: 5, scale: 2 }), // 0-100 percentage
+  timeSpent: integer("time_spent"), // seconds
+  questionsTotal: integer("questions_total").default(0),
+  questionsCorrect: integer("questions_correct").default(0),
+  questionsIncorrect: integer("questions_incorrect").default(0),
+  conceptsLearned: jsonb("concepts_learned"), // Array of concepts covered
+  mistakesMade: jsonb("mistakes_made"), // Array of common mistakes
+  strengthsShown: jsonb("strengths_shown"), // Array of demonstrated strengths
+  weaknessesIdentified: jsonb("weaknesses_identified"), // Array of identified weaknesses
+  improvementSuggestions: jsonb("improvement_suggestions"), // AI-generated suggestions
+  sessionMetadata: jsonb("session_metadata"), // Additional session data
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
+export const topicMastery = pgTable("topic_mastery", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  subject: text("subject").notNull(),
+  topic: text("topic").notNull(),
+  examType: text("exam_type").notNull(),
+  masteryLevel: decimal("mastery_level", { precision: 5, scale: 2 }).default("0").notNull(), // 0-100
+  totalAttempts: integer("total_attempts").default(0).notNull(),
+  correctAttempts: integer("correct_attempts").default(0).notNull(),
+  averageTimeSpent: integer("average_time_spent").default(0), // seconds
+  lastPracticed: timestamp("last_practiced"),
+  consistencyScore: decimal("consistency_score", { precision: 5, scale: 2 }).default("0"), // How consistently correct
+  difficultyHandled: text("difficulty_handled").default("easy"), // Highest difficulty mastered
+  conceptualGaps: jsonb("conceptual_gaps"), // Identified knowledge gaps
+  learningPath: jsonb("learning_path"), // Suggested learning sequence
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
+export const studentProfile = pgTable("student_profile", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull().unique(),
+  learningStyle: text("learning_style"), // visual, auditory, kinesthetic, reading
+  strongSubjects: jsonb("strong_subjects"), // Array of subjects with high performance
+  weakSubjects: jsonb("weak_subjects"), // Array of subjects needing improvement
+  preferredDifficulty: text("preferred_difficulty").default("medium"),
+  studyPatterns: jsonb("study_patterns"), // When they study, frequency, etc.
+  commonMistakes: jsonb("common_mistakes"), // Patterns in mistakes across subjects
+  learningGoals: jsonb("learning_goals"), // Student's set goals
+  personalizedRecommendations: jsonb("personalized_recommendations"), // AI recommendations
+  overallProgress: decimal("overall_progress", { precision: 5, scale: 2 }).default("0"),
+  lastAnalysisUpdate: timestamp("last_analysis_update").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
 // Customer Feedback System Tables
 export const feedbackCategories = pgTable("feedback_categories", {
   id: serial("id").primaryKey(),
@@ -360,7 +419,10 @@ export const usersRelations = relations(users, ({ many }) => ({
   feedbackVotes: many(feedbackVotes),
   feedbackComments: many(feedbackComments),
   mockTests: many(mockTests),
-  mockTestSubmissions: many(mockTestSubmissions)
+  mockTestSubmissions: many(mockTestSubmissions),
+  learningAnalytics: many(learningAnalytics),
+  topicMastery: many(topicMastery),
+  studentProfile: many(studentProfile)
 }));
 
 export const coursesRelations = relations(courses, ({ many }) => ({
@@ -475,6 +537,19 @@ export const usageTrackingRelations = relations(usageTracking, ({ one }) => ({
 }));
 */
 
+// Learning Analytics Relations
+export const learningAnalyticsRelations = relations(learningAnalytics, ({ one }) => ({
+  user: one(users, { fields: [learningAnalytics.userId], references: [users.id] })
+}));
+
+export const topicMasteryRelations = relations(topicMastery, ({ one }) => ({
+  user: one(users, { fields: [topicMastery.userId], references: [users.id] })
+}));
+
+export const studentProfileRelations = relations(studentProfile, ({ one }) => ({
+  user: one(users, { fields: [studentProfile.userId], references: [users.id] })
+}));
+
 // Schemas for validation
 
 export const insertUserSchema = createInsertSchema(users, {
@@ -556,6 +631,48 @@ export const insertMockTestSubmissionSchema = createInsertSchema(mockTestSubmiss
   score: (schema) => schema.min(0, "Score cannot be negative"),
   timeTaken: (schema) => schema.min(1, "Time taken must be at least 1 minute"),
 });
+
+// Learning Analytics Schemas
+export const insertLearningAnalyticsSchema = createInsertSchema(learningAnalytics, {
+  activityType: (schema) => schema.refine(
+    (val) => ["ai_tutor", "mock_test", "study_notes", "answer_checker", "visual_lab", "course_progress"].includes(val),
+    "Invalid activity type"
+  ),
+  subject: (schema) => schema.min(2, "Subject must be at least 2 characters"),
+  performance: (schema) => schema.optional().refine(
+    (val) => val === undefined || (Number(val) >= 0 && Number(val) <= 100),
+    "Performance must be between 0 and 100"
+  ),
+});
+
+export const insertTopicMasterySchema = createInsertSchema(topicMastery, {
+  subject: (schema) => schema.min(2, "Subject must be at least 2 characters"),
+  topic: (schema) => schema.min(2, "Topic must be at least 2 characters"),
+  examType: (schema) => schema.min(2, "Exam type is required"),
+  masteryLevel: (schema) => schema.refine(
+    (val) => Number(val) >= 0 && Number(val) <= 100,
+    "Mastery level must be between 0 and 100"
+  ),
+});
+
+export const insertStudentProfileSchema = createInsertSchema(studentProfile, {
+  learningStyle: (schema) => schema.optional().refine(
+    (val) => val === undefined || ["visual", "auditory", "kinesthetic", "reading"].includes(val),
+    "Invalid learning style"
+  ),
+  preferredDifficulty: (schema) => schema.refine(
+    (val) => ["easy", "medium", "hard"].includes(val),
+    "Invalid difficulty preference"
+  ),
+});
+
+// Type exports for the new analytics tables
+export type LearningAnalytics = typeof learningAnalytics.$inferSelect;
+export type InsertLearningAnalytics = typeof learningAnalytics.$inferInsert;
+export type TopicMastery = typeof topicMastery.$inferSelect;
+export type InsertTopicMastery = typeof topicMastery.$inferInsert;
+export type StudentProfile = typeof studentProfile.$inferSelect;
+export type InsertStudentProfile = typeof studentProfile.$inferInsert;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertFeedbackCategory = z.infer<typeof insertFeedbackCategorySchema>;
