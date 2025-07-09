@@ -1264,6 +1264,38 @@ export default function AiTutor() {
                                     )}
                                   </Button>
                                 </div>
+
+                                {/* Show MCQ Component if generated - placed right after the Test Knowledge button */}
+                                {showMCQForMessage === idx && generatedMCQs[idx] && (
+                                  <div className="mt-4 bg-dark-surface/50 rounded-lg p-4 border border-green-500/30">
+                                    <div className="flex items-center gap-2 mb-3">
+                                      <Brain className="h-4 w-4 text-green-400" />
+                                      <span className="text-sm font-semibold text-green-400">Test Your Knowledge</span>
+                                    </div>
+                                    <MCQComponent
+                                      question={generatedMCQs[idx].question}
+                                      options={generatedMCQs[idx].options}
+                                      correctAnswer={generatedMCQs[idx].correct_answer}
+                                      explanation={generatedMCQs[idx].explanation}
+                                      topic={currentTopic || 'Current Topic'}
+                                      subject={currentSubject?.replace('_', ' ') || 'General'}
+                                      onComplete={(isCorrect) => {
+                                        if (isCorrect) {
+                                          toast({
+                                            title: "Excellent!",
+                                            description: "You're mastering the concept. Keep going!",
+                                          });
+                                        } else {
+                                          toast({
+                                            title: "Learning Opportunity", 
+                                            description: "Review the explanation and try similar questions.",
+                                            variant: "destructive",
+                                          });
+                                        }
+                                      }}
+                                    />
+                                  </div>
+                                )}
                                 
                                 <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
                                   <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
@@ -1302,34 +1334,6 @@ export default function AiTutor() {
                                   )}
                                 </div>
                               </div>
-                              
-                              {/* Show MCQ Component if generated */}
-                              {showMCQForMessage === idx && generatedMCQs[idx] && (
-                                <div className="mt-4">
-                                  <MCQComponent
-                                    question={generatedMCQs[idx].question}
-                                    options={generatedMCQs[idx].options}
-                                    correctAnswer={generatedMCQs[idx].correct_answer}
-                                    explanation={generatedMCQs[idx].explanation}
-                                    topic={currentTopic || 'Current Topic'}
-                                    subject={currentSubject?.replace('_', ' ') || 'General'}
-                                    onComplete={(isCorrect) => {
-                                      if (isCorrect) {
-                                        toast({
-                                          title: "Excellent!",
-                                          description: "You're mastering the concept. Keep going!",
-                                        });
-                                      } else {
-                                        toast({
-                                          title: "Learning Opportunity", 
-                                          description: "Review the explanation and try similar questions.",
-                                          variant: "destructive",
-                                        });
-                                      }
-                                    }}
-                                  />
-                                </div>
-                              )}
                             </>
                           ) : (
                             <>
