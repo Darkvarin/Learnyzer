@@ -264,7 +264,8 @@ export class SimpleSubscriptionService {
         'ai_chat',
         'ai_visual_lab', 
         'ai_tutor_session',
-        'visual_package_generation'
+        'visual_package_generation',
+        'mock_test_generation'
       ];
 
       const featureStats = features.map((featureType) => {
@@ -324,6 +325,8 @@ export class SimpleSubscriptionService {
         return limits.aiTutorSessionLimit;
       case 'visual_package_generation':
         return limits.visualPackageLimit;
+      case 'mock_test_generation':
+        return limits.mockTestLimit || limits.aiVisualLabLimit; // Use same limit as visual lab
       default:
         return 0;
     }

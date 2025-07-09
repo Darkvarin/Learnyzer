@@ -9,7 +9,7 @@ import { Zap, Lock, Crown, Star, Sparkles } from "lucide-react";
 import { Link } from "wouter";
 
 interface SubscriptionGuardProps {
-  featureType: "ai_chat" | "ai_visual_lab" | "ai_tutor_session" | "visual_package_generation";
+  featureType: "ai_chat" | "ai_visual_lab" | "ai_tutor_session" | "visual_package_generation" | "mock_test_generation";
   children: React.ReactNode;
   onAccessDenied?: () => void;
   trackOnMount?: boolean;
@@ -19,14 +19,16 @@ const featureDisplayNames = {
   ai_chat: "AI Chat Messages",
   ai_visual_lab: "AI Visual Lab Generations", 
   ai_tutor_session: "AI Tutor Sessions",
-  visual_package_generation: "Visual Learning Packages"
+  visual_package_generation: "Visual Learning Packages",
+  mock_test_generation: "Mock Test Generation"
 };
 
 const featureDescriptions = {
   ai_chat: "Engage in personalized AI-powered conversations",
   ai_visual_lab: "Generate educational images and visual content",
   ai_tutor_session: "Access one-on-one AI tutoring sessions", 
-  visual_package_generation: "Create comprehensive visual learning packages"
+  visual_package_generation: "Create comprehensive visual learning packages",
+  mock_test_generation: "Generate AI-powered practice tests for exam preparation"
 };
 
 export function SubscriptionGuard({ 

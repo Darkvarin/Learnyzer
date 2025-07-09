@@ -254,6 +254,8 @@ export class SubscriptionService {
         return limits.aiTutorSessionLimit;
       case 'visual_package_generation':
         return limits.visualPackageLimit;
+      case 'mock_test_generation':
+        return limits.mockTestLimit || limits.aiVisualLabLimit; // Use same limit as visual lab
       default:
         return 0;
     }
