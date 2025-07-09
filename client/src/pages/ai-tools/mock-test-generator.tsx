@@ -79,8 +79,6 @@ export default function MockTestGenerator() {
 
   // Get exam-specific subjects
   const getExamSubjects = () => {
-    if (!user?.selectedExam) return [];
-    
     const subjectMap: Record<string, string[]> = {
       JEE: ["Physics", "Chemistry", "Mathematics"],
       NEET: ["Physics", "Chemistry", "Biology"],
@@ -91,7 +89,14 @@ export default function MockTestGenerator() {
       CGLE: ["General Awareness", "Quantitative Aptitude", "English Language", "Reasoning"]
     };
     
-    return subjectMap[user.selectedExam] || [];
+    // If user has selected an exam, return exam-specific subjects
+    if (user?.selectedExam && subjectMap[user.selectedExam]) {
+      return subjectMap[user.selectedExam];
+    }
+    
+    // Fallback: return all subjects from all exams
+    const allSubjects = Object.values(subjectMap).flat();
+    return [...new Set(allSubjects)].sort(); // Remove duplicates and sort
   };
 
   // Fetch user's mock tests
@@ -232,7 +237,15 @@ export default function MockTestGenerator() {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="subject">Subject</Label>
+                        <Label htmlFor="subject">
+                          Subject
+                          {!user?.selectedExam && (
+                            <span className="text-sm text-amber-400 ml-2">(All subjects available)</span>
+                          )}
+                          {user?.selectedExam && (
+                            <span className="text-sm text-green-400 ml-2">({user.selectedExam} subjects only)</span>
+                          )}
+                        </Label>
                         <Select
                           value={formData.subject}
                           onValueChange={(value) => setFormData(prev => ({ ...prev, subject: value }))}
