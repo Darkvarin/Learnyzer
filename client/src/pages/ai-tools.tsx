@@ -410,41 +410,7 @@ export default function AITools() {
               </CardFooter>
             </Card>
             
-            {/* Mock Test Generator Tool */}
-            <Card className="glassmorphism border-amber-500/30 relative group opacity-90">
-              {/* Cyberpunk corner decorations */}
-              <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-amber-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
-              <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-amber-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
-              
-              {/* Locked state overlay with reduced intensity */}
-              <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px] z-10 flex items-center justify-center">
-                <div className="text-amber-300/90 font-gaming text-xl">Coming Soon</div>
-              </div>
-              
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="bg-amber-500/10 p-3 rounded-lg relative overflow-hidden">
-                    {/* Animated glow effect */}
-                    <div className="absolute inset-0 bg-amber-500/5 animate-pulse"></div>
-                    <FileCheck className="h-6 w-6 text-amber-400 solo-icon" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg text-white">Mock Test Generator</CardTitle>
-                    <CardDescription className="text-amber-200/70">Assessment Tool</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-amber-100/80 text-sm">
-                  Create personalized mock exams with AI-generated questions based on your curriculum and learning objectives.
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Button disabled className="w-full bg-amber-900/50 text-amber-300/90 border border-amber-500/20 cursor-not-allowed">
-                  <div className="animate-pulse">Coming Soon</div>
-                </Button>
-              </CardFooter>
-            </Card>
+
           </div>
         </div>
         </main>
