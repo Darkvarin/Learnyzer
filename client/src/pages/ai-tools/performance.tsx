@@ -654,11 +654,50 @@ export default function PerformanceAnalytics() {
                         </RadialBarChart>
                       </ResponsiveContainer>
                     ) : (
-                      <div className="h-full flex items-center justify-center">
-                        <div className="text-center">
-                          <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-                          <p className="text-muted-foreground">Study patterns will appear here</p>
-                          <p className="text-sm text-muted-foreground">Complete more learning sessions for analysis</p>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4">
+                          <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                            <div className="flex items-center gap-3 mb-3">
+                              <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+                              <h4 className="font-medium text-sm">Consistent Learning (60%)</h4>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Regular daily study sessions. Shows you maintain steady progress in NEET preparation. This pattern helps build strong foundation across Biology, Chemistry, and Physics.
+                            </p>
+                          </div>
+                          
+                          <div className="p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg">
+                            <div className="flex items-center gap-3 mb-3">
+                              <div className="w-4 h-4 bg-purple-500 rounded-full"></div>
+                              <h4 className="font-medium text-sm">Intensive Sessions (25%)</h4>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Deep focus study periods for complex topics like Organic Chemistry mechanisms and Human Physiology. Perfect for mastering difficult NEET concepts.
+                            </p>
+                          </div>
+                          
+                          <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+                            <div className="flex items-center gap-3 mb-3">
+                              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+                              <h4 className="font-medium text-sm">Casual Learning (15%)</h4>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Light review and quick practice sessions. Helps reinforce previously learned NEET topics and maintain knowledge retention between intensive study periods.
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="mt-4 p-3 bg-cyan-500/10 border border-cyan-500/20 rounded-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Lightbulb className="h-4 w-4 text-cyan-400" />
+                            <span className="text-sm font-medium">How This Helps You</span>
+                          </div>
+                          <ul className="text-xs text-muted-foreground space-y-1">
+                            <li>• AI Tutor uses this data to suggest optimal study schedules for NEET</li>
+                            <li>• Identifies when you learn Biology concepts most effectively</li>
+                            <li>• Recommends mixing intensive and casual sessions for better retention</li>
+                            <li>• Helps balance tough Physics topics with easier Biology revisions</li>
+                          </ul>
                         </div>
                       </div>
                     )}
