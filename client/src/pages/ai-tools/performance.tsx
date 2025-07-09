@@ -643,13 +643,24 @@ export default function PerformanceAnalytics() {
                       <div className="h-full flex items-center justify-center">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                       </div>
-                    ) : (
-                      <ResponsiveContainer width="100%" height="100%">
-                        <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" data={learningInsights?.studyPatterns || []}>
+                    ) : (learningInsights?.studyPatterns && learningInsights.studyPatterns.length > 0) ? (
+                      <ResponsiveContainer width="100%" height={300} minHeight={300}>
+                        <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" data={learningInsights.studyPatterns}>
                           <RadialBar dataKey="value" cornerRadius={5} fill="#8884d8" />
-                          <Tooltip />
+                          <Tooltip 
+                            contentStyle={{ backgroundColor: '#1e1e1e', borderColor: '#333' }}
+                            labelStyle={{ color: '#fff' }}
+                          />
                         </RadialBarChart>
                       </ResponsiveContainer>
+                    ) : (
+                      <div className="h-full flex items-center justify-center">
+                        <div className="text-center">
+                          <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                          <p className="text-muted-foreground">Study patterns will appear here</p>
+                          <p className="text-sm text-muted-foreground">Complete more learning sessions for analysis</p>
+                        </div>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
