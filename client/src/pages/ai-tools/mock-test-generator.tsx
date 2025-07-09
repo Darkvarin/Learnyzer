@@ -73,9 +73,50 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
   const [showAnswers, setShowAnswers] = useState(false);
   const { toast } = useToast();
 
-  // Parse questions from JSON string
-  const questions: MockTestQuestion[] = test.questions ? JSON.parse(test.questions) : [];
-  const answerKey: string[] = test.answerKey ? JSON.parse(test.answerKey) : [];
+  // Fetch detailed test data with questions
+  const { data: detailedTest, isLoading } = useQuery<MockTest>({
+    queryKey: [`/api/mock-test/${test.id}`],
+    enabled: !!test.id,
+  });
+
+  // Use detailed test data if available, otherwise use the passed test
+  const testData = detailedTest || test;
+
+  // Parse questions from JSON string with error handling
+  let questions: MockTestQuestion[] = [];
+  let answerKey: string[] = [];
+  
+  try {
+    if (testData.questions) {
+      // The questions are stored as JSON strings in the database
+      const parsedQuestions = typeof testData.questions === 'string' ? JSON.parse(testData.questions) : testData.questions;
+      questions = Array.isArray(parsedQuestions) ? parsedQuestions : [];
+    }
+    if (testData.answerKey) {
+      // The answerKey is stored as JSON strings in the database
+      const parsedAnswerKey = typeof testData.answerKey === 'string' ? JSON.parse(testData.answerKey) : testData.answerKey;
+      answerKey = Array.isArray(parsedAnswerKey) ? parsedAnswerKey : [];
+    }
+  } catch (error) {
+    console.error('Error parsing test data:', error, 'Test object:', testData);
+    toast({
+      title: "Error Loading Test",
+      description: "Unable to load test questions. Please try again.",
+      variant: "destructive",
+    });
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-dark-bg flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-gray-400">Loading test...</p>
+        </div>
+      </div>
+    );
+  }
 
   const currentQuestion = questions[currentQuestionIndex];
 
@@ -148,19 +189,19 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
           </div>
           
           <div className="bg-dark-surface border border-dark-border rounded-lg p-4 mb-6">
-            <h1 className="text-xl font-bold mb-2">{test.title}</h1>
+            <h1 className="text-xl font-bold mb-2">{testData.title}</h1>
             <div className="flex items-center gap-6 text-sm text-gray-400">
               <span className="flex items-center gap-1">
                 <Timer className="h-4 w-4" />
-                {test.duration} minutes
+                {testData.duration} minutes
               </span>
               <span className="flex items-center gap-1">
                 <Target className="h-4 w-4" />
-                {test.totalQuestions} questions
+                {testData.totalQuestions} questions
               </span>
               <span className="flex items-center gap-1">
                 <Trophy className="h-4 w-4" />
-                {test.totalMarks} marks
+                {testData.totalMarks} marks
               </span>
             </div>
           </div>

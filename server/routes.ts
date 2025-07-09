@@ -1053,6 +1053,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get individual mock test with questions
+  app.get("/api/mock-test/:id", requireAuth, async (req, res) => {
+    try {
+      const userId = (req.user as any).id;
+      const { id } = req.params;
+      
+      const mockTest = await db.query.mockTests.findFirst({
+        where: and(
+          eq(schema.mockTests.id, parseInt(id)),
+          eq(schema.mockTests.userId, userId)
+        ),
+        with: {
+          submissions: true
+        }
+      });
+
+      if (!mockTest) {
+        return res.status(404).json({ error: "Mock test not found" });
+      }
+
+      // Return test with all data
+      const testWithStatus = {
+        ...mockTest,
+        isCompleted: mockTest.submissions.length > 0,
+        score: mockTest.submissions.length > 0 ? mockTest.submissions[0].score : undefined,
+        questions: mockTest.questions, // Include questions JSON string
+        answerKey: mockTest.answerKey  // Include answer key JSON string
+      };
+
+      res.json(testWithStatus);
+    } catch (error) {
+      console.error("Error fetching mock test:", error);
+      res.status(500).json({ error: "Failed to fetch mock test" });
+    }
+  });
+
   app.post("/api/ai/mock-test/generate", requireAuth, async (req, res) => {
     try {
       const userId = (req.user as any).id;
