@@ -1424,6 +1424,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   }
   
+  // Analytics API endpoints
+  app.get('/api/analytics/comprehensive', requireAuth, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      const { timeRange, subjectFilter, analysisType } = req.query;
+
+      const { AnalyticsService } = await import('./services/analytics-service');
+      const analyticsService = new AnalyticsService();
+      const comprehensiveData = await analyticsService.getComprehensiveAnalytics(userId, {
+        timeRange: timeRange as string,
+        subjectFilter: subjectFilter as string,
+        analysisType: analysisType as string
+      });
+
+      res.json(comprehensiveData);
+    } catch (error) {
+      console.error("Error fetching comprehensive analytics:", error);
+      res.status(500).json({ message: "Failed to fetch analytics data" });
+    }
+  });
+
+  // Student learning profile endpoint
+  app.get('/api/analytics/student-profile', requireAuth, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      
+      const { AnalyticsService } = await import('./services/analytics-service');
+      const analyticsService = new AnalyticsService();
+      const profile = await analyticsService.getStudentProfile(userId);
+
+      res.json(profile);
+    } catch (error) {
+      console.error("Error fetching student profile:", error);
+      res.status(500).json({ message: "Failed to fetch student profile" });
+    }
+  });
+
+  // Topic mastery endpoint
+  app.get('/api/analytics/topic-mastery', requireAuth, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      const { subjectFilter } = req.query;
+
+      const { AnalyticsService } = await import('./services/analytics-service');
+      const analyticsService = new AnalyticsService();
+      const masteryData = await analyticsService.getTopicMastery(userId, subjectFilter as string);
+
+      res.json(masteryData);
+    } catch (error) {
+      console.error("Error fetching topic mastery:", error);
+      res.status(500).json({ message: "Failed to fetch topic mastery data" });
+    }
+  });
+
+  // Learning insights endpoint
+  app.get('/api/analytics/learning-insights', requireAuth, async (req, res) => {
+    try {
+      const userId = req.user?.id;
+      const { timeRange } = req.query;
+
+      const { AnalyticsService } = await import('./services/analytics-service');
+      const analyticsService = new AnalyticsService();
+      const insights = await analyticsService.getLearningInsights(userId, timeRange as string);
+
+      res.json(insights);
+    } catch (error) {
+      console.error("Error fetching learning insights:", error);
+      res.status(500).json({ message: "Failed to fetch learning insights" });
+    }
+  });
+
   // Export the broadcast functions for use throughout the application
   (global as any).broadcastToBattle = broadcastToBattle;
   (global as any).sendToUser = sendToUser;
