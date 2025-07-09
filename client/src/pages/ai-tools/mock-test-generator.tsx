@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { useAuth } from "@/hooks/use-auth";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Card, 
@@ -80,6 +80,7 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
   const [isTimerActive, setIsTimerActive] = useState(true);
   const [autoAdvance, setAutoAdvance] = useState(true);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Fetch detailed test data with questions
   const { data: detailedTest, isLoading } = useQuery<MockTest>({
@@ -134,6 +135,8 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
             description: "The test has been automatically submitted.",
             variant: "destructive",
           });
+          // Auto-submit the test when time runs out
+          handleSubmitTest();
           return 0;
         }
         return prev - 1;
@@ -215,12 +218,53 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
     }
   };
 
+  const submitTestMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch(`/api/mock-test/${test.id}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          answers: userAnswers,
+          timeTaken: Math.ceil((test.duration * 60 - timeRemaining) / 60) // Convert to minutes
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit test');
+      }
+
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Test Submitted!",
+        description: `Score: ${data.score}/${data.totalMarks} (${Math.round(data.percentage)}%)`,
+      });
+      setShowAnswers(true);
+      // Invalidate and refetch mock tests to update completion status
+      queryClient.invalidateQueries({ queryKey: ['/api/mock-tests'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/mock-test', test.id.toString()] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Submission Failed",
+        description: "Failed to submit test. Please try again.",
+        variant: "destructive",
+      });
+      console.error('Test submission error:', error);
+    }
+  });
+
   const handleSubmitTest = () => {
-    toast({
-      title: "Test Submitted!",
-      description: "Your answers have been saved. You can now view the results.",
-    });
-    setShowAnswers(true);
+    if (submitTestMutation.isPending) return;
+    
+    // Stop the timer
+    setIsTimerActive(false);
+    
+    // Submit the test
+    submitTestMutation.mutate();
   };
 
   if (!currentQuestion) {
@@ -573,10 +617,15 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
           {currentQuestionIndex === questions.length - 1 ? (
             <Button
               onClick={handleSubmitTest}
-              disabled={showAnswers}
+              disabled={showAnswers || submitTestMutation.isPending}
               className="bg-green-600 hover:bg-green-700"
             >
-              {showAnswers ? 'Test Completed' : 'Submit Test'}
+              {submitTestMutation.isPending ? (
+                <>
+                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                  Submitting...
+                </>
+              ) : showAnswers ? 'Test Completed' : 'Submit Test'}
             </Button>
           ) : (
             <Button
