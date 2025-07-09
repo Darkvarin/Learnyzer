@@ -79,12 +79,12 @@ Generate high-quality, exam-standard questions that truly test student understan
 
     try {
       const response = await openai.chat.completions.create({
-        // Using GPT-3.5 for cost efficiency
-        model: "gpt-3.5-turbo",
+        // Using GPT-4o for superior mock test generation with detailed explanations
+        model: "gpt-4o",
         messages: [
           {
             role: "system",
-            content: "You are an expert exam question generator specializing in Indian competitive exams. Generate authentic, high-quality questions that match official exam standards."
+            content: "You are an expert exam question generator specializing in Indian competitive exams. Generate authentic, high-quality questions that match official exam standards with detailed explanations that help students understand concepts deeply."
           },
           {
             role: "user",
@@ -92,8 +92,8 @@ Generate high-quality, exam-standard questions that truly test student understan
           }
         ],
         response_format: { type: "json_object" },
-        temperature: 0.7,
-        max_tokens: 4000
+        temperature: 0.3,
+        max_tokens: 6000
       });
 
       const content = response.choices[0].message.content;
