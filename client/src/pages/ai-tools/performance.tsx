@@ -63,12 +63,11 @@ export default function PerformanceAnalytics() {
   };
   
   return (
-    <SubscriptionGuard featureType="performance_analytics" requiredTier="basic">
-      <div className="min-h-screen flex flex-col bg-dark text-white">
-        <Header />
-        <MobileNavigation />
-        
-        <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 pt-24">
+    <div className="min-h-screen flex flex-col bg-dark text-white">
+      <Header />
+      <MobileNavigation />
+      
+      <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 pt-24">
           <div className="flex items-center gap-4 mb-6">
             <Link href="/ai-tools">
               <Button variant="ghost" size="icon" className="h-9 w-9">
@@ -874,6 +873,5 @@ export default function PerformanceAnalytics() {
           </Tabs>
         </main>
       </div>
-    </SubscriptionGuard>
   );
 }
