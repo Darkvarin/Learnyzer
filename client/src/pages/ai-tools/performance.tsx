@@ -639,11 +639,13 @@ export default function PerformanceAnalytics() {
                     <CardDescription>When and how you learn best</CardDescription>
                   </CardHeader>
                   <CardContent className="h-80">
+                    {console.log('Learning insights:', learningInsights)}
+                    {console.log('Study patterns:', learningInsights?.studyPatterns)}
                     {isLoading ? (
                       <div className="h-full flex items-center justify-center">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                       </div>
-                    ) : (learningInsights?.studyPatterns && learningInsights.studyPatterns.length > 0) ? (
+                    ) : learningInsights?.studyPatterns ? (
                       <ResponsiveContainer width="100%" height={300} minHeight={300}>
                         <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" data={learningInsights.studyPatterns}>
                           <RadialBar dataKey="value" cornerRadius={5} fill="#8884d8" />
