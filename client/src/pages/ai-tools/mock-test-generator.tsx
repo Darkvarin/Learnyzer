@@ -40,7 +40,8 @@ import {
   ArrowRight,
   CheckCircle2,
   XCircle,
-  AlertCircle
+  AlertCircle,
+  RotateCcw
 } from "lucide-react";
 import { SubscriptionGuard } from "@/components/subscription/subscription-guard";
 
@@ -914,28 +915,86 @@ export default function MockTestGenerator() {
                       {mockTests.slice(0, 5).map((test) => (
                         <div
                           key={test.id}
-                          className="p-3 bg-dark-card border border-dark-border rounded-lg hover:bg-dark-hover transition-colors cursor-pointer"
-                          onClick={() => setSelectedTest(test)}
+                          className="p-4 bg-dark-card border border-dark-border rounded-lg hover:bg-dark-hover transition-colors"
                         >
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="font-medium text-sm line-clamp-1">{test.title}</h4>
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1">
+                              <h4 className="font-medium text-sm line-clamp-1 mb-1">{test.title}</h4>
+                              <div className="flex items-center gap-3 text-xs text-gray-400">
+                                <span className="flex items-center gap-1">
+                                  <Timer className="h-3 w-3" />
+                                  {test.duration} min
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Target className="h-3 w-3" />
+                                  {test.totalQuestions} questions
+                                </span>
+                              </div>
+                            </div>
+                            
+                            {/* Status Badge */}
                             {test.isCompleted ? (
-                              <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                              <Badge variant="outline" className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">
+                                Completed
+                              </Badge>
                             ) : (
-                              <Play className="h-4 w-4 text-blue-400 flex-shrink-0" />
+                              <Badge variant="outline" className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs">
+                                Incomplete
+                              </Badge>
                             )}
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-gray-400">
-                            <Timer className="h-3 w-3" />
-                            {test.duration} min
-                            <Target className="h-3 w-3" />
-                            {test.totalQuestions} questions
-                          </div>
+                          
+                          {/* Score Display for Completed Tests */}
                           {test.isCompleted && test.score !== undefined && (
-                            <div className="mt-2 text-xs">
-                              <span className="text-green-400">Score: {test.score}/{test.totalMarks}</span>
+                            <div className="mb-3 p-2 bg-green-500/10 border border-green-500/20 rounded-md">
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-green-400 font-medium">
+                                  Score: {test.score}/{test.totalMarks}
+                                </span>
+                                <span className="text-green-300">
+                                  {Math.round((test.score / test.totalMarks) * 100)}%
+                                </span>
+                              </div>
                             </div>
                           )}
+                          
+                          {/* Action Buttons */}
+                          <div className="flex gap-2">
+                            {test.isCompleted ? (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setSelectedTest(test)}
+                                  className="flex-1 h-8 text-xs"
+                                >
+                                  <FileText className="h-3 w-3 mr-1" />
+                                  Review Answers
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => {
+                                    // Reset completion status for retake
+                                    const retakeTest = { ...test, isCompleted: false, score: undefined };
+                                    setSelectedTest(retakeTest);
+                                  }}
+                                  className="flex-1 h-8 text-xs bg-blue-600 hover:bg-blue-700"
+                                >
+                                  <RotateCcw className="h-3 w-3 mr-1" />
+                                  Retake Test
+                                </Button>
+                              </>
+                            ) : (
+                              <Button
+                                size="sm"
+                                onClick={() => setSelectedTest(test)}
+                                className="w-full h-8 text-xs bg-green-600 hover:bg-green-700"
+                              >
+                                <Play className="h-3 w-3 mr-1" />
+                                Start Test
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       ))}
                     </div>
