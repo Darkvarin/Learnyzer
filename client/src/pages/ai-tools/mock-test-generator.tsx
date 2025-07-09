@@ -307,7 +307,28 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
           </div>
           
           <div className="bg-dark-surface border border-dark-border rounded-lg p-4 mb-6">
-            <h1 className="text-xl font-bold mb-2">{testData.title}</h1>
+            <div className="flex items-center justify-between mb-2">
+              <h1 className="text-xl font-bold">{testData.title}</h1>
+              
+              {/* Timer Display in Header */}
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-lg font-mono border-2 ${
+                timeRemaining < 300 ? 'bg-red-900/30 text-red-300 border-red-600' : 
+                timeRemaining < 900 ? 'bg-yellow-900/30 text-yellow-300 border-yellow-600' : 
+                'bg-green-900/30 text-green-300 border-green-600'
+              }`}>
+                <Timer className="h-5 w-5" />
+                <div className="text-center">
+                  <p className="text-xs text-gray-400">Time Left</p>
+                  <p className="text-lg font-bold tracking-wider">
+                    {timeRemaining > 0 ? formatTime(timeRemaining) : '00:00'}
+                  </p>
+                </div>
+                {timeRemaining < 300 && timeRemaining > 0 && (
+                  <span className="text-sm ml-1 animate-pulse font-bold">⚠️</span>
+                )}
+              </div>
+            </div>
+            
             <div className="flex items-center gap-6 text-sm text-gray-400">
               <span className="flex items-center gap-1">
                 <Timer className="h-4 w-4" />
@@ -323,34 +344,6 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
               </span>
             </div>
           </div>
-        </div>
-
-        {/* Timer Display (Prominent) */}
-        <div className="text-center mb-6">
-          <Card className={`inline-block ${
-            timeRemaining < 300 ? 'bg-red-900/20 border-red-600' : 
-            timeRemaining < 900 ? 'bg-yellow-900/20 border-yellow-600' : 
-            'bg-green-900/20 border-green-600'
-          }`}>
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center justify-center gap-3">
-                <Timer className="h-6 w-6 text-blue-400" />
-                <div>
-                  <p className="text-xs text-gray-400 mb-1">Time Remaining</p>
-                  <p className={`text-2xl font-bold font-mono tracking-wider ${
-                    timeRemaining < 300 ? 'text-red-400' : 
-                    timeRemaining < 900 ? 'text-yellow-400' : 
-                    'text-green-400'
-                  }`}>
-                    {timeRemaining > 0 ? formatTime(timeRemaining) : '00:00'}
-                  </p>
-                </div>
-                {timeRemaining < 300 && timeRemaining > 0 && (
-                  <span className="text-xl animate-pulse">⚠️</span>
-                )}
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Question Progress Indicator */}
