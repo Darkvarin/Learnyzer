@@ -241,7 +241,7 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
     <div className="min-h-screen bg-dark-bg">
       <Header />
       
-      <main className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
+      <main className="container mx-auto px-4 pt-24 pb-20 max-w-4xl">
         {/* Test Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
@@ -740,7 +740,7 @@ export default function MockTestGenerator() {
     <div className="min-h-screen bg-dark-bg">
       <Header />
       
-      <main className="container mx-auto px-4 py-6 pb-20 max-w-6xl">
+      <main className="container mx-auto px-4 pt-24 pb-20 max-w-6xl">
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-warning/20 rounded-lg">
