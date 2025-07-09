@@ -71,8 +71,8 @@ export class AnalyticsService {
         recommendations
       };
     } catch (error) {
-      console.log('Database tables not ready, returning sample data');
-      return this.getDefaultComprehensiveData();
+      console.log('Database tables not ready, returning exam-specific sample data');
+      return this.getDefaultComprehensiveData(userId);
     }
   }
 
@@ -194,8 +194,8 @@ export class AnalyticsService {
           topics.reduce((sum, t) => sum + t.masteryLevel, 0) / topics.length : 0
       };
     } catch (error) {
-      console.log('Database tables not ready, returning default topic mastery');
-      return this.getDefaultTopicMastery();
+      console.log('Database tables not ready, returning exam-specific topic mastery');
+      return this.getDefaultTopicMastery(userId);
     }
   }
 
@@ -598,7 +598,171 @@ export class AnalyticsService {
     };
   }
 
-  private getDefaultComprehensiveData() {
+  private async getDefaultComprehensiveData(userId?: number) {
+    // Get user's exam type for specific content
+    let examType = null;
+    try {
+      if (userId) {
+        const user = await db.query.users.findFirst({
+          where: eq(users.id, userId)
+        });
+        examType = user?.track;
+      }
+    } catch (error) {
+      // Use generic data if user lookup fails
+    }
+
+    return this.getExamSpecificAnalytics(examType);
+  }
+
+  private getExamSpecificAnalytics(examType: string | null) {
+    const examConfigs = {
+      jee: {
+        subjects: [
+          { subject: 'physics', averageScore: 72, totalTime: 180, sessions: 15, improvement: 12 },
+          { subject: 'chemistry', averageScore: 78, totalTime: 150, sessions: 12, improvement: 8 },
+          { subject: 'mathematics', averageScore: 85, totalTime: 200, sessions: 18, improvement: 15 }
+        ],
+        weaknesses: [
+          { subject: 'physics', topic: 'Rotational Motion', score: 55, timeSpent: 45 },
+          { subject: 'chemistry', topic: 'Chemical Bonding', score: 62, timeSpent: 35 }
+        ],
+        strengths: [
+          { subject: 'mathematics', topic: 'Coordinate Geometry', score: 92, timeSpent: 80 },
+          { subject: 'physics', topic: 'Mechanics', score: 88, timeSpent: 65 }
+        ],
+        recommendations: [
+          { title: 'Master JEE Physics', description: 'Focus on Rotational Motion and Modern Physics concepts', priority: 'high', expectedImprovement: 25 },
+          { title: 'Strengthen Problem Solving', description: 'Practice more numerical problems for JEE Mains pattern', priority: 'medium', expectedImprovement: 20 }
+        ]
+      },
+      neet: {
+        subjects: [
+          { subject: 'physics', averageScore: 68, totalTime: 120, sessions: 10, improvement: 10 },
+          { subject: 'chemistry', averageScore: 82, totalTime: 160, sessions: 14, improvement: 18 },
+          { subject: 'biology', averageScore: 85, totalTime: 180, sessions: 16, improvement: 12 }
+        ],
+        weaknesses: [
+          { subject: 'physics', topic: 'Modern Physics', score: 52, timeSpent: 30 },
+          { subject: 'chemistry', topic: 'Physical Chemistry', score: 58, timeSpent: 40 }
+        ],
+        strengths: [
+          { subject: 'biology', topic: 'Human Physiology', score: 95, timeSpent: 90 },
+          { subject: 'chemistry', topic: 'Organic Chemistry', score: 88, timeSpent: 70 }
+        ],
+        recommendations: [
+          { title: 'Boost NEET Physics', description: 'Focus on Modern Physics and Optics for NEET preparation', priority: 'high', expectedImprovement: 30 },
+          { title: 'Biology Advantage', description: 'Leverage your strong biology base for higher NEET scores', priority: 'medium', expectedImprovement: 15 }
+        ]
+      },
+      upsc: {
+        subjects: [
+          { subject: 'history', averageScore: 75, totalTime: 200, sessions: 20, improvement: 15 },
+          { subject: 'geography', averageScore: 72, totalTime: 180, sessions: 18, improvement: 12 },
+          { subject: 'polity', averageScore: 80, totalTime: 160, sessions: 16, improvement: 18 },
+          { subject: 'economy', averageScore: 68, totalTime: 140, sessions: 14, improvement: 10 }
+        ],
+        weaknesses: [
+          { subject: 'economy', topic: 'International Trade', score: 45, timeSpent: 35 },
+          { subject: 'geography', topic: 'Climate Change', score: 55, timeSpent: 40 }
+        ],
+        strengths: [
+          { subject: 'polity', topic: 'Constitutional Law', score: 90, timeSpent: 85 },
+          { subject: 'history', topic: 'Modern India', score: 88, timeSpent: 75 }
+        ],
+        recommendations: [
+          { title: 'Strengthen Economics', description: 'Focus on Economic Survey and International Trade concepts', priority: 'high', expectedImprovement: 25 },
+          { title: 'Current Affairs Integration', description: 'Connect static topics with current affairs for UPSC edge', priority: 'medium', expectedImprovement: 20 }
+        ]
+      },
+      clat: {
+        subjects: [
+          { subject: 'english', averageScore: 82, totalTime: 120, sessions: 12, improvement: 15 },
+          { subject: 'logical_reasoning', averageScore: 75, totalTime: 100, sessions: 10, improvement: 12 },
+          { subject: 'legal_reasoning', averageScore: 70, totalTime: 140, sessions: 14, improvement: 8 },
+          { subject: 'general_knowledge', averageScore: 78, totalTime: 90, sessions: 9, improvement: 18 },
+          { subject: 'quantitative_techniques', averageScore: 72, totalTime: 80, sessions: 8, improvement: 10 }
+        ],
+        weaknesses: [
+          { subject: 'legal_reasoning', topic: 'Contract Law', score: 52, timeSpent: 45 },
+          { subject: 'logical_reasoning', topic: 'Critical Reasoning', score: 58, timeSpent: 35 }
+        ],
+        strengths: [
+          { subject: 'english', topic: 'Reading Comprehension', score: 90, timeSpent: 60 },
+          { subject: 'general_knowledge', topic: 'Current Affairs', score: 85, timeSpent: 50 }
+        ],
+        recommendations: [
+          { title: 'Master Legal Reasoning', description: 'Focus on Contract Law and Constitutional principles for CLAT', priority: 'high', expectedImprovement: 28 },
+          { title: 'Speed & Accuracy', description: 'Practice time management for CLAT question patterns', priority: 'medium', expectedImprovement: 20 }
+        ]
+      },
+      cuet: {
+        subjects: [
+          { subject: 'english', averageScore: 80, totalTime: 100, sessions: 10, improvement: 12 },
+          { subject: 'mathematics', averageScore: 75, totalTime: 120, sessions: 12, improvement: 15 },
+          { subject: 'physics', averageScore: 72, totalTime: 110, sessions: 11, improvement: 10 },
+          { subject: 'chemistry', averageScore: 78, totalTime: 115, sessions: 12, improvement: 18 }
+        ],
+        weaknesses: [
+          { subject: 'physics', topic: 'Wave Optics', score: 55, timeSpent: 35 },
+          { subject: 'mathematics', topic: 'Probability', score: 60, timeSpent: 40 }
+        ],
+        strengths: [
+          { subject: 'chemistry', topic: 'Organic Chemistry', score: 88, timeSpent: 65 },
+          { subject: 'english', topic: 'Comprehension', score: 92, timeSpent: 55 }
+        ],
+        recommendations: [
+          { title: 'CUET Physics Focus', description: 'Master Wave Optics and Modern Physics for CUET preparation', priority: 'high', expectedImprovement: 25 },
+          { title: 'Math Problem Solving', description: 'Practice CUET-style mathematical reasoning questions', priority: 'medium', expectedImprovement: 20 }
+        ]
+      },
+      cse: {
+        subjects: [
+          { subject: 'programming', averageScore: 85, totalTime: 180, sessions: 18, improvement: 20 },
+          { subject: 'data_structures', averageScore: 78, totalTime: 160, sessions: 16, improvement: 15 },
+          { subject: 'algorithms', averageScore: 72, totalTime: 140, sessions: 14, improvement: 12 },
+          { subject: 'database', averageScore: 75, totalTime: 120, sessions: 12, improvement: 18 },
+          { subject: 'networks', averageScore: 70, totalTime: 100, sessions: 10, improvement: 10 },
+          { subject: 'operating_systems', averageScore: 68, totalTime: 110, sessions: 11, improvement: 8 }
+        ],
+        weaknesses: [
+          { subject: 'algorithms', topic: 'Dynamic Programming', score: 50, timeSpent: 45 },
+          { subject: 'operating_systems', topic: 'Memory Management', score: 55, timeSpent: 35 }
+        ],
+        strengths: [
+          { subject: 'programming', topic: 'Object Oriented Programming', score: 92, timeSpent: 80 },
+          { subject: 'data_structures', topic: 'Trees and Graphs', score: 88, timeSpent: 70 }
+        ],
+        recommendations: [
+          { title: 'Algorithm Mastery', description: 'Focus on Dynamic Programming and Greedy algorithms', priority: 'high', expectedImprovement: 30 },
+          { title: 'System Design', description: 'Strengthen OS concepts for technical interviews', priority: 'medium', expectedImprovement: 25 }
+        ]
+      },
+      cgle: {
+        subjects: [
+          { subject: 'general_awareness', averageScore: 75, totalTime: 150, sessions: 15, improvement: 15 },
+          { subject: 'quantitative_aptitude', averageScore: 70, totalTime: 140, sessions: 14, improvement: 12 },
+          { subject: 'english_language', averageScore: 78, totalTime: 120, sessions: 12, improvement: 18 },
+          { subject: 'reasoning', averageScore: 72, totalTime: 130, sessions: 13, improvement: 10 }
+        ],
+        weaknesses: [
+          { subject: 'quantitative_aptitude', topic: 'Data Interpretation', score: 52, timeSpent: 40 },
+          { subject: 'reasoning', topic: 'Analytical Reasoning', score: 58, timeSpent: 35 }
+        ],
+        strengths: [
+          { subject: 'general_awareness', topic: 'Current Affairs', score: 88, timeSpent: 70 },
+          { subject: 'english_language', topic: 'Grammar', score: 85, timeSpent: 60 }
+        ],
+        recommendations: [
+          { title: 'Quantitative Skills', description: 'Focus on Data Interpretation and Number Systems for CGLE', priority: 'high', expectedImprovement: 25 },
+          { title: 'Government Exam Strategy', description: 'Practice previous year CGLE questions for pattern familiarity', priority: 'medium', expectedImprovement: 20 }
+        ]
+      }
+    };
+
+    // Get exam-specific data or default to JEE
+    const config = examConfigs[examType as keyof typeof examConfigs] || examConfigs.jee;
+    
     return {
       overview: {
         totalStudyTime: 120,
@@ -622,27 +786,22 @@ export class AnalyticsService {
         peakPerformanceHour: 15,
         preferredSessionLength: 'medium'
       },
-      subjects: [
-        { subject: 'mathematics', averageScore: 85, totalTime: 180, sessions: 12, improvement: 8 },
-        { subject: 'physics', averageScore: 72, totalTime: 150, sessions: 10, improvement: 15 },
-        { subject: 'chemistry', averageScore: 78, totalTime: 120, sessions: 8, improvement: 5 }
-      ],
-      weaknesses: [
-        { subject: 'physics', topic: 'Thermodynamics', score: 55, timeSpent: 30 },
-        { subject: 'chemistry', topic: 'Organic Chemistry', score: 58, timeSpent: 25 }
-      ],
-      strengths: [
-        { subject: 'mathematics', topic: 'Calculus', score: 92, timeSpent: 60 },
-        { subject: 'physics', topic: 'Mechanics', score: 88, timeSpent: 45 }
-      ],
+      subjects: config.subjects,
+      weaknesses: config.weaknesses,
+      strengths: config.strengths,
       insights: [
-        { type: 'weakness', title: 'Improve physics', description: 'Focus more on Thermodynamics - current score: 55%' },
-        { type: 'strength', title: 'Strong in mathematics', description: 'Excellent performance in Calculus - score: 92%' }
+        ...config.weaknesses.map(w => ({
+          type: 'weakness' as const,
+          title: `Improve ${w.subject}`,
+          description: `Focus more on ${w.topic} - current score: ${w.score}%`
+        })),
+        ...config.strengths.map(s => ({
+          type: 'strength' as const,
+          title: `Strong in ${s.subject}`,
+          description: `Excellent performance in ${s.topic} - score: ${s.score}%`
+        }))
       ],
-      recommendations: [
-        { title: 'Focus on Physics', description: 'Spend extra time on Thermodynamics to improve understanding', priority: 'high', expectedImprovement: 25 },
-        { title: 'Maintain consistency', description: 'Keep up your daily learning streak for better long-term results', priority: 'medium', expectedImprovement: 15 }
-      ]
+      recommendations: config.recommendations
     };
   }
 
@@ -692,20 +851,102 @@ export class AnalyticsService {
     };
   }
 
-  private getDefaultTopicMastery() {
+  private async getDefaultTopicMastery(userId?: number) {
+    // Get user's exam type for specific content
+    let examType = null;
+    try {
+      if (userId) {
+        const user = await db.query.users.findFirst({
+          where: eq(users.id, userId)
+        });
+        examType = user?.track;
+      }
+    } catch (error) {
+      // Use generic data if user lookup fails
+    }
+
+    return this.getExamSpecificTopicMastery(examType);
+  }
+
+  private getExamSpecificTopicMastery(examType: string | null) {
+    const examTopics = {
+      jee: [
+        { name: 'Coordinate Geometry', subject: 'mathematics', masteryLevel: 92, conceptsLearned: 15, timeSpent: 80, lastPracticed: new Date() },
+        { name: 'Calculus', subject: 'mathematics', masteryLevel: 85, conceptsLearned: 12, timeSpent: 70, lastPracticed: new Date() },
+        { name: 'Mechanics', subject: 'physics', masteryLevel: 88, conceptsLearned: 14, timeSpent: 65, lastPracticed: new Date() },
+        { name: 'Rotational Motion', subject: 'physics', masteryLevel: 55, conceptsLearned: 8, timeSpent: 45, lastPracticed: new Date() },
+        { name: 'Organic Chemistry', subject: 'chemistry', masteryLevel: 78, conceptsLearned: 10, timeSpent: 55, lastPracticed: new Date() },
+        { name: 'Chemical Bonding', subject: 'chemistry', masteryLevel: 62, conceptsLearned: 7, timeSpent: 35, lastPracticed: new Date() }
+      ],
+      neet: [
+        { name: 'Human Physiology', subject: 'biology', masteryLevel: 95, conceptsLearned: 18, timeSpent: 90, lastPracticed: new Date() },
+        { name: 'Plant Biology', subject: 'biology', masteryLevel: 82, conceptsLearned: 14, timeSpent: 70, lastPracticed: new Date() },
+        { name: 'Organic Chemistry', subject: 'chemistry', masteryLevel: 88, conceptsLearned: 15, timeSpent: 70, lastPracticed: new Date() },
+        { name: 'Physical Chemistry', subject: 'chemistry', masteryLevel: 58, conceptsLearned: 8, timeSpent: 40, lastPracticed: new Date() },
+        { name: 'Mechanics', subject: 'physics', masteryLevel: 72, conceptsLearned: 10, timeSpent: 50, lastPracticed: new Date() },
+        { name: 'Modern Physics', subject: 'physics', masteryLevel: 52, conceptsLearned: 6, timeSpent: 30, lastPracticed: new Date() }
+      ],
+      upsc: [
+        { name: 'Constitutional Law', subject: 'polity', masteryLevel: 90, conceptsLearned: 16, timeSpent: 85, lastPracticed: new Date() },
+        { name: 'Modern India', subject: 'history', masteryLevel: 88, conceptsLearned: 15, timeSpent: 75, lastPracticed: new Date() },
+        { name: 'Physical Geography', subject: 'geography', masteryLevel: 75, conceptsLearned: 12, timeSpent: 60, lastPracticed: new Date() },
+        { name: 'Climate Change', subject: 'geography', masteryLevel: 55, conceptsLearned: 8, timeSpent: 40, lastPracticed: new Date() },
+        { name: 'Microeconomics', subject: 'economy', masteryLevel: 70, conceptsLearned: 10, timeSpent: 50, lastPracticed: new Date() },
+        { name: 'International Trade', subject: 'economy', masteryLevel: 45, conceptsLearned: 6, timeSpent: 35, lastPracticed: new Date() }
+      ],
+      clat: [
+        { name: 'Reading Comprehension', subject: 'english', masteryLevel: 90, conceptsLearned: 14, timeSpent: 60, lastPracticed: new Date() },
+        { name: 'Grammar', subject: 'english', masteryLevel: 82, conceptsLearned: 12, timeSpent: 50, lastPracticed: new Date() },
+        { name: 'Constitutional Principles', subject: 'legal_reasoning', masteryLevel: 75, conceptsLearned: 10, timeSpent: 55, lastPracticed: new Date() },
+        { name: 'Contract Law', subject: 'legal_reasoning', masteryLevel: 52, conceptsLearned: 7, timeSpent: 45, lastPracticed: new Date() },
+        { name: 'Current Affairs', subject: 'general_knowledge', masteryLevel: 85, conceptsLearned: 13, timeSpent: 50, lastPracticed: new Date() },
+        { name: 'Critical Reasoning', subject: 'logical_reasoning', masteryLevel: 58, conceptsLearned: 8, timeSpent: 35, lastPracticed: new Date() }
+      ],
+      cuet: [
+        { name: 'Comprehension', subject: 'english', masteryLevel: 92, conceptsLearned: 14, timeSpent: 55, lastPracticed: new Date() },
+        { name: 'Vocabulary', subject: 'english', masteryLevel: 80, conceptsLearned: 12, timeSpent: 45, lastPracticed: new Date() },
+        { name: 'Coordinate Geometry', subject: 'mathematics', masteryLevel: 78, conceptsLearned: 11, timeSpent: 50, lastPracticed: new Date() },
+        { name: 'Probability', subject: 'mathematics', masteryLevel: 60, conceptsLearned: 8, timeSpent: 40, lastPracticed: new Date() },
+        { name: 'Organic Chemistry', subject: 'chemistry', masteryLevel: 88, conceptsLearned: 13, timeSpent: 65, lastPracticed: new Date() },
+        { name: 'Wave Optics', subject: 'physics', masteryLevel: 55, conceptsLearned: 7, timeSpent: 35, lastPracticed: new Date() }
+      ],
+      cse: [
+        { name: 'Object Oriented Programming', subject: 'programming', masteryLevel: 92, conceptsLearned: 16, timeSpent: 80, lastPracticed: new Date() },
+        { name: 'Java Programming', subject: 'programming', masteryLevel: 85, conceptsLearned: 14, timeSpent: 70, lastPracticed: new Date() },
+        { name: 'Trees and Graphs', subject: 'data_structures', masteryLevel: 88, conceptsLearned: 15, timeSpent: 70, lastPracticed: new Date() },
+        { name: 'Hashing', subject: 'data_structures', masteryLevel: 75, conceptsLearned: 12, timeSpent: 55, lastPracticed: new Date() },
+        { name: 'Sorting Algorithms', subject: 'algorithms', masteryLevel: 82, conceptsLearned: 13, timeSpent: 60, lastPracticed: new Date() },
+        { name: 'Dynamic Programming', subject: 'algorithms', masteryLevel: 50, conceptsLearned: 8, timeSpent: 45, lastPracticed: new Date() },
+        { name: 'SQL Queries', subject: 'database', masteryLevel: 80, conceptsLearned: 12, timeSpent: 50, lastPracticed: new Date() },
+        { name: 'Memory Management', subject: 'operating_systems', masteryLevel: 55, conceptsLearned: 8, timeSpent: 35, lastPracticed: new Date() }
+      ],
+      cgle: [
+        { name: 'Current Affairs', subject: 'general_awareness', masteryLevel: 88, conceptsLearned: 15, timeSpent: 70, lastPracticed: new Date() },
+        { name: 'Indian History', subject: 'general_awareness', masteryLevel: 75, conceptsLearned: 12, timeSpent: 55, lastPracticed: new Date() },
+        { name: 'Number Systems', subject: 'quantitative_aptitude', masteryLevel: 72, conceptsLearned: 10, timeSpent: 50, lastPracticed: new Date() },
+        { name: 'Data Interpretation', subject: 'quantitative_aptitude', masteryLevel: 52, conceptsLearned: 7, timeSpent: 40, lastPracticed: new Date() },
+        { name: 'Grammar', subject: 'english_language', masteryLevel: 85, conceptsLearned: 13, timeSpent: 60, lastPracticed: new Date() },
+        { name: 'Vocabulary', subject: 'english_language', masteryLevel: 78, conceptsLearned: 11, timeSpent: 45, lastPracticed: new Date() },
+        { name: 'Logical Puzzles', subject: 'reasoning', masteryLevel: 70, conceptsLearned: 9, timeSpent: 45, lastPracticed: new Date() },
+        { name: 'Analytical Reasoning', subject: 'reasoning', masteryLevel: 58, conceptsLearned: 8, timeSpent: 35, lastPracticed: new Date() }
+      ]
+    };
+
+    // Get exam-specific topics or default to JEE
+    const topics = examTopics[examType as keyof typeof examTopics] || examTopics.jee;
+    const masteredTopics = topics.filter(topic => topic.masteryLevel >= 80);
+    
     return {
-      topics: [
-        { name: 'Algebra', subject: 'mathematics', masteryLevel: 85, conceptsLearned: 12, timeSpent: 60, lastPracticed: new Date() },
-        { name: 'Geometry', subject: 'mathematics', masteryLevel: 78, conceptsLearned: 10, timeSpent: 45, lastPracticed: new Date() },
-        { name: 'Mechanics', subject: 'physics', masteryLevel: 72, conceptsLearned: 8, timeSpent: 50, lastPracticed: new Date() },
-        { name: 'Thermodynamics', subject: 'physics', masteryLevel: 55, conceptsLearned: 5, timeSpent: 30, lastPracticed: new Date() }
-      ],
-      masteredTopics: [
-        { name: 'Algebra', subject: 'mathematics', score: 85, masteredDate: new Date() }
-      ],
-      totalTopics: 4,
-      masteredCount: 1,
-      averageMastery: 72.5
+      topics,
+      masteredTopics: masteredTopics.map(topic => ({
+        name: topic.name,
+        subject: topic.subject,
+        score: topic.masteryLevel,
+        masteredDate: topic.lastPracticed
+      })),
+      totalTopics: topics.length,
+      masteredCount: masteredTopics.length,
+      averageMastery: topics.reduce((sum, topic) => sum + topic.masteryLevel, 0) / topics.length
     };
   }
 }
