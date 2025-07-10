@@ -3,11 +3,15 @@ import { storage } from "../storage";
 import OpenAI from "openai";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
+import { AnalyticsService } from "./analytics-service";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || "demo-api-key" // fallback for development
 });
+
+// Initialize analytics service for ecosystem awareness
+const analyticsService = new AnalyticsService();
 
 // Middleware to check authentication
 const requireAuth = (req: Request, res: Response, next: () => void) => {
@@ -225,10 +229,11 @@ export const aiService = {
       const { message, subject, includeVisuals, difficulty } = schema.parse(req.body);
       const userId = (req.user as any).id;
       
-      // Get user data and AI tutor
-      const [tutor, user] = await Promise.all([
+      // Get user data, AI tutor, and analytics for ecosystem awareness
+      const [tutor, user, analyticsData] = await Promise.all([
         storage.getAITutorForUser(userId),
-        storage.getUserById(userId)
+        storage.getUserById(userId),
+        aiService.getUserAnalyticsForAI(userId)
       ]);
       
       if (!tutor) {
@@ -238,7 +243,7 @@ export const aiService = {
       // Get conversation history for context
       const conversation = await storage.getRecentConversation(userId);
       
-      // Enhanced system prompt for topic-focused, immersive experience
+      // Enhanced system prompt for topic-focused, immersive experience with ecosystem awareness
       const systemPrompt = `You are ${tutor.name}, an expert AI tutor specializing in ${tutor.specialty} for Indian competitive exams (JEE, NEET, UPSC, CLAT, CUET, CSE).
 
 Student Profile:
@@ -247,6 +252,31 @@ Student Profile:
 - Level: ${user?.level || 1}
 - Track: ${user?.track || 'General'}
 - Current XP: ${user?.currentXp || 0}
+
+📊 ECOSYSTEM INTELLIGENCE - Student Performance Insights:
+- Weak Subjects: ${analyticsData.weakSubjects.length > 0 ? analyticsData.weakSubjects.join(', ') : 'None identified yet'}
+- Strong Subjects: ${analyticsData.strongSubjects.length > 0 ? analyticsData.strongSubjects.join(', ') : 'None identified yet'}
+- Study Pattern: ${analyticsData.studyPattern}
+- Average Score: ${analyticsData.averageScore}%
+- Study Streak: ${analyticsData.streakDays} days
+- Total Study Time: ${analyticsData.totalStudyTime} hours
+- Preferred Learning Style: ${analyticsData.preferredLearningStyle}
+- Problem Areas: ${analyticsData.problemAreas.length > 0 ? analyticsData.problemAreas.join(', ') : 'None identified'}
+
+🎯 ADAPTIVE TEACHING STRATEGY:
+${analyticsData.weakSubjects.length > 0 ? 
+  `- Focus extra attention on weak subjects: ${analyticsData.weakSubjects.join(', ')}
+- Provide additional explanations and examples for these areas
+- Use encouraging tone when addressing weak subject questions` : 
+  '- Maintain balanced teaching across all subjects'}
+${analyticsData.strongSubjects.length > 0 ? 
+  `- Leverage strong subjects (${analyticsData.strongSubjects.join(', ')}) for confidence building
+- Use cross-subject connections to reinforce learning` : ''}
+${analyticsData.averageScore < 60 ? 
+  '- Emphasize foundational concepts and step-by-step problem solving' : 
+  analyticsData.averageScore > 80 ? 
+  '- Challenge with advanced concepts and complex problem variations' : 
+  '- Balance between reinforcing basics and introducing advanced concepts'}
 
 CRITICAL INSTRUCTIONS - Topic Focus:
 1. ALWAYS stay directly relevant to the student's question/topic
@@ -2204,6 +2234,47 @@ Focus on visual clarity and educational value.`;
       }
       console.error("Interactive study session generation error:", error);
       return res.status(500).json({ message: "Error generating interactive study session" });
+    }
+  },
+
+  /**
+   * Get comprehensive analytics data for AI tutor ecosystem awareness
+   */
+  async getUserAnalyticsForAI(userId: number) {
+    try {
+      // Get comprehensive analytics data from the analytics service
+      const analyticsData = await analyticsService.getStudentAnalytics(userId);
+      
+      // Extract key insights for AI tutor context
+      const insights = {
+        weakSubjects: analyticsData.weakSubjects || [],
+        strongSubjects: analyticsData.strongSubjects || [],
+        studyPattern: analyticsData.studyPattern || 'regular',
+        averageScore: analyticsData.averageScore || 0,
+        totalStudyTime: analyticsData.totalStudyTime || 0,
+        streakDays: analyticsData.streakDays || 0,
+        preferredLearningStyle: analyticsData.preferredLearningStyle || 'mixed',
+        recentActivity: analyticsData.recentActivity || [],
+        problemAreas: analyticsData.problemAreas || [],
+        improvementTrends: analyticsData.improvementTrends || []
+      };
+      
+      return insights;
+    } catch (error) {
+      console.error('Error getting user analytics for AI:', error);
+      // Return default analytics if service fails
+      return {
+        weakSubjects: [],
+        strongSubjects: [],
+        studyPattern: 'regular',
+        averageScore: 0,
+        totalStudyTime: 0,
+        streakDays: 0,
+        preferredLearningStyle: 'mixed',
+        recentActivity: [],
+        problemAreas: [],
+        improvementTrends: []
+      };
     }
   }
 };

@@ -10,7 +10,7 @@ export function MobileNavigation() {
       <div className="absolute top-0 left-0 right-0 h-px cyber-scan-line"></div>
       
       {/* Mobile navigation content */}
-      <div className="grid grid-cols-6 items-center justify-between px-3 py-2">
+      <div className="grid grid-cols-6 items-center justify-between px-2 py-3">
         <MobileNavLink 
           href="/" 
           isActive={location === '/'} 
@@ -67,7 +67,7 @@ function MobileNavLink({
   return (
     <Link 
       href={href} 
-      className={`flex items-center justify-center flex-col py-2 px-1 relative group ${isActive ? 'text-primary' : 'text-gray-400 hover:text-gray-200'} transition-colors`}
+      className={`flex items-center justify-center flex-col py-3 px-2 relative group min-h-[44px] ${isActive ? 'text-primary' : 'text-gray-400 hover:text-gray-200'} transition-colors`}
     >
       {/* Active glow effect */}
       {isActive && (

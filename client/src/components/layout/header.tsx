@@ -103,7 +103,7 @@ export function Header() {
         <div className="absolute top-0 right-0 w-[2px] h-8 bg-cyan-500/70"></div>
       </div>
       
-      <div className="container mx-auto px-4 py-3 h-full relative z-10 glassmorphism border-b border-primary/20">
+      <div className={`container mx-auto ${isMobile ? 'px-2 py-2' : 'px-4 py-3'} h-full relative z-10 glassmorphism border-b border-primary/20`}>
         <div className="flex items-center justify-between h-full relative">
           {/* Decorative elements matching home page */}
           <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
@@ -111,26 +111,28 @@ export function Header() {
           {/* Elegant Logo */}
           <div className="flex items-center space-x-3">
             <Link href="/" className="flex items-center">
-              <div className="relative w-12 h-12 mr-3 overflow-hidden flex items-center justify-center">
+              <div className={`relative ${isMobile ? 'w-8 h-8 mr-2' : 'w-12 h-12 mr-3'} overflow-hidden flex items-center justify-center`}>
                 <div className="absolute w-full h-full rounded-full bg-[#0a2a42] border-2 border-[#47c1d6]"></div>
-                <div className="absolute w-8 h-8 rounded-full border-2 border-[#4af3c0]"></div>
+                <div className={`absolute ${isMobile ? 'w-6 h-6' : 'w-8 h-8'} rounded-full border-2 border-[#4af3c0]`}></div>
                 {/* Learnyzer Logo */}
                 <img 
                   src="/images/learnyzer-logo.png" 
                   alt="Learnyzer Logo" 
-                  className="w-8 h-8 object-contain relative z-10"
+                  className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} object-contain relative z-10`}
                 />
               </div>
               <div className="relative">
-                <span className="text-3xl font-bold font-gaming tracking-wide text-[#47c1d6] shadow-glow-xs">Learnyzer</span>
+                <span className={`${isMobile ? 'text-xl' : 'text-3xl'} font-bold font-gaming tracking-wide text-[#47c1d6] shadow-glow-xs`}>Learnyzer</span>
                 
                 {/* Simple elegant underline matching homepage */}
                 <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
               </div>
             </Link>
-            <div className="flex items-center h-6 px-2 border border-[#4af3c0]/50 rounded-sm bg-[#0a2a42]/50">
-              <span className="text-xs font-mono text-[#4af3c0] font-gaming">BETA</span>
-            </div>
+            {!isMobile && (
+              <div className="flex items-center h-6 px-2 border border-[#4af3c0]/50 rounded-sm bg-[#0a2a42]/50">
+                <span className="text-xs font-mono text-[#4af3c0] font-gaming">BETA</span>
+              </div>
+            )}
           </div>
           
           <div className="flex items-center space-x-4">
@@ -177,8 +179,8 @@ export function Header() {
             
             {/* Simple elegant user avatar */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center space-x-2 group">
-                <div className="relative w-9 h-9">
+              <DropdownMenuTrigger className={`flex items-center space-x-2 group ${isMobile ? 'p-2' : ''}`}>
+                <div className={`relative ${isMobile ? 'w-8 h-8' : 'w-9 h-9'}`}>
                   {/* Simple avatar frame */}
                   <div className="absolute inset-0 rounded-full overflow-hidden border border-[#47c1d6]/60 bg-[#0a2a42]">
                     {user?.profileImage ? (
@@ -189,7 +191,7 @@ export function Header() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-xs font-bold text-[#4af3c0]">
+                        <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-bold text-[#4af3c0]`}>
                           {user?.name ? user.name.substring(0, 2).toUpperCase() : "US"}
                         </span>
                       </div>
@@ -203,7 +205,7 @@ export function Header() {
                   </>
                 )}
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-[#0a2a42]/90 backdrop-blur-xl border border-[#47c1d6]/40">
+              <DropdownMenuContent align="end" className={`bg-[#0a2a42]/90 backdrop-blur-xl border border-[#47c1d6]/40 ${isMobile ? 'w-64 mr-2' : ''}`}>
                 <DropdownMenuLabel className="text-[#47c1d6] font-gaming">
                   <div className="flex items-center gap-2">
                     <Zap className="h-4 w-4 text-[#4af3c0]" />

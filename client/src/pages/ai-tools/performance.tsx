@@ -639,8 +639,6 @@ export default function PerformanceAnalytics() {
                     <CardDescription>When and how you learn best</CardDescription>
                   </CardHeader>
                   <CardContent className="h-80">
-                    {console.log('Learning insights:', learningInsights)}
-                    {console.log('Study patterns:', learningInsights?.studyPatterns)}
                     {isLoading ? (
                       <div className="h-full flex items-center justify-center">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
