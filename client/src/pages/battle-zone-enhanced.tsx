@@ -70,8 +70,6 @@ export default function BattleZoneEnhanced() {
     subject: "",
     duration: "20",
     topics: "",
-    entryFee: "0",
-    prizePool: "0",
     maxParticipants: "8",
     battleMode: "public",
     spectatorMode: true,
@@ -110,9 +108,20 @@ export default function BattleZoneEnhanced() {
     }
   });
 
+  // Calculate entry fee and prize pool automatically
+  const getEntryFee = () => 50; // Fixed entry fee
+  const getPrizePool = () => parseInt(battleForm.maxParticipants) * 50; // Winner takes all
+
   const createBattleMutation = useMutation({
     mutationFn: async (battleData: any) => {
-      return apiRequest("POST", "/api/battles/enhanced", battleData);
+      // Add calculated values to battle data
+      const enhancedBattleData = {
+        ...battleData,
+        entryFee: getEntryFee(),
+        prizePool: getPrizePool(),
+        topics: battleData.topics.split(',').map((t: string) => t.trim()).filter(Boolean)
+      };
+      return apiRequest("POST", "/api/battles/enhanced", enhancedBattleData);
     },
     onSuccess: () => {
       setCreateDialogOpen(false);
@@ -496,26 +505,20 @@ export default function BattleZoneEnhanced() {
                   </Select>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Entry Fee (XP)</label>
-                  <Input
-                    type="number"
-                    placeholder="0"
-                    value={battleForm.entryFee}
-                    onChange={(e) => setBattleForm({...battleForm, entryFee: e.target.value})}
-                    className="bg-background/40 border-cyan-500/30"
-                  />
+                <div className="p-4 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg border border-purple-500/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-purple-400">Entry Fee</span>
+                    <span className="text-lg font-bold text-white">50 XP</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Standard entry fee for enhanced battles</p>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Prize Pool (XP)</label>
-                  <Input
-                    type="number"
-                    placeholder="0"
-                    value={battleForm.prizePool}
-                    onChange={(e) => setBattleForm({...battleForm, prizePool: e.target.value})}
-                    className="bg-background/40 border-cyan-500/30"
-                  />
+                <div className="p-4 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-lg border border-orange-500/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-orange-400">Prize Pool</span>
+                    <span className="text-lg font-bold text-white">{getPrizePool()} XP</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Winner takes all • Calculated from participants</p>
                 </div>
 
                 <div className="space-y-2">
