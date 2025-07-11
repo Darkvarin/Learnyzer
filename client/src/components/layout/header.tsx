@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMobile } from "@/hooks/use-mobile";
 import { Brain, Menu, X, ChevronDown, User, LogOut, Zap } from "lucide-react";
 import { TrialStatusBadge } from "@/components/trial/trial-status-badge";
+import { CoinDisplay } from "@/components/ui/coin-display";
 
 export function Header() {
   const { user, setUser } = useUser();
@@ -136,6 +137,7 @@ export function Header() {
           </div>
           
           <div className="flex items-center space-x-4">
+            <CoinDisplay compact={true} />
             <TrialStatusBadge variant="compact" showTimeLeft={false} />            
             {!isMobile && (
               <nav className="flex items-center space-x-1">

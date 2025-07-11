@@ -3,7 +3,7 @@ import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 import type { Express, Request, Response } from "express";
 import { eq, and, inArray, desc, sql } from "drizzle-orm";
-import { battles, battleParticipants, tournaments, powerUps, userPowerUps, battleQuestions, battleSpectators } from "@shared/schema";
+import { battles, battleParticipants, tournaments, powerUps, userPowerUps, battleQuestions, battleSpectators, userCoins } from "@shared/schema";
 import { db } from "../../db";
 import OpenAI from "openai";
 
@@ -158,15 +158,21 @@ export const enhancedBattleService = {
       const validatedData = enhancedBattleSchema.parse(req.body);
       const userId = (req.user as any).id;
 
-      // Check if user has sufficient XP for entry fee
-      if (validatedData.entryFee > 0) {
-        const user = await storage.getUserById(userId);
-        if (!user || user.currentXp < validatedData.entryFee) {
-          return res.status(400).json({ 
-            message: `Insufficient XP. You need ${validatedData.entryFee} XP to create this battle.` 
-          });
-        }
+      // Check if user has sufficient coins for entry fee (10 coins)
+      const entryFeeCoins = 10;
+      const { coinService } = await import("./coin-service");
+      const userCoinRecord = await db.query.userCoins.findFirst({
+        where: eq(userCoins.userId, userId)
+      });
+      
+      if (!userCoinRecord || userCoinRecord.coins < entryFeeCoins) {
+        return res.status(400).json({ 
+          message: `Insufficient coins. You need ${entryFeeCoins} coins to create this battle.` 
+        });
       }
+
+      // Deduct entry fee coins
+      await coinService.spendCoins(userId, entryFeeCoins, `Battle entry fee - ${validatedData.title}`, 'battle_entry');
 
       // Calculate reward points based on difficulty and format
       let baseReward = 50;
@@ -360,17 +366,21 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
         return res.status(400).json({ message: "Battle is full" });
       }
 
-      // Check entry fee
+      // Check entry fee (now in coins)
       if (battle.entryFee && battle.entryFee > 0) {
-        const user = await storage.getUserById(userId);
-        if (!user || user.currentXp < battle.entryFee) {
+        const { coinService } = await import("./coin-service");
+        const userCoinRecord = await db.query.userCoins.findFirst({
+          where: eq(userCoins.userId, userId)
+        });
+        
+        if (!userCoinRecord || userCoinRecord.coins < battle.entryFee) {
           return res.status(400).json({ 
-            message: `Insufficient XP. You need ${battle.entryFee} XP to join this battle.` 
+            message: `Insufficient coins. You need ${battle.entryFee} coins to join this battle.` 
           });
         }
 
-        // Deduct entry fee
-        await storage.addUserXP(userId, -battle.entryFee);
+        // Deduct entry fee coins
+        await coinService.spendCoins(userId, battle.entryFee, `Battle entry fee - ${battle.title}`, 'battle_entry', battle.id);
       }
 
       // Determine team assignment for team battles
@@ -407,7 +417,8 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
       res.json({ 
         message: "Successfully joined the enhanced battle!",
         team: team,
-        entryFeePaid: battle.entryFee || 0
+        entryFeePaid: battle.entryFee || 0,
+        currency: "coins"
       });
     } catch (error) {
       console.error("Enhanced battle join error:", error);

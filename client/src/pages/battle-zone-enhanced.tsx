@@ -108,17 +108,17 @@ export default function BattleZoneEnhanced() {
     }
   });
 
-  // Calculate entry fee and prize pool automatically
-  const getEntryFee = () => 50; // Fixed entry fee
-  const getPrizePool = () => parseInt(battleForm.maxParticipants) * 50; // Winner takes all
+  // Calculate entry fee and prize pool automatically with coin system
+  const getEntryFeeCoins = () => 10; // Fixed coin entry fee (reduced to 10)
+  const getPrizePoolCoins = () => parseInt(battleForm.maxParticipants) * 10; // Winner takes all coins
 
   const createBattleMutation = useMutation({
     mutationFn: async (battleData: any) => {
       // Add calculated values to battle data
       const enhancedBattleData = {
         ...battleData,
-        entryFee: getEntryFee(),
-        prizePool: getPrizePool(),
+        entryFee: getEntryFeeCoins(), // Now in coins
+        prizePool: getPrizePoolCoins(), // Coins prize pool
         topics: battleData.topics.split(',').map((t: string) => t.trim()).filter(Boolean)
       };
       return apiRequest("POST", "/api/battles/enhanced", enhancedBattleData);
@@ -508,17 +508,25 @@ export default function BattleZoneEnhanced() {
                 <div className="p-4 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg border border-purple-500/20">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-purple-400">Entry Fee</span>
-                    <span className="text-lg font-bold text-white">50 XP</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-lg font-bold text-yellow-400">10</span>
+                      <span className="text-yellow-400 text-sm">🪙</span>
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">Standard entry fee for enhanced battles</p>
+                  <p className="text-xs text-muted-foreground">Coins required to enter battle</p>
                 </div>
 
                 <div className="p-4 bg-gradient-to-r from-orange-500/10 to-yellow-500/10 rounded-lg border border-orange-500/20">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-orange-400">Prize Pool</span>
-                    <span className="text-lg font-bold text-white">{getPrizePool()} XP</span>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
+                        <span className="text-lg font-bold text-yellow-400">{parseInt(battleForm.maxParticipants) * 10}</span>
+                        <span className="text-yellow-400 text-sm">🪙</span>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">Winner takes all • Calculated from participants</p>
+                  <p className="text-xs text-muted-foreground">Winner takes all coins</p>
                 </div>
 
                 <div className="space-y-2">

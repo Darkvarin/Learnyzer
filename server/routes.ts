@@ -310,6 +310,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user/power-ups", requireAuth, enhancedBattleService.getUserPowerUps);
   app.post("/api/power-ups/use", requireAuth, enhancedBattleService.usePowerUp);
   
+  // Coin system routes
+  app.get("/api/coins", requireAuth, async (req, res) => {
+    const { coinService } = await import("./services/coin-service");
+    await coinService.getUserCoins(req, res);
+  });
+  app.get("/api/coins/history", requireAuth, async (req, res) => {
+    const { coinService } = await import("./services/coin-service");
+    await coinService.getCoinHistory(req, res);
+  });
+  app.post("/api/coins/daily-bonus", requireAuth, async (req, res) => {
+    const { coinService } = await import("./services/coin-service");
+    await coinService.claimDailyBonus(req, res);
+  });
+  
   // Rewards routes
   app.get("/api/rewards", userService.getAllRewards);
   app.post("/api/rewards/:id/claim", userService.claimReward);

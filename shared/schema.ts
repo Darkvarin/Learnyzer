@@ -73,6 +73,30 @@ export const userCourses = pgTable("user_courses", {
   lastActivity: timestamp("last_activity").defaultNow().notNull()
 });
 
+// User Coins Table
+export const userCoins = pgTable("user_coins", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  coins: integer("coins").default(0).notNull(),
+  totalEarned: integer("total_earned").default(0).notNull(),
+  totalSpent: integer("total_spent").default(0).notNull(),
+  lastDailyBonus: timestamp("last_daily_bonus"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+// Coin Transactions Table
+export const coinTransactions = pgTable("coin_transactions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  amount: integer("amount").notNull(),
+  type: text("type").notNull(), // 'earn' or 'spend'
+  description: text("description"),
+  referenceId: integer("reference_id"),
+  referenceType: text("reference_type"), // 'battle', 'daily_bonus', 'achievement', etc.
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
 // AI Tutors Table
 export const aiTutors = pgTable("ai_tutors", {
   id: serial("id").primaryKey(),
@@ -746,6 +770,16 @@ export const insertFeedbackVoteSchema = createInsertSchema(feedbackVotes, {
 
 export const insertFeedbackCommentSchema = createInsertSchema(feedbackComments, {
   comment: (schema) => schema.min(3, "Comment must be at least 3 characters"),
+});
+
+// User coins and transactions schemas
+export const insertUserCoinsSchema = createInsertSchema(userCoins, {
+  coins: (schema) => schema.min(0, "Coins cannot be negative"),
+});
+
+export const insertCoinTransactionSchema = createInsertSchema(coinTransactions, {
+  amount: (schema) => schema.refine(val => val !== 0, "Transaction amount cannot be zero"),
+  type: (schema) => schema.refine(val => ["earn", "spend"].includes(val), "Invalid transaction type"),
 });
 
 export const insertMockTestSchema = createInsertSchema(mockTests, {
