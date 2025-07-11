@@ -96,23 +96,64 @@ export const conversations = pgTable("conversations", {
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
 
-// Battles Table
+// Battles Table - Enhanced for Battle Zone 2.0
 export const battles = pgTable("battles", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
-  type: text("type").notNull(),
+  type: text("type").notNull(), // 1v1, 2v2, 3v3, 4v4, tournament, blitz
+  format: text("format").default("standard").notNull(), // standard, blitz, endurance, exam_simulation
+  difficulty: text("difficulty").default("intermediate").notNull(), // beginner, intermediate, advanced, expert
+  examType: text("exam_type"), // JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE
+  subject: text("subject"), // Physics, Chemistry, Math, etc.
   duration: integer("duration").notNull(),
   topics: jsonb("topics").notNull(),
   rewardPoints: integer("reward_points").notNull(),
-  status: text("status").default("waiting").notNull(),
+  entryFee: integer("entry_fee").default(0).notNull(), // XP cost to join
+  prizePool: integer("prize_pool").default(0).notNull(), // Total XP prize pool
+  maxParticipants: integer("max_participants").default(8).notNull(),
+  status: text("status").default("waiting").notNull(), // waiting, in_progress, completed, cancelled
+  battleMode: text("battle_mode").default("public").notNull(), // public, private, tournament
+  spectatorMode: boolean("spectator_mode").default(true).notNull(),
+  autoStart: boolean("auto_start").default(false).notNull(),
+  questionsCount: integer("questions_count").default(1).notNull(),
+  passingScore: integer("passing_score").default(60).notNull(),
+  timePerQuestion: integer("time_per_question").default(300).notNull(), // seconds
   startTime: timestamp("start_time"),
   endTime: timestamp("end_time"),
+  scheduledFor: timestamp("scheduled_for"),
   winnerId: integer("winner_id").references(() => users.id),
+  winnerTeam: integer("winner_team"),
   createdBy: integer("created_by").references(() => users.id).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull()
+  tournamentId: integer("tournament_id").references(() => tournaments.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
 
-// Battle Participants Table
+// Tournaments Table - New for Battle Zone 2.0
+export const tournaments = pgTable("tournaments", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  tournamentType: text("tournament_type").default("single_elimination").notNull(), // single_elimination, double_elimination, round_robin
+  examType: text("exam_type"), // JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE
+  subject: text("subject"),
+  maxParticipants: integer("max_participants").default(32).notNull(),
+  entryFee: integer("entry_fee").default(0).notNull(),
+  prizePool: integer("prize_pool").default(0).notNull(),
+  firstPrize: integer("first_prize").default(0).notNull(),
+  secondPrize: integer("second_prize").default(0).notNull(),
+  thirdPrize: integer("third_prize").default(0).notNull(),
+  status: text("status").default("registration").notNull(), // registration, in_progress, completed, cancelled
+  startTime: timestamp("start_time"),
+  endTime: timestamp("end_time"),
+  registrationDeadline: timestamp("registration_deadline"),
+  winnerId: integer("winner_id").references(() => users.id),
+  createdBy: integer("created_by").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+// Battle Participants Table - Enhanced for Battle Zone 2.0
 export const battleParticipants = pgTable("battle_participants", {
   id: serial("id").primaryKey(),
   battleId: integer("battle_id").references(() => battles.id).notNull(),
@@ -121,7 +162,66 @@ export const battleParticipants = pgTable("battle_participants", {
   score: integer("score"),
   feedback: text("feedback"),
   submission: text("submission"),
-  joinedAt: timestamp("joined_at").defaultNow().notNull()
+  accuracy: decimal("accuracy", { precision: 5, scale: 2 }).default("0.00").notNull(),
+  timeSpent: integer("time_spent").default(0).notNull(), // seconds
+  submittedAt: timestamp("submitted_at"),
+  joinedAt: timestamp("joined_at").defaultNow().notNull(),
+  leftAt: timestamp("left_at"),
+  rank: integer("rank"),
+  isSpectator: boolean("is_spectator").default(false).notNull(),
+  powerUpsUsed: jsonb("power_ups_used").default("[]").notNull(),
+  streakBonus: integer("streak_bonus").default(0).notNull(),
+  difficultyBonus: integer("difficulty_bonus").default(0).notNull()
+});
+
+// Battle Questions Table - New for Battle Zone 2.0
+export const battleQuestions = pgTable("battle_questions", {
+  id: serial("id").primaryKey(),
+  battleId: integer("battle_id").references(() => battles.id).notNull(),
+  questionNumber: integer("question_number").notNull(),
+  question: text("question").notNull(),
+  options: jsonb("options"), // For MCQ questions
+  correctAnswer: text("correct_answer").notNull(),
+  explanation: text("explanation"),
+  difficulty: text("difficulty").default("intermediate").notNull(),
+  subject: text("subject"),
+  topic: text("topic"),
+  marks: integer("marks").default(1).notNull(),
+  timeLimit: integer("time_limit").default(300).notNull(), // seconds
+  questionType: text("question_type").default("descriptive").notNull(), // mcq, descriptive, numerical
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
+// Battle Spectators Table - New for Battle Zone 2.0
+export const battleSpectators = pgTable("battle_spectators", {
+  id: serial("id").primaryKey(),
+  battleId: integer("battle_id").references(() => battles.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  joinedAt: timestamp("joined_at").defaultNow().notNull(),
+  leftAt: timestamp("left_at")
+});
+
+// Power-ups Table - New for Battle Zone 2.0
+export const powerUps = pgTable("power_ups", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  effect: text("effect").notNull(), // extra_time, hint, eliminate_option, double_points, shield
+  cost: integer("cost").default(50).notNull(), // XP cost
+  duration: integer("duration").default(0).notNull(), // seconds, 0 for instant
+  isActive: boolean("is_active").default(true).notNull(),
+  examTypes: jsonb("exam_types").default('["all"]').notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
+// User Power-ups Inventory Table - New for Battle Zone 2.0
+export const userPowerUps = pgTable("user_power_ups", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  powerUpId: integer("power_up_id").references(() => powerUps.id).notNull(),
+  quantity: integer("quantity").default(1).notNull(),
+  purchasedAt: timestamp("purchased_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at")
 });
 
 // AI Tools Table
@@ -450,7 +550,34 @@ export const conversationsRelations = relations(conversations, ({ one }) => ({
 export const battlesRelations = relations(battles, ({ one, many }) => ({
   creator: one(users, { fields: [battles.createdBy], references: [users.id] }),
   winner: one(users, { fields: [battles.winnerId], references: [users.id] }),
-  participants: many(battleParticipants)
+  tournament: one(tournaments, { fields: [battles.tournamentId], references: [tournaments.id] }),
+  participants: many(battleParticipants),
+  questions: many(battleQuestions),
+  spectators: many(battleSpectators)
+}));
+
+export const tournamentsRelations = relations(tournaments, ({ one, many }) => ({
+  creator: one(users, { fields: [tournaments.createdBy], references: [users.id] }),
+  winner: one(users, { fields: [tournaments.winnerId], references: [users.id] }),
+  battles: many(battles)
+}));
+
+export const battleQuestionsRelations = relations(battleQuestions, ({ one }) => ({
+  battle: one(battles, { fields: [battleQuestions.battleId], references: [battles.id] })
+}));
+
+export const battleSpectatorsRelations = relations(battleSpectators, ({ one }) => ({
+  battle: one(battles, { fields: [battleSpectators.battleId], references: [battles.id] }),
+  user: one(users, { fields: [battleSpectators.userId], references: [users.id] })
+}));
+
+export const powerUpsRelations = relations(powerUps, ({ many }) => ({
+  userPowerUps: many(userPowerUps)
+}));
+
+export const userPowerUpsRelations = relations(userPowerUps, ({ one }) => ({
+  user: one(users, { fields: [userPowerUps.userId], references: [users.id] }),
+  powerUp: one(powerUps, { fields: [userPowerUps.powerUpId], references: [powerUps.id] })
 }));
 
 export const battleParticipantsRelations = relations(battleParticipants, ({ one }) => ({
@@ -707,3 +834,10 @@ export type FeedbackVote = typeof feedbackVotes.$inferSelect;
 export type FeedbackComment = typeof feedbackComments.$inferSelect;
 export type MockTest = typeof mockTests.$inferSelect;
 export type MockTestSubmission = typeof mockTestSubmissions.$inferSelect;
+
+// Battle Zone 2.0 Types
+export type Tournament = typeof tournaments.$inferSelect;
+export type BattleQuestion = typeof battleQuestions.$inferSelect;
+export type BattleSpectator = typeof battleSpectators.$inferSelect;
+export type PowerUp = typeof powerUps.$inferSelect;
+export type UserPowerUp = typeof userPowerUps.$inferSelect;

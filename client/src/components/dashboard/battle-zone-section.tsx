@@ -59,10 +59,16 @@ export function BattleZoneSection() {
           <h2 className="text-xl font-bold font-gaming bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-white" style={{
             textShadow: "0 0 10px rgba(139, 92, 246, 0.3)"
           }}>Battle Zone</h2>
-          <Link href="/battle-zone" className="text-purple-500 hover:text-purple-400 transition-colors duration-300 text-sm flex items-center group">
-            View All Battles
-            <span className="ml-1 transform group-hover:translate-x-1 transition-transform duration-300">→</span>
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/battle-zone" className="text-purple-500 hover:text-purple-400 transition-colors duration-300 text-sm flex items-center group">
+              Classic Battles
+              <span className="ml-1 transform group-hover:translate-x-1 transition-transform duration-300">→</span>
+            </Link>
+            <Link href="/battle-zone-enhanced" className="text-orange-500 hover:text-orange-400 transition-colors duration-300 text-sm flex items-center group font-semibold">
+              Enhanced 2.0
+              <span className="ml-1 transform group-hover:translate-x-1 transition-transform duration-300">🚀</span>
+            </Link>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 gap-4">

@@ -1008,6 +1008,71 @@ async function seed() {
       console.log("⏩ Feedback categories already exist, skipping...");
     }
 
+    // Seed Power-ups for Enhanced Battle Zone
+    console.log("Seeding power-ups for Battle Zone 2.0...");
+    const powerUps = [
+      {
+        name: "Extra Time",
+        description: "Adds 60 seconds to your current question timer",
+        effect: "extra_time",
+        cost: 50,
+        duration: 60,
+        examTypes: JSON.stringify(["all"])
+      },
+      {
+        name: "Hint Master",
+        description: "Get an AI-powered hint for the current question",
+        effect: "hint",
+        cost: 75,
+        duration: 0,
+        examTypes: JSON.stringify(["all"])
+      },
+      {
+        name: "Option Eliminator",
+        description: "Remove 2 wrong options from MCQ questions",
+        effect: "eliminate_option",
+        cost: 100,
+        duration: 0,
+        examTypes: JSON.stringify(["JEE", "NEET", "CUET", "CSE"])
+      },
+      {
+        name: "Double Points",
+        description: "Double your score for the next correct answer",
+        effect: "double_points",
+        cost: 125,
+        duration: 0,
+        examTypes: JSON.stringify(["all"])
+      },
+      {
+        name: "Shield Protection",
+        description: "Protect yourself from next wrong answer penalty",
+        effect: "shield",
+        cost: 150,
+        duration: 0,
+        examTypes: JSON.stringify(["all"])
+      },
+      {
+        name: "Speed Boost",
+        description: "Increases your thinking time by 50% for 3 questions",
+        effect: "speed_boost",
+        cost: 200,
+        duration: 900,
+        examTypes: JSON.stringify(["all"])
+      }
+    ];
+    
+    // Check if power-ups already exist
+    const existingPowerUp = await db.query.powerUps.findFirst();
+    
+    if (!existingPowerUp) {
+      for (const powerUp of powerUps) {
+        await db.insert(schema.powerUps).values(powerUp);
+      }
+      console.log(`✅ Added ${powerUps.length} power-ups for Battle Zone 2.0`);
+    } else {
+      console.log("⏩ Power-ups already exist, skipping...");
+    }
+
     console.log("🎉 Database seeding completed successfully!");
   } catch (error) {
     console.error("Error seeding database:", error);
