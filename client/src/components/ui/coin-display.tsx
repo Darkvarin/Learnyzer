@@ -1,33 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
+import { Coins } from "lucide-react";
 
 interface CoinDisplayProps {
   compact?: boolean;
-  showHistory?: boolean;
 }
 
-export function CoinDisplay({ compact = false, showHistory = false }: CoinDisplayProps) {
-  const { data: coins, isLoading } = useQuery({
-    queryKey: ['/api/coins'],
+export function CoinDisplay({ compact = false }: CoinDisplayProps) {
+  const { data: coinData, isLoading } = useQuery({
+    queryKey: ["/api/coins"],
+    refetchInterval: 30000, // Refresh every 30 seconds
   });
 
   if (isLoading) {
     return (
-      <div className="flex items-center space-x-1">
-        <div className="w-4 h-4 bg-yellow-400/20 animate-pulse rounded"></div>
-        <div className="w-8 h-4 bg-gray-600/20 animate-pulse rounded"></div>
+      <div className={`flex items-center gap-1 ${compact ? 'text-sm' : 'text-base'}`}>
+        <Coins className={`${compact ? 'h-4 w-4' : 'h-5 w-5'} text-yellow-500 animate-pulse`} />
+        <span className="text-muted-foreground">---</span>
       </div>
     );
   }
 
+  const coins = coinData?.coins || 0;
+
   return (
-    <div className={`flex items-center space-x-1 ${compact ? 'text-sm' : 'text-base'}`}>
-      <span className="text-yellow-400">🪙</span>
-      <span className="font-semibold text-yellow-400">
-        {coins?.coins?.toLocaleString() || '0'}
-      </span>
-      {!compact && (
-        <span className="text-xs text-muted-foreground">coins</span>
-      )}
+    <div className={`flex items-center gap-1 ${compact ? 'text-sm' : 'text-base'} bg-gradient-to-r from-yellow-500/10 to-orange-500/10 px-2 py-1 rounded-md border border-yellow-500/20`}>
+      <Coins className={`${compact ? 'h-4 w-4' : 'h-5 w-5'} text-yellow-500`} />
+      <span className="font-semibold text-yellow-400">{coins.toLocaleString()}</span>
+      {!compact && <span className="text-xs text-yellow-300/80">coins</span>}
     </div>
   );
 }
