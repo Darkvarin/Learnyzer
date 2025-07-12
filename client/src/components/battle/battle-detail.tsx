@@ -121,194 +121,204 @@ export function BattleDetail({ battle, onClose }: BattleDetailProps) {
   };
   
   // Check if the current user has submitted an answer
-  const hasSubmitted = user && (submissions.has(user.id) || battle.participants.some(p => 
+  const hasSubmitted = user && (submissions.has(user.id) || battle.participants?.some(p => 
     p.id === user.id && p.submission));
   
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <h2 className="text-xl font-bold font-gaming">{battle.title}</h2>
-          <p className="text-sm text-gray-400">
-            {battle.type} • {battle.duration} mins • Topics: {Array.isArray(battle.topics) ? battle.topics.join(', ') : String(battle.topics)}
-          </p>
-        </div>
-        {battle.status === 'in_progress' && (
-          <div className="flex items-center bg-dark-card px-3 py-1 rounded-full">
-            <Clock className="w-4 h-4 mr-2 text-warning-400" />
-            <span className={`text-sm font-medium ${timeLeft === 'Time up!' ? 'text-danger-400' : 'text-warning-400'}`}>
-              {timeLeft}
-            </span>
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-background border border-cyan-500/30 rounded-lg w-full max-w-6xl max-h-[90vh] overflow-hidden">
+        {/* Header */}
+        <div className="flex justify-between items-center p-6 border-b border-gray-700">
+          <div>
+            <h2 className="text-2xl font-bold font-gaming bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              {battle.title}
+            </h2>
+            <p className="text-sm text-gray-400 mt-1">
+              {battle.type} • {battle.duration} mins • Topics: {Array.isArray(battle.topics) ? battle.topics?.join(', ') : String(battle.topics)}
+            </p>
           </div>
-        )}
-      </div>
-      
-      <div className="flex flex-col md:flex-row gap-4 flex-1">
-        {/* Battle participants */}
-        <div className="w-full md:w-1/4">
-          <Card className="bg-dark-card border-dark-border h-full">
-            <CardHeader>
-              <CardTitle className="text-sm">Participants</CardTitle>
-              <CardDescription className="text-xs">
-                {battle.status === 'waiting' ? 'Waiting for players' : 'Currently in battle'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {battle.participants.map((participant) => (
-                <div key={participant.id} className="flex items-center space-x-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={participant.profileImage} alt={participant.name} />
-                    <AvatarFallback>{participant.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm truncate">{participant.name}</p>
-                    <p className="text-xs text-gray-400">
-                      Team {
-                        battle.type.includes('v') ? 
-                          participant.team === 0 ? 'A' : 'B' : 
-                          'Solo'
-                      }
-                    </p>
-                  </div>
-                  {battle.status === 'in_progress' && submissions.has(participant.id) && (
-                    <CheckCircle className="w-4 h-4 text-success-400" />
-                  )}
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+          <Button variant="outline" onClick={onClose} className="text-gray-400 border-gray-600 hover:bg-gray-700">
+            ✕ Close
+          </Button>
         </div>
         
-        {/* Main battle area */}
-        <div className="flex-1 flex flex-col">
-          <Card className="bg-dark-card border-dark-border flex-1">
-            <CardHeader>
-              <CardTitle className="text-sm">Battle Challenge</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-dark-surface p-4 rounded-md">
-                <p>{battle.description || `Demonstrate your knowledge on ${Array.isArray(battle.topics) ? battle.topics.join(', ') : String(battle.topics)}. Your answer will be judged by AI based on accuracy, clarity, and depth of understanding.`}</p>
-              </div>
-              
-              {/* Answer box */}
-              {battle.status === 'in_progress' && !hasSubmitted && (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium">Your Answer</h3>
-                  <Textarea 
-                    placeholder="Type your answer here..." 
-                    className="min-h-[200px] bg-dark-surface border-dark-border"
-                    value={answer}
-                    onChange={(e) => setAnswer(e.target.value)}
-                    disabled={submitAnswerMutation.isPending}
-                  />
-                  <div className="flex justify-end">
-                    <Button 
-                      onClick={handleSubmitAnswer}
-                      className="bg-primary-600 hover:bg-primary-500"
-                      disabled={!answer.trim() || submitAnswerMutation.isPending}
-                    >
-                      {submitAnswerMutation.isPending ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Submitting
-                        </>
-                      ) : (
-                        'Submit Answer'
+        {/* Content area */}
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+          {/* Timer */}
+          {battle.status === 'in_progress' && (
+            <div className="flex items-center justify-center bg-gray-800 px-4 py-2 rounded-full mb-6">
+              <Clock className="w-5 h-5 mr-2 text-yellow-400" />
+              <span className={`text-lg font-medium ${timeLeft === 'Time up!' ? 'text-red-400' : 'text-yellow-400'}`}>
+                {timeLeft}
+              </span>
+            </div>
+          )}
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Battle participants */}
+            <div className="lg:col-span-1">
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-lg text-cyan-400">Participants</CardTitle>
+                  <CardDescription className="text-gray-400">
+                    {battle.status === 'waiting' ? 'Waiting for players' : 'Currently in battle'}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {battle.participants?.map((participant) => (
+                    <div key={participant.id} className="flex items-center space-x-3 p-2 rounded-lg bg-gray-700/50">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={participant.profileImage} alt={participant.name} />
+                        <AvatarFallback className="bg-cyan-600 text-white">
+                          {participant.name?.charAt(0) || 'P'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-white truncate">{participant.name}</p>
+                        <p className="text-xs text-gray-400">
+                          Team {battle.type?.includes('v') ? (participant.team === 0 ? 'A' : 'B') : 'Solo'}
+                        </p>
+                      </div>
+                      {battle.status === 'in_progress' && submissions.has(participant.id) && (
+                        <CheckCircle className="w-5 h-5 text-green-400" />
                       )}
-                    </Button>
-                  </div>
-                </div>
-              )}
-              
-              {/* Submitted message */}
-              {battle.status === 'in_progress' && hasSubmitted && (
-                <div className="bg-success-500/10 border border-success-500/30 rounded-md p-4 flex items-center">
-                  <CheckCircle className="w-5 h-5 mr-3 text-success-400" />
-                  <div>
-                    <h4 className="font-medium">Answer Submitted</h4>
-                    <p className="text-sm text-gray-400">You've submitted your answer. Waiting for other participants to complete.</p>
-                  </div>
-                </div>
-              )}
-              
-              {/* Battle completed message */}
-              {battle.status === 'completed' && (
-                <div className="bg-primary-500/10 border border-primary-500/30 rounded-md p-4">
-                  <h4 className="font-medium mb-2">Battle Completed</h4>
-                  <p className="text-sm text-gray-400 mb-4">All participants have submitted their answers. The battle results will be announced shortly.</p>
+                    </div>
+                  ))}
                   
-                  {battle.winner && (
-                    <div className="bg-warning-500/10 border border-warning-500/30 rounded-md p-3">
-                      <h5 className="text-warning-400 font-medium">Winner: {battle.winner}</h5>
-                      <p className="text-xs text-gray-400">Congratulations to the winner!</p>
+                  {(!battle.participants || battle.participants.length === 0) && (
+                    <p className="text-center text-gray-400 py-8">No participants yet</p>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+            
+            {/* Main battle area */}
+            <div className="lg:col-span-2">
+              <Card className="bg-gray-800/50 border-gray-700">
+                <CardHeader>
+                  <CardTitle className="text-lg text-cyan-400">Battle Challenge</CardTitle>
+                  <CardDescription className="text-gray-400">
+                    Format: {battle.format || 'Open Question'} • Difficulty: {battle.difficulty || 'Intermediate'}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Battle description */}
+                  <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-600">
+                    <p className="text-gray-200 leading-relaxed">
+                      {battle.description || `Demonstrate your knowledge on ${Array.isArray(battle.topics) ? battle.topics?.join(', ') : String(battle.topics)}. Your answer will be judged by AI based on accuracy, clarity, and depth of understanding.`}
+                    </p>
+                  </div>
+                  
+                  {/* Answer submission area */}
+                  {battle.status === 'in_progress' && !hasSubmitted && (
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-lg font-medium text-white mb-2">Your Answer</h3>
+                        <Textarea 
+                          placeholder="Type your detailed answer here..." 
+                          className="min-h-[200px] bg-gray-900/50 border-gray-600 text-gray-200 placeholder-gray-400"
+                          value={answer}
+                          onChange={(e) => setAnswer(e.target.value)}
+                          disabled={submitAnswerMutation.isPending}
+                        />
+                      </div>
+                      <div className="flex justify-end">
+                        <Button 
+                          onClick={handleSubmitAnswer}
+                          disabled={!answer.trim() || submitAnswerMutation.isPending}
+                          className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white"
+                        >
+                          {submitAnswerMutation.isPending ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              Submitting...
+                            </>
+                          ) : (
+                            'Submit Answer'
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-          
-          {/* Chat section */}
-          <Card className="bg-dark-card border-dark-border mt-4">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Battle Chat</CardTitle>
-            </CardHeader>
-            <CardContent className="max-h-[200px] overflow-y-auto space-y-3">
-              {messages.length === 0 && (
-                <p className="text-center text-xs text-gray-400 py-8">No messages yet. Be the first to cheer!</p>
-              )}
-              
-              {messages.map((message, index) => (
-                <div key={index} className="flex items-start space-x-2">
-                  <div className="flex-shrink-0">
-                    <Avatar className="h-6 w-6">
-                      <AvatarFallback>
-                        {message.username ? message.username.charAt(0) : 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center">
-                      <span className="text-xs font-medium">{message.username || 'User'}</span>
-                      <span className="text-xs text-gray-400 ml-2">
-                        {message.timestamp ? format(new Date(message.timestamp), 'HH:mm') : ''}
-                      </span>
+                  
+                  {/* Answer submitted confirmation */}
+                  {hasSubmitted && (
+                    <div className="flex items-center justify-center p-6 bg-green-900/20 border border-green-600 rounded-lg">
+                      <CheckCircle className="w-6 h-6 text-green-400 mr-2" />
+                      <span className="text-green-400 font-medium">Answer submitted successfully!</span>
                     </div>
-                    <p className="text-sm mt-1">{message.content}</p>
+                  )}
+                  
+                  {/* Battle status */}
+                  {battle.status === 'waiting' && (
+                    <div className="flex items-center justify-center p-6 bg-yellow-900/20 border border-yellow-600 rounded-lg">
+                      <Clock className="w-6 h-6 text-yellow-400 mr-2" />
+                      <span className="text-yellow-400 font-medium">Waiting for battle to start...</span>
+                    </div>
+                  )}
+                  
+                  {battle.status === 'completed' && (
+                    <div className="flex items-center justify-center p-6 bg-blue-900/20 border border-blue-600 rounded-lg">
+                      <AlertCircle className="w-6 h-6 text-blue-400 mr-2" />
+                      <span className="text-blue-400 font-medium">Battle completed! Check results in your dashboard.</span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+              
+              {/* Chat section */}
+              <Card className="bg-gray-800/50 border-gray-700 mt-6">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg text-cyan-400">Battle Chat</CardTitle>
+                </CardHeader>
+                <CardContent className="max-h-[200px] overflow-y-auto space-y-3">
+                  {messages.length === 0 && (
+                    <p className="text-center text-gray-400 py-8">No messages yet. Be the first to cheer!</p>
+                  )}
+                  
+                  {messages.map((message, index) => (
+                    <div key={index} className="flex items-start space-x-3 p-2 rounded-lg bg-gray-700/30">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback className="bg-gray-600 text-white text-xs">
+                          {message.username ? message.username.charAt(0) : 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="flex items-center">
+                          <span className="text-sm font-medium text-cyan-400">
+                            {message.username || 'User'}
+                          </span>
+                          <span className="text-xs text-gray-400 ml-2">
+                            {message.timestamp ? format(new Date(message.timestamp), 'HH:mm') : ''}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-200 mt-1">{message.content}</p>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+                <CardFooter>
+                  <div className="flex w-full space-x-2">
+                    <Input 
+                      placeholder="Send a message..." 
+                      className="flex-1 bg-gray-900/50 border-gray-600 text-gray-200 placeholder-gray-400"
+                      value={messageText}
+                      onChange={(e) => setMessageText(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                    />
+                    <Button 
+                      onClick={handleSendMessage}
+                      disabled={!messageText.trim() || !connected}
+                      className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                    >
+                      <Send className="h-4 w-4" />
+                    </Button>
                   </div>
-                </div>
-              ))}
-            </CardContent>
-            <CardFooter>
-              <div className="flex w-full">
-                <Input 
-                  placeholder="Send a message..." 
-                  className="flex-1 bg-dark-surface border-dark-border"
-                  value={messageText}
-                  onChange={(e) => setMessageText(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                />
-                <Button 
-                  className="ml-2 bg-primary-600 hover:bg-primary-500"
-                  onClick={handleSendMessage}
-                  disabled={!messageText.trim() || !connected}
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardFooter>
-          </Card>
+                </CardFooter>
+              </Card>
+            </div>
+          </div>
         </div>
-      </div>
-      
-      <div className="mt-4 flex justify-end">
-        <Button 
-          variant="outline" 
-          onClick={onClose}
-          className="bg-dark-card border-dark-border"
-        >
-          Back to Battle List
-        </Button>
       </div>
     </div>
   );

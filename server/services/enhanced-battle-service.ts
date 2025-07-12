@@ -434,16 +434,18 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
       }
 
       // Check if already spectating
-      const existingSpectator = await db.query.battleSpectators.findFirst({
-        where: and(
+      const existingSpectator = await db.select()
+        .from(battleSpectators)
+        .where(and(
           eq(battleSpectators.battleId, battleId),
           eq(battleSpectators.userId, userId)
-        )
-      });
+        ));
 
-      if (existingSpectator) {
+      if (existingSpectator.length > 0) {
         return res.status(400).json({ message: "Already spectating this battle" });
       }
+
+
 
       // Add as spectator
       await db.insert(battleSpectators).values({
