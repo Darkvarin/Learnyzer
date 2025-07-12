@@ -97,7 +97,7 @@ export default function BattleZoneEnhanced() {
     }
   });
 
-  const spectateBeatleMutation = useMutation({
+  const spectateBattleMutation = useMutation({
     mutationFn: async (battleId: number) => {
       return apiRequest("POST", `/api/enhanced-battles/${battleId}/spectate`, {});
     },
@@ -349,7 +349,11 @@ export default function BattleZoneEnhanced() {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => setSelectedBattle(battle)}
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("View button clicked for battle:", battle.id);
+                setSelectedBattle(battle);
+              }}
               className="bg-gray-500/10 border-gray-500/30 hover:bg-gray-500/20 text-gray-400"
             >
               <Eye className="w-4 h-4 mr-1" />
@@ -358,7 +362,11 @@ export default function BattleZoneEnhanced() {
             <Button
               size="sm"
               variant="outline"
-              onClick={() => spectateBeatleMutation.mutate(battle.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("Watch button clicked for battle:", battle.id);
+                spectateBattleMutation.mutate(battle.id);
+              }}
               className="bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20 text-purple-400"
             >
               <Eye className="w-4 h-4 mr-1" />
@@ -366,7 +374,11 @@ export default function BattleZoneEnhanced() {
             </Button>
             <Button
               size="sm"
-              onClick={() => joinBattleMutation.mutate(battle.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log("Join Battle button clicked for battle:", battle.id);
+                joinBattleMutation.mutate(battle.id);
+              }}
               disabled={joinBattleMutation.isPending}
               className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90"
             >
