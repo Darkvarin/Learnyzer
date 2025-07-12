@@ -560,6 +560,14 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Added comprehensive debug logging for button interactions and API endpoint debugging
   - Complete Enhanced Battle API: GET battles, GET battle details, POST create, POST join, POST spectate, POST submit, POST demo battles
   - Frontend properly integrated with new API endpoints and enhanced error handling for authentication failures
+- July 12, 2025: Comprehensive exam-specific leaderboard filtering system implementation
+  - Updated leaderboard service to automatically filter rankings by user's selected entrance exam (track field)
+  - Both global and friends leaderboards now show only students preparing for the same competitive exam
+  - Added green "EXAM Locked - Exam-specific rankings" visual indicator on leaderboard page
+  - Enhanced API responses to include examFilter information for frontend display
+  - Students now compete with peers preparing for same exam (JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE)
+  - More relevant and focused competition within specific entrance exam categories
+  - Removed test data after successful implementation and testing
 
 ## User Preferences
 
