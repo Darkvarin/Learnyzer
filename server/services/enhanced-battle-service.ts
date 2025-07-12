@@ -577,6 +577,58 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
     }
   },
 
+  async submitAnswer(req: any, res: Response) {
+    try {
+      const battleId = parseInt(req.params.battleId);
+      const userId = req.user?.id;
+      const { answer } = req.body;
+
+      if (!userId) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+
+      if (!answer || !answer.trim()) {
+        return res.status(400).json({ message: "Answer is required" });
+      }
+
+      // Check if user is a participant in this battle
+      const [participant] = await db.select()
+        .from(battleParticipants)
+        .where(and(
+          eq(battleParticipants.battleId, battleId),
+          eq(battleParticipants.userId, userId)
+        ));
+
+      if (!participant) {
+        return res.status(403).json({ message: "You are not a participant in this battle" });
+      }
+
+      // Check if user has already submitted an answer
+      if (participant.submission) {
+        return res.status(400).json({ message: "Answer already submitted" });
+      }
+
+      // Update participant's submission
+      await db.update(battleParticipants)
+        .set({
+          submission: answer.trim(),
+          submittedAt: new Date()
+        })
+        .where(and(
+          eq(battleParticipants.battleId, battleId),
+          eq(battleParticipants.userId, userId)
+        ));
+
+      res.json({ 
+        message: "Answer submitted successfully",
+        submittedAt: new Date()
+      });
+    } catch (error) {
+      console.error("Submit answer error:", error);
+      res.status(500).json({ message: "Failed to submit answer" });
+    }
+  },
+
   /**
    * Get tournaments (placeholder for future implementation)
    */
@@ -764,6 +816,8 @@ export function registerEnhancedBattleRoutes(app: Express) {
   app.post("/api/enhanced-battles/:battleId/join", requireAuth, enhancedBattleService.joinEnhancedBattle);
   console.log("Registering route: POST /api/enhanced-battles/:battleId/spectate");
   app.post("/api/enhanced-battles/:battleId/spectate", requireAuth, enhancedBattleService.spectateBattle);
+  console.log("Registering route: POST /api/enhanced-battles/:battleId/submit");
+  app.post("/api/enhanced-battles/:battleId/submit", requireAuth, enhancedBattleService.submitAnswer);
   
   // Demo battle route - no authentication required
   console.log("Registering route: POST /api/demo-battles");

@@ -3,7 +3,7 @@ import { useBattleWebSocket } from '@/hooks/use-battle-websocket';
 import { useToast } from '@/hooks/use-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import { Battle } from '@shared/types';
+import { Battle } from '@shared/schema';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,8 +14,23 @@ import { Loader2, Send, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { useAuth } from '@/hooks/use-auth';
 
+interface EnhancedBattle extends Battle {
+  format?: string;
+  difficulty?: string;
+  examType?: string;
+  subject?: string;
+  entryFee?: number;
+  prizePool?: number;
+  maxParticipants?: number;
+  battleMode?: string;
+  spectatorMode?: boolean;
+  questionsCount?: number;
+  participants?: any[];
+  spectatorCount?: number;
+}
+
 interface BattleDetailProps {
-  battle: Battle;
+  battle: EnhancedBattle;
   onClose: () => void;
 }
 
@@ -69,7 +84,7 @@ export function BattleDetail({ battle, onClose }: BattleDetailProps) {
         throw new Error('Answer cannot be empty');
       }
       
-      const result = await apiRequest('POST', `/api/battles/${battle.id}/submit`, { answer });
+      const result = await apiRequest('POST', `/api/enhanced-battles/${battle.id}/submit`, { answer });
       // Notify other participants through WebSocket
       submitAnswer();
       return result;
