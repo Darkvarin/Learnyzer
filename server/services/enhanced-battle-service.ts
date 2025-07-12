@@ -599,6 +599,19 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
       const { type, examType, subject, difficulty } = req.body;
       const userId = (req.user as any).id;
 
+      // Determine correct participant count based on battle type
+      const getMaxParticipants = (battleType: string) => {
+        switch(battleType) {
+          case "1v1": return 2;
+          case "2v2": return 4;
+          case "3v3": return 6;
+          case "4v4": return 8;
+          default: return 2;
+        }
+      };
+
+      const maxParticipants = getMaxParticipants(type);
+
       // Create demo battle with AI bots - no coin cost
       const [demoBattle] = await db.insert(battles).values({
         title: `Demo ${type} Battle - ${subject}`,
@@ -608,7 +621,7 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
         difficulty: difficulty || "intermediate",
         examType: examType || "JEE",
         status: "waiting",
-        maxParticipants: type === "1v1" ? 2 : type === "2v2" ? 4 : 8,
+        maxParticipants: maxParticipants,
         entryFee: 0, // No cost for demo
         prizePool: 0, // No prize for demo
         duration: 300, // 5 minutes for demo
@@ -626,14 +639,21 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
       });
 
       // Create AI bot opponents based on battle type
-      const maxParticipants = demoBattle.maxParticipants || 2;
+      const totalParticipants = demoBattle.maxParticipants || 2;
       
-      for (let i = 1; i < maxParticipants; i++) {
-        // Create fake AI bot users (negative IDs for AI bots)
+      // Add AI bots to fill remaining slots
+      for (let i = 1; i < totalParticipants; i++) {
+        // Determine team assignment for team battles
+        let team = 0;
+        if (type.includes("v")) {
+          // For team battles, alternate teams: user is team 0, bots fill both teams
+          team = i % 2; // This ensures balanced teams
+        }
+
         await db.insert(battleParticipants).values({
           battleId: demoBattle.id,
           userId: -(100 + i), // Negative IDs for AI bots
-          team: type.includes("v") ? (i % 2) : 0, // Team assignment for team battles
+          team: team,
           answer: null,
           score: Math.floor(Math.random() * 100), // Random AI bot scores
           joinedAt: new Date()
@@ -668,9 +688,10 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
         message: "Demo battle created successfully!",
         battleId: demoBattle.id,
         type: type,
-        participants: maxParticipants,
+        participants: totalParticipants,
         status: "in_progress",
-        isDemo: true
+        isDemo: true,
+        details: `${type} battle with ${totalParticipants} participants (1 real + ${totalParticipants - 1} AI bots)`
       });
     } catch (error) {
       console.error("Demo battle creation error:", error);

@@ -70,7 +70,7 @@ export default function BattleZoneEnhanced() {
     subject: "",
     duration: "20",
     topics: "",
-    maxParticipants: "8",
+    maxParticipants: "2", // Fixed: 1v1 should have 2 participants
     battleMode: "public",
     spectatorMode: true,
     questionsCount: "1"
@@ -396,9 +396,18 @@ export default function BattleZoneEnhanced() {
             </div>
           </div>
       
-          <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+          <Dialog open={createDialogOpen && activeTab === "create"} onOpenChange={(open) => {
+            if (!open) setActiveTab("battles");
+            setCreateDialogOpen(open);
+          }}>
             <DialogTrigger asChild>
-              <Button className="mt-4 md:mt-0 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-gaming">
+              <Button 
+                className="mt-4 md:mt-0 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-gaming"
+                onClick={() => {
+                  setActiveTab("create");
+                  setCreateDialogOpen(true);
+                }}
+              >
                 <Crown className="w-4 h-4 mr-2" />
                 Create Enhanced Battle
               </Button>
@@ -406,9 +415,18 @@ export default function BattleZoneEnhanced() {
           </Dialog>
 
           {/* Demo Battle Button */}
-          <Dialog>
+          <Dialog open={createDialogOpen && activeTab === "demo"} onOpenChange={(open) => {
+            if (!open) setActiveTab("battles");
+            setCreateDialogOpen(open);
+          }}>
             <DialogTrigger asChild>
-              <Button className="mt-4 md:mt-0 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-gaming">
+              <Button 
+                className="mt-4 md:mt-0 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-gaming"
+                onClick={() => {
+                  setActiveTab("demo");
+                  setCreateDialogOpen(true);
+                }}
+              >
                 <Bot className="w-4 h-4 mr-2" />
                 Demo Battle (Practice)
               </Button>
@@ -436,15 +454,19 @@ export default function BattleZoneEnhanced() {
                 
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Battle Type</label>
-                  <Select value={battleForm.type} onValueChange={(value) => setBattleForm({...battleForm, type: value})}>
+                  <Select value={battleForm.type} onValueChange={(value) => {
+                    // Auto-update maxParticipants based on battle type
+                    const maxParticipants = value === "1v1" ? "2" : value === "2v2" ? "4" : value === "3v3" ? "6" : "8";
+                    setBattleForm({...battleForm, type: value, maxParticipants});
+                  }}>
                     <SelectTrigger className="bg-background/40 border-cyan-500/30">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1v1">1v1 Duel</SelectItem>
-                      <SelectItem value="2v2">2v2 Team Battle</SelectItem>
-                      <SelectItem value="3v3">3v3 Squad Battle</SelectItem>
-                      <SelectItem value="4v4">4v4 Guild War</SelectItem>
+                      <SelectItem value="1v1">1v1 Duel (2 players)</SelectItem>
+                      <SelectItem value="2v2">2v2 Team Battle (4 players)</SelectItem>
+                      <SelectItem value="3v3">3v3 Squad Battle (6 players)</SelectItem>
+                      <SelectItem value="4v4">4v4 Guild War (8 players)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -567,8 +589,8 @@ export default function BattleZoneEnhanced() {
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Max Participants</label>
-                  <Select value={battleForm.maxParticipants} onValueChange={(value) => setBattleForm({...battleForm, maxParticipants: value})}>
-                    <SelectTrigger className="bg-background/40 border-cyan-500/30">
+                  <Select value={battleForm.maxParticipants} onValueChange={(value) => setBattleForm({...battleForm, maxParticipants: value})} disabled={true}>
+                    <SelectTrigger className="bg-background/40 border-cyan-500/30 opacity-50">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -579,6 +601,7 @@ export default function BattleZoneEnhanced() {
                       <SelectItem value="32">32 Players</SelectItem>
                     </SelectContent>
                   </Select>
+                  <p className="text-xs text-muted-foreground">Automatically set based on battle type</p>
                 </div>
 
                 <div className="space-y-2">
@@ -629,8 +652,11 @@ export default function BattleZoneEnhanced() {
             </DialogContent>
           </Dialog>
 
-          {/* Demo Battle Dialog */}
-          <Dialog>
+          {/* Demo Battle Dialog - Separate dialog */}
+          <Dialog open={createDialogOpen && activeTab === "demo"} onOpenChange={(open) => {
+            if (!open) setActiveTab("battles");
+            setCreateDialogOpen(open);
+          }}>
             <DialogContent className="max-w-md bg-background/95 backdrop-blur-sm border border-orange-500/30">
               <DialogHeader>
                 <DialogTitle className="font-gaming text-xl bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
