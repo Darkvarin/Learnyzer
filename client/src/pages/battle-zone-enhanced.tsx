@@ -253,12 +253,12 @@ export default function BattleZoneEnhanced() {
 
   const BattleCard = ({ battle }: { battle: EnhancedBattle }) => (
     <Card className="bg-background/90 backdrop-blur-sm border border-cyan-500/30 hover:border-cyan-500/50 transition-all duration-300 group relative overflow-hidden">
-      {/* Animated border glow */}
-      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      {/* Animated border glow - with pointer-events-none */}
+      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       
-      {/* Corner decorations */}
-      <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-cyan-500/40 group-hover:border-cyan-400/60 transition-colors" />
-      <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-cyan-500/40 group-hover:border-cyan-400/60 transition-colors" />
+      {/* Corner decorations - with pointer-events-none */}
+      <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-cyan-500/40 group-hover:border-cyan-400/60 transition-colors pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-cyan-500/40 group-hover:border-cyan-400/60 transition-colors pointer-events-none" />
       
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
@@ -345,16 +345,18 @@ export default function BattleZoneEnhanced() {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 relative z-50" style={{ pointerEvents: 'auto' }}>
             <Button
               size="sm"
               variant="outline"
               onClick={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 console.log("View button clicked for battle:", battle.id);
                 setSelectedBattle(battle);
               }}
-              className="bg-gray-500/10 border-gray-500/30 hover:bg-gray-500/20 text-gray-400"
+              className="bg-gray-500/10 border-gray-500/30 hover:bg-gray-500/20 text-gray-400 relative z-50"
+              style={{ pointerEvents: 'auto' }}
             >
               <Eye className="w-4 h-4 mr-1" />
               View
@@ -363,11 +365,13 @@ export default function BattleZoneEnhanced() {
               size="sm"
               variant="outline"
               onClick={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 console.log("Watch button clicked for battle:", battle.id);
                 spectateBattleMutation.mutate(battle.id);
               }}
-              className="bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20 text-purple-400"
+              className="bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20 text-purple-400 relative z-50"
+              style={{ pointerEvents: 'auto' }}
             >
               <Eye className="w-4 h-4 mr-1" />
               Watch
@@ -375,12 +379,14 @@ export default function BattleZoneEnhanced() {
             <Button
               size="sm"
               onClick={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 console.log("Join Battle button clicked for battle:", battle.id);
                 joinBattleMutation.mutate(battle.id);
               }}
               disabled={joinBattleMutation.isPending}
-              className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90"
+              className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 relative z-50"
+              style={{ pointerEvents: 'auto' }}
             >
               <Sword className="w-4 h-4 mr-1" />
               Join Battle
