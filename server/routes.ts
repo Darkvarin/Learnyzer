@@ -1527,6 +1527,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Register Enhanced Battle Routes
+  const { registerEnhancedBattleRoutes } = await import('./services/enhanced-battle-service');
+  registerEnhancedBattleRoutes(app);
+
   // Export the broadcast functions for use throughout the application
   (global as any).broadcastToBattle = broadcastToBattle;
   (global as any).sendToUser = sendToUser;

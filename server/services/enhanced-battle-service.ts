@@ -592,6 +592,20 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
   },
 
   /**
+   * Get tournaments (placeholder for future implementation)
+   */
+  async getTournaments(req: Request, res: Response) {
+    try {
+      // Placeholder tournament data for now
+      const tournaments = [];
+      res.json({ tournaments });
+    } catch (error) {
+      console.error("Get tournaments error:", error);
+      res.status(500).json({ message: "Error fetching tournaments" });
+    }
+  },
+
+  /**
    * Create a demo battle with AI bots for testing UI
    */
   async createDemoBattle(req: Request, res: Response) {
@@ -737,14 +751,26 @@ Make it a realistic exam-style question with 4 options labeled A, B, C, D.`;
 };
 
 export function registerEnhancedBattleRoutes(app: Express) {
+  // Add auth middleware
+  const requireAuth = (req: any, res: any, next: any) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    next();
+  };
+
   // Enhanced battle routes
-  app.get("/api/battles/enhanced", enhancedBattleService.getEnhancedBattles);
-  app.post("/api/battles/enhanced", enhancedBattleService.createEnhancedBattle);
-  app.post("/api/battles/:battleId/join", enhancedBattleService.joinEnhancedBattle);
-  app.post("/api/battles/:battleId/spectate", enhancedBattleService.spectateBattle);
+  app.get("/api/battles/enhanced", requireAuth, enhancedBattleService.getEnhancedBattles);
+  app.post("/api/battles/enhanced", requireAuth, enhancedBattleService.createEnhancedBattle);
+  app.post("/api/battles/enhanced/:battleId/join", requireAuth, enhancedBattleService.joinEnhancedBattle);
+  app.post("/api/battles/enhanced/:battleId/spectate", requireAuth, enhancedBattleService.spectateBattle);
+  app.post("/api/battles/demo", requireAuth, enhancedBattleService.createDemoBattle);
   
   // Power-up routes
-  app.get("/api/power-ups", enhancedBattleService.getPowerUps);
-  app.get("/api/user/power-ups", enhancedBattleService.getUserPowerUps);
-  app.post("/api/power-ups/use", enhancedBattleService.usePowerUp);
+  app.get("/api/power-ups", requireAuth, enhancedBattleService.getPowerUps);
+  app.get("/api/user/power-ups", requireAuth, enhancedBattleService.getUserPowerUps);
+  app.post("/api/power-ups/use", requireAuth, enhancedBattleService.usePowerUp);
+  
+  // Tournament routes
+  app.get("/api/tournaments", requireAuth, enhancedBattleService.getTournaments);
 }

@@ -1615,31 +1615,43 @@ export const storage = {
    * Get all active battles
    */
   async getActiveBattles() {
-    const battles = await db.query.battles.findMany({
-      where: eq(schema.battles.status, "waiting"),
-      with: {
-        participants: {
-          with: {
-            user: true
+    try {
+      const battles = await db.query.battles.findMany({
+        where: eq(schema.battles.status, "waiting"),
+        with: {
+          participants: {
+            with: {
+              user: true
+            }
           }
         }
-      }
-    });
-    
-    return battles.map(battle => ({
-      id: battle.id,
-      title: battle.title,
-      type: battle.type,
-      duration: battle.duration,
-      topics: battle.topics as string[],
-      rewardPoints: battle.rewardPoints,
-      status: battle.status,
-      participants: battle.participants.map(p => ({
-        id: p.userId,
-        name: p.user.name,
-        profileImage: p.user.profileImage || ''
-      }))
-    }));
+      });
+      
+      return battles.map(battle => ({
+        id: battle.id,
+        title: battle.title,
+        type: battle.type,
+        duration: battle.duration,
+        topics: battle.topics as string[],
+        rewardPoints: battle.rewardPoints,
+        status: battle.status,
+        format: (battle as any).format || 'standard',
+        difficulty: (battle as any).difficulty || 'intermediate',
+        examType: (battle as any).examType,
+        subject: (battle as any).subject,
+        entryFee: (battle as any).entryFee || 0,
+        prizePool: (battle as any).prizePool || 0,
+        maxParticipants: (battle as any).maxParticipants || 8,
+        participants: battle.participants.map(p => ({
+          id: p.userId,
+          name: p.user.name,
+          profileImage: p.user.profileImage || ''
+        }))
+      }));
+    } catch (error) {
+      console.error('Get active battles error:', error);
+      return [];
+    }
   },
   
   /**
