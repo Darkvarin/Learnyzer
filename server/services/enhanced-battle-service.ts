@@ -612,13 +612,24 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
 
       const maxParticipants = getMaxParticipants(type);
 
-      // Create demo battle with AI bots - no coin cost (using only existing columns)
+      // Create demo battle with AI bots - no coin cost
       const [demoBattle] = await db.insert(battles).values({
         title: `Demo ${type} Battle - ${subject}`,
         type: type || "1v1",
+        format: "standard",
+        difficulty: difficulty || "intermediate",
+        examType: examType || "JEE",
+        subject: subject || "Physics",
         duration: 5, // 5 minutes for demo
         topics: [subject || "Physics"], // JSONB array format
         rewardPoints: 0, // No reward for demo
+        entryFee: 0, // No cost for demo
+        prizePool: 0, // No prize for demo
+        maxParticipants: maxParticipants,
+        battleMode: "public",
+        spectatorMode: true,
+        autoStart: true,
+        questionsCount: 1,
         status: "waiting",
         createdBy: userId
       }).returning();
