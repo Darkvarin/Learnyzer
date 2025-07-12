@@ -44,7 +44,7 @@ export default function BattleZoneEnhanced() {
     upcoming: EnhancedBattle[],
     past: EnhancedBattle[]
   }>({
-    queryKey: ['/api/battles/enhanced'],
+    queryKey: ['/api/enhanced-battles'],
   });
 
   const { data: tournaments, isLoading: tournamentsLoading } = useQuery<Tournament[]>({
@@ -79,10 +79,10 @@ export default function BattleZoneEnhanced() {
 
   const joinBattleMutation = useMutation({
     mutationFn: async (battleId: number) => {
-      return apiRequest("POST", `/api/battles/enhanced/${battleId}/join`, {});
+      return apiRequest("POST", `/api/enhanced-battles/${battleId}/join`, {});
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/battles/enhanced'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/enhanced-battles'] });
       toast({
         title: "Battle joined!",
         description: "Get ready to compete. The battle will start soon.",
@@ -99,7 +99,7 @@ export default function BattleZoneEnhanced() {
 
   const spectateBeatleMutation = useMutation({
     mutationFn: async (battleId: number) => {
-      return apiRequest("POST", `/api/battles/enhanced/${battleId}/spectate`, {});
+      return apiRequest("POST", `/api/enhanced-battles/${battleId}/spectate`, {});
     },
     onSuccess: () => {
       toast({
@@ -116,7 +116,7 @@ export default function BattleZoneEnhanced() {
   // Demo battle function for testing UI without other players
   const createDemoBattleMutation = useMutation({
     mutationFn: async (battleType: string) => {
-      return apiRequest("POST", "/api/battles/demo", {
+      return apiRequest("POST", "/api/demo-battles", {
         type: battleType,
         examType: "JEE",
         subject: "Physics", 
@@ -163,7 +163,7 @@ export default function BattleZoneEnhanced() {
         setSelectedBattle(demoBattle);
       }
       
-      queryClient.invalidateQueries({ queryKey: ['/api/battles/enhanced'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/enhanced-battles'] });
     },
     onError: (error: any) => {
       toast({
@@ -187,7 +187,7 @@ export default function BattleZoneEnhanced() {
         prizePool: getPrizePoolCoins(), // Coins prize pool
         topics: battleData.topics.split(',').map((t: string) => t.trim()).filter(Boolean)
       };
-      return apiRequest("POST", "/api/battles/enhanced", enhancedBattleData);
+      return apiRequest("POST", "/api/enhanced-battles", enhancedBattleData);
     },
     onSuccess: () => {
       setCreateDialogOpen(false);
@@ -207,7 +207,7 @@ export default function BattleZoneEnhanced() {
         spectatorMode: true,
         questionsCount: "1"
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/battles/enhanced'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/enhanced-battles'] });
       toast({
         title: "Enhanced battle created!",
         description: "Your advanced battle challenge is ready for participants.",
@@ -396,7 +396,7 @@ export default function BattleZoneEnhanced() {
 
   // Fetch specific battle details when selected
   const { data: battleDetail, isLoading: isLoadingBattleDetail } = useQuery<EnhancedBattle>({
-    queryKey: [`/api/battles/enhanced/${selectedBattle?.id}`],
+    queryKey: [`/api/enhanced-battles/${selectedBattle?.id}`],
     enabled: !!selectedBattle,
   });
 

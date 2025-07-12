@@ -294,22 +294,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/battles/:id/join", battleService.joinBattle);
   app.post("/api/battles/:id/submit", battleService.submitBattleAnswer);
   
-  // Enhanced Battle Zone 2.0 routes
-  app.get("/api/battles/enhanced", requireAuth, enhancedBattleService.getEnhancedBattles);
-  app.post("/api/battles/enhanced", requireAuth, enhancedBattleService.createEnhancedBattle);
-  app.post("/api/battles/enhanced/:battleId/join", requireAuth, enhancedBattleService.joinEnhancedBattle);
-  app.post("/api/battles/enhanced/:battleId/spectate", requireAuth, enhancedBattleService.spectateBattle);
-
-  
-  // Tournament routes (Battle Zone 2.0)
-  app.get("/api/tournaments", requireAuth, async (req, res) => {
-    res.json([]); // TODO: Implement tournament service
-  });
-  
-  // Power-up routes (Battle Zone 2.0)
-  app.get("/api/power-ups", requireAuth, enhancedBattleService.getPowerUps);
-  app.get("/api/user/power-ups", requireAuth, enhancedBattleService.getUserPowerUps);
-  app.post("/api/power-ups/use", requireAuth, enhancedBattleService.usePowerUp);
+  // Enhanced Battle Zone 2.0 routes are handled by registerEnhancedBattleRoutes()
   
   // Coin system routes
   app.get("/api/coins", requireAuth, async (req, res) => {

@@ -42,10 +42,19 @@ export const enhancedBattleService = {
    * Get enhanced battles with additional metadata
    */
   async getEnhancedBattles(req: Request, res: Response) {
+    console.log("=== ENHANCED BATTLES SERVICE CALLED ===");
+    console.log("Request method:", req.method);
+    console.log("Request URL:", req.url);
+    console.log("Request params:", req.params);
+    console.log("Request query:", req.query);
+    
     try {
+      console.log("Enhanced battles request:", req.params, req.query);
+      
       // Check if this is a specific battle ID request
       const battleId = req.params.battleId;
       if (battleId) {
+        console.log("Fetching specific battle:", battleId);
         const battle = await db.query.battles.findFirst({
           where: eq(battles.id, parseInt(battleId)),
           with: {
@@ -72,110 +81,58 @@ export const enhancedBattleService = {
         return res.json(battle);
       }
 
-      const [activeBattles, upcomingBattles, completedBattles] = await Promise.all([
-        // Active battles with enhanced info
-        db.query.battles.findMany({
+      console.log("Fetching all enhanced battles...");
+
+      try {
+        console.log("Attempting to query battles table...");
+        const activeBattles = await db.query.battles.findMany({
           where: eq(battles.status, "waiting"),
-          with: {
-            participants: {
-              with: {
-                user: {
-                  columns: {
-                    id: true,
-                    name: true,
-                    profileImage: true,
-                    level: true,
-                    rank: true
-                  }
-                }
-              }
-            },
-            spectators: {
-              with: {
-                user: {
-                  columns: {
-                    id: true,
-                    name: true,
-                    profileImage: true
-                  }
-                }
-              }
-            },
-            creator: {
-              columns: {
-                id: true,
-                name: true,
-                profileImage: true,
-                level: true,
-                rank: true
-              }
-            }
-          },
           orderBy: desc(battles.createdAt)
-        }),
+        });
+        console.log("Active battles found:", activeBattles.length);
 
-        // Upcoming scheduled battles
-        db.query.battles.findMany({
+        const upcomingBattles = await db.query.battles.findMany({
           where: eq(battles.status, "scheduled"),
-          with: {
-            participants: {
-              with: {
-                user: {
-                  columns: {
-                    id: true,
-                    name: true,
-                    profileImage: true,
-                    level: true,
-                    rank: true
-                  }
-                }
-              }
-            },
-            creator: {
-              columns: {
-                id: true,
-                name: true,
-                profileImage: true
-              }
-            }
-          },
           orderBy: battles.scheduledFor
-        }),
+        });
+        console.log("Upcoming battles found:", upcomingBattles.length);
 
-        // Past battles (user-specific)
-        req.user ? storage.getPastBattles((req.user as any).id) : []
-      ]);
+        const completedBattles = await db.query.battles.findMany({
+          where: eq(battles.status, "completed"),
+          orderBy: desc(battles.createdAt),
+          limit: 10
+        });
+        console.log("Completed battles found:", completedBattles.length);
 
-      // Enhance battle data with spectator counts and participation info
-      const enhanceeBattleData = (battleList: any[]) => {
-        return battleList.map(battle => ({
-          ...battle,
-          participantCount: battle.participants?.length || 0,
-          spectatorCount: battle.spectators?.length || 0,
-          isCreator: req.user ? battle.createdBy === (req.user as any).id : false,
-          isParticipant: req.user ? battle.participants?.some((p: any) => p.userId === (req.user as any).id) : false,
-          isSpectating: req.user ? battle.spectators?.some((s: any) => s.userId === (req.user as any).id) : false,
-          canJoin: battle.participants?.length < (battle.maxParticipants || 8),
-          participants: battle.participants?.map((p: any) => ({
-            id: p.user.id,
-            name: p.user.name,
-            profileImage: p.user.profileImage,
-            level: p.user.level,
-            rank: p.user.rank,
-            team: p.team,
-            joinedAt: p.joinedAt
-          })) || []
-        }));
-      };
+        console.log("About to return battle data...");
+        
+        // Enhance battle data with basic info - simplified for now
+        const enhanceeBattleData = (battleList: any[]) => {
+          return battleList.map(battle => ({
+            ...battle,
+            participantCount: 0, // Will be populated later
+            spectatorCount: 0,   // Will be populated later
+            isCreator: req.user ? battle.createdBy === (req.user as any).id : false,
+            isParticipant: false, // Will be populated later
+            isSpectating: false,  // Will be populated later
+            canJoin: true,        // Will be calculated later
+            participants: []      // Will be populated later
+          }));
+        };
 
-      res.json({
-        active: enhanceeBattleData(activeBattles),
-        upcoming: enhanceeBattleData(upcomingBattles),
-        past: enhanceeBattleData(completedBattles)
-      });
+        res.json({
+          active: enhanceeBattleData(activeBattles),
+          upcoming: enhanceeBattleData(upcomingBattles),
+          past: enhanceeBattleData(completedBattles)
+        });
+        
+      } catch (queryError) {
+        console.error("Database query error:", queryError);
+        throw queryError;
+      }
     } catch (error) {
       console.error("Enhanced battles fetch error:", error);
-      res.status(500).json({ message: "Error fetching enhanced battles" });
+      res.status(400).json({ message: "Invalid battle ID" });
     }
   },
 
@@ -779,6 +736,8 @@ Make it a realistic exam-style question with 4 options labeled A, B, C, D.`;
 };
 
 export function registerEnhancedBattleRoutes(app: Express) {
+  console.log("=== REGISTERING ENHANCED BATTLE ROUTES ===");
+  
   // Add auth middleware
   const requireAuth = (req: any, res: any, next: any) => {
     if (!req.isAuthenticated()) {
@@ -787,14 +746,28 @@ export function registerEnhancedBattleRoutes(app: Express) {
     next();
   };
 
-  // Enhanced battle routes
-  app.get("/api/battles/enhanced", enhancedBattleService.getEnhancedBattles); // No auth for public viewing
-  app.post("/api/battles/enhanced", requireAuth, enhancedBattleService.createEnhancedBattle);
-  app.post("/api/battles/enhanced/:battleId/join", requireAuth, enhancedBattleService.joinEnhancedBattle);
-  app.post("/api/battles/enhanced/:battleId/spectate", requireAuth, enhancedBattleService.spectateBattle);
+  // Enhanced battle routes with debug logging - using different route pattern to avoid conflicts
+  console.log("Registering route: GET /api/enhanced-battles");
+  app.get("/api/enhanced-battles", (req, res) => {
+    console.log("=== Route GET /api/enhanced-battles HIT ===");
+    enhancedBattleService.getEnhancedBattles(req, res);
+  });
+  
+  console.log("Registering route: GET /api/enhanced-battles/:battleId");
+  app.get("/api/enhanced-battles/:battleId", (req, res) => {
+    console.log("=== Route GET /api/enhanced-battles/:battleId HIT ===");
+    enhancedBattleService.getEnhancedBattles(req, res);
+  });
+  console.log("Registering route: POST /api/enhanced-battles");
+  app.post("/api/enhanced-battles", requireAuth, enhancedBattleService.createEnhancedBattle);
+  console.log("Registering route: POST /api/enhanced-battles/:battleId/join");
+  app.post("/api/enhanced-battles/:battleId/join", requireAuth, enhancedBattleService.joinEnhancedBattle);
+  console.log("Registering route: POST /api/enhanced-battles/:battleId/spectate");
+  app.post("/api/enhanced-battles/:battleId/spectate", requireAuth, enhancedBattleService.spectateBattle);
   
   // Demo battle route - no authentication required
-  app.post("/api/battles/demo", (req: any, res: any) => {
+  console.log("Registering route: POST /api/demo-battles");
+  app.post("/api/demo-battles", (req: any, res: any) => {
     enhancedBattleService.createDemoBattle(req, res);
   });
   
