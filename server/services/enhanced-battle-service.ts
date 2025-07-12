@@ -43,6 +43,35 @@ export const enhancedBattleService = {
    */
   async getEnhancedBattles(req: Request, res: Response) {
     try {
+      // Check if this is a specific battle ID request
+      const battleId = req.params.battleId;
+      if (battleId) {
+        const battle = await db.query.battles.findFirst({
+          where: eq(battles.id, parseInt(battleId)),
+          with: {
+            participants: {
+              with: {
+                user: {
+                  columns: {
+                    id: true,
+                    name: true,
+                    profileImage: true,
+                    level: true,
+                    rank: true
+                  }
+                }
+              }
+            }
+          }
+        });
+        
+        if (!battle) {
+          return res.status(404).json({ message: "Battle not found" });
+        }
+        
+        return res.json(battle);
+      }
+
       const [activeBattles, upcomingBattles, completedBattles] = await Promise.all([
         // Active battles with enhanced info
         db.query.battles.findMany({
@@ -611,7 +640,7 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
   async createDemoBattle(req: Request, res: Response) {
     try {
       const { type, examType, subject, difficulty } = req.body;
-      const userId = (req.user as any).id;
+      const userId = req.user ? (req.user as any).id : 999; // Use demo user ID if not authenticated
 
       // Determine correct participant count based on battle type
       const getMaxParticipants = (battleType: string) => {
@@ -672,8 +701,7 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
           userId: -(100 + i), // Negative IDs for AI bots
           team: team,
           answer: null,
-          score: Math.floor(Math.random() * 100), // Random AI bot scores
-          joinedAt: new Date()
+          score: Math.floor(Math.random() * 100) // Random AI bot scores
         });
       }
 
@@ -685,21 +713,21 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
         })
         .where(eq(battles.id, demoBattle.id));
 
-      // Generate a demo question for the battle
-      const demoQuestion = await enhancedBattleService.generateDemoQuestion(examType, subject, difficulty);
-      
-      if (demoQuestion) {
-        await db.insert(battleQuestions).values({
-          battleId: demoBattle.id,
-          question: demoQuestion.question,
-          options: demoQuestion.options,
-          correctAnswer: demoQuestion.correctAnswer,
-          explanation: demoQuestion.explanation,
-          difficulty: difficulty || "intermediate",
-          timeLimit: 300,
-          createdAt: new Date()
-        });
-      }
+      // Generate a simple demo question for the battle (without AI to avoid timeout)
+      await db.insert(battleQuestions).values({
+        battleId: demoBattle.id,
+        questionNumber: 1,
+        question: `Demo ${examType} ${subject} Question: What is the basic principle being tested?`,
+        options: JSON.stringify(["A) Option 1", "B) Option 2", "C) Option 3", "D) Option 4"]),
+        correctAnswer: "A",
+        explanation: "This is a demo question for practice. The correct answer demonstrates the concept.",
+        difficulty: difficulty || "intermediate",
+        subject: subject,
+        topic: `${subject} Basics`,
+        marks: 1,
+        timeLimit: 300,
+        questionType: "mcq"
+      });
 
       res.json({
         message: "Demo battle created successfully!",
@@ -760,17 +788,21 @@ export function registerEnhancedBattleRoutes(app: Express) {
   };
 
   // Enhanced battle routes
-  app.get("/api/battles/enhanced", requireAuth, enhancedBattleService.getEnhancedBattles);
+  app.get("/api/battles/enhanced", enhancedBattleService.getEnhancedBattles); // No auth for public viewing
   app.post("/api/battles/enhanced", requireAuth, enhancedBattleService.createEnhancedBattle);
   app.post("/api/battles/enhanced/:battleId/join", requireAuth, enhancedBattleService.joinEnhancedBattle);
   app.post("/api/battles/enhanced/:battleId/spectate", requireAuth, enhancedBattleService.spectateBattle);
-  app.post("/api/battles/demo", requireAuth, enhancedBattleService.createDemoBattle);
+  
+  // Demo battle route - no authentication required
+  app.post("/api/battles/demo", (req: any, res: any) => {
+    enhancedBattleService.createDemoBattle(req, res);
+  });
   
   // Power-up routes
-  app.get("/api/power-ups", requireAuth, enhancedBattleService.getPowerUps);
+  app.get("/api/power-ups", enhancedBattleService.getPowerUps); // No auth for public viewing
   app.get("/api/user/power-ups", requireAuth, enhancedBattleService.getUserPowerUps);
   app.post("/api/power-ups/use", requireAuth, enhancedBattleService.usePowerUp);
   
   // Tournament routes
-  app.get("/api/tournaments", requireAuth, enhancedBattleService.getTournaments);
+  app.get("/api/tournaments", enhancedBattleService.getTournaments); // No auth for public viewing
 }

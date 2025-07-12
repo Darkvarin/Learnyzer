@@ -113,29 +113,33 @@ export default function BattleZoneEnhanced() {
   const getPrizePoolCoins = () => parseInt(battleForm.maxParticipants) * 10; // Winner takes all coins
 
   // Demo battle function for testing UI without other players
-  const createDemoBattle = async (battleType: string) => {
-    try {
-      const response = await apiRequest("POST", "/api/battles/demo", {
+  const createDemoBattleMutation = useMutation({
+    mutationFn: async (battleType: string) => {
+      return apiRequest("POST", "/api/battles/demo", {
         type: battleType,
-        examType: "JEE", // Default for demo
-        subject: "Physics",
+        examType: "JEE",
+        subject: "Physics", 
         difficulty: "intermediate"
       });
-      
+    },
+    onSuccess: (data: any, battleType: string) => {
       toast({
         title: "Demo Battle Created!",
         description: `${battleType} demo battle started with AI bots. No coins required!`,
       });
-      
-      // Refresh the battles list to show the new demo battle
       queryClient.invalidateQueries({ queryKey: ['/api/battles/enhanced'] });
-    } catch (error: any) {
+    },
+    onError: (error: any) => {
       toast({
         title: "Demo Battle Failed",
         description: error.message || "Could not create demo battle.",
         variant: "destructive",
       });
     }
+  });
+
+  const createDemoBattle = (battleType: string) => {
+    createDemoBattleMutation.mutate(battleType);
   };
 
   const createBattleMutation = useMutation({

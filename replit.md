@@ -550,6 +550,12 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Students start with 100 welcome bonus coins and can earn more through daily bonuses (25 coins) and activities
   - Complete coin API with endpoints for balance, transaction history, and daily bonus claiming
   - Reduced entry fee from 25 to 10 coins for better accessibility and student engagement
+- July 12, 2025: ONGOING: Demo battle creation system debugging
+  - Fixed database schema by adding missing "winner_team" column to battles table
+  - Demo battle API endpoint created but still requiring authentication despite route modification
+  - Need to trace through middleware application and fix demo battle access for unauthenticated users
+  - Demo battles should be completely free practice mode with AI bots, no authentication required
+  - Frontend UI properly structured with mutation hooks and demo battle dialog interface
 
 ## User Preferences
 
