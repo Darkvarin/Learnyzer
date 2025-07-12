@@ -86,7 +86,7 @@ export default function BattleZoneEnhanced() {
       
       // Fetch the updated battle details and auto-open the battle interface
       try {
-        const battleResponse = await apiRequest("GET", `/api/enhanced-battles/${battleId}`, {});
+        const battleResponse = await apiRequest("GET", `/api/enhanced-battles/${battleId}`);
         const joinedBattle = battleResponse;
         
         // Auto-open the battle interface immediately after joining
