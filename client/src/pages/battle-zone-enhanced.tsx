@@ -18,6 +18,7 @@ import { format, parseISO } from "date-fns";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { BattleDetail } from "@/components/battle/battle-detail";
 
 interface EnhancedBattle extends Battle {
   format?: string;
@@ -125,8 +126,43 @@ export default function BattleZoneEnhanced() {
     onSuccess: (data: any, battleType: string) => {
       toast({
         title: "Demo Battle Created!",
-        description: `${battleType} demo battle started with AI bots. No coins required!`,
+        description: `${battleType} demo battle started with AI bots. Opening battle now...`,
       });
+      
+      // Close the demo dialog
+      setCreateDialogOpen(false);
+      setActiveTab("battles");
+      
+      // Automatically open the created demo battle
+      if (data && data.battleId) {
+        // Create a demo battle object to set as selected
+        const demoBattle: EnhancedBattle = {
+          id: data.battleId,
+          title: `Demo ${battleType} Battle - Physics`,
+          type: battleType,
+          format: "standard",
+          difficulty: "intermediate",
+          examType: "JEE",
+          subject: "Physics",
+          duration: 5,
+          topics: ["Physics"],
+          rewardPoints: 0,
+          entryFee: 0,
+          prizePool: 0,
+          maxParticipants: data.participants || 2,
+          battleMode: "public",
+          spectatorMode: true,
+          questionsCount: 1,
+          status: "in_progress",
+          participants: [],
+          spectatorCount: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          createdBy: 999
+        };
+        setSelectedBattle(demoBattle);
+      }
+      
       queryClient.invalidateQueries({ queryKey: ['/api/battles/enhanced'] });
     },
     onError: (error: any) => {
@@ -313,6 +349,15 @@ export default function BattleZoneEnhanced() {
             <Button
               size="sm"
               variant="outline"
+              onClick={() => setSelectedBattle(battle)}
+              className="bg-gray-500/10 border-gray-500/30 hover:bg-gray-500/20 text-gray-400"
+            >
+              <Eye className="w-4 h-4 mr-1" />
+              View
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
               onClick={() => spectateBeatleMutation.mutate(battle.id)}
               className="bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20 text-purple-400"
             >
@@ -349,6 +394,16 @@ export default function BattleZoneEnhanced() {
     </Card>
   );
 
+  // Fetch specific battle details when selected
+  const { data: battleDetail, isLoading: isLoadingBattleDetail } = useQuery<EnhancedBattle>({
+    queryKey: [`/api/battles/enhanced/${selectedBattle?.id}`],
+    enabled: !!selectedBattle,
+  });
+
+  const handleCloseBattleDetail = () => {
+    setSelectedBattle(null);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-dark text-white relative overflow-hidden">
       {/* Enhanced background with cyberpunk aesthetics */}
@@ -370,6 +425,13 @@ export default function BattleZoneEnhanced() {
       <MobileNavigation />
       
       <main className="flex-1 container mx-auto px-4 pt-20 pb-20 md:pt-24 md:pb-6 relative z-10">
+        {selectedBattle ? (
+          <BattleDetail 
+            battle={selectedBattle}
+            onClose={handleCloseBattleDetail}
+          />
+        ) : (
+        <>
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -818,6 +880,8 @@ export default function BattleZoneEnhanced() {
             )}
           </TabsContent>
         </Tabs>
+        </>
+        )}
       </main>
     </div>
   );
