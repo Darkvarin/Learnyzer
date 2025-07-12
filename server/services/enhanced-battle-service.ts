@@ -589,6 +589,126 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
       console.error("User power-ups fetch error:", error);
       res.status(500).json({ message: "Error fetching user power-ups" });
     }
+  },
+
+  /**
+   * Create a demo battle with AI bots for testing UI
+   */
+  async createDemoBattle(req: Request, res: Response) {
+    try {
+      const { type, examType, subject, difficulty } = req.body;
+      const userId = (req.user as any).id;
+
+      // Create demo battle with AI bots - no coin cost
+      const [demoBattle] = await db.insert(battles).values({
+        title: `Demo ${type} Battle - ${subject}`,
+        description: `Practice battle with AI bots. No coins required!`,
+        type: type || "1v1",
+        subject: subject || "Physics",
+        difficulty: difficulty || "intermediate",
+        examType: examType || "JEE",
+        status: "waiting",
+        maxParticipants: type === "1v1" ? 2 : type === "2v2" ? 4 : 8,
+        entryFee: 0, // No cost for demo
+        prizePool: 0, // No prize for demo
+        duration: 300, // 5 minutes for demo
+        autoStart: true,
+        spectatorMode: true,
+        createdBy: userId,
+        createdAt: new Date()
+      }).returning();
+
+      // Add the real user as participant
+      await db.insert(battleParticipants).values({
+        battleId: demoBattle.id,
+        userId: userId,
+        team: 0
+      });
+
+      // Create AI bot opponents based on battle type
+      const maxParticipants = demoBattle.maxParticipants || 2;
+      
+      for (let i = 1; i < maxParticipants; i++) {
+        // Create fake AI bot users (negative IDs for AI bots)
+        await db.insert(battleParticipants).values({
+          battleId: demoBattle.id,
+          userId: -(100 + i), // Negative IDs for AI bots
+          team: type.includes("v") ? (i % 2) : 0, // Team assignment for team battles
+          answer: null,
+          score: Math.floor(Math.random() * 100), // Random AI bot scores
+          joinedAt: new Date()
+        });
+      }
+
+      // Auto-start the demo battle since it's full
+      await db.update(battles)
+        .set({ 
+          status: "in_progress",
+          startTime: new Date()
+        })
+        .where(eq(battles.id, demoBattle.id));
+
+      // Generate a demo question for the battle
+      const demoQuestion = await enhancedBattleService.generateDemoQuestion(examType, subject, difficulty);
+      
+      if (demoQuestion) {
+        await db.insert(battleQuestions).values({
+          battleId: demoBattle.id,
+          question: demoQuestion.question,
+          options: demoQuestion.options,
+          correctAnswer: demoQuestion.correctAnswer,
+          explanation: demoQuestion.explanation,
+          difficulty: difficulty || "intermediate",
+          timeLimit: 300,
+          createdAt: new Date()
+        });
+      }
+
+      res.json({
+        message: "Demo battle created successfully!",
+        battleId: demoBattle.id,
+        type: type,
+        participants: maxParticipants,
+        status: "in_progress",
+        isDemo: true
+      });
+    } catch (error) {
+      console.error("Demo battle creation error:", error);
+      res.status(500).json({ message: "Error creating demo battle" });
+    }
+  },
+
+  /**
+   * Generate a demo question for practice battles
+   */
+  async generateDemoQuestion(examType: string, subject: string, difficulty: string) {
+    try {
+      const prompt = `Generate a ${difficulty} level ${examType} ${subject} multiple choice question for educational practice.
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "question": "Question text here",
+  "options": ["A) Option 1", "B) Option 2", "C) Option 3", "D) Option 4"],
+  "correctAnswer": "A",
+  "explanation": "Clear explanation of why this is correct and others are wrong"
+}
+
+Make it a realistic exam-style question with 4 options labeled A, B, C, D.`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.3,
+        max_tokens: 500,
+        response_format: { type: "json_object" }
+      });
+
+      const questionData = JSON.parse(response.choices[0].message.content || "{}");
+      return questionData;
+    } catch (error) {
+      console.error("Demo question generation error:", error);
+      return null;
+    }
   }
 };
 

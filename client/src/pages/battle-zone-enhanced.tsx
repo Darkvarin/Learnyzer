@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar, History, Sword, Eye, Trophy, Zap, Users, Target, Clock, Star, Shield, Flame, Crown, Award } from "lucide-react";
+import { Calendar, History, Sword, Eye, Trophy, Zap, Users, Target, Clock, Star, Shield, Flame, Crown, Award, Bot } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -111,6 +111,32 @@ export default function BattleZoneEnhanced() {
   // Calculate entry fee and prize pool automatically with coin system
   const getEntryFeeCoins = () => 10; // Fixed coin entry fee (reduced to 10)
   const getPrizePoolCoins = () => parseInt(battleForm.maxParticipants) * 10; // Winner takes all coins
+
+  // Demo battle function for testing UI without other players
+  const createDemoBattle = async (battleType: string) => {
+    try {
+      const response = await apiRequest("POST", "/api/battles/demo", {
+        type: battleType,
+        examType: "JEE", // Default for demo
+        subject: "Physics",
+        difficulty: "intermediate"
+      });
+      
+      toast({
+        title: "Demo Battle Created!",
+        description: `${battleType} demo battle started with AI bots. No coins required!`,
+      });
+      
+      // Refresh the battles list to show the new demo battle
+      queryClient.invalidateQueries({ queryKey: ['/api/battles/enhanced'] });
+    } catch (error: any) {
+      toast({
+        title: "Demo Battle Failed",
+        description: error.message || "Could not create demo battle.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const createBattleMutation = useMutation({
     mutationFn: async (battleData: any) => {
@@ -377,6 +403,16 @@ export default function BattleZoneEnhanced() {
                 Create Enhanced Battle
               </Button>
             </DialogTrigger>
+          </Dialog>
+
+          {/* Demo Battle Button */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="mt-4 md:mt-0 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-gaming">
+                <Bot className="w-4 h-4 mr-2" />
+                Demo Battle (Practice)
+              </Button>
+            </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-background/95 backdrop-blur-sm border border-cyan-500/30">
               <DialogHeader>
                 <DialogTitle className="font-gaming text-xl bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
@@ -590,6 +626,52 @@ export default function BattleZoneEnhanced() {
                   Create Battle
                 </Button>
               </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* Demo Battle Dialog */}
+          <Dialog>
+            <DialogContent className="max-w-md bg-background/95 backdrop-blur-sm border border-orange-500/30">
+              <DialogHeader>
+                <DialogTitle className="font-gaming text-xl bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                  Demo Battle Mode
+                </DialogTitle>
+                <DialogDescription>
+                  Practice with AI bot opponents to test your skills and explore the battle interface without spending coins.
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-4 py-4">
+                <div className="p-4 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-lg border border-orange-500/20">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Bot className="w-6 h-6 text-orange-400" />
+                    <span className="font-semibold text-orange-400">AI Practice Mode</span>
+                  </div>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• No coin cost - completely free</li>
+                    <li>• Battle against smart AI opponents</li>
+                    <li>• Test all battle features and UI</li>
+                    <li>• Perfect for learning the system</li>
+                  </ul>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <Button 
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500"
+                    onClick={() => createDemoBattle("1v1")}
+                  >
+                    <Bot className="w-4 h-4 mr-2" />
+                    1v1 Demo
+                  </Button>
+                  <Button 
+                    className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-500 hover:to-blue-500"
+                    onClick={() => createDemoBattle("2v2")}
+                  >
+                    <Users className="w-4 h-4 mr-2" />
+                    2v2 Demo
+                  </Button>
+                </div>
+              </div>
             </DialogContent>
           </Dialog>
         </div>

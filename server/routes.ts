@@ -299,6 +299,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/battles/enhanced", requireAuth, enhancedBattleService.createEnhancedBattle);
   app.post("/api/battles/enhanced/:battleId/join", requireAuth, enhancedBattleService.joinEnhancedBattle);
   app.post("/api/battles/enhanced/:battleId/spectate", requireAuth, enhancedBattleService.spectateBattle);
+  app.post("/api/battles/demo", requireAuth, enhancedBattleService.createDemoBattle);
   
   // Tournament routes (Battle Zone 2.0)
   app.get("/api/tournaments", requireAuth, async (req, res) => {
