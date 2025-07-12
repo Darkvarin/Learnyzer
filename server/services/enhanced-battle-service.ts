@@ -371,7 +371,7 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
 
       // Determine team assignment for team battles
       let team = 0;
-      if (battle.type.includes("v")) {
+      if (battle.type && battle.type.includes("v")) {
         // Count participants per team
         const teamCounts = battle.participants.reduce((acc, p) => {
           acc[p.team] = (acc[p.team] || 0) + 1;
@@ -391,13 +391,20 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
 
       // Check if battle should auto-start
       const updatedParticipantCount = battle.participants.length + 1;
-      if (battle.autoStart && updatedParticipantCount >= (battle.maxParticipants || 8)) {
+      
+      // Auto-start demo battles immediately when someone joins
+      const isDemoBattle = battle.title.toLowerCase().includes('demo');
+      const shouldStart = isDemoBattle || (battle.autoStart && updatedParticipantCount >= (battle.maxParticipants || 8));
+      
+      if (shouldStart) {
         await db.update(battles)
           .set({ 
             status: "in_progress",
             startTime: new Date()
           })
           .where(eq(battles.id, battleId));
+          
+        console.log(`Auto-starting ${isDemoBattle ? 'demo' : 'regular'} battle ${battleId}`);
       }
 
       res.json({ 
