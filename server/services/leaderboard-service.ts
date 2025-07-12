@@ -5,18 +5,28 @@ import { users } from "@shared/schema";
 import { desc, eq, sql } from "drizzle-orm";
 
 export const leaderboardService = {
-  // Get global leaderboard - top users by rank points
+  // Get global leaderboard - top users by rank points (exam-specific)
   async getGlobalLeaderboard(req: Request, res: Response) {
     try {
-      const { limit = 100, page = 1, type = 'rank' } = req.query;
+      const { limit = 100, page = 1, type = 'rank', exam } = req.query;
       const pageSize = Number(limit);
       const pageNumber = Number(page);
       const offset = (pageNumber - 1) * pageSize;
       
+      // Get current user's exam if not specified and user is authenticated
+      let examFilter = exam;
+      if (!examFilter && req.isAuthenticated() && req.user) {
+        const currentUser = await db.query.users.findFirst({
+          where: eq(users.id, req.user.id),
+          columns: { track: true }
+        });
+        examFilter = currentUser?.track;
+      }
+      
       let leaderboardData;
       
       if (type === 'rank') {
-        // Rank-based leaderboard
+        // Rank-based leaderboard with exam filtering
         leaderboardData = await db.query.users.findMany({
           columns: {
             id: true,
@@ -29,6 +39,7 @@ export const leaderboardService = {
             grade: true,
             track: true
           },
+          where: examFilter ? eq(users.track, examFilter as string) : undefined,
           orderBy: [
             desc(users.rankPoints),
             desc(users.level)
@@ -37,7 +48,7 @@ export const leaderboardService = {
           offset: offset
         });
       } else if (type === 'xp') {
-        // XP/Level-based leaderboard
+        // XP/Level-based leaderboard with exam filtering
         leaderboardData = await db.query.users.findMany({
           columns: {
             id: true,
@@ -51,6 +62,7 @@ export const leaderboardService = {
             grade: true,
             track: true
           },
+          where: examFilter ? eq(users.track, examFilter as string) : undefined,
           orderBy: [
             desc(users.level),
             desc(users.currentXp)
@@ -59,7 +71,7 @@ export const leaderboardService = {
           offset: offset
         });
       } else if (type === 'streak') {
-        // Streak-based leaderboard
+        // Streak-based leaderboard with exam filtering
         leaderboardData = await db.query.users.findMany({
           columns: {
             id: true,
@@ -73,6 +85,7 @@ export const leaderboardService = {
             grade: true,
             track: true
           },
+          where: examFilter ? eq(users.track, examFilter as string) : undefined,
           orderBy: [
             desc(users.streakDays),
             desc(users.level)
@@ -90,16 +103,19 @@ export const leaderboardService = {
         position: offset + index + 1
       }));
       
+      // Get total count for pagination (with same exam filter)
+      const totalUsers = await db.query.users.findMany({
+        columns: { id: true },
+        where: examFilter ? eq(users.track, examFilter as string) : undefined
+      });
+      
       return res.status(200).json({
         leaderboard: rankedData,
+        examFilter: examFilter,
         pagination: {
           page: pageNumber,
           pageSize,
-          total: await db.query.users.findMany({
-            columns: {
-              id: true
-            }
-          }).then(rows => rows.length)
+          total: totalUsers.length
         }
       });
       
@@ -109,16 +125,26 @@ export const leaderboardService = {
     }
   },
   
-  // Get friends leaderboard - users the current user is connected to
+  // Get friends leaderboard - users the current user is connected to (exam-specific)
   async getFriendsLeaderboard(req: Request, res: Response) {
     try {
       if (!req.isAuthenticated() || !req.user) {
         return res.status(401).json({ message: "Not authenticated" });
       }
       
-      const { limit = 50, type = 'rank' } = req.query;
+      const { limit = 50, type = 'rank', exam } = req.query;
       const userId = req.user.id;
       const pageSize = Number(limit);
+      
+      // Get current user's exam if not specified
+      let examFilter = exam;
+      if (!examFilter) {
+        const currentUser = await db.query.users.findFirst({
+          where: eq(users.id, userId),
+          columns: { track: true }
+        });
+        examFilter = currentUser?.track;
+      }
       
       // Get users who are connected to the current user through referrals
       // This includes both people who referred the user and people the user referred
@@ -153,7 +179,7 @@ export const leaderboardService = {
       
       let leaderboardData;
       
-      // Query based on leaderboard type
+      // Query based on leaderboard type with exam filtering
       if (type === 'rank') {
         leaderboardData = await db.query.users.findMany({
           columns: {
@@ -167,7 +193,9 @@ export const leaderboardService = {
             grade: true,
             track: true
           },
-          where: sql`${users.id} IN (${friendIdsArray.join(',')})`,
+          where: examFilter ? 
+            sql`${users.id} IN (${friendIdsArray.join(',')}) AND ${users.track} = ${examFilter}` :
+            sql`${users.id} IN (${friendIdsArray.join(',')})`,
           orderBy: [
             desc(users.rankPoints),
             desc(users.level)
@@ -188,7 +216,9 @@ export const leaderboardService = {
             grade: true,
             track: true
           },
-          where: sql`${users.id} IN (${friendIdsArray.join(',')})`,
+          where: examFilter ? 
+            sql`${users.id} IN (${friendIdsArray.join(',')}) AND ${users.track} = ${examFilter}` :
+            sql`${users.id} IN (${friendIdsArray.join(',')})`,
           orderBy: [
             desc(users.level),
             desc(users.currentXp)
@@ -209,7 +239,9 @@ export const leaderboardService = {
             grade: true,
             track: true
           },
-          where: sql`${users.id} IN (${friendIdsArray.join(',')})`,
+          where: examFilter ? 
+            sql`${users.id} IN (${friendIdsArray.join(',')}) AND ${users.track} = ${examFilter}` :
+            sql`${users.id} IN (${friendIdsArray.join(',')})`,
           orderBy: [
             desc(users.streakDays),
             desc(users.level)
@@ -248,7 +280,8 @@ export const leaderboardService = {
       
       return res.status(200).json({
         leaderboard: rankedData,
-        currentUser: userData
+        currentUser: userData,
+        examFilter: examFilter
       });
       
     } catch (error) {

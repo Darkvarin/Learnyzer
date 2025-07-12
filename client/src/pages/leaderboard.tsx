@@ -176,7 +176,9 @@ export default function LeaderboardPage() {
       currentXp: number;
       streakDays: number;
       rank: string;
+      track: string | null;
     }>;
+    examFilter?: string;
   }
 
   // Fetch Indian leaderboard data
@@ -273,11 +275,24 @@ export default function LeaderboardPage() {
       
       <main className="flex-1 container max-w-6xl mx-auto px-4 pt-20 pb-16 md:pt-24 relative z-10">
         <div className="flex justify-between items-center mb-6">
-          <PageHeader
-            title="Indian Leaderboard"
-            description="Compete with students across India and rise to the top of the national rankings."
-            icon={<BarChart3 className="h-6 w-6 text-purple-400" />}
-          />
+          <div>
+            <PageHeader
+              title="Indian Leaderboard"
+              description="Compete with students across India and rise to the top of the national rankings."
+              icon={<BarChart3 className="h-6 w-6 text-purple-400" />}
+            />
+            {/* Exam Filter Display */}
+            {(indianLeaderboardResponse?.examFilter || friendsLeaderboardResponse?.examFilter) && (
+              <div className="flex mt-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-green-400 font-medium text-sm">
+                    {(indianLeaderboardResponse?.examFilter || friendsLeaderboardResponse?.examFilter)?.toUpperCase()} Locked - Exam-specific rankings
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
           
           <Link href="/dashboard">
             <Button variant="outline" className="bg-background/40 border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-cyan-400">
