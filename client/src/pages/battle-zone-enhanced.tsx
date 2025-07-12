@@ -81,12 +81,28 @@ export default function BattleZoneEnhanced() {
     mutationFn: async (battleId: number) => {
       return apiRequest("POST", `/api/enhanced-battles/${battleId}/join`, {});
     },
-    onSuccess: () => {
+    onSuccess: async (data, battleId) => {
       queryClient.invalidateQueries({ queryKey: ['/api/enhanced-battles'] });
-      toast({
-        title: "Battle joined!",
-        description: "Get ready to compete. The battle will start soon.",
-      });
+      
+      // Fetch the updated battle details and auto-open the battle interface
+      try {
+        const battleResponse = await apiRequest("GET", `/api/enhanced-battles/${battleId}`, {});
+        const joinedBattle = battleResponse;
+        
+        // Auto-open the battle interface immediately after joining
+        setSelectedBattle(joinedBattle);
+        
+        toast({
+          title: "Battle joined!",
+          description: "Opening battle interface now...",
+        });
+      } catch (error) {
+        console.error("Error fetching battle details:", error);
+        toast({
+          title: "Battle joined!",
+          description: "Get ready to compete. The battle will start soon.",
+        });
+      }
     },
     onError: (error: any) => {
       toast({
