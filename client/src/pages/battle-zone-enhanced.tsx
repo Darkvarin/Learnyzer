@@ -368,7 +368,7 @@ export default function BattleZoneEnhanced() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log("View button clicked for battle:", battle.id);
+                console.log("View button clicked for battle:", battle.id, battle);
                 setSelectedBattle(battle);
               }}
               className="bg-gray-500/10 border-gray-500/30 hover:bg-gray-500/20 text-gray-400 relative z-50"
@@ -428,15 +428,17 @@ export default function BattleZoneEnhanced() {
     </Card>
   );
 
-  // Fetch specific battle details when selected
-  const { data: battleDetail, isLoading: isLoadingBattleDetail } = useQuery<EnhancedBattle>({
-    queryKey: [`/api/enhanced-battles/${selectedBattle?.id}`],
-    enabled: !!selectedBattle,
-  });
-
   const handleCloseBattleDetail = () => {
     setSelectedBattle(null);
   };
+
+  // Get the battle detail from our current data or fetch it
+  const battleToShow = selectedBattle ? 
+    (activeBattles?.find(b => b.id === selectedBattle.id) || selectedBattle) : 
+    null;
+
+  console.log("Current selectedBattle:", selectedBattle);
+  console.log("Battle to show:", battleToShow);
 
   return (
     <div className="min-h-screen flex flex-col bg-dark text-white relative overflow-hidden">
@@ -459,9 +461,9 @@ export default function BattleZoneEnhanced() {
       <MobileNavigation />
       
       <main className="flex-1 container mx-auto px-4 pt-20 pb-20 md:pt-24 md:pb-6 relative z-10">
-        {selectedBattle ? (
+        {battleToShow ? (
           <BattleDetail 
-            battle={selectedBattle}
+            battle={battleToShow}
             onClose={handleCloseBattleDetail}
           />
         ) : (
