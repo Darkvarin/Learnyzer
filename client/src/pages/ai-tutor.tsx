@@ -2019,7 +2019,27 @@ export default function AiTutor() {
                   </div>
                   
                   <div className="flex-1 overflow-y-auto space-y-4">
-                    {JSON.parse(selectedHistoryConversation.messages || '[]').map((msg: any, idx: number) => (
+                    {(() => {
+                      try {
+                        const messagesString = selectedHistoryConversation.messages;
+                        if (!messagesString || messagesString.trim() === '') {
+                          return [];
+                        }
+                        const parsedMessages = JSON.parse(messagesString);
+                        return Array.isArray(parsedMessages) ? parsedMessages : [];
+                      } catch (error) {
+                        console.error('Error parsing conversation messages:', error, selectedHistoryConversation.messages);
+                        return [];
+                      }
+                    })().length > 0 ? (() => {
+                      try {
+                        const messagesString = selectedHistoryConversation.messages;
+                        const parsedMessages = JSON.parse(messagesString);
+                        return Array.isArray(parsedMessages) ? parsedMessages : [];
+                      } catch (error) {
+                        return [];
+                      }
+                    })().map((msg: any, idx: number) => (
                       <div key={idx} className="flex items-start space-x-3">
                         {msg.role === 'assistant' ? (
                           <>
@@ -2101,7 +2121,13 @@ export default function AiTutor() {
                           </>
                         )}
                       </div>
-                    ))}
+                    )) : (
+                      <div className="text-center text-gray-400 py-8">
+                        <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                        <p>This conversation has no messages</p>
+                        <p className="text-xs mt-1">The conversation data might be corrupted or empty</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
