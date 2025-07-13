@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import { CanvasRenderer } from "@/components/CanvasRenderer";
 import { MCQComponent } from "@/components/MCQComponent";
+import { InteractiveDiagram } from "@/components/InteractiveDiagram";
 import { useUser } from "@/contexts/user-context";
 import { useToast } from "@/hooks/use-toast";
 import { useVoice } from "@/hooks/useVoice";
@@ -574,44 +575,24 @@ export default function AiTutor() {
         }, 500);
       }
       
-      // Handle Canvas visual instructions if available
-      if (data.visualSuggestions && data.visualSuggestions.drawingInstructions) {
-        const instructions = {
-          title: data.visualSuggestions.title || "Educational Diagram",
-          canvasWidth: 800,
-          canvasHeight: 600,
-          backgroundColor: "#1E1E24",
-          elements: data.visualSuggestions.drawingInstructions.map((instruction: any) => ({
-            type: instruction.type,
-            x: instruction.x,
-            y: instruction.y,
-            x1: instruction.x1,
-            y1: instruction.y1,
-            x2: instruction.x2,
-            y2: instruction.y2,
-            text: instruction.content,
-            fontSize: instruction.fontSize,
-            color: instruction.color,
-            radius: instruction.radius,
-            width: instruction.width,
-            height: instruction.height,
-            fillColor: instruction.fillColor,
-            strokeColor: instruction.strokeColor,
-            strokeWidth: instruction.strokeWidth
-          }))
+      // Handle interactive diagram display directly in chat
+      if (data.visualSuggestions) {
+        // Store the visual suggestions to display inline with the chat message
+        const messageIndex = conversation?.messages?.length || 0;
+        
+        // Update conversation with visual data
+        const updatedConversation = {
+          ...conversation,
+          visualSuggestions: data.visualSuggestions,
+          lastVisualMessageIndex: messageIndex
         };
         
-        setCanvasInstructions(instructions);
-        setShowVisual(true);
-        
-        // Auto-switch to canvas tab if visual is generated
-        setTimeout(() => {
-          setActiveTab("canvas");
-        }, 1000);
+        // Store for inline display
+        queryClient.setQueryData(['/api/ai/conversation/recent'], updatedConversation);
         
         toast({
-          title: "Visual diagram generated",
-          description: "Check the Canvas tab to see the AI-generated diagram",
+          title: "Interactive diagram generated",
+          description: "Diagram appears below the AI response in chat",
         });
       }
       
@@ -1273,6 +1254,19 @@ export default function AiTutor() {
                                     </ReactMarkdown>
                                   </div>
                                 </div>
+
+                                {/* Interactive Diagram Display - shows if AI generated visual content */}
+                                {conversation && (conversation as any).visualSuggestions && 
+                                 (conversation as any).lastVisualMessageIndex === idx && 
+                                 (conversation as any).visualSuggestions.hasVisual && (
+                                  <div className="mt-4 bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg p-4 border border-purple-500/30">
+                                    <div className="flex items-center gap-2 mb-3">
+                                      <PenTool className="h-4 w-4 text-purple-400" />
+                                      <span className="text-sm font-semibold text-purple-400">Interactive Educational Diagram</span>
+                                    </div>
+                                    <InteractiveDiagram data={(conversation as any).visualSuggestions} />
+                                  </div>
+                                )}
                                 
                                 {/* Test Knowledge Button for AI responses */}
                                 <div className="flex gap-2 mt-3">

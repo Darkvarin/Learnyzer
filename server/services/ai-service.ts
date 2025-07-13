@@ -482,53 +482,134 @@ REMEMBER: Every response must be directly tied to the student's specific query. 
       let visualSuggestions = null;
       if (needsVisuals) {
         try {
-          const canvasPrompt = `Create Canvas drawing instructions for an educational diagram based on this conversation:
+          console.log(`[Interactive Diagram] Generating for subject: ${subject}`);
+          
+          const diagramPrompt = `Create an interactive educational diagram structure for "${message}" in ${subject}.
 
-Subject: ${subject || 'General'}
-Student Question: ${message}
-AI Response: ${aiResponse || ''}
-
-Generate precise Canvas drawing instructions that will create a clear, educational diagram. Use JSON format with these drawing commands:
-- text: {x, y, content, fontSize, color, align}
-- circle: {x, y, radius, fillColor, strokeColor, strokeWidth}
-- rectangle: {x, y, width, height, fillColor, strokeColor, strokeWidth}
-- line: {x1, y1, x2, y2, strokeColor, strokeWidth}
-- arrow: {x1, y1, x2, y2, strokeColor, strokeWidth}
-
-Canvas size: 800x600 pixels. Use these colors:
-- Primary text: "#FFFFFF" 
-- Secondary text: "#CCCCCC"
-- Accent: "#00A3FF"
-- Background elements: "#2A2A3A"
-- Highlight: "#FFD700"
+Generate a detailed JSON structure for an interactive SVG diagram that students can click and explore. Focus on making it educational and engaging.
 
 Respond with JSON:
 {
-  "title": "Diagram title",
-  "description": "What this diagram teaches",
+  "title": "Diagram Title",
+  "description": "What students will learn",
+  "type": "interactive_svg",
   "hasVisual": true,
-  "drawingInstructions": [
-    {"type": "text", "x": 400, "y": 50, "content": "Title", "fontSize": 24, "color": "#FFFFFF", "align": "center"},
-    {"type": "rectangle", "x": 100, "y": 100, "width": 200, "height": 80, "fillColor": "#2A2A3A", "strokeColor": "#00A3FF", "strokeWidth": 2}
+  "interactionType": "clickable_elements",
+  "svgElements": [
+    {
+      "id": "element1",
+      "type": "circle",
+      "x": 200,
+      "y": 150,
+      "radius": 40,
+      "fill": "#4CAF50",
+      "stroke": "#2E7D32",
+      "strokeWidth": 2,
+      "label": "Main Concept",
+      "clickable": true,
+      "tooltip": "Click to learn more about this concept",
+      "explanation": "Detailed explanation when clicked"
+    },
+    {
+      "id": "element2", 
+      "type": "rectangle",
+      "x": 100,
+      "y": 250,
+      "width": 120,
+      "height": 60,
+      "fill": "#2196F3",
+      "stroke": "#1976D2",
+      "strokeWidth": 2,
+      "label": "Key Process",
+      "clickable": true,
+      "tooltip": "Interactive process explanation",
+      "explanation": "Step-by-step process details"
+    },
+    {
+      "id": "arrow1",
+      "type": "arrow",
+      "x1": 200,
+      "y1": 190,
+      "x2": 160,
+      "y2": 250,
+      "stroke": "#FF9800",
+      "strokeWidth": 3,
+      "label": "Flow",
+      "animated": true
+    },
+    {
+      "id": "text1",
+      "type": "text",
+      "x": 200,
+      "y": 50,
+      "content": "Main Title",
+      "fontSize": 20,
+      "fontWeight": "bold",
+      "fill": "#1A1A1A",
+      "textAnchor": "middle"
+    }
   ],
-  "educationalValue": "How this diagram helps understanding"
+  "interactions": [
+    {
+      "elementId": "element1",
+      "action": "click",
+      "response": "Show detailed explanation popup"
+    },
+    {
+      "elementId": "element2", 
+      "action": "hover",
+      "response": "Highlight related elements"
+    }
+  ],
+  "learningObjectives": [
+    "Understand core concept structure",
+    "Visualize relationships between components",
+    "Interactive exploration of key processes"
+  ],
+  "examRelevance": "How this diagram helps with ${subject?.replace('_', ' ')} exam preparation"
 }`;
 
-          const canvasResponse = await openai.chat.completions.create({
+          const diagramResponse = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
-              { role: "system", content: "You are an expert educational diagram designer who creates precise Canvas drawing instructions for Indian competitive exam preparation." },
-              { role: "user", content: canvasPrompt }
+              { 
+                role: "system", 
+                content: "You are an expert educational diagram designer who creates interactive learning experiences for competitive exam students. Always respond with valid JSON." 
+              },
+              { role: "user", content: diagramPrompt }
             ],
-            max_tokens: 1000,
-            temperature: 0.3,
+            max_tokens: 1500,
+            temperature: 0.4,
             response_format: { type: "json_object" }
           });
 
-          visualSuggestions = JSON.parse(canvasResponse.choices[0].message.content || '{}');
+          const diagramContent = diagramResponse.choices[0].message.content;
+          if (diagramContent) {
+            visualSuggestions = JSON.parse(diagramContent);
+            console.log(`[Interactive Diagram] Generated interactive diagram for ${subject}`);
+          }
         } catch (visualError) {
-          console.error('Canvas instructions generation error:', visualError);
-          visualSuggestions = null;
+          console.error('[Interactive Diagram] Generation error:', visualError);
+          
+          // Fallback to helpful study guide
+          visualSuggestions = {
+            title: `Interactive Study Guide: ${subject?.replace('_', ' ') || 'Topic'}`,
+            description: "While generating the interactive diagram, here's a structured learning approach:",
+            type: "study_guide",
+            hasVisual: false,
+            studySteps: [
+              "Break down the concept into key components",
+              "Identify relationships between different parts", 
+              "Practice with examples and applications",
+              "Test understanding with practice questions"
+            ],
+            examTips: [
+              "Focus on understanding core principles",
+              "Practice drawing simple diagrams yourself",
+              "Connect concepts to exam question patterns"
+            ],
+            nextSteps: "Try asking more specific questions about individual components"
+          };
         }
       }
       
