@@ -93,6 +93,18 @@ export function useVoice() {
       // Cancel any ongoing speech
       window.speechSynthesis.cancel();
       
+      // Ensure voices are loaded
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length === 0) {
+        console.log('Voices not loaded yet, waiting...');
+        // Wait for voices to load and retry
+        window.speechSynthesis.onvoiceschanged = () => {
+          console.log('Voices loaded, retrying speech...');
+          speak(text, options);
+        };
+        return;
+      }
+      
       // Clean text for better TTS - remove markdown and make it speech-friendly
       const cleanText = text
         .replace(/#{1,6}\s+/g, '') // Remove markdown headers
@@ -111,7 +123,6 @@ export function useVoice() {
       const utterance = new SpeechSynthesisUtterance(cleanText);
       
       // Find best voice based on preferences
-      const voices = window.speechSynthesis.getVoices();
       const voicePreference = options?.voicePreference || 'auto';
       const language = options?.language || 'english';
       
@@ -252,7 +263,24 @@ export function useVoice() {
       
       console.log('Starting TTS with text:', cleanText.substring(0, 100) + '...');
       console.log('Selected voice:', selectedVoice?.name || 'default');
-      window.speechSynthesis.speak(utterance);
+      console.log('Available voices count:', voices.length);
+      
+      try {
+        // Ensure speech synthesis is ready
+        if (window.speechSynthesis.speaking) {
+          console.log('Cancelling previous speech...');
+          window.speechSynthesis.cancel();
+          // Small delay to ensure cancellation is complete
+          setTimeout(() => {
+            window.speechSynthesis.speak(utterance);
+          }, 100);
+        } else {
+          window.speechSynthesis.speak(utterance);
+        }
+      } catch (err) {
+        console.error('Failed to start speech synthesis:', err);
+        setIsSpeaking(false);
+      }
     }
   }, []);
 

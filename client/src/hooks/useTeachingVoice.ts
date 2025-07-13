@@ -53,13 +53,15 @@ export function useTeachingVoice() {
       const result = await generateTeachingVoice.mutateAsync(data);
       // Speak the teaching explanation with user voice settings
       if (result.teachingExplanation) {
-        setTimeout(() => {
-          speak(result.teachingExplanation, {
-            rate: 1.1,
-            voicePreference: voiceSettings?.voicePreference || 'auto',
-            language: voiceSettings?.language || 'english'
-          });
-        }, 100);
+        console.log('Teaching voice will speak:', result.teachingExplanation.substring(0, 100) + '...');
+        console.log('Voice settings:', voiceSettings);
+        
+        // Try immediate speech first (works better after user interaction)
+        speak(result.teachingExplanation, {
+          rate: 1.1,
+          voicePreference: voiceSettings?.voicePreference || 'auto',
+          language: voiceSettings?.language || 'english'
+        });
       }
     } catch (error) {
       console.error('Teaching voice error:', error);

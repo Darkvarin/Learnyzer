@@ -1120,6 +1120,10 @@ export default function AiTutor() {
                             
                             const testText = testTexts[voiceLanguage][selectedVoice];
                             
+                            console.log('Manual voice test starting...');
+                            console.log('Test text:', testText);
+                            console.log('Voice settings:', { selectedVoice, voiceLanguage });
+                            
                             speak(testText, {
                               voicePreference: selectedVoice,
                               language: voiceLanguage,
@@ -1136,6 +1140,38 @@ export default function AiTutor() {
                           title="Test Current Voice Settings"
                         >
                           🎤
+                        </button>
+                        <button
+                          onClick={() => {
+                            console.log('Force teaching voice test...');
+                            teachConcept({
+                              userMessage: "test",
+                              aiResponse: "This is a simple test of the teaching voice system. If you can hear me speaking, the voice system is working properly.",
+                              subject: currentSubject
+                            }, {
+                              voicePreference: selectedVoice,
+                              language: voiceLanguage
+                            });
+                          }}
+                          className="px-2 py-1 text-xs rounded bg-green-500/20 text-green-300 hover:bg-green-500/30 transition-all"
+                          title="Force Teaching Voice Test"
+                        >
+                          🧠
+                        </button>
+                        <button
+                          onClick={() => {
+                            console.log('Basic browser TTS test...');
+                            const basicUtterance = new SpeechSynthesisUtterance("Basic browser TTS test. Can you hear this?");
+                            basicUtterance.rate = 1.0;
+                            basicUtterance.onstart = () => console.log('Basic TTS started');
+                            basicUtterance.onend = () => console.log('Basic TTS ended');
+                            basicUtterance.onerror = (error) => console.error('Basic TTS error:', error);
+                            window.speechSynthesis.speak(basicUtterance);
+                          }}
+                          className="px-2 py-1 text-xs rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-all"
+                          title="Basic Browser TTS Test"
+                        >
+                          🔊
                         </button>
                       </div>
                     </div>

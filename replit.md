@@ -584,6 +584,15 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Added "Admin Only" badge to lead generation dashboard for visual security indication
   - Enhanced error handling for 403 Forbidden responses with user-friendly messaging
   - Lead generation tool now completely secured for authorized administrators only
+- July 13, 2025: Comprehensive AI tutor TTS debugging and enhancement implementation
+  - Fixed teaching voice system to properly use user-selected voice preferences (Neerja/Prabhat/Auto)
+  - Enhanced voice settings to pass through to teaching voice system with proper voice and language selection
+  - Added comprehensive debugging and error handling for speech synthesis functionality
+  - Implemented voice loading detection to ensure TTS works properly across different browsers
+  - Added multiple test buttons for debugging TTS: basic browser test, voice preference test, and teaching voice test
+  - Enhanced console logging to help identify and resolve TTS permission and loading issues
+  - Fixed voice toggle functionality with proper male/female voice selection and Hindi/English language support
+  - Teaching voice now generates intelligent explanations using GPT-4o instead of just reading AI responses
 
 ## User Preferences
 
