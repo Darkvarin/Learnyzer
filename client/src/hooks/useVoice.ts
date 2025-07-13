@@ -150,10 +150,14 @@ export function useVoice() {
         if (language === 'english' && indianEnglishVoices.length > 0) {
           selectedVoice = indianEnglishVoices.find(v => v.name.includes('Neerja')) || indianEnglishVoices[0];
         } else if (language === 'hindi' && indianHindiVoices.length > 0) {
-          // For Hindi, prefer Swara over Madhur (Madhur is male)
-          selectedVoice = indianHindiVoices.find(v => v.name.includes('Swara')) || 
-                         indianHindiVoices.find(v => !v.name.includes('Madhur')) ||
-                         indianHindiVoices[0];
+          // For Hindi, prefer Swara (female voice) - force it for female preference
+          const swaraVoice = indianHindiVoices.find(v => v.name.includes('Swara'));
+          if (swaraVoice) {
+            selectedVoice = swaraVoice;
+          } else {
+            // Fallback: avoid Madhur (male voice) and use other female voices
+            selectedVoice = indianHindiVoices.find(v => !v.name.includes('Madhur')) || indianHindiVoices[0];
+          }
         } else {
           // Fallback to any female-sounding voice
           const femaleVoiceNames = ['neerja', 'swara', 'aditi', 'kavya', 'priya', 'heera', 'female'];
@@ -171,8 +175,14 @@ export function useVoice() {
                          indianEnglishVoices.find(v => !v.name.includes('Neerja')) ||
                          indianEnglishVoices[0];
         } else if (language === 'hindi' && indianHindiVoices.length > 0) {
-          // For Hindi, prefer Madhur (male voice)
-          selectedVoice = indianHindiVoices.find(v => v.name.includes('Madhur')) || indianHindiVoices[0];
+          // For Hindi, prefer Madhur (male voice) - force it for male preference
+          const madhurVoice = indianHindiVoices.find(v => v.name.includes('Madhur'));
+          if (madhurVoice) {
+            selectedVoice = madhurVoice;
+          } else {
+            // Fallback to any male-sounding Hindi voice
+            selectedVoice = indianHindiVoices.find(v => !v.name.includes('Swara')) || indianHindiVoices[0];
+          }
         } else {
           // Fallback to any male-sounding voice  
           const maleVoiceNames = ['prabhat', 'madhur', 'ravi', 'arjun', 'vikash', 'male'];
@@ -203,6 +213,25 @@ export function useVoice() {
         }
       }
       
+      // FAILSAFE: Ensure gender consistency for Hindi/Hinglish
+      if (language === 'hindi' && selectedVoice) {
+        if (voicePreference === 'prabhat' && selectedVoice.name.includes('Swara')) {
+          // Force male voice if Prabhat is selected but female voice was chosen
+          const madhurVoice = indianHindiVoices.find(v => v.name.includes('Madhur'));
+          if (madhurVoice) {
+            selectedVoice = madhurVoice;
+            console.log('OVERRIDE: Switched from Swara to Madhur for male preference');
+          }
+        } else if (voicePreference === 'neerja' && selectedVoice.name.includes('Madhur')) {
+          // Force female voice if Neerja is selected but male voice was chosen
+          const swaraVoice = indianHindiVoices.find(v => v.name.includes('Swara'));
+          if (swaraVoice) {
+            selectedVoice = swaraVoice;
+            console.log('OVERRIDE: Switched from Madhur to Swara for female preference');
+          }
+        }
+      }
+      
       // Additional debug logging
       console.log('Voice selection details:', {
         voicePreference,
@@ -210,7 +239,9 @@ export function useVoice() {
         selectedVoiceName: selectedVoice?.name,
         selectedVoiceLang: selectedVoice?.lang,
         indianEnglishCount: indianEnglishVoices.length,
-        indianHindiCount: indianHindiVoices.length
+        indianHindiCount: indianHindiVoices.length,
+        availableIndianHindiVoices: indianHindiVoices.map(v => v.name),
+        availableIndianEnglishVoices: indianEnglishVoices.map(v => v.name)
       });
       
       if (selectedVoice) {
