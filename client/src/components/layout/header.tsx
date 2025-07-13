@@ -221,12 +221,6 @@ export function Header() {
                     Profile & Settings
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="hover:bg-[#47c1d6]/10 text-white/90 transition-colors">
-                  <Link href="/lead-generation" className="flex items-center w-full">
-                    <Brain className="h-4 w-4 mr-2 text-[#4af3c0]" />
-                    Lead Management
-                  </Link>
-                </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-[#47c1d6]/30 to-transparent h-px" />
                 <DropdownMenuItem onClick={handleLogout} className="hover:bg-[#4af3c0]/10 text-white/90 transition-colors">
                   <LogOut className="h-4 w-4 mr-2 text-[#4af3c0]" />

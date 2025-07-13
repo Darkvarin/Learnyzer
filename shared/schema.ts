@@ -26,6 +26,7 @@ export const users = pgTable("users", {
   streakDays: integer("streak_days").default(0).notNull(),
   lastStreakDate: timestamp("last_streak_date"),
   referralCode: text("referral_code").notNull().unique(),
+  isAdmin: boolean("is_admin").default(false).notNull(), // Admin access control
   // Subscription fields
   subscriptionTier: text("subscription_tier").default("free").notNull(), // free, basic, pro, quarterly, half_yearly, yearly
   subscriptionStatus: text("subscription_status").default("inactive").notNull(), // inactive, active, expired, cancelled

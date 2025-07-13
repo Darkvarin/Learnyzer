@@ -415,7 +415,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Lead Generation routes
-  app.get("/api/leads", requireAuth, async (req, res) => {
+  // Helper function to check if user is admin
+  const requireAdmin = async (req: any, res: any, next: any) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "Authentication required" });
+      }
+      
+      const user = await storage.getUserById(userId);
+      if (!user || !user.isAdmin) {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      next();
+    } catch (error) {
+      console.error("Admin check error:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  app.get("/api/leads", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const { startDate, endDate, hasEmail, hasMobile, grade, track } = req.query;
@@ -437,7 +457,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/leads/stats", requireAuth, async (req, res) => {
+  app.get("/api/leads/stats", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const stats = await leadGenerationService.getLeadStats();
@@ -448,7 +468,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/leads/export", requireAuth, async (req, res) => {
+  app.get("/api/leads/export", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const { startDate, endDate, hasEmail, hasMobile, grade, track } = req.query;
@@ -473,7 +493,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/leads/email-list", requireAuth, async (req, res) => {
+  app.get("/api/leads/email-list", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const { startDate, endDate, grade, track } = req.query;
@@ -494,7 +514,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/leads/mobile-list", requireAuth, async (req, res) => {
+  app.get("/api/leads/mobile-list", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const { startDate, endDate, grade, track } = req.query;
@@ -515,7 +535,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/leads/search", requireAuth, async (req, res) => {
+  app.get("/api/leads/search", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const { q } = req.query;

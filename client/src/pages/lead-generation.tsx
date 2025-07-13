@@ -52,30 +52,35 @@ export default function LeadGeneration() {
   const [activeTab, setActiveTab] = useState("overview");
   const { toast } = useToast();
 
-  const { data: leadStats, isLoading: statsLoading } = useQuery({
+  const { data: leadStats, isLoading: statsLoading, error: statsError } = useQuery({
     queryKey: ["/api/leads/stats"],
-    refetchInterval: 300000 // Refresh every 5 minutes
+    refetchInterval: 300000, // Refresh every 5 minutes
+    retry: false
   });
 
-  const { data: leads, isLoading: leadsLoading, refetch: refetchLeads } = useQuery({
+  const { data: leads, isLoading: leadsLoading, refetch: refetchLeads, error: leadsError } = useQuery({
     queryKey: ["/api/leads", filters],
-    refetchInterval: 60000 // Refresh every minute
+    refetchInterval: 60000, // Refresh every minute
+    retry: false
   });
 
-  const { data: searchResults, isLoading: searchLoading } = useQuery({
+  const { data: searchResults, isLoading: searchLoading, error: searchError } = useQuery({
     queryKey: ["/api/leads/search", searchQuery],
     enabled: searchQuery.length > 0,
-    refetchInterval: false
+    refetchInterval: false,
+    retry: false
   });
 
-  const { data: emailList } = useQuery({
+  const { data: emailList, error: emailError } = useQuery({
     queryKey: ["/api/leads/email-list", filters],
-    refetchInterval: false
+    refetchInterval: false,
+    retry: false
   });
 
-  const { data: mobileList } = useQuery({
+  const { data: mobileList, error: mobileError } = useQuery({
     queryKey: ["/api/leads/mobile-list", filters],
-    refetchInterval: false
+    refetchInterval: false,
+    retry: false
   });
 
   const exportToExcel = async () => {
@@ -144,7 +149,44 @@ export default function LeadGeneration() {
 
   const displayLeads = searchQuery ? searchResults : leads;
 
-  return (
+    // Check for admin access errors
+  const isAdminError = (error: any) => {
+    return error?.message?.includes('403') || error?.message?.includes('Admin access required');
+  };
+
+  const hasAdminError = isAdminError(statsError) || isAdminError(leadsError) || isAdminError(searchError) || isAdminError(emailError) || isAdminError(mobileError);
+
+  // If user doesn't have admin access, show access denied message
+  if (hasAdminError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="max-w-md mx-auto text-center">
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-8">
+            <div className="flex justify-center mb-4">
+              <Database className="h-16 w-16 text-red-500" />
+            </div>
+            <h1 className="text-2xl font-bold text-red-800 dark:text-red-300 mb-2">
+              Admin Access Required
+            </h1>
+            <p className="text-red-600 dark:text-red-400 mb-6">
+              This lead generation dashboard is only accessible to administrators. 
+              Contact your system administrator if you need access to this feature.
+            </p>
+            <div className="space-y-3">
+              <BackButton fallbackPath="/dashboard" className="w-full">
+                Return to Dashboard
+              </BackButton>
+              <div className="text-sm text-red-500">
+                Error Code: 403 - Forbidden Access
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-900/20 to-green-900/20 backdrop-blur-sm border-b border-blue-500/20">
@@ -160,6 +202,7 @@ export default function LeadGeneration() {
               <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
                 <Database className="h-8 w-8 text-blue-400" />
                 Lead Generation Dashboard
+                <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-normal">Admin Only</span>
               </h1>
               <p className="text-blue-100 text-lg">
                 Comprehensive lead management and email/mobile collection system
