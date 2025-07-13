@@ -347,6 +347,9 @@ export default function AiTutor() {
       });
     },
     onSuccess: (data: any) => {
+      console.log("AI tutor response received:", data);
+      console.log("Response data keys:", Object.keys(data));
+      console.log("Visual suggestions in response:", data.visualSuggestions);
       setMessage("");
       
       // Handle AI response with intelligent teaching voice when enabled
@@ -389,6 +392,8 @@ export default function AiTutor() {
             description: "Diagram appears below the AI response in chat",
           });
         }, 500); // Delay to ensure conversation is updated first
+      } else {
+        console.log('[Interactive Diagram] No visual suggestions found in response');
       }
       
       // Note: Rewards are now only shown when students correctly answer quiz questions
