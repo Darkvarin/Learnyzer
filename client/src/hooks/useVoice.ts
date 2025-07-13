@@ -144,12 +144,12 @@ export function useVoice() {
         voice.name.includes('Swara')
       );
 
-      // FEMALE VOICE ONLY: Always use Neerja for English and Swara for Hindi
+      // FEMALE VOICE ONLY: Always use Neerja for English and Swara for Hindi (Akira's voice)
       if (language === 'english' && indianEnglishVoices.length > 0) {
-        // Always use Neerja for English
+        // Always use Neerja for English (Akira's English voice)
         selectedVoice = indianEnglishVoices.find(v => v.name.includes('Neerja')) || indianEnglishVoices[0];
       } else if (language === 'hindi' && indianHindiVoices.length > 0) {
-        // Always use Swara for Hindi/Hinglish (female voice)
+        // Always use Swara for Hindi/Hinglish (Akira's Hindi voice)
         selectedVoice = indianHindiVoices.find(v => v.name.includes('Swara')) || 
                        indianHindiVoices.find(v => !v.name.includes('Madhur')) ||
                        indianHindiVoices[0];

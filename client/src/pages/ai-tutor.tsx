@@ -1051,22 +1051,7 @@ export default function AiTutor() {
                       
                       <div className="w-px h-4 bg-primary/20"></div>
                       
-                      {/* Voice Selection */}
-                      <div className="flex gap-1">
-                        <button
-                          className="px-3 py-1 text-xs rounded transition-all bg-pink-500/30 text-pink-100"
-                          title="Female Voice - Indian Accent (Only Option)"
-                        >
-                          👩 Neerja
-                        </button>
-                        <span className="px-2 py-1 text-xs text-gray-400">
-                          Female Teacher Only
-                        </span>
-                      </div>
-                      
-                      <div className="w-px h-4 bg-primary/20"></div>
-                      
-                      {/* Voice Enable/Disable & Test */}
+                      {/* Voice Enable/Disable */}
                       <div className="flex gap-1">
                         <button
                           onClick={() => setVoiceEnabled(!voiceEnabled)}
@@ -1078,97 +1063,6 @@ export default function AiTutor() {
                           title={voiceEnabled ? 'Voice Enabled' : 'Voice Disabled'}
                         >
                           {voiceEnabled ? '🔊' : '🔇'}
-                        </button>
-                        <button
-                          onClick={() => {
-                            const testTexts = {
-                              hindi: "नमस्ते! मैं नीरजा हूँ, आपकी AI शिक्षिका। आज हम क्या सीखेंगे?",
-                              english: "Hello! I'm Neerja, your female AI tutor. I have a clear Indian accent and I'm here to help you learn."
-                            };
-                            
-                            const testText = testTexts[voiceLanguage];
-                            
-                            console.log('Manual voice test starting...');
-                            console.log('Test text:', testText);
-                            console.log('Voice settings:', { selectedVoice, voiceLanguage });
-                            
-                            speak(testText, {
-                              voicePreference: 'neerja',
-                              language: voiceLanguage,
-                              rate: 0.95
-                            });
-                            
-                            toast({
-                              title: "Testing Voice",
-                              description: `Female Teacher (Neerja) voice in ${voiceLanguage}`,
-                              duration: 3000
-                            });
-                          }}
-                          className="px-2 py-1 text-xs rounded bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 transition-all"
-                          title="Test Current Voice Settings"
-                        >
-                          🎤
-                        </button>
-                        <button
-                          onClick={() => {
-                            console.log('Force teaching voice test...');
-                            teachConcept({
-                              userMessage: "test",
-                              aiResponse: "This is a simple test of the teaching voice system. If you can hear me speaking, the voice system is working properly.",
-                              subject: currentSubject
-                            }, {
-                              voicePreference: 'neerja',
-                              language: voiceLanguage
-                            });
-                          }}
-                          className="px-2 py-1 text-xs rounded bg-green-500/20 text-green-300 hover:bg-green-500/30 transition-all"
-                          title="Force Teaching Voice Test"
-                        >
-                          🧠
-                        </button>
-                        <button
-                          onClick={() => {
-                            console.log('Basic browser TTS test...');
-                            const basicUtterance = new SpeechSynthesisUtterance("Basic browser TTS test. Can you hear this?");
-                            basicUtterance.rate = 0.95;
-                            basicUtterance.onstart = () => console.log('Basic TTS started');
-                            basicUtterance.onend = () => console.log('Basic TTS ended');
-                            basicUtterance.onerror = (error) => console.error('Basic TTS error:', error);
-                            window.speechSynthesis.speak(basicUtterance);
-                          }}
-                          className="px-2 py-1 text-xs rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30 transition-all"
-                          title="Basic Browser TTS Test"
-                        >
-                          🔊
-                        </button>
-                        <button
-                          onClick={() => {
-                            console.log('Direct speak function test...');
-                            const testText = "Direct speak function test. This bypasses the teaching voice system.";
-                            speak(testText, {
-                              voicePreference: selectedVoice,
-                              language: voiceLanguage,
-                              rate: 0.95
-                            });
-                          }}
-                          className="px-2 py-1 text-xs rounded bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 transition-all"
-                          title="Direct Speak Function Test"
-                        >
-                          🗣️
-                        </button>
-                        <button
-                          onClick={() => {
-                            const voices = window.speechSynthesis.getVoices();
-                            console.log('All available voices:', voices.map(v => `${v.name} - ${v.lang}`));
-                            const hindiVoices = voices.filter(v => v.lang.includes('hi') || v.name.toLowerCase().includes('hindi'));
-                            console.log('Hindi voices:', hindiVoices.map(v => `${v.name} - ${v.lang} - (${v.gender || 'unknown gender'})`));
-                            const indianVoices = voices.filter(v => v.lang.includes('en-IN') || v.name.includes('India'));
-                            console.log('Indian English voices:', indianVoices.map(v => `${v.name} - ${v.lang}`));
-                          }}
-                          className="px-2 py-1 text-xs rounded bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 transition-all"
-                          title="Debug Available Voices"
-                        >
-                          🔍
                         </button>
                       </div>
                     </div>
@@ -1488,7 +1382,7 @@ export default function AiTutor() {
                             <div className="flex items-center gap-1">
                               <Volume2 className="h-3 w-3 text-green-400" />
                               <span>{isTeaching ? 'Teaching...' : 'Speaking...'}</span>
-                              <span className="text-cyan-300">({selectedVoice} • {voiceLanguage})</span>
+                              <span className="text-cyan-300">(Akira • {voiceLanguage})</span>
                             </div>
                           )}
                         </div>
