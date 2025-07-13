@@ -5,6 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { Check, X, Brain, Lightbulb } from 'lucide-react';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 
 interface MCQProps {
   question: string;
@@ -147,7 +152,16 @@ export function MCQComponent({
       <CardContent className="space-y-4">
         {/* Question */}
         <div className="text-white font-semibold text-lg leading-relaxed p-3 bg-gray-800/40 rounded-lg border border-gray-600/50">
-          {question}
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+            components={{
+              p: ({children}) => <span className="text-white font-semibold">{children}</span>,
+              code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>
+            }}
+          >
+            {question}
+          </ReactMarkdown>
         </div>
 
         {/* Options */}
@@ -162,9 +176,18 @@ export function MCQComponent({
                 <span className="font-bold text-base min-w-[1.5rem] text-center mt-0.5">
                   {key}.
                 </span>
-                <span className="text-base leading-relaxed font-medium">
-                  {value}
-                </span>
+                <div className="text-base leading-relaxed font-medium flex-1">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                    components={{
+                      p: ({children}) => <span>{children}</span>,
+                      code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>
+                    }}
+                  >
+                    {value}
+                  </ReactMarkdown>
+                </div>
               </div>
               {getOptionIcon(key)}
             </div>
@@ -189,9 +212,18 @@ export function MCQComponent({
               <Lightbulb className="h-5 w-5 text-yellow-400 mt-0.5 flex-shrink-0" />
               <div>
                 <h4 className="font-semibold text-white mb-2">Teacher's Feedback</h4>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  {feedback}
-                </p>
+                <div className="text-gray-300 text-sm leading-relaxed">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm, remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                    components={{
+                      p: ({children}) => <span className="text-gray-300">{children}</span>,
+                      code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>
+                    }}
+                  >
+                    {feedback}
+                  </ReactMarkdown>
+                </div>
               </div>
             </div>
           </div>
@@ -201,9 +233,18 @@ export function MCQComponent({
         {isSubmitted && explanation && (
           <div className="mt-3 p-3 bg-primary-900/10 border border-primary-800/30 rounded-lg">
             <p className="text-xs text-gray-400 mb-1">Original Explanation:</p>
-            <p className="text-gray-300 text-sm">
-              {explanation}
-            </p>
+            <div className="text-gray-300 text-sm">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+                components={{
+                  p: ({children}) => <span className="text-gray-300">{children}</span>,
+                  code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>
+                }}
+              >
+                {explanation}
+              </ReactMarkdown>
+            </div>
           </div>
         )}
       </CardContent>
