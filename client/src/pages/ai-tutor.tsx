@@ -260,11 +260,7 @@ export default function AiTutor() {
   // Subscription tracking
   const { trackFeatureUsage } = useSubscriptionTracking();
   const [currentTopic, setCurrentTopic] = useState(chapterParam || "");
-  const [isGeneratingDiagram, setIsGeneratingDiagram] = useState(false);
-  const [weakPoints, setWeakPoints] = useState<string[]>([]); 
   const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [diagramUrl, setDiagramUrl] = useState<string | null>(null);
   const [canvasInstructions, setCanvasInstructions] = useState<any>(null);
   const [showVisual, setShowVisual] = useState(false);
   
@@ -287,116 +283,7 @@ export default function AiTutor() {
     }
   }, [userData]);
 
-  // Canvas display functionality for AI-generated content
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    // Clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Set canvas background
-    ctx.fillStyle = "#1E1E24";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // If we have a diagram URL, display the SVG
-    if (diagramUrl) {
-      const img = new Image();
-      img.onload = () => {
-        // Clear canvas before drawing
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#1E1E24";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Calculate dimensions to maintain aspect ratio
-        const imgRatio = img.width / img.height;
-        const canvasRatio = canvas.width / canvas.height;
-        
-        let drawWidth, drawHeight, offsetX, offsetY;
-        
-        if (imgRatio > canvasRatio) {
-          // Image is wider than canvas ratio
-          drawWidth = canvas.width - 40;
-          drawHeight = drawWidth / imgRatio;
-          offsetX = 20;
-          offsetY = (canvas.height - drawHeight) / 2;
-        } else {
-          // Image is taller than canvas ratio
-          drawHeight = canvas.height - 40;
-          drawWidth = drawHeight * imgRatio;
-          offsetX = (canvas.width - drawWidth) / 2;
-          offsetY = 20;
-        }
-        
-        // Draw the image with proper positioning
-        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-        
-        // Add a subtle glowing border for Solo Leveling aesthetics
-        ctx.strokeStyle = "#00A3FF";
-        ctx.lineWidth = 2;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = "#00A3FF";
-        ctx.strokeRect(offsetX - 2, offsetY - 2, drawWidth + 4, drawHeight + 4);
-        ctx.shadowBlur = 0;
-      };
-      
-      img.onerror = () => {
-        // Display error message if image fails to load
-        ctx.font = "20px sans-serif";
-        ctx.fillStyle = "#FF5555";
-        ctx.textAlign = "center";
-        ctx.fillText("Error loading diagram", canvas.width/2, canvas.height/2 - 20);
-        ctx.fillText("Please try again", canvas.width/2, canvas.height/2 + 20);
-      };
-      
-      // Set the source to the diagram URL
-      img.src = diagramUrl;
-    } 
-    // Show loading message or placeholder when no diagram is present
-    else if (!isGeneratingDiagram) {
-      ctx.font = "20px sans-serif";
-      ctx.fillStyle = "#888888";
-      ctx.textAlign = "center";
-      ctx.fillText("AI-generated diagram will appear here", canvas.width/2, canvas.height/2 - 20);
-      ctx.fillText("Enter a topic and click 'Generate Diagram'", canvas.width/2, canvas.height/2 + 20);
-    }
-    
-    // Draw loading spinner if generating diagram
-    if (isGeneratingDiagram) {
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      const radius = 30;
-      
-      // Animation function for loading spinner
-      const drawLoadingSpinner = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#1E1E24";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.font = "20px sans-serif";
-        ctx.fillStyle = "#FFFFFF";
-        ctx.textAlign = "center";
-        ctx.fillText("Generating AI diagram...", centerX, centerY + 60);
-        
-        // Draw spinner
-        ctx.strokeStyle = "#00A3FF";
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        const angle = (Date.now() / 500) % (Math.PI * 2);
-        ctx.arc(centerX, centerY, radius, angle, angle + Math.PI * 1.5);
-        ctx.stroke();
-        
-        if (isGeneratingDiagram) {
-          requestAnimationFrame(drawLoadingSpinner);
-        }
-      };
-      
-      drawLoadingSpinner();
-    }
-  }, [diagramUrl, isGeneratingDiagram]);
+
 
   // Handle voice transcript
   useEffect(() => {
@@ -409,107 +296,9 @@ export default function AiTutor() {
     }
   }, [transcript, isListening]);
   
-  const clearCanvas = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  };
+
   
-  const prepareCanvasForDiagram = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    // Prepare the canvas for displaying the AI-generated diagram
-    ctx.fillStyle = "#1E1E24";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  };
-  
-  // Call the backend API to generate interactive diagrams and presentations
-  const generateDiagram = (topic: string) => {
-    if (!topic) {
-      toast({
-        title: "Please enter an exam topic",
-        description: "Enter a specific entrance exam topic like 'JEE Kinematics' or 'UPSC Modern History'",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    setIsGeneratingDiagram(true);
-    
-    // Make a request to our backend API to generate a diagram
-    const generateAIDiagram = async () => {
-      try {
-        // Extract the exam type from the subject string (e.g., "jee_physics" → "jee")
-        const examType = currentSubject.split('_')[0].toUpperCase();
-        
-        // Call our backend API to generate the diagram
-        const response = await apiRequest('POST', '/api/ai/generate-diagram', {
-          subject: currentSubject,
-          topic: topic,
-          examType: examType
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          
-          // For the demo, use our pre-created SVG diagrams based on exam type
-          const examLowercase = examType.toLowerCase();
-          
-          // Check if we have a specific diagram for this exam type, otherwise use a default
-          const validExamTypes = ['jee', 'neet', 'upsc', 'clat', 'cuet'];
-          const diagramExamType = validExamTypes.includes(examLowercase) ? examLowercase : 'jee';
-          
-          // Set the diagram URL pointing to our SVG
-          setDiagramUrl(`/images/diagram-${diagramExamType}.svg`);
-          
-          // Set the key points that students often struggle with
-          setWeakPoints(data.keyPoints || []);
-          
-          toast({
-            title: "Diagram generated successfully",
-            description: "AI has created an interactive explanation for your entrance exam topic",
-            variant: "default"
-          });
-        } else {
-          throw new Error("Failed to generate diagram");
-        }
-      } catch (error) {
-        console.error("Error generating diagram:", error);
-        
-        // Provide a fallback diagram based on the current subject
-        const examType = currentSubject.split('_')[0].toLowerCase();
-        const fallbackType = ['jee', 'neet', 'upsc'].includes(examType) ? examType : 'jee';
-        setDiagramUrl(`/images/diagram-${fallbackType}.svg`);
-        
-        // Set some default weak points since we couldn't get real ones
-        setWeakPoints([
-          "Understanding core principles and their applications",
-          "Solving multi-step problems that combine different concepts",
-          "Visualizing complex processes and their relationships",
-          "Applying formulas in different contexts",
-          "Connecting theoretical knowledge to practical scenarios"
-        ]);
-        
-        toast({
-          title: "Using backup diagram",
-          description: "Connected to simplified mode for entrance exam visualization",
-          variant: "default"
-        });
-      } finally {
-        setIsGeneratingDiagram(false);
-      }
-    };
-    
-    generateAIDiagram();
-  };
+
   
   const { data: aiTutor, isLoading: isLoadingTutor } = useQuery({
     queryKey: ['/api/ai/tutor'],
@@ -686,10 +475,9 @@ export default function AiTutor() {
         description: `Preparing ${chapterParam} from ${courseParam}`
       });
       
-      // Generate the diagram for AI canvas presentation
+      // Set the topic for AI canvas presentation
       if (subjectParam && chapterParam) {
         setCurrentTopic(`${subjectParam} ${chapterParam}`);
-        generateDiagram(`${subjectParam} ${chapterParam}`);
       }
       
       // Switch to canvas tab
@@ -735,27 +523,7 @@ export default function AiTutor() {
     }, 300);
   };
   
-  const handleStartTeaching = () => {
-    if (!currentTopic.trim()) {
-      toast({
-        title: "Topic required", 
-        description: "Please enter a specific topic to learn about",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    toast({
-      title: "Starting entrance exam session",
-      description: `Preparing interactive content for ${currentTopic} in ${currentSubject.replace('_', ' ')}`
-    });
-    
-    // Generate the diagram for AI canvas presentation
-    generateDiagram(currentTopic);
-    
-    // Switch to canvas tab
-    setActiveTab("canvas");
-  };
+
 
   return (
     <div className="min-h-screen flex flex-col solo-bg relative overflow-hidden solo-page">
@@ -1561,12 +1329,7 @@ export default function AiTutor() {
                       <div className="bg-dark-card rounded-lg p-4 flex-1 overflow-hidden">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="text-lg font-bold">Interactive Canvas & Presentations</h3>
-                          <div className="flex items-center gap-2">
-                            <Button size="sm" variant="outline" onClick={() => generateDiagram(currentTopic)} className="h-8 px-3 py-1 text-xs bg-amber-500/20 hover:bg-amber-500/30 border-amber-500/50 text-amber-300">
-                              <ImageIcon className="h-3 w-3 mr-1" />
-                              Generate Diagram
-                            </Button>
-                          </div>
+
                         </div>
                         
                         <div className="relative aspect-video w-full bg-[#1E1E24] rounded-lg overflow-hidden">
@@ -1667,18 +1430,6 @@ export default function AiTutor() {
                             
                             <div className="space-y-2">
                               <Button 
-                                onClick={handleStartTeaching}
-                                className="w-full bg-primary-600 hover:bg-primary-500"
-                                disabled={isGeneratingDiagram}
-                              >
-                                {isGeneratingDiagram ? (
-                                  <>Generating... <span className="ml-2 animate-pulse">⏳</span></>
-                                ) : (
-                                  <>Generate Interactive Content</>
-                                )}
-                              </Button>
-                              
-                              <Button 
                                 onClick={() => {
                                   toast({
                                     title: "Opening Visual Learning Lab",
@@ -1695,22 +1446,18 @@ export default function AiTutor() {
                             </div>
                           </div>
                           
-                          {weakPoints.length > 0 && (
-                            <div className="mt-4">
-                              <h4 className="font-medium text-amber-400 flex items-center">
-                                <AlertTriangle className="h-4 w-4 mr-1" />
-                                Key Exam Concepts
-                              </h4>
-                              <ul className="mt-2 space-y-2">
-                                {weakPoints.map((point, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 text-sm">
-                                    <span className="text-amber-500 mt-0.5">•</span>
-                                    <span>{point}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
+                          <div className="mt-4 p-3 rounded-lg bg-dark-surface/50 border border-primary-600/30">
+                            <h4 className="font-medium text-primary-400 flex items-center mb-2">
+                              <BookOpen className="h-4 w-4 mr-1" />
+                              Interactive Canvas Features
+                            </h4>
+                            <ul className="text-sm text-gray-300 space-y-1">
+                              <li>• Ask for diagrams directly in chat</li>
+                              <li>• Interactive visual explanations</li>
+                              <li>• Canvas-based diagram rendering</li>
+                              <li>• Clickable educational elements</li>
+                            </ul>
+                          </div>
                         </div>
                       </div>
                       
@@ -1733,13 +1480,7 @@ export default function AiTutor() {
                         <div className="mt-3 flex flex-col items-center">
                           <div className="w-full p-3 rounded-lg border border-primary-600/30 bg-dark-surface mb-3">
                             <p className="text-sm text-center text-gray-300">
-                              {isGeneratingDiagram ? (
-                                <span>Preparing exam content...</span>
-                              ) : diagramUrl ? (
-                                <span>I'm coaching you on <span className="text-primary-400 font-medium">{currentTopic}</span> now. Ask exam questions!</span>
-                              ) : (
-                                <span>Select an exam subject and topic, then generate interactive content</span>
-                              )}
+                              <span>Ready to help you with <span className="text-primary-400 font-medium">{currentSubject.replace('_', ' ')}</span>. Ask exam questions!</span>
                             </p>
                           </div>
                           
@@ -1768,13 +1509,13 @@ export default function AiTutor() {
                                 </div>
                               </>
                             ) : (
-                              <Mic className={`h-6 w-6 ${diagramUrl ? 'text-white' : 'text-gray-400'}`} />
+                              <Mic className="h-6 w-6 text-gray-400" />
                             )}
                           </Button>
                           <p className="text-xs text-center mt-2 text-gray-400">
                             {isListening ? "Listening to your question... (click to stop)" : 
                              isSpeaking ? "AI Tutor is explaining your exam topic..." : 
-                             diagramUrl ? "Press to ask exam questions by voice" : "Start exam topic session first"}
+                             "Press to ask exam questions by voice"}
                           </p>
                         </div>
                       </div>
