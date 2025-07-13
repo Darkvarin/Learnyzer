@@ -419,15 +419,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const requireAdmin = async (req: any, res: any, next: any) => {
     try {
       const userId = req.user?.id;
+      console.log("🔐 Admin Check - User ID:", userId);
+      
       if (!userId) {
+        console.log("❌ No user ID found");
         return res.status(401).json({ message: "Authentication required" });
       }
       
       const user = await storage.getUserById(userId);
+      console.log("👤 Retrieved user:", { id: user?.id, username: user?.username, isAdmin: user?.isAdmin });
+      
       if (!user || !user.isAdmin) {
+        console.log("❌ User is not admin - Access denied");
         return res.status(403).json({ message: "Admin access required" });
       }
       
+      console.log("✅ Admin access granted");
       next();
     } catch (error) {
       console.error("Admin check error:", error);
