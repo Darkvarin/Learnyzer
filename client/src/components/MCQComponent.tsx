@@ -28,19 +28,44 @@ interface MCQProps {
 
 // Helper function to process LaTeX text and ensure proper math rendering
 const processLatexText = (text: string): string => {
-  // Convert raw LaTeX expressions to proper math blocks
-  return text
-    // Convert single dollar signs to double dollar signs for block math
-    .replace(/\\\(([^)]+)\\\)/g, '$$$$1$$')
-    // Ensure fractions are properly formatted
-    .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$$\\frac{$1}{$2}$$')
-    // Wrap standalone LaTeX expressions in math blocks
-    .replace(/(\\\w+(?:\{[^}]*\})*(?:\s*\\\w+(?:\{[^}]*\})*)*)/g, (match) => {
-      if (!match.startsWith('$$') && !match.endsWith('$$')) {
-        return '$$' + match + '$$';
+  if (!text) return text;
+  
+  // First, normalize the text by removing excessive dollar signs and whitespace
+  let normalized = text
+    .replace(/\$\$\$+/g, '$$') // Convert $$$ to $$
+    .replace(/\$\$\s*\$\$/g, '') // Remove empty $$ $$
+    .replace(/\$\$\s*\\\s*\$\$/g, '') // Remove broken patterns like $$ \ $$
+    .trim();
+  
+  // Split by $$ to handle mixed content (text + math)
+  const parts = normalized.split('$$');
+  
+  // If we have math parts, reassemble them properly
+  if (parts.length > 1) {
+    let result = parts[0]; // Start with first part (usually text)
+    
+    for (let i = 1; i < parts.length; i++) {
+      if (i % 2 === 1) {
+        // Odd indices are math content
+        const mathContent = parts[i].trim();
+        if (mathContent) {
+          result += '$$' + mathContent + '$$';
+        }
+      } else {
+        // Even indices are text content
+        result += parts[i];
       }
-      return match;
-    });
+    }
+    return result;
+  }
+  
+  // If no $$ found but contains LaTeX commands, wrap the whole thing
+  const hasLatex = /\\[a-zA-Z]+/.test(normalized);
+  if (hasLatex) {
+    return '$$' + normalized + '$$';
+  }
+  
+  return normalized;
 };
 
 export function MCQComponent({ 
@@ -189,18 +214,20 @@ export function MCQComponent({
               className={`p-4 rounded-lg border-2 transition-all cursor-pointer flex items-start justify-between hover:shadow-lg ${getOptionColor(key)}`}
               onClick={() => handleAnswerSelect(key)}
             >
-              <div className="flex items-start gap-3 w-full">
-                <span className="font-bold text-base min-w-[1.5rem] text-center mt-0.5">
+              <div className="flex items-start gap-3 w-full min-h-[2rem]">
+                <span className="font-bold text-base min-w-[1.5rem] text-center mt-0.5 flex-shrink-0">
                   {key}.
                 </span>
-                <div className="text-base leading-relaxed font-medium flex-1">
+                <div className="text-base leading-relaxed font-medium flex-1 overflow-hidden">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm, remarkMath]}
                     rehypePlugins={[rehypeKatex]}
                     components={{
-                      p: ({children}) => <span>{children}</span>,
-                      code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>
+                      p: ({children}) => <div className="inline-block w-full">{children}</div>,
+                      code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>,
+                      math: ({children}) => <div className="inline-block">{children}</div>
                     }}
+                    className="math-content w-full"
                   >
                     {processLatexText(value)}
                   </ReactMarkdown>
