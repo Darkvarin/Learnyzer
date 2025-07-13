@@ -24,9 +24,9 @@ export default function LandingPage() {
   const [, setLocation] = useLocation();
 
   const handlePlanSelection = (planName: string) => {
-    // For free trial, go to registration
+    // For free trial, go to authentication page
     if (planName === "Free Trial") {
-      setLocation("/register");
+      setLocation("/auth");
       return;
     }
     
@@ -205,12 +205,12 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="flex space-x-4">
-              <Link href="/login">
+              <Link href="/auth">
                 <Button variant="ghost" className="text-white hover:bg-white/10">
                   Login
                 </Button>
               </Link>
-              <Link href="/register">
+              <Link href="/auth">
                 <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
                   Get Started Free
                 </Button>
