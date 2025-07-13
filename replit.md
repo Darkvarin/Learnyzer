@@ -631,7 +631,7 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Professional testimonials, feature showcase, and credibility indicators for conversion optimization
   - Mobile-responsive design with proper grid layouts and authentic pricing data
   - Landing page ready for Google Ads, Facebook Ads, and other digital marketing campaigns
-- July 13, 2025: Comprehensive exam-specific AI tutor filtering system implementation
+- July 13, 2025: Comprehensive exam-specific AI tutor filtering system implementation and critical bug fix
   - Enhanced keyword detection and content filtering for all 7 competitive exams
   - JEE students: Blocked from biology topics (botany, zoology, anatomy, genetics, etc.)
   - NEET students: Blocked from computer science topics (programming, algorithms, databases, etc.)
@@ -643,6 +643,8 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Enhanced system prompts with critical exam-specific restrictions and teaching guidelines
   - Comprehensive error handling with clear restriction messages for students
   - Detailed logging and monitoring for debugging exam-specific content filtering
+  - **CRITICAL FIX**: Fixed updateUserExamSelection function to properly set track field during exam selection
+  - Track field now automatically updates when users select their entrance exam, ensuring AI filtering works correctly
 
 ## User Preferences
 

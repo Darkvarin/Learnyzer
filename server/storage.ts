@@ -185,6 +185,7 @@ export const storage = {
     await db.update(schema.users)
       .set({
         selectedExam,
+        track: selectedExam, // CRITICAL: Set track field for AI tutor filtering
         examLocked: true,
         examLockedAt: new Date()
       })
