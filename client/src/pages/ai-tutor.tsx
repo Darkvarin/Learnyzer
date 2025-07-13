@@ -245,6 +245,9 @@ export default function AiTutor() {
   const [generatedMCQs, setGeneratedMCQs] = useState<{[key: number]: any}>({});
   const [mcqLoading, setMcqLoading] = useState<{[key: number]: boolean}>({});
   
+  // Help modal state
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  
   // Canvas display functionality for AI-generated content
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -1136,6 +1139,7 @@ export default function AiTutor() {
                       variant="outline" 
                       size="sm" 
                       className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50"
+                      onClick={() => setShowHelpModal(true)}
                     >
                       <HelpCircle className="h-4 w-4 mr-2" />
                       Help
@@ -2107,6 +2111,114 @@ export default function AiTutor() {
                 </div>
               )}
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Help Modal */}
+      <Dialog open={showHelpModal} onOpenChange={setShowHelpModal}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <HelpCircle className="h-5 w-5 text-primary-400" />
+              How to Use AI Tutor - Quick Guide
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6 text-sm">
+            {/* Basic Usage */}
+            <div>
+              <h3 className="font-semibold text-primary-400 mb-2 flex items-center gap-2">
+                <MessageSquare className="h-4 w-4" />
+                Basic Chat Features
+              </h3>
+              <ul className="space-y-2 text-gray-300 ml-6">
+                <li>• Ask any question about your {user?.track?.toUpperCase() || 'exam'} subjects</li>
+                <li>• Get step-by-step explanations with formulas and examples</li>
+                <li>• Request study materials, notes, and practice problems</li>
+                <li>• The AI remembers your conversation within each session</li>
+              </ul>
+            </div>
+
+            {/* Voice Features */}
+            <div>
+              <h3 className="font-semibold text-primary-400 mb-2 flex items-center gap-2">
+                <Volume2 className="h-4 w-4" />
+                Voice & Audio Features
+              </h3>
+              <ul className="space-y-2 text-gray-300 ml-6">
+                <li>• <strong>Voice Input:</strong> Click the microphone button to speak your questions</li>
+                <li>• <strong>Teaching Voice:</strong> Click "Teach Me" for intelligent audio explanations</li>
+                <li>• <strong>Voice Settings:</strong> Toggle voice on/off, choose English or Hindi</li>
+                <li>• Voice is optimized for Indian accent and educational content</li>
+              </ul>
+            </div>
+
+            {/* Interactive Features */}
+            <div>
+              <h3 className="font-semibold text-primary-400 mb-2 flex items-center gap-2">
+                <Brain className="h-4 w-4" />
+                Interactive Learning
+              </h3>
+              <ul className="space-y-2 text-gray-300 ml-6">
+                <li>• <strong>Test Knowledge:</strong> Generate quiz questions after learning concepts</li>
+                <li>• <strong>Canvas Tab:</strong> View AI-generated diagrams and visual explanations</li>
+                <li>• <strong>Quick Prompts:</strong> Use preset buttons for common study requests</li>
+                <li>• Earn XP and rank points for correct quiz answers</li>
+              </ul>
+            </div>
+
+            {/* Exam-Specific */}
+            <div>
+              <h3 className="font-semibold text-primary-400 mb-2 flex items-center gap-2">
+                <GraduationCap className="h-4 w-4" />
+                Exam-Specific Content
+              </h3>
+              <ul className="space-y-2 text-gray-300 ml-6">
+                <li>• Content is filtered based on your selected entrance exam</li>
+                <li>• {user?.track === 'neet' ? 'NEET students can access: Physics, Chemistry, Biology' : 
+                     user?.track === 'jee' ? 'JEE students can access: Physics, Chemistry, Mathematics' :
+                     user?.track === 'upsc' ? 'UPSC students can access: History, Geography, Political Science, etc.' :
+                     'Content varies by exam type'}</li>
+                <li>• AI provides exam-specific tips, formulas, and question patterns</li>
+                <li>• Study materials align with latest syllabus and exam trends</li>
+              </ul>
+            </div>
+
+            {/* Pro Tips */}
+            <div>
+              <h3 className="font-semibold text-primary-400 mb-2 flex items-center gap-2">
+                <Lightbulb className="h-4 w-4" />
+                Pro Tips for Better Learning
+              </h3>
+              <ul className="space-y-2 text-gray-300 ml-6">
+                <li>• Be specific: "Explain Newton's second law with examples" vs "Physics help"</li>
+                <li>• Ask for practice: "Generate 5 problems on quadratic equations"</li>
+                <li>• Request visuals: "Show me a diagram of the human heart"</li>
+                <li>• Test yourself: Always use "Test Knowledge" after learning new concepts</li>
+                <li>• Use voice features for hands-free studying and better retention</li>
+              </ul>
+            </div>
+
+            {/* Session Management */}
+            <div>
+              <h3 className="font-semibold text-primary-400 mb-2 flex items-center gap-2">
+                <History className="h-4 w-4" />
+                Session Management
+              </h3>
+              <ul className="space-y-2 text-gray-300 ml-6">
+                <li>• <strong>New Session:</strong> Clear chat and start fresh topic</li>
+                <li>• <strong>History:</strong> View and restore previous conversations</li>
+                <li>• Each session maintains context for better learning flow</li>
+                <li>• Switch between Chat and Canvas tabs as needed</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-end">
+            <Button onClick={() => setShowHelpModal(false)} className="bg-primary-600 hover:bg-primary-700">
+              Got it, let's start learning!
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
