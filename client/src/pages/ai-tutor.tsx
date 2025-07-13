@@ -366,14 +366,20 @@ export default function AiTutor() {
       
       // Handle interactive diagram display directly in chat
       if (data.visualSuggestions) {
+        console.log('[Interactive Diagram] Visual suggestions received:', data.visualSuggestions);
+        
         // Update the conversation data to include visual suggestions  
         // The diagram will appear after the latest AI message (when idx === messages.length - 1)
         setTimeout(() => {
           const currentConversation = queryClient.getQueryData(['/api/ai/conversation/recent']);
+          console.log('[Interactive Diagram] Current conversation:', currentConversation);
+          
           const updatedConversation = {
             ...currentConversation,
             visualSuggestions: data.visualSuggestions
           };
+          
+          console.log('[Interactive Diagram] Updated conversation:', updatedConversation);
           
           // Store for inline display
           queryClient.setQueryData(['/api/ai/conversation/recent'], updatedConversation);
@@ -1024,17 +1030,33 @@ export default function AiTutor() {
                                 </div>
 
                                 {/* Interactive Diagram Display - shows if AI generated visual content */}
-                                {msg.role === 'assistant' && conversation && (conversation as any).visualSuggestions && 
-                                 (conversation as any).visualSuggestions.hasVisual && 
-                                 idx === ((conversation as any).messages?.length - 1) && (
-                                  <div className="mt-4 bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg p-4 border border-purple-500/30">
-                                    <div className="flex items-center gap-2 mb-3">
-                                      <PenTool className="h-4 w-4 text-purple-400" />
-                                      <span className="text-sm font-semibold text-purple-400">Interactive Educational Diagram</span>
+                                {(() => {
+                                  const shouldShowDiagram = msg.role === 'assistant' && 
+                                                          conversation && 
+                                                          (conversation as any).visualSuggestions && 
+                                                          (conversation as any).visualSuggestions.hasVisual && 
+                                                          idx === ((conversation as any).messages?.length - 1);
+                                  
+                                  console.log('[Interactive Diagram] Display check:', {
+                                    messageRole: msg.role,
+                                    hasConversation: !!conversation,
+                                    hasVisualSuggestions: !!((conversation as any)?.visualSuggestions),
+                                    hasVisualFlag: !!((conversation as any)?.visualSuggestions?.hasVisual),
+                                    isLastMessage: idx === ((conversation as any).messages?.length - 1),
+                                    shouldShow: shouldShowDiagram,
+                                    visualData: (conversation as any)?.visualSuggestions
+                                  });
+                                  
+                                  return shouldShowDiagram ? (
+                                    <div className="mt-4 bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg p-4 border border-purple-500/30">
+                                      <div className="flex items-center gap-2 mb-3">
+                                        <PenTool className="h-4 w-4 text-purple-400" />
+                                        <span className="text-sm font-semibold text-purple-400">Interactive Educational Diagram</span>
+                                      </div>
+                                      <InteractiveDiagram data={(conversation as any).visualSuggestions} />
                                     </div>
-                                    <InteractiveDiagram data={(conversation as any).visualSuggestions} />
-                                  </div>
-                                )}
+                                  ) : null;
+                                })()}
                                 
                                 {/* Test Knowledge Button for AI responses */}
                                 <div className="flex gap-2 mt-3">
