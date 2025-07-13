@@ -8,6 +8,7 @@ interface TeachingVoiceRequest {
   userMessage?: string;
   aiResponse?: string;
   subject?: string;
+  language?: string;
 }
 
 interface TeachingVoiceResponse {
@@ -56,7 +57,12 @@ export function useTeachingVoice() {
 
     setIsGenerating(true);
     try {
-      const result = await generateTeachingVoice.mutateAsync(data);
+      // Add language preference to the API request
+      const requestData = {
+        ...data,
+        language: voiceSettings?.language || 'english'
+      };
+      const result = await generateTeachingVoice.mutateAsync(requestData);
       // Speak the teaching explanation with user voice settings
       if (result.teachingExplanation) {
         console.log('Teaching voice will speak:', result.teachingExplanation.substring(0, 100) + '...');

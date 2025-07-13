@@ -1524,7 +1524,7 @@ Analyze this student's performance data and provide comprehensive analytics:
     }
 
     try {
-      const { topic, userMessage, aiResponse, subject } = req.body;
+      const { topic, userMessage, aiResponse, subject, language } = req.body;
 
       if (!topic && !userMessage) {
         return res.status(400).json({ message: "Topic or user message is required" });
@@ -1535,16 +1535,15 @@ Analyze this student's performance data and provide comprehensive analytics:
       const userExam = userData?.track;
       const userGrade = userData?.grade;
 
-      const teachingPrompt = `You are an expert AI teacher providing voice explanations for students preparing for ${userExam || 'competitive'} exams.
+      const teachingPrompt = `You are an expert AI teacher providing SHORT voice explanations for students preparing for ${userExam || 'competitive'} exams.
 
-TEACHING VOICE GUIDELINES:
-- Speak in a conversational, engaging tone as if you're personally teaching the student
-- Break down complex concepts into simple, digestible parts
-- Use analogies and real-world examples to make concepts memorable
-- Focus on WHY things work, not just WHAT they are
-- Keep explanations between 30-60 seconds when spoken
-- Use encouraging language and build student confidence
-- Make mathematical concepts intuitive and visual
+CRITICAL REQUIREMENTS:
+- Keep explanations VERY SHORT: maximum 15-20 seconds when spoken (about 60-80 words)
+- Be concise but engaging
+- One key concept or insight only
+- Use simple, clear language
+- Make it conversational and encouraging
+${language === 'hindi' ? '- RESPOND ONLY IN HINDI language (हिंदी में जवाब दें)' : '- RESPOND ONLY IN ENGLISH language'}
 
 STUDENT CONTEXT:
 - Exam: ${userExam || 'Competitive exam'}
@@ -1553,24 +1552,22 @@ STUDENT CONTEXT:
 
 ${userMessage ? `
 STUDENT QUESTION: "${userMessage}"
-${aiResponse ? `AI RESPONSE SUMMARY: "${aiResponse.substring(0, 200)}..."` : ''}
+${aiResponse ? `AI RESPONSE SUMMARY: "${aiResponse.substring(0, 100)}..."` : ''}
 
-Create a teaching voice explanation that:
-1. Acknowledges the student's question
-2. Explains the concept in an engaging, personal way
-3. Uses examples relevant to ${userExam || 'competitive'} exam preparation
-4. Guides the student through the thinking process
+Create a SHORT teaching voice explanation (60-80 words max) that:
+1. Briefly acknowledges the student's question
+2. Gives ONE key insight or tip
+3. Encourages the student
 ` : `
 TOPIC TO TEACH: "${topic}"
 
-Create a teaching voice explanation that:
-1. Introduces the topic in an engaging way
-2. Explains the core concept with examples
-3. Shows practical applications for ${userExam || 'competitive'} exam prep
-4. Motivates continued learning
+Create a SHORT teaching voice explanation (60-80 words max) that:
+1. Briefly introduces the key concept
+2. Gives one practical tip
+3. Motivates continued learning
 `}
 
-Generate ONLY the spoken explanation text (no markdown, no formatting). Make it sound natural and conversational.`;
+Generate ONLY the spoken explanation text (no markdown, no formatting). Keep it SHORT and conversational.`;
 
       const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -1583,7 +1580,7 @@ Generate ONLY the spoken explanation text (no markdown, no formatting). Make it 
           }
         ],
         temperature: 0.7,
-        max_tokens: 400
+        max_tokens: 150
       });
 
       const teachingExplanation = response.choices[0].message.content;
