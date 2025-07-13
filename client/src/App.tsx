@@ -38,6 +38,7 @@ import PrivacyPage from "./pages/privacy";
 import RefundPage from "./pages/refund";
 import ContactPage from "./pages/contact";
 import ShippingPage from "./pages/shipping";
+import LandingPage from "./pages/landing-page";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
                 <main className="flex-1">
                   <Switch>
                     <Route path="/" component={HomePage} />
+                    <Route path="/landing" component={LandingPage} />
                     <ProtectedRoute path="/dashboard" component={Dashboard} />
                     <ProtectedRoute path="/battle-zone" component={BattleZone} />
                     <ProtectedRoute path="/battle-zone-enhanced" component={BattleZoneEnhanced} />

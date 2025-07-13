@@ -1,0 +1,419 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  BookOpen, 
+  Brain, 
+  Trophy, 
+  Users, 
+  Star, 
+  CheckCircle, 
+  ArrowRight,
+  Zap,
+  Target,
+  Award,
+  TrendingUp,
+  Sparkles,
+  Clock,
+  Shield,
+  Heart
+} from "lucide-react";
+import { Link } from "wouter";
+
+export default function LandingPage() {
+  const examTypes = [
+    { name: "JEE", description: "Joint Entrance Examination", subjects: ["Physics", "Chemistry", "Mathematics"] },
+    { name: "NEET", description: "National Eligibility cum Entrance Test", subjects: ["Physics", "Chemistry", "Biology"] },
+    { name: "UPSC", description: "Union Public Service Commission", subjects: ["History", "Geography", "Political Science"] },
+    { name: "CLAT", description: "Common Law Admission Test", subjects: ["English", "Legal Reasoning", "Logical Reasoning"] },
+    { name: "CUET", description: "Common University Entrance Test", subjects: ["Physics", "Chemistry", "Mathematics"] },
+    { name: "CSE", description: "Computer Science Engineering", subjects: ["Programming", "Data Structures", "Algorithms"] },
+    { name: "CGLE", description: "Combined Graduate Level Examination", subjects: ["General Awareness", "Quantitative Aptitude"] }
+  ];
+
+  const features = [
+    {
+      icon: <Brain className="h-6 w-6" />,
+      title: "AI-Powered Tutoring",
+      description: "Get personalized explanations from GPT-4o powered AI tutors specialized in your exam"
+    },
+    {
+      icon: <BookOpen className="h-6 w-6" />,
+      title: "Interactive Visual Learning",
+      description: "Learn with AI-generated diagrams, interactive elements, and visual explanations"
+    },
+    {
+      icon: <Trophy className="h-6 w-6" />,
+      title: "Gamified Learning",
+      description: "Level up, earn XP, compete in battles, and track your progress with achievements"
+    },
+    {
+      icon: <Target className="h-6 w-6" />,
+      title: "Exam-Specific Content",
+      description: "Focused content tailored specifically for your target competitive examination"
+    },
+    {
+      icon: <Users className="h-6 w-6" />,
+      title: "Battle Arena",
+      description: "Compete with other students in real-time academic battles and challenges"
+    },
+    {
+      icon: <TrendingUp className="h-6 w-6" />,
+      title: "Performance Analytics",
+      description: "Track your progress with detailed analytics and personalized insights"
+    }
+  ];
+
+  const testimonials = [
+    {
+      name: "Priya Sharma",
+      exam: "NEET Aspirant",
+      content: "The AI tutor helped me understand complex Biology concepts with interactive diagrams. Scored 650+ in NEET!",
+      rating: 5
+    },
+    {
+      name: "Arjun Kumar",
+      exam: "JEE Aspirant", 
+      content: "Battle Arena made learning fun! Competing with friends improved my Physics and Math skills significantly.",
+      rating: 5
+    },
+    {
+      name: "Sneha Patel",
+      exam: "UPSC Aspirant",
+      content: "The voice-enabled AI tutor is amazing. I can learn while walking or during my commute. Very convenient!",
+      rating: 5
+    }
+  ];
+
+  const pricingPlans = [
+    {
+      name: "Free Trial",
+      price: "₹0",
+      duration: "1 Day",
+      features: [
+        "2 AI tutor sessions daily",
+        "10 AI tool uses daily", 
+        "Basic learning access",
+        "Limited battle participation"
+      ],
+      popular: false,
+      ctaText: "Start Free Trial"
+    },
+    {
+      name: "Basic Plan",
+      price: "₹299",
+      duration: "Per Month",
+      features: [
+        "Unlimited AI tutor access",
+        "50 AI tool uses daily",
+        "Full course library access",
+        "Battle Arena participation",
+        "Performance analytics"
+      ],
+      popular: true,
+      ctaText: "Choose Basic"
+    },
+    {
+      name: "Pro Plan", 
+      price: "₹499",
+      duration: "Per Month",
+      features: [
+        "Everything in Basic",
+        "Unlimited AI tool usage",
+        "Premium visual learning",
+        "Priority support",
+        "Advanced analytics",
+        "Mock test generator"
+      ],
+      popular: false,
+      ctaText: "Choose Pro"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+      {/* Navigation */}
+      <nav className="border-b border-white/10 bg-black/20 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <BookOpen className="h-6 w-6 text-white" />
+              </div>
+              <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Learnyzer
+              </div>
+            </div>
+            <div className="flex space-x-4">
+              <Link href="/login">
+                <Button variant="ghost" className="text-white hover:bg-white/10">
+                  Login
+                </Button>
+              </Link>
+              <Link href="/register">
+                <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
+                  Get Started Free
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="pt-20 pb-16 text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Badge className="mb-6 bg-blue-500/20 text-blue-300 border-blue-500/30">
+            <Sparkles className="h-4 w-4 mr-2" />
+            Free 1-Day Trial Available!
+          </Badge>
+          
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent leading-tight">
+            Master Competitive Exams with AI
+          </h1>
+          
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
+            India's most advanced AI-powered learning platform for JEE, NEET, UPSC, CLAT, CUET, CSE & CGLE preparation
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Link href="/register">
+              <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-lg px-8 py-4">
+                Start Free Trial
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 text-lg px-8 py-4">
+              Watch Demo
+              <Clock className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+          
+          <div className="flex flex-wrap justify-center gap-6 text-gray-400">
+            <div className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-green-400" />
+              <span>100% Safe & Secure</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Heart className="h-5 w-5 text-red-400" />
+              <span>Loved by 50,000+ Students</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Award className="h-5 w-5 text-yellow-400" />
+              <span>98% Success Rate</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Supported Exams */}
+      <section className="py-16 bg-black/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-white">
+            Comprehensive Exam Preparation
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {examTypes.map((exam, index) => (
+              <Card key={index} className="bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-white text-lg">{exam.name}</CardTitle>
+                  <CardDescription className="text-gray-300 text-sm">
+                    {exam.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-1">
+                    {exam.subjects.map((subject, subIndex) => (
+                      <Badge key={subIndex} variant="secondary" className="text-xs bg-blue-500/20 text-blue-300">
+                        {subject}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
+              Why Choose Learnyzer?
+            </h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Experience the future of learning with our AI-powered educational platform
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <Card key={index} className="bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300">
+                <CardHeader>
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
+                    {feature.icon}
+                  </div>
+                  <CardTitle className="text-white">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-gray-300">
+                    {feature.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 bg-black/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-white">
+            What Students Say
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <Card key={index} className="bg-white/5 border-white/10">
+                <CardHeader>
+                  <div className="flex items-center gap-1 mb-2">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <CardTitle className="text-white text-lg">{testimonial.name}</CardTitle>
+                  <CardDescription className="text-blue-300">{testimonial.exam}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-300 italic">"{testimonial.content}"</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white">
+              Choose Your Learning Journey
+            </h2>
+            <p className="text-xl text-gray-300">
+              Affordable plans designed for Indian students
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {pricingPlans.map((plan, index) => (
+              <Card key={index} className={`relative ${plan.popular ? 'border-blue-500 bg-blue-500/10' : 'bg-white/5 border-white/10'} hover:scale-105 transition-all duration-300`}>
+                {plan.popular && (
+                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-600">
+                    Most Popular
+                  </Badge>
+                )}
+                <CardHeader className="text-center">
+                  <CardTitle className="text-white text-2xl">{plan.name}</CardTitle>
+                  <div className="text-3xl font-bold text-white">
+                    {plan.price}
+                    <span className="text-lg font-normal text-gray-300">/{plan.duration}</span>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-center gap-3 text-gray-300">
+                        <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/register">
+                    <Button className={`w-full ${plan.popular ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700' : 'bg-white/10 hover:bg-white/20'} transition-all duration-300`}>
+                      {plan.ctaText}
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+            Ready to Transform Your Learning?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8">
+            Join thousands of successful students who achieved their dreams with Learnyzer
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/register">
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4">
+                Start Your Free Trial Today
+                <Zap className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 text-lg px-8 py-4">
+              Contact Sales Team
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-black/40 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <BookOpen className="h-6 w-6 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-white">Learnyzer</div>
+              </div>
+              <p className="text-gray-400">
+                Empowering students to achieve their competitive exam goals through AI-powered learning.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-white font-semibold mb-4">Exams</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>JEE Preparation</li>
+                <li>NEET Preparation</li>
+                <li>UPSC Preparation</li>
+                <li>CLAT Preparation</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-white font-semibold mb-4">Features</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>AI Tutoring</li>
+                <li>Visual Learning</li>
+                <li>Battle Arena</li>
+                <li>Analytics</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-white font-semibold mb-4">Support</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>Help Center</li>
+                <li>Contact Us</li>
+                <li>Privacy Policy</li>
+                <li>Terms of Service</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 Learnyzer Edtech. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
