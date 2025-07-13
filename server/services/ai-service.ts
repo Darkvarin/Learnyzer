@@ -329,13 +329,13 @@ export const aiService = {
         
         // Define forbidden keywords for each exam type
         const examForbiddenKeywords: Record<string, string[]> = {
-          'jee': ['biology', 'botany', 'zoology', 'anatomy', 'physiology', 'genetics', 'ecology', 'evolution', 'cell', 'protein', 'dna', 'ecosystem'],
-          'neet': ['computer science', 'programming', 'algorithm', 'data structure', 'coding', 'software', 'database'],
-          'upsc': ['physics', 'chemistry', 'mathematics', 'calculus', 'algebra', 'trigonometry', 'force', 'velocity', 'acceleration', 'molecule', 'atom', 'reaction', 'formula', 'equation', 'theorem'],
-          'clat': ['physics', 'chemistry', 'biology', 'mathematics', 'calculus', 'algebra', 'molecule', 'atom', 'cell', 'genetics'],
-          'cuet': [], // CUET can have mixed subjects
-          'cse': ['history', 'geography', 'political science', 'economics', 'sociology', 'philosophy', 'polity'],
-          'cgle': ['physics', 'chemistry', 'biology', 'mathematics', 'calculus', 'algebra', 'molecule', 'atom', 'cell']
+          'jee': ['biology', 'botany', 'zoology', 'anatomy', 'physiology', 'genetics', 'ecology', 'evolution', 'cell', 'protein', 'dna', 'ecosystem', 'organism', 'species', 'biodiversity'],
+          'neet': ['computer science', 'programming', 'algorithm', 'data structure', 'coding', 'software', 'database', 'java', 'python', 'c++', 'html', 'css', 'javascript', 'networking', 'operating system'],
+          'upsc': ['physics', 'chemistry', 'mathematics', 'calculus', 'algebra', 'trigonometry', 'force', 'velocity', 'acceleration', 'molecule', 'atom', 'reaction', 'formula', 'equation', 'theorem', 'mass', 'energy', 'gravity', 'electric', 'magnetic'],
+          'clat': ['physics', 'chemistry', 'biology', 'mathematics', 'calculus', 'algebra', 'molecule', 'atom', 'cell', 'genetics', 'force', 'velocity', 'acceleration', 'theorem', 'equation', 'formula', 'programming', 'algorithm'],
+          'cuet': [], // CUET can have mixed subjects based on chosen combination
+          'cse': ['history', 'geography', 'political science', 'economics', 'sociology', 'philosophy', 'polity', 'constitution', 'government', 'ancient', 'medieval', 'modern', 'freedom struggle', 'independence'],
+          'cgle': ['physics', 'chemistry', 'biology', 'mathematics', 'calculus', 'algebra', 'molecule', 'atom', 'cell', 'force', 'velocity', 'theorem', 'equation', 'programming', 'algorithm', 'data structure']
         };
         
         const forbiddenKeywords = examForbiddenKeywords[user.track] || [];
