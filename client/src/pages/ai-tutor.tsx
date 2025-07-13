@@ -588,9 +588,18 @@ export default function AiTutor() {
         }
       }, 100);
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.error("AI tutor error:", error);
       const errorMessage = error.message || "Unknown error";
-      if (errorMessage.includes("Usage limit exceeded")) {
+      
+      // Check for 403 exam-specific subject validation error
+      if (error.status === 403 || errorMessage.includes("not available for") || errorMessage.includes("exam preparation")) {
+        toast({
+          title: "Subject Not Allowed",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      } else if (errorMessage.includes("Usage limit exceeded")) {
         toast({
           title: "Daily Limit Reached",
           description: "You've reached your daily AI chat limit. Upgrade your plan for unlimited access!",

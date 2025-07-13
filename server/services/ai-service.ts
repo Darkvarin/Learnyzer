@@ -13,6 +13,21 @@ const openai = new OpenAI({
 // Initialize analytics service for ecosystem awareness
 const analyticsService = new AnalyticsService();
 
+// Helper function to get allowed subjects for each exam type
+const getExamSubjects = (examType: string): string[] => {
+  const examSubjects: Record<string, string[]> = {
+    'jee': ['Physics', 'Chemistry', 'Mathematics'],
+    'neet': ['Physics', 'Chemistry', 'Biology'],
+    'upsc': ['History', 'Geography', 'Political Science', 'Economics', 'Public Administration', 'Sociology', 'Philosophy', 'Psychology'],
+    'clat': ['English', 'General Knowledge', 'Legal Reasoning', 'Logical Reasoning', 'Quantitative Techniques'],
+    'cuet': ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'English', 'General Knowledge'],
+    'cse': ['Programming', 'Data Structures', 'Algorithms', 'Operating Systems', 'Networks', 'Database Systems', 'Computer Architecture'],
+    'cgle': ['General Awareness', 'Quantitative Aptitude', 'English Language', 'Reasoning']
+  };
+  
+  return examSubjects[examType.toLowerCase()] || [];
+};
+
 // Middleware to check authentication
 const requireAuth = (req: Request, res: Response, next: () => void) => {
   if (!req.isAuthenticated() || !req.user) {
@@ -278,6 +293,45 @@ export const aiService = {
       
       if (!tutor) {
         return res.status(404).json({ message: "AI tutor not found" });
+      }
+
+      // CRITICAL: Exam-specific subject validation to prevent abuse
+      if (user?.track) {
+        const allowedSubjects = getExamSubjects(user.track);
+        
+        // Check explicit subject parameter
+        if (subject) {
+          const isSubjectAllowed = allowedSubjects.some(allowedSubj => 
+            allowedSubj.toLowerCase().includes(subject.toLowerCase()) || 
+            subject.toLowerCase().includes(allowedSubj.toLowerCase())
+          );
+          
+          if (!isSubjectAllowed) {
+            return res.status(403).json({ 
+              message: `Subject "${subject}" is not available for ${user.track} exam. Please focus on your exam-specific subjects: ${allowedSubjects.join(', ')}`,
+              allowedSubjects,
+              examType: user.track
+            });
+          }
+        }
+
+        // Also check message content for subject keywords
+        const messageToCheck = message.toLowerCase();
+        const forbiddenSubjects = ['biology', 'botany', 'zoology', 'anatomy', 'physiology', 'genetics', 'ecology', 'evolution'];
+        
+        if (user.track === 'jee') {
+          const containsBiology = forbiddenSubjects.some(forbidden => 
+            messageToCheck.includes(forbidden)
+          );
+          
+          if (containsBiology) {
+            return res.status(403).json({ 
+              message: `Biology topics are not available for JEE exam preparation. Please focus on JEE subjects: ${allowedSubjects.join(', ')}`,
+              allowedSubjects,
+              examType: user.track
+            });
+          }
+        }
       }
       
       // Get conversation history for context
