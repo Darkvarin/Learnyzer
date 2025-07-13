@@ -28,8 +28,10 @@ export function useTeachingVoice() {
     mutationFn: async (data: TeachingVoiceRequest): Promise<TeachingVoiceResponse> => {
       console.log('Sending teaching voice request:', data);
       const response = await apiRequest('POST', '/api/ai/teaching-voice', data);
-      console.log('Raw API response:', response);
-      return response;
+      console.log('Raw API response object:', response);
+      const jsonData = await response.json();
+      console.log('Parsed JSON data:', jsonData);
+      return jsonData;
     },
     onSuccess: (response) => {
       console.log('Teaching voice response:', response);
