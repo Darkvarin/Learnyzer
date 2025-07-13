@@ -101,6 +101,20 @@ export default function LandingPage() {
       ctaText: "Start Free Trial"
     },
     {
+      name: "Monthly Basic",
+      price: "₹799",
+      duration: "Per Month",
+      features: [
+        "Access to all AI tools",
+        "No AI tutor access",
+        "Basic analytics",
+        "Battle Arena participation",
+        "Monthly billing"
+      ],
+      popular: false,
+      ctaText: "Choose Basic"
+    },
+    {
       name: "Monthly Pro",
       price: "₹1,500",
       duration: "Per Month",
@@ -115,7 +129,35 @@ export default function LandingPage() {
       ctaText: "Choose Monthly Pro"
     },
     {
-      name: "Yearly Plan", 
+      name: "Quarterly",
+      price: "₹4,199",
+      duration: "3 Months",
+      features: [
+        "3 AI tutor lessons daily",
+        "All AI tools (40 uses/day)",
+        "Advanced analytics",
+        "Save ₹1,301 compared to monthly",
+        "Quarterly billing"
+      ],
+      popular: false,
+      ctaText: "Choose Quarterly"
+    },
+    {
+      name: "Half-Yearly",
+      price: "₹7,599",
+      duration: "6 Months",
+      features: [
+        "3 AI tutor lessons daily",
+        "All AI tools (40 uses/day)",
+        "Advanced analytics",
+        "Save ₹3,401 compared to monthly",
+        "6-month billing"
+      ],
+      popular: false,
+      ctaText: "Choose Half-Yearly"
+    },
+    {
+      name: "Yearly", 
       price: "₹12,999",
       duration: "Per Year",
       features: [
@@ -307,7 +349,7 @@ export default function LandingPage() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
             {pricingPlans.map((plan, index) => (
               <Card key={index} className={`relative ${plan.popular ? 'border-blue-500 bg-blue-500/10' : 'bg-white/5 border-white/10'} hover:scale-105 transition-all duration-300`}>
                 {plan.popular && (
