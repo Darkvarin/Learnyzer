@@ -462,14 +462,17 @@ export default function AiTutor() {
     onSuccess: (data: any) => {
       setMessage("");
       
-      // Handle AI response with voice TTS using current settings
+      // Handle AI response with intelligent teaching voice when enabled
       if (data.response && voiceEnabled) {
-        // Auto-speak the AI response when voice is enabled
+        // Use intelligent teaching voice instead of just reading the response
         setTimeout(() => {
-          speak(data.response, {
+          teachConcept({
+            userMessage: message,
+            aiResponse: data.response,
+            subject: currentSubject
+          }, {
             voicePreference: selectedVoice,
-            language: voiceLanguage,
-            rate: 1.1
+            language: voiceLanguage
           });
         }, 500);
       }
@@ -1104,21 +1107,18 @@ export default function AiTutor() {
                           onClick={() => {
                             const testTexts = {
                               hindi: {
-                                female: "नमस्ते! मैं आपकी AI शिक्षिका हूँ। क्या आप तैयार हैं?",
-                                male: "नमस्ते! मैं आपका AI शिक्षक हूँ। आइए शुरू करें।",
-                                auto: "नमस्ते! मैं आपका AI ट्यूटर हूँ।"
+                                neerja: "नमस्ते! मैं नीरजा हूँ, आपकी AI शिक्षिका। आज हम क्या सीखेंगे?",
+                                prabhat: "नमस्ते! मैं प्रभात हूँ, आपका AI शिक्षक। चलिए पढ़ाई शुरू करते हैं।",
+                                auto: "नमस्ते! मैं आपका AI ट्यूटर हूँ। आज क्या सीखना चाहते हैं?"
                               },
                               english: {
-                                female: "Hello! I am your female AI tutor with Indian accent. How are you today?",
-                                male: "Hello! I am your male AI tutor with Indian accent. Ready to learn?",
-                                auto: "Hello! I am your AI tutor with authentic Indian accent."
+                                neerja: "Hello! I'm Neerja, your female AI tutor. I have a clear Indian accent and I'm here to help you learn.",
+                                prabhat: "Hello! I'm Prabhat, your male AI tutor. With my Indian accent, I'll guide you through your studies.",
+                                auto: "Hello! I'm your AI tutor with authentic Indian pronunciation. Ready to explore new concepts?"
                               }
                             };
                             
-                            const genderKey = selectedVoice === 'neerja' ? 'female' : 
-                                            selectedVoice === 'prabhat' ? 'male' : 'auto';
-                            
-                            const testText = testTexts[voiceLanguage][genderKey];
+                            const testText = testTexts[voiceLanguage][selectedVoice];
                             
                             speak(testText, {
                               voicePreference: selectedVoice,
@@ -1127,8 +1127,8 @@ export default function AiTutor() {
                             });
                             
                             toast({
-                              title: "Voice Test",
-                              description: `Testing ${genderKey} voice in ${voiceLanguage} with Indian accent`,
+                              title: "Testing Voice",
+                              description: `${selectedVoice === 'neerja' ? 'Female (Neerja)' : selectedVoice === 'prabhat' ? 'Male (Prabhat)' : 'Auto Selection'} voice in ${voiceLanguage}`,
                               duration: 3000
                             });
                           }}
@@ -1302,6 +1302,9 @@ export default function AiTutor() {
                                           userMessage: (conversation as any).messages[idx - 1]?.content || "",
                                           aiResponse: msg.content,
                                           subject: currentSubject
+                                        }, {
+                                          voicePreference: selectedVoice,
+                                          language: voiceLanguage
                                         })}
                                         disabled={isGeneratingTeaching}
                                         className="text-xs bg-primary-500/10 border-primary-500/30 text-primary-300 hover:bg-primary-500/20"

@@ -30,18 +30,17 @@ export function useTeachingVoice() {
     },
     onSuccess: (response) => {
       console.log('Teaching voice response:', response);
-      if (response.teachingExplanation) {
-        console.log('Starting speech synthesis:', response.teachingExplanation);
-        // Automatically speak the teaching explanation
-        speak(response.teachingExplanation, { rate: 1.1, voicePreference: 'auto', language: 'english' });
-      }
+      // Note: Speech is now handled in teachConcept function with user voice settings
     },
     onError: (error) => {
       console.error('Error generating teaching voice:', error);
     }
   });
 
-  const teachConcept = async (data: TeachingVoiceRequest) => {
+  const teachConcept = async (data: TeachingVoiceRequest, voiceSettings?: {
+    voicePreference?: 'neerja' | 'prabhat' | 'auto';
+    language?: 'english' | 'hindi';
+  }) => {
     // If already speaking/teaching, stop it
     if (isSpeaking || isGenerating) {
       stopSpeaking();
@@ -51,7 +50,17 @@ export function useTeachingVoice() {
 
     setIsGenerating(true);
     try {
-      await generateTeachingVoice.mutateAsync(data);
+      const result = await generateTeachingVoice.mutateAsync(data);
+      // Speak the teaching explanation with user voice settings
+      if (result.teachingExplanation) {
+        setTimeout(() => {
+          speak(result.teachingExplanation, {
+            rate: 1.1,
+            voicePreference: voiceSettings?.voicePreference || 'auto',
+            language: voiceSettings?.language || 'english'
+          });
+        }, 100);
+      }
     } catch (error) {
       console.error('Teaching voice error:', error);
     } finally {
