@@ -28,22 +28,52 @@ export const generateMCQUtil = async (options: {
   examType?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
   questionType?: 'conceptual' | 'application' | 'mixed';
+  context?: {
+    userQuestion?: string;
+    aiResponse?: string;
+    conversationTopic?: string;
+  };
 }) => {
-  const { topic, subject = 'General', examType = 'general', difficulty = 'medium', questionType = 'mixed' } = options;
+  const { 
+    topic, 
+    subject = 'General', 
+    examType = 'general', 
+    difficulty = 'medium', 
+    questionType = 'mixed',
+    context 
+  } = options;
 
-  const prompt = `Generate 1 high-quality multiple choice question for ${examType} exam preparation.
+  // Enhanced prompt with context awareness
+  let prompt = `Generate 1 high-quality multiple choice question for ${examType} exam preparation.
 
 Topic: ${topic}
 Subject: ${subject}  
 Difficulty: ${difficulty}
-Type: ${questionType}
+Type: ${questionType}`;
 
-Requirements:
-1. Question must be exam-focused and directly test understanding of ${topic}
-2. Provide exactly 4 options (A, B, C, D)
-3. Include brief explanation for correct answer
-4. Keep explanation concise (2-3 lines max)
-5. Match ${examType} exam pattern and difficulty
+  // Add context if available for more relevant questions
+  if (context) {
+    prompt += `\n\nConversation Context:`;
+    if (context.userQuestion) {
+      prompt += `\nStudent's Question: ${context.userQuestion}`;
+    }
+    if (context.aiResponse) {
+      prompt += `\nAI Explanation: ${context.aiResponse}`;
+    }
+    if (context.conversationTopic) {
+      prompt += `\nConversation Topic: ${context.conversationTopic}`;
+    }
+  }
+
+  prompt += `\n\nRequirements:
+1. Question must be directly related to the specific topic "${topic}" discussed in the conversation
+2. Base the question on concepts that were just explained in the AI response (if provided)
+3. Test the student's understanding of what they just learned
+4. Provide exactly 4 options (A, B, C, D) with realistic distractors
+5. Include brief explanation for correct answer
+6. Keep explanation concise (2-3 lines max)
+7. Match ${examType} exam pattern and difficulty level
+8. Ensure the question tests comprehension of the specific concept discussed
 
 Respond with JSON in this exact format:
 {
@@ -733,7 +763,7 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
     }
     
     try {
-      const { topic, subject, examType, difficulty = 'medium', questionType = 'mixed' } = req.body;
+      const { topic, subject, examType, difficulty = 'medium', questionType = 'mixed', context } = req.body;
       
       if (!topic) {
         return res.status(400).json({ message: 'Topic is required' });
@@ -744,7 +774,8 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
         subject,
         examType,
         difficulty,
-        questionType
+        questionType,
+        context
       });
       
       return res.status(200).json(mcq);

@@ -130,15 +130,24 @@ export default function AiTutor() {
     setMcqLoading(prev => ({...prev, [messageIndex]: true}));
     
     try {
-      // Extract topic from the message content (simplified approach)
-      const topic = currentTopic || 'Current Topic';
+      // Get the user's question from conversation context
+      const userQuestion = (conversation as any)?.messages?.[messageIndex - 1]?.content || "";
+      
+      // Extract topic from AI response content using smart analysis
+      const contentTopic = extractTopicFromContent(messageContent, userQuestion);
       
       const response = await apiRequest('POST', '/api/ai/mcq/generate', {
-        topic,
+        topic: contentTopic,
         subject: currentSubject?.replace('_', ' ') || 'General',
         examType: userExam || 'general',
         difficulty: 'medium',
-        questionType: 'mixed'
+        questionType: 'mixed',
+        // Include context for better question generation
+        context: {
+          userQuestion: userQuestion,
+          aiResponse: messageContent.substring(0, 500), // First 500 chars for context
+          conversationTopic: currentTopic
+        }
       });
 
       const mcqData = await response.json();
@@ -154,6 +163,53 @@ export default function AiTutor() {
     } finally {
       setMcqLoading(prev => ({...prev, [messageIndex]: false}));
     }
+  };
+
+  // Helper function to extract topic from AI response content
+  const extractTopicFromContent = (messageContent: string, userQuestion: string) => {
+    // Try to extract topic from headers, keywords, or user question
+    const headers = messageContent.match(/^#+\s*(.+)$/gm);
+    if (headers && headers.length > 0) {
+      return headers[0].replace(/^#+\s*/, '').trim();
+    }
+    
+    // Look for key concepts in the AI response
+    const keywordPatterns = [
+      /about\s+(.+?)(?:\.|,|$)/i,
+      /concept of\s+(.+?)(?:\.|,|$)/i,
+      /formula for\s+(.+?)(?:\.|,|$)/i,
+      /theorem of\s+(.+?)(?:\.|,|$)/i,
+      /law of\s+(.+?)(?:\.|,|$)/i,
+      /principle of\s+(.+?)(?:\.|,|$)/i
+    ];
+    
+    for (const pattern of keywordPatterns) {
+      const match = messageContent.match(pattern);
+      if (match && match[1]) {
+        return match[1].trim();
+      }
+    }
+    
+    // Extract from user question if AI content doesn't have clear topic
+    if (userQuestion) {
+      const questionTopics = [
+        /explain\s+(.+?)(?:\?|$)/i,
+        /what is\s+(.+?)(?:\?|$)/i,
+        /tell me about\s+(.+?)(?:\?|$)/i,
+        /help with\s+(.+?)(?:\?|$)/i,
+        /solve\s+(.+?)(?:\?|$)/i
+      ];
+      
+      for (const pattern of questionTopics) {
+        const match = userQuestion.match(pattern);
+        if (match && match[1]) {
+          return match[1].trim();
+        }
+      }
+    }
+    
+    // Fallback to current topic or subject
+    return currentTopic || currentSubject?.replace('_', ' ') || 'Current Topic';
   };
   
   // Parse URL parameters if coming from course page

@@ -599,6 +599,12 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - **Female-Only Voice System:** Simplified AI tutor to use only female voices for Akira (Neerja for English, Swara for Hindi/Hinglish)
   - **Removed Male Voice Options:** Eliminated Prabhat and auto selection to ensure consistent female teacher experience
   - **Clean Voice Interface:** Removed all debug test buttons and simplified voice controls to just enable/disable toggle
+- July 13, 2025: Context-aware MCQ generation system implementation
+  - Enhanced MCQ generation to use actual conversation context instead of generic topics
+  - Added intelligent topic extraction from AI responses using pattern matching for headers, concepts, formulas, and theorems
+  - MCQ questions now directly relate to the specific content discussed in chat conversations
+  - Improved backend MCQ generation with conversation context including user questions and AI explanations
+  - Students now get relevant test questions based on what they just learned from the AI tutor
 
 ## User Preferences
 
