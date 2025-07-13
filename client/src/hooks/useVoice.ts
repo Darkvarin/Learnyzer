@@ -128,146 +128,90 @@ export function useVoice() {
       
       let selectedVoice = null;
       
+      // PRIORITY 1: Always try to find Indian voices first
+      const indianEnglishVoices = voices.filter(voice => 
+        voice.lang.includes('en-IN') || 
+        voice.name.includes('India') ||
+        voice.name.includes('Neerja') ||
+        voice.name.includes('Prabhat')
+      );
+      
+      const indianHindiVoices = voices.filter(voice => 
+        voice.lang.includes('hi-IN') || 
+        voice.lang.includes('hi') ||
+        voice.name.toLowerCase().includes('hindi') ||
+        voice.name.includes('Madhur') ||
+        voice.name.includes('Swara')
+      );
+
       // Voice selection logic based on preference
       if (voicePreference === 'neerja') {
-        // Look for female voices - Neerja or any female-sounding name
-        const femaleVoiceNames = [
-          'neerja', 'aditi', 'kavya', 'priya', 'shreya', 'riya', 'ananya', 'siri', 
-          'samantha', 'victoria', 'susan', 'karen', 'zira', 'heera', 'female'
-        ];
-        
-        selectedVoice = voices.find(voice => 
-          femaleVoiceNames.some(name => 
-            voice.name.toLowerCase().includes(name)
-          )
-        );
-        
-        // If no female name found, try pitch/gender detection by looking at voice characteristics
-        if (!selectedVoice) {
-          // Often female voices are the first in each language group
-          const indianVoices = voices.filter(voice => 
-            voice.lang.includes('en-IN') || voice.lang.includes('en')
+        // PRIORITY: Indian female voices first
+        if (language === 'english' && indianEnglishVoices.length > 0) {
+          selectedVoice = indianEnglishVoices.find(v => v.name.includes('Neerja')) || indianEnglishVoices[0];
+        } else if (language === 'hindi' && indianHindiVoices.length > 0) {
+          // For Hindi, prefer Swara over Madhur (Madhur is male)
+          selectedVoice = indianHindiVoices.find(v => v.name.includes('Swara')) || 
+                         indianHindiVoices.find(v => !v.name.includes('Madhur')) ||
+                         indianHindiVoices[0];
+        } else {
+          // Fallback to any female-sounding voice
+          const femaleVoiceNames = ['neerja', 'swara', 'aditi', 'kavya', 'priya', 'heera', 'female'];
+          selectedVoice = voices.find(voice => 
+            femaleVoiceNames.some(name => 
+              voice.name.toLowerCase().includes(name)
+            )
           );
-          // Try to pick voices that are likely female (often have higher pitch characteristics in name)
-          selectedVoice = indianVoices.find((voice, index) => index % 2 === 0);
         }
         
       } else if (voicePreference === 'prabhat') {
-        // Look for male voices - Prabhat or any male-sounding name  
-        const maleVoiceNames = [
-          'prabhat', 'ravi', 'arjun', 'vikash', 'mukul', 'alex', 'daniel', 'mark', 
-          'david', 'paul', 'adam', 'male', 'man'
-        ];
-        
-        selectedVoice = voices.find(voice => 
-          maleVoiceNames.some(name => 
-            voice.name.toLowerCase().includes(name)
-          )
-        );
-        
-        // If no male name found, try to pick voices that are likely male
-        if (!selectedVoice) {
-          const indianVoices = voices.filter(voice => 
-            voice.lang.includes('en-IN') || voice.lang.includes('en')
+        // PRIORITY: Indian male voices first
+        if (language === 'english' && indianEnglishVoices.length > 0) {
+          selectedVoice = indianEnglishVoices.find(v => v.name.includes('Prabhat')) || 
+                         indianEnglishVoices.find(v => !v.name.includes('Neerja')) ||
+                         indianEnglishVoices[0];
+        } else if (language === 'hindi' && indianHindiVoices.length > 0) {
+          // For Hindi, prefer Madhur (male voice)
+          selectedVoice = indianHindiVoices.find(v => v.name.includes('Madhur')) || indianHindiVoices[0];
+        } else {
+          // Fallback to any male-sounding voice  
+          const maleVoiceNames = ['prabhat', 'madhur', 'ravi', 'arjun', 'vikash', 'male'];
+          selectedVoice = voices.find(voice => 
+            maleVoiceNames.some(name => 
+              voice.name.toLowerCase().includes(name)
+            )
           );
-          // Try to pick voices that are likely male (often odd-indexed or deeper sounding)
-          selectedVoice = indianVoices.find((voice, index) => index % 2 === 1);
         }
         
       } else {
-        // Auto selection - prefer actual Indian voices first
-        const indianVoicePriority = [
-          'Microsoft Neerja Online (Natural) - English (India)',
-          'Microsoft Prabhat Online (Natural) - English (India)', 
-          'Ravi', 'Veena', 'Aditi', 'Kavya'
-        ];
-        
-        for (const preferredName of indianVoicePriority) {
-          selectedVoice = voices.find(voice => voice.name === preferredName);
-          if (selectedVoice) break;
-        }
-        
-        // If no exact match, try language and name patterns
-        if (!selectedVoice) {
-          selectedVoice = voices.find(voice => 
-            voice.lang.includes('en-IN') || 
-            voice.name.toLowerCase().includes('indian') ||
-            voice.name.toLowerCase().includes('ravi') ||
-            voice.name.toLowerCase().includes('veena') ||
-            voice.name.toLowerCase().includes('aditi') ||
-            voice.name.toLowerCase().includes('kavya')
-          );
-        }
-      }
-      
-      // Force Indian English voices for English language (not American accent)
-      if (language === 'english') {
-        // Override with Indian English voices when available
-        const indianEnglishVoices = voices.filter(voice => 
-          voice.lang.includes('en-IN') || 
-          voice.name.includes('India') ||
-          voice.name.includes('Neerja') ||
-          voice.name.includes('Prabhat')
-        );
-        
-        if (indianEnglishVoices.length > 0) {
-          if (voicePreference === 'neerja') {
-            selectedVoice = indianEnglishVoices.find(v => v.name.includes('Neerja')) || indianEnglishVoices[0];
-          } else if (voicePreference === 'prabhat') {
-            selectedVoice = indianEnglishVoices.find(v => v.name.includes('Prabhat')) || indianEnglishVoices[0];
-          } else {
-            // Auto: prefer any Indian English voice over American
-            selectedVoice = indianEnglishVoices[0];
-          }
-        }
-      }
-      
-      // For Hindi language, respect gender preference and find appropriate Hindi voices
-      if (language === 'hindi') {
-        let hindiVoices = voices.filter(voice => 
-          voice.lang.includes('hi-IN') || 
-          voice.lang.includes('hi') ||
-          voice.name.toLowerCase().includes('hindi')
-        );
-        
-        if (hindiVoices.length > 0) {
-          if (voicePreference === 'neerja') {
-            // Look for female Hindi voices
-            const femaleHindiVoice = hindiVoices.find(voice => 
-              voice.name.toLowerCase().includes('heera') ||
-              voice.name.toLowerCase().includes('kalpana') ||
-              voice.name.toLowerCase().includes('swara') ||
-              !voice.name.toLowerCase().includes('madhur') && // Madhur is male
-              !voice.name.toLowerCase().includes('prabhat')
-            );
-            if (femaleHindiVoice) {
-              selectedVoice = femaleHindiVoice;
-            } else {
-              // Fallback: use Indian English female voice for Hinglish
-              const indianFemaleVoice = voices.find(voice => 
-                voice.name.includes('Neerja') || 
-                (voice.lang.includes('en-IN') && voice.name.toLowerCase().includes('female'))
-              );
-              if (indianFemaleVoice) {
-                selectedVoice = indianFemaleVoice;
-              }
-            }
-          } else if (voicePreference === 'prabhat') {
-            // Look for male Hindi voices (Madhur is typically male)
-            const maleHindiVoice = hindiVoices.find(voice => 
-              voice.name.toLowerCase().includes('madhur') ||
-              voice.name.toLowerCase().includes('prabhat')
-            );
-            selectedVoice = maleHindiVoice || hindiVoices[0];
-          } else {
-            // Auto: prefer any Hindi voice
-            selectedVoice = hindiVoices[0];
-          }
+        // Auto selection - prefer Indian voices always
+        if (language === 'english' && indianEnglishVoices.length > 0) {
+          // Prefer Neerja or Prabhat for Indian English
+          selectedVoice = indianEnglishVoices.find(v => v.name.includes('Neerja')) ||
+                         indianEnglishVoices.find(v => v.name.includes('Prabhat')) ||
+                         indianEnglishVoices[0];
+        } else if (language === 'hindi' && indianHindiVoices.length > 0) {
+          // For Hindi auto, prefer any Indian Hindi voice
+          selectedVoice = indianHindiVoices[0];
         } else {
-          // If no Hindi voice found, use selected Indian English voice (they can speak Hindi too)
-          // Keep the previously selected voice
+          // Ultimate fallback - try any available voice
+          const indianVoiceNames = ['neerja', 'prabhat', 'ravi', 'veena', 'aditi', 'kavya'];
+          for (const name of indianVoiceNames) {
+            selectedVoice = voices.find(voice => voice.name.toLowerCase().includes(name));
+            if (selectedVoice) break;
+          }
         }
       }
+      
+      // Additional debug logging
+      console.log('Voice selection details:', {
+        voicePreference,
+        language,
+        selectedVoiceName: selectedVoice?.name,
+        selectedVoiceLang: selectedVoice?.lang,
+        indianEnglishCount: indianEnglishVoices.length,
+        indianHindiCount: indianHindiVoices.length
+      });
       
       if (selectedVoice) {
         utterance.voice = selectedVoice;
@@ -279,7 +223,7 @@ export function useVoice() {
         }
       }
       
-      utterance.rate = options?.rate || 0.85; // Slower pace for better comprehension
+      utterance.rate = options?.rate || 0.95; // Adjusted pace for better comprehension
       utterance.pitch = options?.pitch || 1.0;
       utterance.volume = options?.volume || 1.0;
       
@@ -303,7 +247,7 @@ export function useVoice() {
           console.warn('Speech synthesis failed - retrying with fallback voice');
           // Try again with system default voice
           const fallbackUtterance = new SpeechSynthesisUtterance(cleanText);
-          fallbackUtterance.rate = options?.rate || 0.85;
+          fallbackUtterance.rate = options?.rate || 0.95;
           fallbackUtterance.pitch = options?.pitch || 1.0;
           fallbackUtterance.volume = options?.volume || 1.0;
           fallbackUtterance.onend = () => setIsSpeaking(false);

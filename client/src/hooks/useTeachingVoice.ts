@@ -71,7 +71,7 @@ export function useTeachingVoice() {
         
         // Try immediate speech first (works better after user interaction)
         speak(result.teachingExplanation, {
-          rate: 0.85, // Slower rate for better comprehension
+          rate: 0.95, // Adjusted rate for better comprehension
           voicePreference: voiceSettings?.voicePreference || 'auto',
           language: voiceSettings?.language || 'english'
         });
