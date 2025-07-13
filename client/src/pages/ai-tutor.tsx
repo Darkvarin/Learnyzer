@@ -248,6 +248,8 @@ export default function AiTutor() {
   // Help modal state
   const [showHelpModal, setShowHelpModal] = useState(false);
   
+
+  
   // Canvas display functionality for AI-generated content
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -2123,6 +2125,9 @@ export default function AiTutor() {
               <HelpCircle className="h-5 w-5 text-primary-400" />
               How to Use AI Tutor - Quick Guide
             </DialogTitle>
+            <DialogDescription>
+              Comprehensive guide to using all AI tutor features for effective learning
+            </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-6 text-sm">
