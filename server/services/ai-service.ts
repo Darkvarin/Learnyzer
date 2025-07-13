@@ -324,26 +324,42 @@ export const aiService = {
           }
         }
 
-        // Also check message content for subject keywords - ONLY BLOCK JEE STUDENTS FROM BIOLOGY
+        // Check message content for exam-specific subject keywords
         const messageToCheck = message.toLowerCase();
-        const forbiddenSubjects = ['biology', 'botany', 'zoology', 'anatomy', 'physiology', 'genetics', 'ecology', 'evolution'];
         
-        if (user.track === 'jee') {
-          console.log(`[AI Tutor] JEE student detected, checking for biology keywords in message: ${messageToCheck.substring(0, 100)}...`);
-          const containsBiology = forbiddenSubjects.some(forbidden => 
+        // Define forbidden keywords for each exam type
+        const examForbiddenKeywords: Record<string, string[]> = {
+          'jee': ['biology', 'botany', 'zoology', 'anatomy', 'physiology', 'genetics', 'ecology', 'evolution', 'cell', 'protein', 'dna', 'ecosystem'],
+          'neet': ['computer science', 'programming', 'algorithm', 'data structure', 'coding', 'software', 'database'],
+          'upsc': ['physics', 'chemistry', 'mathematics', 'calculus', 'algebra', 'trigonometry', 'force', 'velocity', 'acceleration', 'molecule', 'atom', 'reaction', 'formula', 'equation', 'theorem'],
+          'clat': ['physics', 'chemistry', 'biology', 'mathematics', 'calculus', 'algebra', 'molecule', 'atom', 'cell', 'genetics'],
+          'cuet': [], // CUET can have mixed subjects
+          'cse': ['history', 'geography', 'political science', 'economics', 'sociology', 'philosophy', 'polity'],
+          'cgle': ['physics', 'chemistry', 'biology', 'mathematics', 'calculus', 'algebra', 'molecule', 'atom', 'cell']
+        };
+        
+        const forbiddenKeywords = examForbiddenKeywords[user.track] || [];
+        
+        if (forbiddenKeywords.length > 0) {
+          console.log(`[AI Tutor] ${user.track.toUpperCase()} student detected, checking for forbidden keywords in message: ${messageToCheck.substring(0, 100)}...`);
+          const containsForbidden = forbiddenKeywords.some(forbidden => 
             messageToCheck.includes(forbidden)
           );
           
-          if (containsBiology) {
-            console.log(`[AI Tutor] Biology keywords found in JEE student's message - blocking request`);
+          if (containsForbidden) {
+            const matchedKeyword = forbiddenKeywords.find(forbidden => messageToCheck.includes(forbidden));
+            console.log(`[AI Tutor] Forbidden keyword "${matchedKeyword}" found in ${user.track.toUpperCase()} student's message - blocking request`);
             return res.status(403).json({ 
-              message: `Biology topics are not available for ${user.track.toUpperCase()} exam preparation. Please focus on: ${allowedSubjects.join(', ')}`,
+              message: `This topic is not relevant for ${user.track.toUpperCase()} exam preparation. Please focus on: ${allowedSubjects.join(', ')}`,
               allowedSubjects,
-              examType: user.track
+              examType: user.track,
+              blockedKeyword: matchedKeyword
             });
+          } else {
+            console.log(`[AI Tutor] No forbidden keywords found in ${user.track.toUpperCase()} student's message`);
           }
         } else {
-          console.log(`[AI Tutor] Non-JEE student (${user.track}), biology keywords allowed`);
+          console.log(`[AI Tutor] ${user.track.toUpperCase()} student - no keyword restrictions defined`);
         }
       } else {
         console.log(`[AI Tutor] User has no exam track set, allowing all subjects`);
@@ -354,6 +370,15 @@ export const aiService = {
       
       // Enhanced system prompt for topic-focused, immersive experience with ecosystem awareness
       const systemPrompt = `You are ${tutor.name}, an expert AI tutor specializing in ${tutor.specialty} for Indian competitive exams (JEE, NEET, UPSC, CLAT, CUET, CSE).
+
+🚨 CRITICAL EXAM-SPECIFIC RESTRICTIONS:
+${user?.track ? `
+- This student is preparing for ${user.track.toUpperCase()} exam ONLY
+- ALLOWED SUBJECTS ONLY: ${getExamSubjects(user.track).join(', ')}
+- NEVER provide content outside these subjects
+- If asked about forbidden subjects, politely redirect to allowed subjects
+- Focus ALL responses on ${user.track.toUpperCase()}-specific content and patterns
+` : '- Student has not selected specific exam track yet'}
 
 Student Profile:
 - Name: ${user?.name}
