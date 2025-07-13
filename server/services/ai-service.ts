@@ -74,12 +74,22 @@ Type: ${questionType}`;
 6. Keep explanation concise (2-3 lines max)
 7. Match ${examType} exam pattern and difficulty level
 8. Ensure the question tests comprehension of the specific concept discussed
+9. IMPORTANT: For mathematical expressions, wrap them in double dollar signs for proper rendering: $$\\frac{1}{4\\pi \\varepsilon_0} \\cdot \\frac{qd}{r^2}$$
+10. Use proper LaTeX formatting for all formulas, equations, and mathematical symbols
+11. Escape backslashes properly in JSON (use double backslashes: \\\\frac instead of \\frac)
+
+Mathematical Formatting Examples:
+- Fractions: $$\\frac{numerator}{denominator}$$
+- Square roots: $$\\sqrt{expression}$$
+- Superscripts: $$x^2$$
+- Subscripts: $$x_0$$
+- Greek letters: $$\\alpha, \\beta, \\gamma, \\varepsilon_0$$
 
 Respond with JSON in this exact format:
 {
   "question": "Question text here?",
   "options": {
-    "A": "Option A text",
+    "A": "Option A text with $$\\frac{formula}{here}$$ if needed",
     "B": "Option B text", 
     "C": "Option C text",
     "D": "Option D text"

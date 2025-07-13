@@ -26,6 +26,23 @@ interface MCQProps {
   onComplete?: (isCorrect: boolean) => void;
 }
 
+// Helper function to process LaTeX text and ensure proper math rendering
+const processLatexText = (text: string): string => {
+  // Convert raw LaTeX expressions to proper math blocks
+  return text
+    // Convert single dollar signs to double dollar signs for block math
+    .replace(/\\\(([^)]+)\\\)/g, '$$$$1$$')
+    // Ensure fractions are properly formatted
+    .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$$\\frac{$1}{$2}$$')
+    // Wrap standalone LaTeX expressions in math blocks
+    .replace(/(\\\w+(?:\{[^}]*\})*(?:\s*\\\w+(?:\{[^}]*\})*)*)/g, (match) => {
+      if (!match.startsWith('$$') && !match.endsWith('$$')) {
+        return '$$' + match + '$$';
+      }
+      return match;
+    });
+};
+
 export function MCQComponent({ 
   question, 
   options, 
@@ -160,7 +177,7 @@ export function MCQComponent({
               code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>
             }}
           >
-            {question}
+            {processLatexText(question)}
           </ReactMarkdown>
         </div>
 
@@ -185,7 +202,7 @@ export function MCQComponent({
                       code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>
                     }}
                   >
-                    {value}
+                    {processLatexText(value)}
                   </ReactMarkdown>
                 </div>
               </div>
@@ -221,7 +238,7 @@ export function MCQComponent({
                       code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>
                     }}
                   >
-                    {feedback}
+                    {processLatexText(feedback)}
                   </ReactMarkdown>
                 </div>
               </div>
@@ -242,7 +259,7 @@ export function MCQComponent({
                   code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>
                 }}
               >
-                {explanation}
+                {processLatexText(explanation)}
               </ReactMarkdown>
             </div>
           </div>

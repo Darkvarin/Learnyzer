@@ -605,6 +605,13 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - MCQ questions now directly relate to the specific content discussed in chat conversations
   - Improved backend MCQ generation with conversation context including user questions and AI explanations
   - Students now get relevant test questions based on what they just learned from the AI tutor
+- July 13, 2025: Mathematical formula rendering system for MCQ components
+  - Fixed LaTeX formulas displaying as raw text instead of proper mathematical notation
+  - Enhanced MCQ generation prompts to produce properly formatted LaTeX with double backslashes
+  - Added processLatexText helper function to automatically wrap LaTeX expressions in math blocks
+  - Integrated KaTeX rendering for fractions, equations, Greek letters, and complex mathematical expressions
+  - MCQ questions, options, feedback, and explanations now display beautiful formatted mathematics
+  - Students see proper mathematical notation like formatted fractions instead of confusing raw LaTeX code
 
 ## User Preferences
 
