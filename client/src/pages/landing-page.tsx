@@ -18,9 +18,27 @@ import {
   Shield,
   Heart
 } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 export default function LandingPage() {
+  const [, setLocation] = useLocation();
+
+  const handlePlanSelection = (planName: string) => {
+    // For free trial, go to registration
+    if (planName === "Free Trial") {
+      setLocation("/register");
+      return;
+    }
+    
+    // For paid plans, go to subscription page with plan selected
+    const planId = planName === "Monthly Basic" ? "basic" :
+                   planName === "Monthly Pro" ? "pro" :
+                   planName === "Quarterly" ? "quarterly" :
+                   planName === "Half-Yearly" ? "half_yearly" :
+                   planName === "Yearly" ? "yearly" : "basic";
+    
+    setLocation(`/subscription?plan=${planId}`);
+  };
   const examTypes = [
     { name: "JEE", description: "Joint Entrance Examination", subjects: ["Physics", "Chemistry", "Mathematics"] },
     { name: "NEET", description: "National Eligibility cum Entrance Test", subjects: ["Physics", "Chemistry", "Biology"] },
@@ -219,12 +237,14 @@ export default function LandingPage() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Link href="/register">
-              <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-lg px-8 py-4">
-                Start Free Trial
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              onClick={() => handlePlanSelection("Free Trial")}
+              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-lg px-8 py-4"
+            >
+              Start Free Trial
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
             <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 text-lg px-8 py-4">
               Watch Demo
               <Clock className="ml-2 h-5 w-5" />
@@ -373,11 +393,12 @@ export default function LandingPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link href="/register">
-                    <Button className={`w-full ${plan.popular ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700' : 'bg-white/10 hover:bg-white/20'} transition-all duration-300`}>
-                      {plan.ctaText}
-                    </Button>
-                  </Link>
+                  <Button 
+                    onClick={() => handlePlanSelection(plan.name)}
+                    className={`w-full ${plan.popular ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700' : 'bg-white/10 hover:bg-white/20'} transition-all duration-300`}
+                  >
+                    {plan.ctaText}
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -395,12 +416,14 @@ export default function LandingPage() {
             Join thousands of successful students who achieved their dreams with Learnyzer
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4">
-                Start Your Free Trial Today
-                <Zap className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              onClick={() => handlePlanSelection("Free Trial")}
+              className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-4"
+            >
+              Start Your Free Trial Today
+              <Zap className="ml-2 h-5 w-5" />
+            </Button>
             <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 text-lg px-8 py-4">
               Contact Sales Team
             </Button>
