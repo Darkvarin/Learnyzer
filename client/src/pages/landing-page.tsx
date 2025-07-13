@@ -66,21 +66,21 @@ export default function LandingPage() {
 
   const testimonials = [
     {
-      name: "Priya Sharma",
-      exam: "NEET Aspirant",
-      content: "The AI tutor helped me understand complex Biology concepts with interactive diagrams. Scored 650+ in NEET!",
+      name: "NEET Student",
+      exam: "Medical Entrance Preparation",
+      content: "The AI tutor helped me understand complex Biology concepts with interactive diagrams. The visual learning approach is excellent.",
       rating: 5
     },
     {
-      name: "Arjun Kumar",
-      exam: "JEE Aspirant", 
-      content: "Battle Arena made learning fun! Competing with friends improved my Physics and Math skills significantly.",
+      name: "JEE Aspirant",
+      exam: "Engineering Entrance Preparation", 
+      content: "Battle Arena made learning fun! Competing with other students improved my Physics and Math problem-solving skills.",
       rating: 5
     },
     {
-      name: "Sneha Patel",
-      exam: "UPSC Aspirant",
-      content: "The voice-enabled AI tutor is amazing. I can learn while walking or during my commute. Very convenient!",
+      name: "UPSC Candidate",
+      exam: "Civil Services Preparation",
+      content: "The voice-enabled AI tutor is amazing. I can learn while commuting or during breaks. Very convenient and effective!",
       rating: 5
     }
   ];
@@ -91,42 +91,42 @@ export default function LandingPage() {
       price: "₹0",
       duration: "1 Day",
       features: [
-        "2 AI tutor sessions daily",
-        "10 AI tool uses daily", 
-        "Basic learning access",
-        "Limited battle participation"
+        "5 AI chat sessions",
+        "3 visual lab generations", 
+        "2 AI tutor sessions",
+        "1 visual learning package",
+        "Basic exam preparation content"
       ],
       popular: false,
       ctaText: "Start Free Trial"
     },
     {
-      name: "Basic Plan",
-      price: "₹299",
+      name: "Monthly Pro",
+      price: "₹1,500",
       duration: "Per Month",
       features: [
-        "Unlimited AI tutor access",
-        "50 AI tool uses daily",
-        "Full course library access",
+        "2 AI tutor lessons daily",
+        "All AI tools (20 uses/day)",
+        "Performance analytics",
         "Battle Arena participation",
-        "Performance analytics"
+        "Full course library access"
       ],
       popular: true,
-      ctaText: "Choose Basic"
+      ctaText: "Choose Monthly Pro"
     },
     {
-      name: "Pro Plan", 
-      price: "₹499",
-      duration: "Per Month",
+      name: "Yearly Plan", 
+      price: "₹12,999",
+      duration: "Per Year",
       features: [
-        "Everything in Basic",
-        "Unlimited AI tool usage",
-        "Premium visual learning",
+        "3 AI tutor lessons daily",
+        "All AI tools (40 uses/day)",
         "Priority support",
         "Advanced analytics",
-        "Mock test generator"
+        "Save ₹5,001 compared to monthly"
       ],
       popular: false,
-      ctaText: "Choose Pro"
+      ctaText: "Choose Yearly"
     }
   ];
 
