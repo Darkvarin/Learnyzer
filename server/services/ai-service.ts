@@ -308,7 +308,7 @@ export const aiService = {
           
           if (!isSubjectAllowed) {
             return res.status(403).json({ 
-              message: `Subject "${subject}" is not available for ${user.track} exam. Please focus on your exam-specific subjects: ${allowedSubjects.join(', ')}`,
+              message: `This subject is not available for ${user.track.toUpperCase()} exam preparation. Please focus on: ${allowedSubjects.join(', ')}`,
               allowedSubjects,
               examType: user.track
             });
@@ -326,7 +326,7 @@ export const aiService = {
           
           if (containsBiology) {
             return res.status(403).json({ 
-              message: `Biology topics are not available for JEE exam preparation. Please focus on JEE subjects: ${allowedSubjects.join(', ')}`,
+              message: `Biology topics are not available for ${user.track.toUpperCase()} exam preparation. Please focus on: ${allowedSubjects.join(', ')}`,
               allowedSubjects,
               examType: user.track
             });

@@ -595,8 +595,8 @@ export default function AiTutor() {
       // Check for 403 exam-specific subject validation error
       if (error.status === 403 || errorMessage.includes("not available for") || errorMessage.includes("exam preparation")) {
         toast({
-          title: "Subject Not Allowed",
-          description: errorMessage,
+          title: "Subject Restricted",
+          description: errorMessage.length > 100 ? errorMessage.substring(0, 97) + "..." : errorMessage,
           variant: "destructive",
         });
       } else if (errorMessage.includes("Usage limit exceeded")) {
