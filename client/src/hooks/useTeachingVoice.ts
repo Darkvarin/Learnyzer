@@ -72,7 +72,7 @@ export function useTeachingVoice() {
         // Try immediate speech first (works better after user interaction)
         speak(result.teachingExplanation, {
           rate: 0.95, // Adjusted rate for better comprehension
-          voicePreference: voiceSettings?.voicePreference || 'auto',
+          voicePreference: 'neerja', // Always use female voice
           language: voiceSettings?.language || 'english'
         });
       } else {

@@ -595,8 +595,9 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Teaching voice now generates intelligent explanations using GPT-4o instead of just reading AI responses
   - **Language and Accent Optimization:** Enhanced Hinglish content generation with natural Hindi+English mix
   - **Voice Selection Enhancement:** Prioritized Indian English accents over American accents for authentic experience
-  - **Speech Rate Optimization:** Reduced TTS speed from 1.1x to 0.85x for improved student comprehension
-  - **Gender-Aware Voice Selection:** Fixed female voice selection for Hinglish to avoid male voices when "Neerja" selected
+  - **Speech Rate Optimization:** Reduced TTS speed from 1.1x to 0.95x for improved student comprehension
+  - **Female-Only Voice System:** Simplified AI tutor to use only female voices (Neerja for English, Swara for Hindi/Hinglish)
+  - **Removed Male Voice Options:** Eliminated Prabhat and auto selection to ensure consistent female teacher experience
 
 ## User Preferences
 

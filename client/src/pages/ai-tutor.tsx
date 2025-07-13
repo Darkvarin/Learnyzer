@@ -168,7 +168,7 @@ export default function AiTutor() {
   
   // Voice and language settings
   const [voiceLanguage, setVoiceLanguage] = useState<'english' | 'hindi'>('english');
-  const [selectedVoice, setSelectedVoice] = useState<'neerja' | 'prabhat' | 'auto'>('auto');
+  const [selectedVoice, setSelectedVoice] = useState<'neerja'>('neerja');
   
   // Add ref for auto-scrolling chat
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -1054,38 +1054,14 @@ export default function AiTutor() {
                       {/* Voice Selection */}
                       <div className="flex gap-1">
                         <button
-                          onClick={() => setSelectedVoice('neerja')}
-                          className={`px-2 py-1 text-xs rounded transition-all ${
-                            selectedVoice === 'neerja'
-                              ? 'bg-pink-500/30 text-pink-100'
-                              : 'text-pink-400 hover:text-pink-300'
-                          }`}
-                          title="Female Voice - Indian Accent"
+                          className="px-3 py-1 text-xs rounded transition-all bg-pink-500/30 text-pink-100"
+                          title="Female Voice - Indian Accent (Only Option)"
                         >
-                          👩
+                          👩 Neerja
                         </button>
-                        <button
-                          onClick={() => setSelectedVoice('prabhat')}
-                          className={`px-2 py-1 text-xs rounded transition-all ${
-                            selectedVoice === 'prabhat'
-                              ? 'bg-blue-500/30 text-blue-100'
-                              : 'text-blue-400 hover:text-blue-300'
-                          }`}
-                          title="Male Voice - Indian Accent"
-                        >
-                          👨
-                        </button>
-                        <button
-                          onClick={() => setSelectedVoice('auto')}
-                          className={`px-2 py-1 text-xs rounded transition-all ${
-                            selectedVoice === 'auto'
-                              ? 'bg-green-500/30 text-green-100'
-                              : 'text-green-400 hover:text-green-300'
-                          }`}
-                          title="Auto Selection"
-                        >
-                          🎯
-                        </button>
+                        <span className="px-2 py-1 text-xs text-gray-400">
+                          Female Teacher Only
+                        </span>
                       </div>
                       
                       <div className="w-px h-4 bg-primary/20"></div>
@@ -1106,33 +1082,25 @@ export default function AiTutor() {
                         <button
                           onClick={() => {
                             const testTexts = {
-                              hindi: {
-                                neerja: "नमस्ते! मैं नीरजा हूँ, आपकी AI शिक्षिका। आज हम क्या सीखेंगे?",
-                                prabhat: "नमस्ते! मैं प्रभात हूँ, आपका AI शिक्षक। चलिए पढ़ाई शुरू करते हैं।",
-                                auto: "नमस्ते! मैं आपका AI ट्यूटर हूँ। आज क्या सीखना चाहते हैं?"
-                              },
-                              english: {
-                                neerja: "Hello! I'm Neerja, your female AI tutor. I have a clear Indian accent and I'm here to help you learn.",
-                                prabhat: "Hello! I'm Prabhat, your male AI tutor. With my Indian accent, I'll guide you through your studies.",
-                                auto: "Hello! I'm your AI tutor with authentic Indian pronunciation. Ready to explore new concepts?"
-                              }
+                              hindi: "नमस्ते! मैं नीरजा हूँ, आपकी AI शिक्षिका। आज हम क्या सीखेंगे?",
+                              english: "Hello! I'm Neerja, your female AI tutor. I have a clear Indian accent and I'm here to help you learn."
                             };
                             
-                            const testText = testTexts[voiceLanguage][selectedVoice];
+                            const testText = testTexts[voiceLanguage];
                             
                             console.log('Manual voice test starting...');
                             console.log('Test text:', testText);
                             console.log('Voice settings:', { selectedVoice, voiceLanguage });
                             
                             speak(testText, {
-                              voicePreference: selectedVoice,
+                              voicePreference: 'neerja',
                               language: voiceLanguage,
                               rate: 0.95
                             });
                             
                             toast({
                               title: "Testing Voice",
-                              description: `${selectedVoice === 'neerja' ? 'Female (Neerja)' : selectedVoice === 'prabhat' ? 'Male (Prabhat)' : 'Auto Selection'} voice in ${voiceLanguage}`,
+                              description: `Female Teacher (Neerja) voice in ${voiceLanguage}`,
                               duration: 3000
                             });
                           }}
@@ -1149,7 +1117,7 @@ export default function AiTutor() {
                               aiResponse: "This is a simple test of the teaching voice system. If you can hear me speaking, the voice system is working properly.",
                               subject: currentSubject
                             }, {
-                              voicePreference: selectedVoice,
+                              voicePreference: 'neerja',
                               language: voiceLanguage
                             });
                           }}
