@@ -647,7 +647,7 @@ Respond with JSON:
       
       // Note: XP and RP rewards are now only awarded when students correctly answer quiz questions
       
-      return res.status(200).json({ 
+      const responseData = { 
         response: aiResponse,
         tutor: {
           name: tutor.name,
@@ -658,7 +658,17 @@ Respond with JSON:
         personalized: true,
         studentLevel: user?.level || 1,
         subject: subject || 'General'
+      };
+      
+      console.log('[AI Tutor Response] Sending response to frontend:', {
+        responseLength: aiResponse?.length || 0,
+        hasVisualSuggestions: !!visualSuggestions,
+        visualSuggestionsType: visualSuggestions?.type,
+        visualHasVisual: visualSuggestions?.hasVisual,
+        responseKeys: Object.keys(responseData)
       });
+      
+      return res.status(200).json(responseData);
     } catch (error) {
       if (error instanceof z.ZodError) {
         const validationError = fromZodError(error);
