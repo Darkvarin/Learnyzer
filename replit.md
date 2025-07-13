@@ -612,6 +612,8 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Integrated KaTeX rendering for fractions, equations, Greek letters, and complex mathematical expressions
   - MCQ questions, options, feedback, and explanations now display beautiful formatted mathematics
   - Students see proper mathematical notation like formatted fractions instead of confusing raw LaTeX code
+  - FIXED: ReactMarkdown className prop compatibility issue causing blank screens when generating MCQs
+  - Enhanced LaTeX processor to handle malformed mathematical expressions and clean up formatting artifacts
 
 ## User Preferences
 

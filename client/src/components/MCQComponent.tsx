@@ -219,18 +219,19 @@ export function MCQComponent({
                   {key}.
                 </span>
                 <div className="text-base leading-relaxed font-medium flex-1 overflow-hidden">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm, remarkMath]}
-                    rehypePlugins={[rehypeKatex]}
-                    components={{
-                      p: ({children}) => <div className="inline-block w-full">{children}</div>,
-                      code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>,
-                      math: ({children}) => <div className="inline-block">{children}</div>
-                    }}
-                    className="math-content w-full"
-                  >
-                    {processLatexText(value)}
-                  </ReactMarkdown>
+                  <div className="math-content w-full">
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm, remarkMath]}
+                      rehypePlugins={[rehypeKatex]}
+                      components={{
+                        p: ({children}) => <div className="inline-block w-full">{children}</div>,
+                        code: ({children}) => <code className="bg-gray-700 px-1 py-0.5 rounded text-green-300">{children}</code>,
+                        math: ({children}) => <div className="inline-block">{children}</div>
+                      }}
+                    >
+                      {processLatexText(value)}
+                    </ReactMarkdown>
+                  </div>
                 </div>
               </div>
               {getOptionIcon(key)}
