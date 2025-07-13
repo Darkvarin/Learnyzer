@@ -44,9 +44,9 @@ export default function LeadGeneration() {
   const [filters, setFilters] = useState({
     startDate: "",
     endDate: "",
-    hasEmail: "",
-    hasMobile: "",
-    grade: "",
+    hasEmail: "any_email",
+    hasMobile: "any_mobile",
+    grade: "any_grade",
     track: ""
   });
   const [activeTab, setActiveTab] = useState("overview");
@@ -350,7 +350,7 @@ return (
                       <SelectValue placeholder="Any" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Any</SelectItem>
+                      <SelectItem value="any_email">Any</SelectItem>
                       <SelectItem value="true">Yes</SelectItem>
                       <SelectItem value="false">No</SelectItem>
                     </SelectContent>
@@ -363,7 +363,7 @@ return (
                       <SelectValue placeholder="Any" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Any</SelectItem>
+                      <SelectItem value="any_mobile">Any</SelectItem>
                       <SelectItem value="true">Yes</SelectItem>
                       <SelectItem value="false">No</SelectItem>
                     </SelectContent>
@@ -376,7 +376,7 @@ return (
                       <SelectValue placeholder="Any Grade" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Any Grade</SelectItem>
+                      <SelectItem value="any_grade">Any Grade</SelectItem>
                       {[...Array(10)].map((_, i) => (
                         <SelectItem key={i + 3} value={`${i + 3}`}>Grade {i + 3}</SelectItem>
                       ))}

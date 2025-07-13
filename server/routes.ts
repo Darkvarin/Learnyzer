@@ -419,22 +419,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const requireAdmin = async (req: any, res: any, next: any) => {
     try {
       const userId = req.user?.id;
-      console.log("🔐 Admin Check - User ID:", userId);
-      
       if (!userId) {
-        console.log("❌ No user ID found");
         return res.status(401).json({ message: "Authentication required" });
       }
       
       const user = await storage.getUserById(userId);
-      console.log("👤 Retrieved user:", { id: user?.id, username: user?.username, isAdmin: user?.isAdmin });
-      
       if (!user || !user.isAdmin) {
-        console.log("❌ User is not admin - Access denied");
         return res.status(403).json({ message: "Admin access required" });
       }
       
-      console.log("✅ Admin access granted");
       next();
     } catch (error) {
       console.error("Admin check error:", error);
@@ -450,9 +443,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const filters = {
         startDate: startDate ? new Date(startDate as string) : undefined,
         endDate: endDate ? new Date(endDate as string) : undefined,
-        hasEmail: hasEmail === 'true',
-        hasMobile: hasMobile === 'true',
-        grade: grade as string,
+        hasEmail: hasEmail === 'true' ? true : hasEmail === 'false' ? false : undefined,
+        hasMobile: hasMobile === 'true' ? true : hasMobile === 'false' ? false : undefined,
+        grade: grade && grade !== 'any_grade' ? grade as string : undefined,
         track: track as string
       };
 
@@ -483,9 +476,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const filters = {
         startDate: startDate ? new Date(startDate as string) : undefined,
         endDate: endDate ? new Date(endDate as string) : undefined,
-        hasEmail: hasEmail === 'true',
-        hasMobile: hasMobile === 'true',
-        grade: grade as string,
+        hasEmail: hasEmail === 'true' ? true : hasEmail === 'false' ? false : undefined,
+        hasMobile: hasMobile === 'true' ? true : hasMobile === 'false' ? false : undefined,
+        grade: grade && grade !== 'any_grade' ? grade as string : undefined,
         track: track as string
       };
 
@@ -509,7 +502,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         startDate: startDate ? new Date(startDate as string) : undefined,
         endDate: endDate ? new Date(endDate as string) : undefined,
         hasEmail: true,
-        grade: grade as string,
+        grade: grade && grade !== 'any_grade' ? grade as string : undefined,
         track: track as string
       };
 
@@ -530,7 +523,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         startDate: startDate ? new Date(startDate as string) : undefined,
         endDate: endDate ? new Date(endDate as string) : undefined,
         hasMobile: true,
-        grade: grade as string,
+        grade: grade && grade !== 'any_grade' ? grade as string : undefined,
         track: track as string
       };
 
