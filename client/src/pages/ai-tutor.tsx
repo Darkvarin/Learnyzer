@@ -577,23 +577,23 @@ export default function AiTutor() {
       
       // Handle interactive diagram display directly in chat
       if (data.visualSuggestions) {
-        // Store the visual suggestions to display inline with the chat message
-        const messageIndex = conversation?.messages?.length || 0;
-        
-        // Update conversation with visual data
-        const updatedConversation = {
-          ...conversation,
-          visualSuggestions: data.visualSuggestions,
-          lastVisualMessageIndex: messageIndex
-        };
-        
-        // Store for inline display
-        queryClient.setQueryData(['/api/ai/conversation/recent'], updatedConversation);
-        
-        toast({
-          title: "Interactive diagram generated",
-          description: "Diagram appears below the AI response in chat",
-        });
+        // Update the conversation data to include visual suggestions  
+        // The diagram will appear after the latest AI message (when idx === messages.length - 1)
+        setTimeout(() => {
+          const currentConversation = queryClient.getQueryData(['/api/ai/conversation/recent']);
+          const updatedConversation = {
+            ...currentConversation,
+            visualSuggestions: data.visualSuggestions
+          };
+          
+          // Store for inline display
+          queryClient.setQueryData(['/api/ai/conversation/recent'], updatedConversation);
+          
+          toast({
+            title: "Interactive diagram generated",
+            description: "Diagram appears below the AI response in chat",
+          });
+        }, 500); // Delay to ensure conversation is updated first
       }
       
       // Note: Rewards are now only shown when students correctly answer quiz questions
@@ -1256,9 +1256,9 @@ export default function AiTutor() {
                                 </div>
 
                                 {/* Interactive Diagram Display - shows if AI generated visual content */}
-                                {conversation && (conversation as any).visualSuggestions && 
-                                 (conversation as any).lastVisualMessageIndex === idx && 
-                                 (conversation as any).visualSuggestions.hasVisual && (
+                                {msg.role === 'assistant' && conversation && (conversation as any).visualSuggestions && 
+                                 (conversation as any).visualSuggestions.hasVisual && 
+                                 idx === ((conversation as any).messages?.length - 1) && (
                                   <div className="mt-4 bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-lg p-4 border border-purple-500/30">
                                     <div className="flex items-center gap-2 mb-3">
                                       <PenTool className="h-4 w-4 text-purple-400" />
