@@ -193,7 +193,7 @@ export function MCQComponent({
       
       <CardContent className="space-y-4">
         {/* Question */}
-        <div className="text-white font-semibold text-lg leading-relaxed p-3 bg-gray-800/40 rounded-lg border border-gray-600/50">
+        <div className="text-white font-semibold text-xl leading-relaxed p-3 bg-gray-800/40 rounded-lg border border-gray-600/50">
           <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkMath]}
             rehypePlugins={[rehypeKatex]}
@@ -215,10 +215,10 @@ export function MCQComponent({
               onClick={() => handleAnswerSelect(key)}
             >
               <div className="flex items-start gap-3 w-full min-h-[2rem]">
-                <span className="font-bold text-base min-w-[1.5rem] text-center mt-0.5 flex-shrink-0">
+                <span className="font-bold text-lg min-w-[1.5rem] text-center mt-0.5 flex-shrink-0">
                   {key}.
                 </span>
-                <div className="text-base leading-relaxed font-medium flex-1 overflow-hidden">
+                <div className="text-lg leading-relaxed font-medium flex-1 overflow-hidden">
                   <div className="math-content w-full">
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm, remarkMath]}
@@ -257,7 +257,7 @@ export function MCQComponent({
               <Lightbulb className="h-5 w-5 text-yellow-400 mt-0.5 flex-shrink-0" />
               <div>
                 <h4 className="font-semibold text-white mb-2">Teacher's Feedback</h4>
-                <div className="text-gray-300 text-sm leading-relaxed">
+                <div className="text-gray-300 text-base leading-relaxed">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm, remarkMath]}
                     rehypePlugins={[rehypeKatex]}
@@ -278,7 +278,7 @@ export function MCQComponent({
         {isSubmitted && explanation && (
           <div className="mt-3 p-3 bg-primary-900/10 border border-primary-800/30 rounded-lg">
             <p className="text-xs text-gray-400 mb-1">Original Explanation:</p>
-            <div className="text-gray-300 text-sm">
+            <div className="text-gray-300 text-base">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm, remarkMath]}
                 rehypePlugins={[rehypeKatex]}
