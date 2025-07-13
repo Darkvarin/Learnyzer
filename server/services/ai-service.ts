@@ -298,15 +298,18 @@ export const aiService = {
       // CRITICAL: Exam-specific subject validation to prevent abuse
       if (user?.track) {
         const allowedSubjects = getExamSubjects(user.track);
+        console.log(`[AI Tutor] User ${user.name} (${user.username}) has exam track: ${user.track}, allowed subjects:`, allowedSubjects);
         
         // Check explicit subject parameter
         if (subject) {
+          console.log(`[AI Tutor] Checking subject parameter: ${subject}`);
           const isSubjectAllowed = allowedSubjects.some(allowedSubj => 
             allowedSubj.toLowerCase().includes(subject.toLowerCase()) || 
             subject.toLowerCase().includes(allowedSubj.toLowerCase())
           );
           
           if (!isSubjectAllowed) {
+            console.log(`[AI Tutor] Subject ${subject} not allowed for ${user.track} exam`);
             return res.status(403).json({ 
               message: `This subject is not available for ${user.track.toUpperCase()} exam preparation. Please focus on: ${allowedSubjects.join(', ')}`,
               allowedSubjects,
@@ -315,23 +318,29 @@ export const aiService = {
           }
         }
 
-        // Also check message content for subject keywords
+        // Also check message content for subject keywords - ONLY BLOCK JEE STUDENTS FROM BIOLOGY
         const messageToCheck = message.toLowerCase();
         const forbiddenSubjects = ['biology', 'botany', 'zoology', 'anatomy', 'physiology', 'genetics', 'ecology', 'evolution'];
         
         if (user.track === 'jee') {
+          console.log(`[AI Tutor] JEE student detected, checking for biology keywords in message: ${messageToCheck.substring(0, 100)}...`);
           const containsBiology = forbiddenSubjects.some(forbidden => 
             messageToCheck.includes(forbidden)
           );
           
           if (containsBiology) {
+            console.log(`[AI Tutor] Biology keywords found in JEE student's message - blocking request`);
             return res.status(403).json({ 
               message: `Biology topics are not available for ${user.track.toUpperCase()} exam preparation. Please focus on: ${allowedSubjects.join(', ')}`,
               allowedSubjects,
               examType: user.track
             });
           }
+        } else {
+          console.log(`[AI Tutor] Non-JEE student (${user.track}), biology keywords allowed`);
         }
+      } else {
+        console.log(`[AI Tutor] User has no exam track set, allowing all subjects`);
       }
       
       // Get conversation history for context
