@@ -200,6 +200,28 @@ export function useVoice() {
         }
       }
       
+      // Force Indian English voices for English language (not American accent)
+      if (language === 'english') {
+        // Override with Indian English voices when available
+        const indianEnglishVoices = voices.filter(voice => 
+          voice.lang.includes('en-IN') || 
+          voice.name.includes('India') ||
+          voice.name.includes('Neerja') ||
+          voice.name.includes('Prabhat')
+        );
+        
+        if (indianEnglishVoices.length > 0) {
+          if (voicePreference === 'neerja') {
+            selectedVoice = indianEnglishVoices.find(v => v.name.includes('Neerja')) || indianEnglishVoices[0];
+          } else if (voicePreference === 'prabhat') {
+            selectedVoice = indianEnglishVoices.find(v => v.name.includes('Prabhat')) || indianEnglishVoices[0];
+          } else {
+            // Auto: prefer any Indian English voice over American
+            selectedVoice = indianEnglishVoices[0];
+          }
+        }
+      }
+      
       // For Hindi language, try to find Hindi voices or use Indian English voices
       if (language === 'hindi') {
         const hindiVoice = voices.find(voice => 

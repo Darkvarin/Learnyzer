@@ -1543,7 +1543,7 @@ CRITICAL REQUIREMENTS:
 - One key concept or insight only
 - Use simple, clear language
 - Make it conversational and encouraging
-${language === 'hindi' ? '- RESPOND ONLY IN HINDI language (हिंदी में जवाब दें)' : '- RESPOND ONLY IN ENGLISH language'}
+${language === 'hindi' ? '- RESPOND IN HINGLISH (mix of Hindi and English words naturally, like "Acha Ekansh! Math mein concept clear karne ke liye, integration problems ko tackle karte time substitution method use karo. Ye approach simple hai aur confidence boost karta hai. Keep practicing!")' : '- RESPOND ONLY IN ENGLISH language'}
 
 STUDENT CONTEXT:
 - Exam: ${userExam || 'Competitive exam'}
