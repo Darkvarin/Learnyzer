@@ -103,19 +103,19 @@ export function MCQComponent({
   const getOptionColor = (option: string) => {
     if (!isSubmitted) {
       return selectedAnswer === option 
-        ? 'bg-primary-600/20 border-primary-500 text-white' 
-        : 'bg-dark-surface border-dark-border text-gray-200 hover:bg-dark-hover';
+        ? 'bg-primary-600/20 border-primary-400 text-white' 
+        : 'bg-gray-800/50 border-gray-600 text-gray-100 hover:bg-gray-700/60 hover:border-gray-500';
     }
 
     if (option === correctAnswer) {
-      return 'bg-green-600/20 border-green-500 text-green-200';
+      return 'bg-green-600/20 border-green-400 text-green-100';
     }
     
     if (option === selectedAnswer && selectedAnswer !== correctAnswer) {
-      return 'bg-red-600/20 border-red-500 text-red-200';
+      return 'bg-red-600/20 border-red-400 text-red-100';
     }
     
-    return 'bg-dark-surface border-dark-border text-gray-400';
+    return 'bg-gray-800/30 border-gray-600 text-gray-300';
   };
 
   const getOptionIcon = (option: string) => {
@@ -146,7 +146,7 @@ export function MCQComponent({
       
       <CardContent className="space-y-4">
         {/* Question */}
-        <div className="text-gray-200 font-medium leading-relaxed">
+        <div className="text-white font-semibold text-lg leading-relaxed p-3 bg-gray-800/40 rounded-lg border border-gray-600/50">
           {question}
         </div>
 
@@ -155,14 +155,14 @@ export function MCQComponent({
           {Object.entries(options).map(([key, value]) => (
             <div
               key={key}
-              className={`p-3 rounded-lg border transition-all cursor-pointer flex items-center justify-between ${getOptionColor(key)}`}
+              className={`p-4 rounded-lg border-2 transition-all cursor-pointer flex items-start justify-between hover:shadow-lg ${getOptionColor(key)}`}
               onClick={() => handleAnswerSelect(key)}
             >
-              <div className="flex items-center gap-3">
-                <span className="font-semibold text-sm">
+              <div className="flex items-start gap-3 w-full">
+                <span className="font-bold text-base min-w-[1.5rem] text-center mt-0.5">
                   {key}.
                 </span>
-                <span className="text-sm">
+                <span className="text-base leading-relaxed font-medium">
                   {value}
                 </span>
               </div>
