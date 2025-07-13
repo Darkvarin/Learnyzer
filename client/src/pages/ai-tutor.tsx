@@ -220,7 +220,34 @@ export default function AiTutor() {
   
   const [message, setMessage] = useState("");
   const [activeTab, setActiveTab] = useState("chat");
-  const [currentSubject, setCurrentSubject] = useState(subjectParam?.toLowerCase() || "jee_mathematics");
+  
+  // Get exam-specific default subject
+  const getDefaultSubject = () => {
+    if (subjectParam) return subjectParam.toLowerCase();
+    
+    // Get default subject based on user's exam
+    const exam = (userData as any)?.selectedExam || (userData as any)?.track;
+    switch (exam) {
+      case 'neet':
+        return 'neet_biology';
+      case 'jee':
+        return 'jee_mathematics';
+      case 'upsc':
+        return 'upsc_history';
+      case 'clat':
+        return 'clat_legal_reasoning';
+      case 'cuet':
+        return 'cuet_general';
+      case 'cse':
+        return 'cse_programming';
+      case 'cgle':
+        return 'cgle_general_awareness';
+      default:
+        return 'general_study'; // Safe fallback that won't be blocked
+    }
+  };
+  
+  const [currentSubject, setCurrentSubject] = useState(getDefaultSubject());
   
   // Voice and language settings
   const [voiceLanguage, setVoiceLanguage] = useState<'english' | 'hindi'>('english');
@@ -248,8 +275,17 @@ export default function AiTutor() {
   // Help modal state
   const [showHelpModal, setShowHelpModal] = useState(false);
   
+  // Update subject when userData changes (for exam-specific defaults)
+  useEffect(() => {
+    if (userData && !subjectParam) {
+      const newDefaultSubject = getDefaultSubject();
+      if (newDefaultSubject !== currentSubject) {
+        setCurrentSubject(newDefaultSubject);
+        console.log(`[AI Tutor] Updated subject for ${(userData as any)?.selectedExam || (userData as any)?.track} student: ${newDefaultSubject}`);
+      }
+    }
+  }, [userData]);
 
-  
   // Canvas display functionality for AI-generated content
   useEffect(() => {
     const canvas = canvasRef.current;

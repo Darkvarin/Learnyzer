@@ -303,18 +303,24 @@ export const aiService = {
         // Check explicit subject parameter
         if (subject) {
           console.log(`[AI Tutor] Checking subject parameter: ${subject}`);
+          
+          // Extract subject name from exam-prefixed subjects (e.g., "neet_biology" -> "biology")
+          const subjectName = subject.includes('_') ? subject.split('_').slice(1).join(' ') : subject;
+          
           const isSubjectAllowed = allowedSubjects.some(allowedSubj => 
-            allowedSubj.toLowerCase().includes(subject.toLowerCase()) || 
-            subject.toLowerCase().includes(allowedSubj.toLowerCase())
+            allowedSubj.toLowerCase().includes(subjectName.toLowerCase()) || 
+            subjectName.toLowerCase().includes(allowedSubj.toLowerCase())
           );
           
           if (!isSubjectAllowed) {
-            console.log(`[AI Tutor] Subject ${subject} not allowed for ${user.track} exam`);
+            console.log(`[AI Tutor] Subject ${subject} (extracted: ${subjectName}) not allowed for ${user.track} exam`);
             return res.status(403).json({ 
               message: `This subject is not available for ${user.track.toUpperCase()} exam preparation. Please focus on: ${allowedSubjects.join(', ')}`,
               allowedSubjects,
               examType: user.track
             });
+          } else {
+            console.log(`[AI Tutor] Subject ${subject} (extracted: ${subjectName}) allowed for ${user.track} exam`);
           }
         }
 
