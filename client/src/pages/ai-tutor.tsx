@@ -1188,6 +1188,20 @@ export default function AiTutor() {
                         >
                           🗣️
                         </button>
+                        <button
+                          onClick={() => {
+                            const voices = window.speechSynthesis.getVoices();
+                            console.log('All available voices:', voices.map(v => `${v.name} - ${v.lang}`));
+                            const hindiVoices = voices.filter(v => v.lang.includes('hi') || v.name.toLowerCase().includes('hindi'));
+                            console.log('Hindi voices:', hindiVoices.map(v => `${v.name} - ${v.lang} - (${v.gender || 'unknown gender'})`));
+                            const indianVoices = voices.filter(v => v.lang.includes('en-IN') || v.name.includes('India'));
+                            console.log('Indian English voices:', indianVoices.map(v => `${v.name} - ${v.lang}`));
+                          }}
+                          className="px-2 py-1 text-xs rounded bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 transition-all"
+                          title="Debug Available Voices"
+                        >
+                          🔍
+                        </button>
                       </div>
                     </div>
                     

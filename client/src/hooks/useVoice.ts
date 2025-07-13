@@ -222,17 +222,51 @@ export function useVoice() {
         }
       }
       
-      // For Hindi language, try to find Hindi voices or use Indian English voices
+      // For Hindi language, respect gender preference and find appropriate Hindi voices
       if (language === 'hindi') {
-        const hindiVoice = voices.find(voice => 
+        let hindiVoices = voices.filter(voice => 
           voice.lang.includes('hi-IN') || 
           voice.lang.includes('hi') ||
           voice.name.toLowerCase().includes('hindi')
         );
-        if (hindiVoice) {
-          selectedVoice = hindiVoice;
+        
+        if (hindiVoices.length > 0) {
+          if (voicePreference === 'neerja') {
+            // Look for female Hindi voices
+            const femaleHindiVoice = hindiVoices.find(voice => 
+              voice.name.toLowerCase().includes('heera') ||
+              voice.name.toLowerCase().includes('kalpana') ||
+              voice.name.toLowerCase().includes('swara') ||
+              !voice.name.toLowerCase().includes('madhur') && // Madhur is male
+              !voice.name.toLowerCase().includes('prabhat')
+            );
+            if (femaleHindiVoice) {
+              selectedVoice = femaleHindiVoice;
+            } else {
+              // Fallback: use Indian English female voice for Hinglish
+              const indianFemaleVoice = voices.find(voice => 
+                voice.name.includes('Neerja') || 
+                (voice.lang.includes('en-IN') && voice.name.toLowerCase().includes('female'))
+              );
+              if (indianFemaleVoice) {
+                selectedVoice = indianFemaleVoice;
+              }
+            }
+          } else if (voicePreference === 'prabhat') {
+            // Look for male Hindi voices (Madhur is typically male)
+            const maleHindiVoice = hindiVoices.find(voice => 
+              voice.name.toLowerCase().includes('madhur') ||
+              voice.name.toLowerCase().includes('prabhat')
+            );
+            selectedVoice = maleHindiVoice || hindiVoices[0];
+          } else {
+            // Auto: prefer any Hindi voice
+            selectedVoice = hindiVoices[0];
+          }
+        } else {
+          // If no Hindi voice found, use selected Indian English voice (they can speak Hindi too)
+          // Keep the previously selected voice
         }
-        // If no Hindi voice found, use selected Indian English voice (they can speak Hindi too)
       }
       
       if (selectedVoice) {
