@@ -279,7 +279,7 @@ export function useVoice() {
         }
       }
       
-      utterance.rate = options?.rate || 1.1; // Natural speaking pace
+      utterance.rate = options?.rate || 0.85; // Slower pace for better comprehension
       utterance.pitch = options?.pitch || 1.0;
       utterance.volume = options?.volume || 1.0;
       
@@ -303,7 +303,7 @@ export function useVoice() {
           console.warn('Speech synthesis failed - retrying with fallback voice');
           // Try again with system default voice
           const fallbackUtterance = new SpeechSynthesisUtterance(cleanText);
-          fallbackUtterance.rate = options?.rate || 0.9;
+          fallbackUtterance.rate = options?.rate || 0.85;
           fallbackUtterance.pitch = options?.pitch || 1.0;
           fallbackUtterance.volume = options?.volume || 1.0;
           fallbackUtterance.onend = () => setIsSpeaking(false);

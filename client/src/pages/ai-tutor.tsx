@@ -1127,7 +1127,7 @@ export default function AiTutor() {
                             speak(testText, {
                               voicePreference: selectedVoice,
                               language: voiceLanguage,
-                              rate: 1.1
+                              rate: 0.85
                             });
                             
                             toast({
@@ -1162,7 +1162,7 @@ export default function AiTutor() {
                           onClick={() => {
                             console.log('Basic browser TTS test...');
                             const basicUtterance = new SpeechSynthesisUtterance("Basic browser TTS test. Can you hear this?");
-                            basicUtterance.rate = 1.0;
+                            basicUtterance.rate = 0.85;
                             basicUtterance.onstart = () => console.log('Basic TTS started');
                             basicUtterance.onend = () => console.log('Basic TTS ended');
                             basicUtterance.onerror = (error) => console.error('Basic TTS error:', error);
@@ -1180,7 +1180,7 @@ export default function AiTutor() {
                             speak(testText, {
                               voicePreference: selectedVoice,
                               language: voiceLanguage,
-                              rate: 1.1
+                              rate: 0.85
                             });
                           }}
                           className="px-2 py-1 text-xs rounded bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 transition-all"
