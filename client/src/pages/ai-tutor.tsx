@@ -1173,6 +1173,21 @@ export default function AiTutor() {
                         >
                           🔊
                         </button>
+                        <button
+                          onClick={() => {
+                            console.log('Direct speak function test...');
+                            const testText = "Direct speak function test. This bypasses the teaching voice system.";
+                            speak(testText, {
+                              voicePreference: selectedVoice,
+                              language: voiceLanguage,
+                              rate: 1.1
+                            });
+                          }}
+                          className="px-2 py-1 text-xs rounded bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 transition-all"
+                          title="Direct Speak Function Test"
+                        >
+                          🗣️
+                        </button>
                       </div>
                     </div>
                     
