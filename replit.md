@@ -635,8 +635,8 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Enhanced keyword detection and content filtering for all 7 competitive exams
   - JEE students: Blocked from biology topics (botany, zoology, anatomy, genetics, etc.)
   - NEET students: Blocked from computer science topics (programming, algorithms, databases, etc.)
-  - UPSC students: Blocked from physics/chemistry/math topics (force, velocity, molecules, equations, etc.)
-  - CLAT students: Blocked from physics/chemistry/biology/math topics for pure law focus
+  - UPSC students: Blocked from advanced/specialized topics (quantum mechanics, organic chemistry, programming, etc.) but allows basic science relevant to Geography/Economics
+  - CLAT students: Blocked from advanced science/math topics for pure law focus
   - CSE students: Blocked from humanities topics (history, geography, political science, etc.)
   - CGLE students: Blocked from advanced science and programming topics
   - CUET students: No restrictions due to mixed subject combinations
@@ -645,6 +645,12 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Detailed logging and monitoring for debugging exam-specific content filtering
   - **CRITICAL FIX**: Fixed updateUserExamSelection function to properly set track field during exam selection
   - Track field now automatically updates when users select their entrance exam, ensuring AI filtering works correctly
+- July 14, 2025: UPSC AI tutor filtering precision enhancement 
+  - **RESOLVED CRITICAL ISSUE**: Fixed overly restrictive keyword filtering for UPSC students
+  - Updated forbidden keywords to allow basic science concepts relevant to UPSC Geography, Economics, and General Studies
+  - UPSC students can now access topics like basic physics in geography, mathematical concepts in economics, and general science
+  - Only blocks truly irrelevant topics like quantum mechanics, programming, advanced chemistry, etc.
+  - Enhanced AI tutor to provide appropriate UPSC-focused responses for legitimate topics
 
 ## User Preferences
 

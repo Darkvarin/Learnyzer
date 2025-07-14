@@ -327,15 +327,15 @@ export const aiService = {
         // Check message content for exam-specific subject keywords
         const messageToCheck = message.toLowerCase();
         
-        // Define forbidden keywords for each exam type
+        // Define forbidden keywords for each exam type (more precise filtering)
         const examForbiddenKeywords: Record<string, string[]> = {
-          'jee': ['biology', 'botany', 'zoology', 'anatomy', 'physiology', 'genetics', 'ecology', 'evolution', 'cell', 'protein', 'dna', 'ecosystem', 'organism', 'species', 'biodiversity'],
-          'neet': ['computer science', 'programming', 'algorithm', 'data structure', 'coding', 'software', 'database', 'java', 'python', 'c++', 'html', 'css', 'javascript', 'networking', 'operating system'],
-          'upsc': ['physics', 'chemistry', 'mathematics', 'calculus', 'algebra', 'trigonometry', 'force', 'velocity', 'acceleration', 'molecule', 'atom', 'reaction', 'formula', 'equation', 'theorem', 'mass', 'energy', 'gravity', 'electric', 'magnetic'],
-          'clat': ['physics', 'chemistry', 'biology', 'mathematics', 'calculus', 'algebra', 'molecule', 'atom', 'cell', 'genetics', 'force', 'velocity', 'acceleration', 'theorem', 'equation', 'formula', 'programming', 'algorithm'],
+          'jee': ['biology', 'botany', 'zoology', 'anatomy', 'physiology', 'genetics', 'ecology', 'evolution', 'cell biology', 'protein synthesis', 'dna replication', 'ecosystem', 'organism classification', 'biodiversity', 'medicine', 'medical'],
+          'neet': ['computer science', 'programming', 'algorithm', 'data structure', 'coding', 'software', 'database', 'java', 'python', 'c++', 'html', 'css', 'javascript', 'networking', 'operating system', 'machine learning', 'artificial intelligence'],
+          'upsc': ['advanced physics', 'quantum mechanics', 'advanced chemistry', 'organic chemistry', 'inorganic chemistry', 'advanced mathematics', 'calculus', 'linear algebra', 'complex analysis', 'programming', 'coding', 'software development', 'advanced biology', 'molecular biology', 'genetics engineering'],
+          'clat': ['advanced physics', 'chemistry', 'biology', 'advanced mathematics', 'calculus', 'algebra', 'molecular biology', 'genetics', 'quantum mechanics', 'thermodynamics', 'programming', 'algorithm', 'computer science'],
           'cuet': [], // CUET can have mixed subjects based on chosen combination
-          'cse': ['history', 'geography', 'political science', 'economics', 'sociology', 'philosophy', 'polity', 'constitution', 'government', 'ancient', 'medieval', 'modern', 'freedom struggle', 'independence'],
-          'cgle': ['physics', 'chemistry', 'biology', 'mathematics', 'calculus', 'algebra', 'molecule', 'atom', 'cell', 'force', 'velocity', 'theorem', 'equation', 'programming', 'algorithm', 'data structure']
+          'cse': ['ancient history', 'medieval history', 'mughal empire', 'british colonialism', 'freedom struggle', 'independence movement', 'political philosophy', 'constitutional law', 'public administration', 'sociology concepts', 'anthropology'],
+          'cgle': ['advanced physics', 'chemistry', 'biology', 'advanced mathematics', 'calculus', 'linear algebra', 'molecular biology', 'genetics', 'programming', 'algorithm', 'data structure', 'computer science']
         };
         
         const forbiddenKeywords = examForbiddenKeywords[user.track] || [];
