@@ -219,13 +219,12 @@ export default function LandingPage() {
       <nav className="border-b border-white/10 bg-black/20 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <BookOpen className="h-6 w-6 text-white" />
-              </div>
-              <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Learnyzer
-              </div>
+            <div className="flex items-center">
+              <img 
+                src="/learnyzer-logo.svg" 
+                alt="Learnyzer Logo" 
+                className="h-8 w-auto object-contain"
+              />
             </div>
             <div className="flex space-x-4">
               <Link href="/auth">

@@ -129,19 +129,13 @@ export default function HomePage() {
       <header className="fixed top-0 left-0 right-0 z-50 glassmorphism border-b border-primary/20">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo with Learnyzer brand - Simple CSS implementation */}
-            <Link href="/" className="flex items-center">
-              {/* Simple CSS logo icon */}
-              <div className="relative w-12 h-12 mr-3 overflow-hidden flex items-center justify-center">
-                <div className="absolute w-full h-full rounded-full bg-[#0a2a42] border-2 border-[#47c1d6]"></div>
-                <div className="absolute w-8 h-8 rounded-full border-2 border-[#4af3c0]"></div>
-                <Book className="relative z-10 h-6 w-6 text-white" />
-              </div>
-              {/* Styled text */}
-              <div className="relative">
-                <span className="text-3xl font-bold font-gaming tracking-wide text-[#47c1d6] shadow-glow-xs">Learnyzer</span>
-                <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
-              </div>
+            {/* Professional Logo */}
+            <Link href="/" className="flex items-center group">
+              <img 
+                src="/learnyzer-logo.svg" 
+                alt="Learnyzer Logo" 
+                className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-300"
+              />
             </Link>
 
             {/* Desktop Nav with enhanced futuristic design */}

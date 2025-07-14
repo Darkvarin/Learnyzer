@@ -109,25 +109,15 @@ export function Header() {
           {/* Decorative elements matching home page */}
           <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
           <div className="absolute -top-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#4af3c0]/30 to-transparent"></div>
-          {/* Elegant Logo */}
+          {/* Professional Logo */}
           <div className="flex items-center space-x-3">
-            <Link href="/" className="flex items-center">
-              <div className={`relative ${isMobile ? 'w-8 h-8 mr-2' : 'w-12 h-12 mr-3'} overflow-hidden flex items-center justify-center`}>
-                <div className="absolute w-full h-full rounded-full bg-[#0a2a42] border-2 border-[#47c1d6]"></div>
-                <div className={`absolute ${isMobile ? 'w-6 h-6' : 'w-8 h-8'} rounded-full border-2 border-[#4af3c0]`}></div>
-                {/* Learnyzer Logo */}
-                <img 
-                  src="/images/learnyzer-logo.png" 
-                  alt="Learnyzer Logo" 
-                  className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} object-contain relative z-10`}
-                />
-              </div>
-              <div className="relative">
-                <span className={`${isMobile ? 'text-xl' : 'text-3xl'} font-bold font-gaming tracking-wide text-[#47c1d6] shadow-glow-xs`}>Learnyzer</span>
-                
-                {/* Simple elegant underline matching homepage */}
-                <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
-              </div>
+            <Link href="/" className="flex items-center group">
+              {/* Use the new professional logo SVG */}
+              <img 
+                src="/learnyzer-logo.svg" 
+                alt="Learnyzer Logo" 
+                className={`${isMobile ? 'h-6 w-auto' : 'h-8 w-auto'} object-contain group-hover:scale-105 transition-transform duration-300`}
+              />
             </Link>
             {!isMobile && (
               <div className="flex items-center h-6 px-2 border border-[#4af3c0]/50 rounded-sm bg-[#0a2a42]/50">
