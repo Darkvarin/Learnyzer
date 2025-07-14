@@ -541,12 +541,12 @@ export default function AiTutor() {
       {/* Solo Leveling background elements */}
       <div className="absolute inset-0 solo-grid z-0 opacity-30"></div>
       
-      {/* Solo Leveling corner decorations */}
-      <div className="absolute top-24 right-4 w-32 h-32 solo-corner-tr z-0"></div>
-      <div className="absolute bottom-4 left-4 w-32 h-32 solo-corner-bl z-0"></div>
+      {/* Solo Leveling corner decorations - Hidden on mobile */}
+      <div className="hidden md:block absolute top-24 right-4 w-32 h-32 solo-corner-tr z-0"></div>
+      <div className="hidden md:block absolute bottom-4 left-4 w-32 h-32 solo-corner-bl z-0"></div>
       
-      {/* Fixed scan line effect */}
-      <div className="fixed inset-0 h-screen pointer-events-none z-[1]">
+      {/* Fixed scan line effect - Hidden on mobile */}
+      <div className="hidden md:block fixed inset-0 h-screen pointer-events-none z-[1]">
         <div className="absolute top-0 left-0 right-0 h-[2px] solo-scan-line"></div>
       </div>
       
@@ -554,16 +554,16 @@ export default function AiTutor() {
       <MobileNavigation />
       
       <SubscriptionGuard featureType="ai_tutor_session">
-        <main className="flex-1 container mx-auto px-4 py-6 pb-20 md:pb-6 relative z-10">
+        <main className="flex-1 container mx-auto px-2 sm:px-4 py-4 sm:py-6 pb-20 md:pb-6 relative z-10">
         {/* Back button */}
         <div className="mb-4">
           <BackButton fallbackPath="/dashboard" className="text-white hover:text-cyan-400" />
         </div>
         
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-1 h-10 bg-gradient-to-b from-cyan-500/70 via-cyan-600/50 to-primary/20"></div>
-            <h1 className="text-3xl font-gaming gaming-text text-glow">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-1 h-8 sm:h-10 bg-gradient-to-b from-cyan-500/70 via-cyan-600/50 to-primary/20"></div>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-gaming gaming-text text-glow">
               <span className="gradient-text" style={{
                 background: "linear-gradient(90deg, #ff0000, #ffff00, #00ff00)",
                 WebkitBackgroundClip: "text",
@@ -585,10 +585,10 @@ export default function AiTutor() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
           {/* Left sidebar with AI tutor info */}
           <div className="md:col-span-1">
-            <div className="bg-background/50 rounded-xl border border-cyan-500/30 p-6 h-full monarch-card-glow relative">
+            <div className="bg-background/50 rounded-xl border border-cyan-500/30 p-4 sm:p-6 h-auto md:h-full monarch-card-glow relative">
               {/* Solo Leveling corner decorations */}
               <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-cyan-500/60"></div>
               <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-cyan-500/60"></div>
@@ -602,7 +602,7 @@ export default function AiTutor() {
                 </div>
               ) : (
                 <div className="flex flex-col items-center">
-                  <div className="relative w-32 h-32">
+                  <div className="relative w-24 h-24 sm:w-32 sm:h-32">
                     {/* Solo Leveling energy ring around avatar */}
                     <div className="absolute inset-0 monarch-insignia opacity-70"></div>
                     
@@ -621,10 +621,10 @@ export default function AiTutor() {
                     </div>
                   </div>
                   
-                  <h2 className="text-xl font-bold mt-5 font-gaming text-glow">
+                  <h2 className="text-lg sm:text-xl font-bold mt-3 sm:mt-5 font-gaming text-glow">
                     {(aiTutor as any)?.name || "AI Tutor"}
                   </h2>
-                  <p className="text-sm text-cyan-200/70 mt-1 text-center mb-6 border-b border-cyan-500/20 pb-2">
+                  <p className="text-xs sm:text-sm text-cyan-200/70 mt-1 text-center mb-4 sm:mb-6 border-b border-cyan-500/20 pb-2">
                     {(aiTutor as any)?.specialty || "Your Entrance Exam Voice Coach"}
                   </p>
                   
@@ -850,17 +850,17 @@ export default function AiTutor() {
           
           {/* Main chat area */}
           <div className="md:col-span-3 flex flex-col">
-            <div className="bg-background/50 rounded-xl border border-primary/30 p-6 flex-1 flex flex-col monarch-card-glow relative">
+            <div className="bg-background/50 rounded-xl border border-primary/30 p-3 sm:p-6 flex-1 flex flex-col monarch-card-glow relative min-h-[500px] md:min-h-[600px]">
               {/* Solo Leveling corner decorations */}
               <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-primary/60"></div>
               <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-primary/60"></div>
 
               <Tabs defaultValue="chat" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <div className="flex items-center justify-between mb-4">
-                  <TabsList className="grid grid-cols-2 w-auto bg-background/30 border border-primary/20 p-1">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
+                  <TabsList className="grid grid-cols-2 w-full sm:w-auto bg-background/30 border border-primary/20 p-1">
                     <TabsTrigger 
                       value="canvas" 
-                      className="text-sm px-4 data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=active]:shadow-glow relative overflow-hidden"
+                      className="text-xs sm:text-sm px-2 sm:px-4 data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=active]:shadow-glow relative overflow-hidden"
                       onClick={() => {
                         // Auto-navigate to Visual Labs when this tab is selected
                         toast({
@@ -872,28 +872,29 @@ export default function AiTutor() {
                     >
                       {/* Solo Leveling active tab effect */}
                       <div className="absolute inset-0 primary-aura opacity-0 group-data-[state=active]:opacity-20"></div>
-                      <PenTool className="h-4 w-4 mr-2" />
-                      <span className="relative z-10">Visual Learning Lab</span>
+                      <PenTool className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                      <span className="relative z-10 hidden sm:inline">Visual Learning Lab</span>
+                      <span className="relative z-10 sm:hidden">Visual Lab</span>
                     </TabsTrigger>
                     <TabsTrigger 
                       value="performance" 
-                      className="text-sm px-4 data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=active]:shadow-glow relative overflow-hidden"
+                      className="text-xs sm:text-sm px-2 sm:px-4 data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=active]:shadow-glow relative overflow-hidden"
                     >
                       {/* Solo Leveling active tab effect */}
                       <div className="absolute inset-0 primary-aura opacity-0 group-data-[state=active]:opacity-20"></div>
-                      <BarChart4 className="h-4 w-4 mr-2" />
+                      <BarChart4 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                       <span className="relative z-10">Progress</span>
                     </TabsTrigger>
                   </TabsList>
                   
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     {/* Voice Controls - Compact Header Version */}
-                    <div className="flex items-center gap-2 bg-background/40 rounded-lg px-3 py-1.5 border border-primary/20">
+                    <div className="flex items-center gap-1 sm:gap-2 bg-background/40 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 border border-primary/20">
                       {/* Language Toggle */}
                       <div className="flex gap-1">
                         <button
                           onClick={() => setVoiceLanguage('english')}
-                          className={`px-2 py-1 text-xs rounded transition-all ${
+                          className={`px-1 sm:px-2 py-1 text-xs rounded transition-all ${
                             voiceLanguage === 'english'
                               ? 'bg-cyan-500/30 text-cyan-100'
                               : 'text-cyan-400 hover:text-cyan-300'
@@ -904,7 +905,7 @@ export default function AiTutor() {
                         </button>
                         <button
                           onClick={() => setVoiceLanguage('hindi')}
-                          className={`px-2 py-1 text-xs rounded transition-all ${
+                          className={`px-1 sm:px-2 py-1 text-xs rounded transition-all ${
                             voiceLanguage === 'hindi'
                               ? 'bg-orange-500/30 text-orange-100'
                               : 'text-orange-400 hover:text-orange-300'
@@ -915,13 +916,13 @@ export default function AiTutor() {
                         </button>
                       </div>
                       
-                      <div className="w-px h-4 bg-primary/20"></div>
+                      <div className="w-px h-3 sm:h-4 bg-primary/20"></div>
                       
                       {/* Voice Enable/Disable */}
                       <div className="flex gap-1">
                         <button
                           onClick={() => setVoiceEnabled(!voiceEnabled)}
-                          className={`px-2 py-1 text-xs rounded transition-all ${
+                          className={`px-1 sm:px-2 py-1 text-xs rounded transition-all ${
                             voiceEnabled
                               ? 'bg-green-500/30 text-green-100'
                               : 'bg-red-500/30 text-red-300'
@@ -936,7 +937,7 @@ export default function AiTutor() {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50"
+                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50 hidden sm:flex"
                       onClick={() => setShowHelpModal(true)}
                     >
                       <HelpCircle className="h-4 w-4 mr-2" />
@@ -945,7 +946,15 @@ export default function AiTutor() {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50"
+                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50 sm:hidden px-2"
+                      onClick={() => setShowHelpModal(true)}
+                    >
+                      <HelpCircle className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="bg-background/60 hover:bg-background/80 text-white border-primary/30 hover:border-primary/50 hidden sm:flex"
                       onClick={async () => {
                         try {
                           console.log('Starting new conversation...');
@@ -993,7 +1002,7 @@ export default function AiTutor() {
                   {/* Chat messages */}
                   <div 
                     ref={chatContainerRef}
-                    className="bg-dark-card rounded-lg p-4 flex-1 min-h-[400px] max-h-[500px] overflow-y-auto mb-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
+                    className="bg-dark-card rounded-lg p-2 sm:p-4 flex-1 min-h-[300px] sm:min-h-[400px] max-h-[400px] sm:max-h-[500px] overflow-y-auto mb-3 sm:mb-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
                   >
                     {isLoadingConversation ? (
                       <>
@@ -1015,15 +1024,15 @@ export default function AiTutor() {
                       </>
                     ) : conversation && (conversation as any).messages && (conversation as any).messages.length > 0 ? (
                       (conversation as any).messages.map((msg: any, idx: any) => (
-                        <div key={idx} className="flex items-start space-x-3 mb-6">
+                        <div key={idx} className="flex items-start space-x-2 sm:space-x-3 mb-4 sm:mb-6">
                           {msg.role === 'assistant' ? (
                             <>
-                              <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
-                                <Robot className="h-5 w-5 text-white" />
+                              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <Robot className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                               </div>
                               <div className="flex-1">
                                 <div className="text-sm font-semibold text-primary-400 mb-1">{(aiTutor as any)?.name || "AI Tutor"}</div>
-                                <div className="bg-dark-surface text-gray-200 p-4 rounded-lg border border-dark-border">
+                                <div className="bg-dark-surface text-gray-200 p-3 sm:p-4 rounded-lg border border-dark-border">
                                   <div className="prose prose-invert prose-sm max-w-none prose-headings:text-cyan-200 prose-strong:text-white prose-code:text-cyan-300 prose-code:bg-black/30 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-pre:bg-black/50 prose-pre:border prose-pre:border-cyan-500/20 prose-blockquote:border-l-cyan-500/50 prose-blockquote:bg-cyan-500/5 prose-blockquote:text-cyan-100 prose-ul:text-gray-200 prose-ol:text-gray-200 prose-li:text-gray-200">
                                     <ReactMarkdown 
                                       remarkPlugins={[remarkGfm, remarkMath]}
@@ -1189,17 +1198,17 @@ export default function AiTutor() {
                     <Input
                       type="text"
                       placeholder={isListening ? "Listening... speak your question" : "Ask anything about your studies..."}
-                      className="w-full bg-dark-card border border-dark-border focus:border-primary-500 rounded-lg py-3 px-4 text-gray-300 focus:outline-none pr-24 h-12"
+                      className="w-full bg-dark-card border border-dark-border focus:border-primary-500 rounded-lg py-2 sm:py-3 px-3 sm:px-4 text-gray-300 focus:outline-none pr-20 sm:pr-24 h-10 sm:h-12 text-sm sm:text-base"
                       value={isListening ? transcript : message}
                       onChange={(e) => setMessage(e.target.value)}
                       disabled={sendMessageMutation.isPending || isListening}
                     />
-                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
+                    <div className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
                       <Button 
                         type="button" 
-                        size="icon" 
+                        size="sm" 
                         variant="ghost" 
-                        className="text-gray-400 hover:text-white transition-colors"
+                        className="text-gray-400 hover:text-white transition-colors p-1 h-6 w-6 sm:h-8 sm:w-8 hidden sm:flex"
                         onClick={() => {
                           toast({
                             title: "Attach files to your question",
@@ -1207,14 +1216,14 @@ export default function AiTutor() {
                           });
                         }}
                       >
-                        <Paperclip className="h-4 w-4" />
+                        <Paperclip className="h-3 w-3 sm:h-4 sm:w-4" />
                       </Button>
                       <Button 
                         type="button" 
-                        size="icon" 
+                        size="sm" 
                         variant="ghost"
                         onClick={handleVoiceInput}
-                        className={`transition-colors ${
+                        className={`transition-colors p-1 h-6 w-6 sm:h-8 sm:w-8 ${
                           isListening 
                             ? 'text-red-400 hover:text-red-300' 
                             : isVoiceSupported 
@@ -1224,42 +1233,42 @@ export default function AiTutor() {
                         disabled={!isVoiceSupported}
                         title={isListening ? 'Stop listening' : 'Start voice input'}
                       >
-                        <Mic className={`h-4 w-4 ${isListening ? 'animate-pulse' : ''}`} />
+                        <Mic className={`h-3 w-3 sm:h-4 sm:w-4 ${isListening ? 'animate-pulse' : ''}`} />
                       </Button>
                       <Button 
                         type="submit" 
-                        size="icon" 
+                        size="sm" 
                         variant="ghost" 
-                        className="text-gray-400 hover:text-white transition-colors"
+                        className="text-gray-400 hover:text-white transition-colors p-1 h-6 w-6 sm:h-8 sm:w-8"
                         disabled={sendMessageMutation.isPending || !message.trim()}
                       >
-                        <Send className="h-4 w-4" />
+                        <Send className="h-3 w-3 sm:h-4 sm:w-4" />
                       </Button>
                     </div>
                   </form>
                   
                   {/* Quick prompts */}
-                  <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                  <div className="mt-3 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                     <Button
                       variant="outline"
-                      className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-3 rounded-lg transition-colors text-left h-auto"
+                      className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-2 sm:px-3 rounded-lg transition-colors text-left h-auto"
                       onClick={() => handlePromptClick("Create a study plan for my upcoming exams")}
                     >
-                      <span className="block font-semibold">Create a study plan</span>
+                      <span className="block font-semibold text-xs sm:text-sm">Create a study plan</span>
                     </Button>
                     <Button
                       variant="outline"
-                      className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-3 rounded-lg transition-colors text-left h-auto"
+                      className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-2 sm:px-3 rounded-lg transition-colors text-left h-auto"
                       onClick={() => handlePromptClick("Explain the concept of quantum mechanics simply")}
                     >
-                      <span className="block font-semibold">Explain quantum mechanics</span>
+                      <span className="block font-semibold text-xs sm:text-sm">Explain quantum mechanics</span>
                     </Button>
                     <Button
                       variant="outline"
-                      className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-3 rounded-lg transition-colors text-left h-auto"
+                      className="bg-dark-card hover:bg-dark-hover border border-dark-border text-xs py-2 px-2 sm:px-3 rounded-lg transition-colors text-left h-auto"
                       onClick={() => handlePromptClick("Create practice questions for calculus")}
                     >
-                      <span className="block font-semibold">Generate practice questions</span>
+                      <span className="block font-semibold text-xs sm:text-sm">Generate practice questions</span>
                     </Button>
                   </div>
                   
