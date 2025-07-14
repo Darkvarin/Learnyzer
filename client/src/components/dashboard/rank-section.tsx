@@ -25,8 +25,8 @@ export function RankSection() {
   ];
   
   return (
-    <div className="bg-background/70 rounded-xl overflow-hidden border border-emerald-500/30 shadow-glow-emerald">
-      <div className="p-5 relative">
+    <div className="w-full max-w-full bg-background/70 rounded-xl overflow-hidden border border-emerald-500/30 shadow-glow-emerald">
+      <div className="p-4 sm:p-5 relative">
         {/* Solo Leveling corner accents - emerald theme for rank */}
         <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-emerald-500/70"></div>
         <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-emerald-500/70"></div>
@@ -38,7 +38,7 @@ export function RankSection() {
         {/* Solo Leveling rank mark - smaller */}
         <div className="absolute -top-2 -right-2 w-12 h-12 rank-power-mark opacity-40 z-0"></div>
         
-        <h2 className="text-xl font-bold font-gaming bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-white relative z-10 mb-4" style={{
+        <h2 className="text-lg sm:text-xl font-bold font-gaming bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-white relative z-10 mb-3 sm:mb-4" style={{
           textShadow: "0 0 10px rgba(16, 185, 129, 0.3)"
         }}>Rank Progress</h2>
         

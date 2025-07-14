@@ -52,43 +52,43 @@ export function ReferralSection() {
   };
 
   return (
-    <div className="bg-dark-surface rounded-xl overflow-hidden border border-dark-border">
-      <div className="p-6">
+    <div className="w-full max-w-full bg-dark-surface rounded-xl overflow-hidden border border-dark-border">
+      <div className="p-4 sm:p-6">
         <h2 className="text-xl font-bold font-gaming mb-4">Invite Friends</h2>
         
-        <div className="bg-gradient-to-r from-primary-900/40 to-primary-700/40 backdrop-blur rounded-lg p-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-primary-600/30 rounded-full flex items-center justify-center flex-shrink-0">
-              <i className="ri-user-add-line text-primary-400"></i>
+        <div className="bg-gradient-to-r from-primary-900/40 to-primary-700/40 backdrop-blur rounded-lg p-3 sm:p-4">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-600/30 rounded-full flex items-center justify-center flex-shrink-0">
+              <i className="ri-user-add-line text-primary-400 text-sm sm:text-base"></i>
             </div>
-            <div>
-              <h3 className="font-bold text-sm">Earn 500 XP per referral</h3>
-              <p className="text-xs text-gray-400 mt-1">When your friend joins Learnyzer</p>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-bold text-xs sm:text-sm">Earn 500 XP per referral</h3>
+              <p className="text-xs text-gray-400 mt-1 truncate">When your friend joins Learnyzer</p>
             </div>
           </div>
           
-          <div className="mt-4">
+          <div className="mt-3 sm:mt-4">
             <div className="relative">
               {isLoading ? (
-                <Skeleton className="w-full h-10 rounded-lg" />
+                <Skeleton className="w-full h-9 sm:h-10 rounded-lg" />
               ) : (
                 <>
                   <Input
                     type="text"
                     value={referralData?.referralLink || ""}
                     readOnly
-                    className="w-full bg-dark-card border border-dark-border rounded-lg py-2 px-3 text-gray-300 text-sm focus:outline-none focus:border-primary-500"
+                    className="w-full bg-dark-card border border-dark-border rounded-lg py-2 px-3 pr-12 text-gray-300 text-xs sm:text-sm focus:outline-none focus:border-primary-500 overflow-hidden text-ellipsis"
                   />
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-primary-400 hover:text-primary-300 transition-colors"
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 text-primary-400 hover:text-primary-300 transition-colors p-1"
                     onClick={copyReferralLink}
                   >
                     {copied ? (
-                      <i className="ri-check-line"></i>
+                      <i className="ri-check-line text-sm"></i>
                     ) : (
-                      <i className="ri-file-copy-line"></i>
+                      <i className="ri-file-copy-line text-sm"></i>
                     )}
                   </Button>
                 </>
@@ -96,30 +96,30 @@ export function ReferralSection() {
             </div>
           </div>
           
-          <div className="mt-4 flex space-x-2">
+          <div className="mt-3 sm:mt-4 grid grid-cols-3 gap-1 sm:gap-2">
             <Button
-              className="flex-1 bg-[#1877F2] hover:bg-[#166FE5] text-white text-xs font-bold py-2 rounded flex items-center justify-center transition-colors"
+              className="bg-[#1877F2] hover:bg-[#166FE5] text-white text-xs font-bold py-2 rounded flex items-center justify-center transition-colors min-h-[32px]"
               onClick={shareViaFacebook}
               disabled={isLoading}
             >
-              <i className="ri-facebook-fill mr-1"></i>
-              Share
+              <i className="ri-facebook-fill text-sm sm:mr-1"></i>
+              <span className="hidden sm:inline ml-1">Share</span>
             </Button>
             <Button
-              className="flex-1 bg-[#1DA1F2] hover:bg-[#1A94DA] text-white text-xs font-bold py-2 rounded flex items-center justify-center transition-colors"
+              className="bg-[#1DA1F2] hover:bg-[#1A94DA] text-white text-xs font-bold py-2 rounded flex items-center justify-center transition-colors min-h-[32px]"
               onClick={shareViaTwitter}
               disabled={isLoading}
             >
-              <i className="ri-twitter-fill mr-1"></i>
-              Tweet
+              <i className="ri-twitter-fill text-sm sm:mr-1"></i>
+              <span className="hidden sm:inline ml-1">Tweet</span>
             </Button>
             <Button
-              className="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white text-xs font-bold py-2 rounded flex items-center justify-center transition-colors"
+              className="bg-[#25D366] hover:bg-[#128C7E] text-white text-xs font-bold py-2 rounded flex items-center justify-center transition-colors min-h-[32px]"
               onClick={shareViaWhatsApp}
               disabled={isLoading}
             >
-              <i className="ri-whatsapp-line mr-1"></i>
-              Share
+              <i className="ri-whatsapp-line text-sm sm:mr-1"></i>
+              <span className="hidden sm:inline ml-1">Share</span>
             </Button>
           </div>
         </div>
