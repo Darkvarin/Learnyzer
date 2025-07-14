@@ -327,11 +327,46 @@ export const aiService = {
         // Check message content for exam-specific subject keywords
         const messageToCheck = message.toLowerCase();
         
-        // Define forbidden keywords for each exam type (more precise filtering)
+        // ENHANCED FILTERING: Check if message is relevant to UPSC
+        if (user.track === 'upsc') {
+          const upscRelevantKeywords = [
+            // History keywords
+            'history', 'ancient', 'medieval', 'modern', 'independence', 'freedom struggle', 'colonial', 'mughal', 'british', 'revolt', 'nationalism', 'gandhi', 'nehru', 'patel', 'chandragupta', 'ashoka', 'akbar', 'shah jahan', 'aurangzeb', 'sepoy mutiny', 'quit india',
+            // Geography keywords  
+            'geography', 'climate', 'monsoon', 'river', 'mountain', 'plateau', 'desert', 'forest', 'mineral', 'agriculture', 'irrigation', 'soil', 'vegetation', 'population', 'urbanization', 'migration', 'himalayas', 'ganga', 'brahmaputra', 'deccan', 'thar', 'western ghats', 'eastern ghats',
+            // Political Science keywords
+            'political', 'polity', 'constitution', 'fundamental rights', 'directive principles', 'amendment', 'parliament', 'judiciary', 'executive', 'election', 'democracy', 'federalism', 'separation of powers', 'checks and balances', 'president', 'prime minister', 'supreme court', 'high court', 'governor', 'chief minister',
+            // Economics keywords
+            'economics', 'economy', 'gdp', 'inflation', 'unemployment', 'poverty', 'budget', 'fiscal', 'monetary', 'planning', 'development', 'agriculture economy', 'industrial policy', 'service sector', 'foreign trade', 'balance of payments', 'economic reforms', 'liberalization', 'globalization', 'economic survey',
+            // Current Affairs keywords
+            'current affairs', 'government scheme', 'policy', 'bill', 'act', 'supreme court judgment', 'international relations', 'diplomacy', 'foreign policy', 'india china', 'india pakistan', 'neighbourhood', 'UN', 'WTO', 'IMF', 'world bank',
+            // General Studies keywords
+            'environment', 'biodiversity', 'climate change', 'pollution', 'sustainable development', 'renewable energy', 'disaster management', 'internal security', 'terrorism', 'naxalism', 'cyber security', 'ethics', 'integrity', 'governance', 'transparency', 'accountability',
+            // Administrative keywords
+            'administration', 'civil service', 'bureaucracy', 'public policy', 'implementation', 'monitoring', 'evaluation', 'good governance', 'citizen charter', 'right to information', 'e-governance'
+          ];
+          
+          const isUpscRelevant = upscRelevantKeywords.some(keyword => 
+            messageToCheck.includes(keyword)
+          );
+          
+          if (!isUpscRelevant) {
+            console.log(`[AI Tutor] Message "${messageToCheck}" not relevant to UPSC syllabus - blocking request`);
+            return res.status(403).json({ 
+              message: `This topic is not part of the UPSC syllabus. Please ask about History, Geography, Political Science, Economics, Current Affairs, Environment, Internal Security, Ethics, or Public Administration topics relevant to UPSC preparation.`,
+              allowedSubjects,
+              examType: user.track,
+              suggestion: "Try asking about: Indian History, Indian Geography, Indian Polity, Indian Economy, Current Affairs, or Environmental Studies"
+            });
+          } else {
+            console.log(`[AI Tutor] Message is UPSC-relevant, proceeding with response`);
+          }
+        }
+        
+        // Define forbidden keywords for other exams (more precise filtering)
         const examForbiddenKeywords: Record<string, string[]> = {
           'jee': ['biology', 'botany', 'zoology', 'anatomy', 'physiology', 'genetics', 'ecology', 'evolution', 'cell biology', 'protein synthesis', 'dna replication', 'ecosystem', 'organism classification', 'biodiversity', 'medicine', 'medical'],
           'neet': ['computer science', 'programming', 'algorithm', 'data structure', 'coding', 'software', 'database', 'java', 'python', 'c++', 'html', 'css', 'javascript', 'networking', 'operating system', 'machine learning', 'artificial intelligence'],
-          'upsc': ['advanced physics', 'quantum mechanics', 'advanced chemistry', 'organic chemistry', 'inorganic chemistry', 'advanced mathematics', 'calculus', 'linear algebra', 'complex analysis', 'programming', 'coding', 'software development', 'advanced biology', 'molecular biology', 'genetics engineering'],
           'clat': ['advanced physics', 'chemistry', 'biology', 'advanced mathematics', 'calculus', 'algebra', 'molecular biology', 'genetics', 'quantum mechanics', 'thermodynamics', 'programming', 'algorithm', 'computer science'],
           'cuet': [], // CUET can have mixed subjects based on chosen combination
           'cse': ['ancient history', 'medieval history', 'mughal empire', 'british colonialism', 'freedom struggle', 'independence movement', 'political philosophy', 'constitutional law', 'public administration', 'sociology concepts', 'anthropology'],
@@ -369,16 +404,26 @@ export const aiService = {
       const conversation = await storage.getRecentConversation(userId);
       
       // Enhanced system prompt for topic-focused, immersive experience with ecosystem awareness
-      const systemPrompt = `You are ${tutor.name}, an expert AI tutor specializing in ${tutor.specialty} for Indian competitive exams (JEE, NEET, UPSC, CLAT, CUET, CSE).
+      const systemPrompt = `You are ${tutor.name}, an expert AI tutor specializing EXCLUSIVELY in ${user.track?.toUpperCase() || 'competitive'} exam preparation.
 
 🚨 CRITICAL EXAM-SPECIFIC RESTRICTIONS:
 ${user?.track ? `
 - This student is preparing for ${user.track.toUpperCase()} exam ONLY
-- ALLOWED SUBJECTS ONLY: ${getExamSubjects(user.track).join(', ')}
-- NEVER provide content outside these subjects
-- If asked about forbidden subjects, politely redirect to allowed subjects
-- Focus ALL responses on ${user.track.toUpperCase()}-specific content and patterns
+- ALLOWED SUBJECTS: ${getExamSubjects(user.track).join(', ')}
+- MANDATORY: REJECT any question outside these subjects
+- MANDATORY: Every response must be ${user.track.toUpperCase()}-exam specific
+- MANDATORY: Include UPSC syllabus references, exam patterns, previous year questions
+- MANDATORY: No generic academic content - only ${user.track.toUpperCase()} preparation material
+- If asked about non-UPSC topics, respond: "This topic is not part of UPSC syllabus. Let's focus on [suggest UPSC topic]"
 ` : '- Student has not selected specific exam track yet'}
+
+🎯 UPSC-SPECIFIC CONTENT REQUIREMENTS:
+- Reference UPSC Prelims/Mains syllabus
+- Mention specific papers (GS 1, GS 2, GS 3, GS 4, CSAT)  
+- Include previous year questions examples
+- Provide answer writing techniques
+- Give UPSC-specific preparation tips
+- Use UPSC terminology and framework
 
 Student Profile:
 - Name: ${user?.name}

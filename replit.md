@@ -651,6 +651,13 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - UPSC students can now access topics like basic physics in geography, mathematical concepts in economics, and general science
   - Only blocks truly irrelevant topics like quantum mechanics, programming, advanced chemistry, etc.
   - Enhanced AI tutor to provide appropriate UPSC-focused responses for legitimate topics
+- July 14, 2025: Complete AI tutor exam-specific content enforcement overhaul
+  - **CRITICAL UPGRADE**: Implemented aggressive UPSC-only content filtering system
+  - Added comprehensive UPSC keyword validation with 100+ relevant terms across all subjects
+  - System now checks every message against UPSC syllabus keywords before allowing AI response
+  - Enhanced system prompts with mandatory UPSC-specific requirements (syllabus references, previous year questions, exam patterns)
+  - AI tutor now rejects any non-UPSC questions and suggests relevant UPSC topics instead
+  - Complete transformation from generic academic responses to exam-specific preparation content
 
 ## User Preferences
 
