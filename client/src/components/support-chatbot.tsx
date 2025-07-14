@@ -230,18 +230,18 @@ export function SupportChatbot() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 shadow-xl border-2 border-white/20 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105"
+        className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 shadow-xl border-2 border-white/20 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105"
         style={{
           boxShadow: '0 0 20px rgba(251, 146, 60, 0.4), 0 0 40px rgba(236, 72, 153, 0.3), 0 8px 32px rgba(0, 0, 0, 0.3)'
         }}
       >
-        <MessageCircle className="h-6 w-6 text-white" />
+        <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
       </button>
     );
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-96 h-[600px] bg-slate-900 border border-slate-700 rounded-lg shadow-2xl flex flex-col">
+    <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 w-[calc(100vw-2rem)] sm:w-96 max-w-md h-[70vh] sm:h-[600px] bg-slate-900 border border-slate-700 rounded-lg shadow-2xl flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-slate-700">
         <div className="flex items-center space-x-2">
