@@ -259,21 +259,21 @@ export default function AIVisualLab() {
       {/* Header */}
       <div className="relative overflow-hidden bg-gradient-to-r from-cyan-600/20 to-purple-600/20 backdrop-blur-sm border-b border-cyan-500/20">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.3),transparent,transparent)]"></div>
-        <div className="container mx-auto px-6 py-8 relative">
+        <div className="container mx-auto px-2 sm:px-6 py-4 sm:py-8 relative">
           {/* Back button */}
           <div className="mb-4">
             <BackButton fallbackPath="/dashboard" className="text-white hover:text-cyan-400" />
           </div>
           <div className="text-center relative">
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <h1 className="text-4xl font-bold text-white">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-4">
+              <h1 className="text-2xl sm:text-4xl font-bold text-white text-center">
                 AI Visual Learning Lab
                 <span className="text-cyan-400 ml-2">✨</span>
               </h1>
               
               {/* Exam Lock Status */}
               {examLocked && userExam && (
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/20 border border-green-500/30 rounded-lg">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/20 border border-green-500/30 rounded-lg mt-2 sm:mt-0">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                   <span className="text-green-400 text-sm font-medium">
                     {userExam.toUpperCase()} Locked
@@ -281,7 +281,7 @@ export default function AIVisualLab() {
                 </div>
               )}
             </div>
-            <p className="text-cyan-100 text-lg max-w-2xl mx-auto">
+            <p className="text-cyan-100 text-sm sm:text-lg max-w-2xl mx-auto px-2 sm:px-0">
               Create immersive educational content with GPT-4o and DALL-E 3. 
               Generate stunning visuals, comprehensive study materials, and interactive learning experiences.
             </p>
@@ -300,8 +300,8 @@ export default function AIVisualLab() {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="container mx-auto px-2 sm:px-6 py-4 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
           {/* Input Panel */}
           <Card className="bg-slate-800/50 border-slate-700 backdrop-blur-sm">
             <CardHeader>
@@ -313,7 +313,7 @@ export default function AIVisualLab() {
                 Powered by GPT-4o and DALL-E 3 for immersive education
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4 sm:space-y-6 p-3 sm:p-6">
               {/* Basic Info */}
               <div className="space-y-4">
                 <div>
@@ -324,11 +324,11 @@ export default function AIVisualLab() {
                     placeholder="e.g., Photosynthesis, Newton's Laws, French Revolution"
                     value={formData.topic}
                     onChange={(e) => handleInputChange("topic", e.target.value)}
-                    className="bg-slate-700/50 border-slate-600 text-white"
+                    className="bg-slate-700/50 border-slate-600 text-white text-sm sm:text-base"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-slate-300 mb-2 block">
                       Subject *
@@ -373,18 +373,18 @@ export default function AIVisualLab() {
 
               {/* Generation Options */}
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-3 bg-slate-700/50">
-                  <TabsTrigger value="image" className="data-[state=active]:bg-cyan-600">
+                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 bg-slate-700/50 h-auto sm:h-10">
+                  <TabsTrigger value="image" className="data-[state=active]:bg-cyan-600 justify-start h-12 sm:h-auto">
                     <Image className="h-4 w-4 mr-2" />
-                    Image
+                    Educational Diagram
                   </TabsTrigger>
-                  <TabsTrigger value="package" className="data-[state=active]:bg-purple-600">
+                  <TabsTrigger value="package" className="data-[state=active]:bg-purple-600 justify-start h-12 sm:h-auto">
                     <BookOpen className="h-4 w-4 mr-2" />
-                    Package
+                    Complete Package
                   </TabsTrigger>
-                  <TabsTrigger value="session" className="data-[state=active]:bg-pink-600">
+                  <TabsTrigger value="session" className="data-[state=active]:bg-pink-600 justify-start h-12 sm:h-auto">
                     <Zap className="h-4 w-4 mr-2" />
-                    Session
+                    Study Session
                   </TabsTrigger>
                 </TabsList>
 
@@ -460,7 +460,7 @@ export default function AIVisualLab() {
                 </TabsContent>
 
                 <TabsContent value="session" className="space-y-4 mt-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-slate-300 mb-2 block">
                         Duration (minutes)
