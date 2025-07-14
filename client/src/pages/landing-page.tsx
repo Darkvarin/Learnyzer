@@ -221,9 +221,13 @@ export default function LandingPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <img 
-                src="/images/learnyzer-logo.svg" 
+                src="/images/learnyzer-logo-simple.svg" 
                 alt="Learnyzer Logo" 
                 className="h-8 w-auto object-contain"
+                onError={(e) => {
+                  console.log('Logo failed to load:', e);
+                  e.currentTarget.style.display = 'none';
+                }}
               />
             </div>
             <div className="flex space-x-4">

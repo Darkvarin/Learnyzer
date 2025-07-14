@@ -113,11 +113,38 @@ export function Header() {
           <div className="flex items-center space-x-3">
             <Link href="/" className="flex items-center group">
               {/* Use the new professional logo SVG */}
-              <img 
-                src="/images/learnyzer-logo.svg" 
-                alt="Learnyzer Logo" 
-                className={`${isMobile ? 'h-6 w-auto' : 'h-8 w-auto'} object-contain group-hover:scale-105 transition-transform duration-300`}
-              />
+              <div className="flex items-center">
+                <img 
+                  src="/images/learnyzer-logo-simple.svg" 
+                  alt="Learnyzer Logo" 
+                  className={`${isMobile ? 'h-6 w-auto' : 'h-8 w-auto'} object-contain group-hover:scale-105 transition-transform duration-300`}
+                  onError={(e) => {
+                    console.log('Logo failed to load, showing fallback');
+                    e.currentTarget.style.display = 'none';
+                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = 'flex';
+                  }}
+                />
+                <div 
+                  className="hidden items-center space-x-2"
+                  style={{ display: 'none' }}
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f093fb] flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">L</span>
+                  </div>
+                  <span 
+                    className={`${isMobile ? 'text-lg' : 'text-xl'} font-black tracking-tight`}
+                    style={{
+                      background: "linear-gradient(90deg, #667eea, #764ba2)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text"
+                    }}
+                  >
+                    Learnyzer
+                  </span>
+                </div>
+              </div>
             </Link>
             {!isMobile && (
               <div className="flex items-center h-6 px-2 border border-[#4af3c0]/50 rounded-sm bg-[#0a2a42]/50">

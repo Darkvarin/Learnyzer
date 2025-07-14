@@ -131,11 +131,38 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Professional Logo */}
             <Link href="/" className="flex items-center group">
-              <img 
-                src="/images/learnyzer-logo.svg" 
-                alt="Learnyzer Logo" 
-                className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-300"
-              />
+              <div className="flex items-center">
+                <img 
+                  src="/images/learnyzer-logo-simple.svg" 
+                  alt="Learnyzer Logo" 
+                  className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-300"
+                  onError={(e) => {
+                    console.log('Logo failed to load, showing fallback');
+                    e.currentTarget.style.display = 'none';
+                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = 'flex';
+                  }}
+                />
+                <div 
+                  className="hidden items-center space-x-3"
+                  style={{ display: 'none' }}
+                >
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f093fb] flex items-center justify-center">
+                    <span className="text-white font-bold">L</span>
+                  </div>
+                  <span 
+                    className="text-2xl font-black tracking-tight"
+                    style={{
+                      background: "linear-gradient(90deg, #667eea, #764ba2)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text"
+                    }}
+                  >
+                    Learnyzer
+                  </span>
+                </div>
+              </div>
             </Link>
 
             {/* Desktop Nav with enhanced futuristic design */}
