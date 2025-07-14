@@ -31,13 +31,23 @@ export default function LandingPage() {
   const [showStats, setShowStats] = useState(false);
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
 
+  const examTypes = [
+    { name: "JEE", description: "Joint Entrance Examination", subjects: ["Physics", "Chemistry", "Mathematics"] },
+    { name: "NEET", description: "National Eligibility cum Entrance Test", subjects: ["Physics", "Chemistry", "Biology"] },
+    { name: "UPSC", description: "Union Public Service Commission", subjects: ["History", "Geography", "Political Science"] },
+    { name: "CLAT", description: "Common Law Admission Test", subjects: ["English", "Legal Reasoning", "Logical Reasoning"] },
+    { name: "CUET", description: "Common University Entrance Test", subjects: ["Physics", "Chemistry", "Mathematics"] },
+    { name: "CSE", description: "Computer Science Engineering", subjects: ["Programming", "Data Structures", "Algorithms"] },
+    { name: "CGLE", description: "Combined Graduate Level Examination", subjects: ["General Awareness", "Quantitative Aptitude"] }
+  ];
+
   // Auto-rotate exam types for interactive demo
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveExam((prev) => (prev + 1) % examTypes.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [examTypes.length]);
 
   // Show stats after a delay for engagement
   useEffect(() => {
@@ -61,15 +71,6 @@ export default function LandingPage() {
     
     setLocation(`/subscription?plan=${planId}`);
   };
-  const examTypes = [
-    { name: "JEE", description: "Joint Entrance Examination", subjects: ["Physics", "Chemistry", "Mathematics"] },
-    { name: "NEET", description: "National Eligibility cum Entrance Test", subjects: ["Physics", "Chemistry", "Biology"] },
-    { name: "UPSC", description: "Union Public Service Commission", subjects: ["History", "Geography", "Political Science"] },
-    { name: "CLAT", description: "Common Law Admission Test", subjects: ["English", "Legal Reasoning", "Logical Reasoning"] },
-    { name: "CUET", description: "Common University Entrance Test", subjects: ["Physics", "Chemistry", "Mathematics"] },
-    { name: "CSE", description: "Computer Science Engineering", subjects: ["Programming", "Data Structures", "Algorithms"] },
-    { name: "CGLE", description: "Combined Graduate Level Examination", subjects: ["General Awareness", "Quantitative Aptitude"] }
-  ];
 
   const features = [
     {
