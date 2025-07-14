@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   BookOpen, 
   Brain, 
@@ -16,12 +18,32 @@ import {
   Sparkles,
   Clock,
   Shield,
-  Heart
+  Heart,
+  PlayCircle,
+  ChevronDown,
+  GraduationCap
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
+  const [activeExam, setActiveExam] = useState(0);
+  const [showStats, setShowStats] = useState(false);
+  const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
+
+  // Auto-rotate exam types for interactive demo
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveExam((prev) => (prev + 1) % examTypes.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Show stats after a delay for engagement
+  useEffect(() => {
+    const timer = setTimeout(() => setShowStats(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handlePlanSelection = (planName: string) => {
     // For free trial, go to authentication page
@@ -221,16 +243,61 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-16 text-center">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Badge className="mb-6 bg-blue-500/20 text-blue-300 border-blue-500/30">
-            <Sparkles className="h-4 w-4 mr-2" />
-            Free 1-Day Trial Available!
-          </Badge>
+      <section className="relative pt-20 pb-16 text-center overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0">
+          <motion.div 
+            className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"
+            animate={{ 
+              scale: [1, 1.3, 1],
+              opacity: [0.3, 0.7, 0.3]
+            }}
+            transition={{ 
+              duration: 6, 
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div 
+            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"
+            animate={{ 
+              scale: [1.3, 1, 1.3],
+              opacity: [0.7, 0.3, 0.7]
+            }}
+            transition={{ 
+              duration: 6, 
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 3
+            }}
+          />
+        </div>
+
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Badge className="mb-6 bg-blue-500/20 text-blue-300 border-blue-500/30">
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              >
+                <Sparkles className="h-4 w-4 mr-2" />
+              </motion.div>
+              Free 1-Day Trial Available!
+            </Badge>
+          </motion.div>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent leading-tight">
+          <motion.h1 
+            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent leading-tight"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             Master Competitive Exams with AI
-          </h1>
+          </motion.h1>
           
           <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
             India's most advanced AI-powered learning platform for JEE, NEET, UPSC, CLAT, CUET, CSE & CGLE preparation
@@ -312,19 +379,39 @@ export default function LandingPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="bg-white/5 border-white/10 hover:bg-white/10 transition-all duration-300">
-                <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-                    {feature.icon}
-                  </div>
-                  <CardTitle className="text-white">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-gray-300">
-                    {feature.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ 
+                  scale: 1.05, 
+                  y: -5,
+                  transition: { duration: 0.2 }
+                }}
+                onHoverStart={() => setHoveredFeature(index)}
+                onHoverEnd={() => setHoveredFeature(null)}
+              >
+                <Card className={`bg-white/5 border-white/10 transition-all duration-300 h-full ${
+                  hoveredFeature === index ? 'bg-white/10 border-purple-500/50 shadow-lg shadow-purple-500/20' : ''
+                }`}>
+                  <CardHeader>
+                    <motion.div 
+                      className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mb-4"
+                      animate={hoveredFeature === index ? { rotate: [0, 10, -10, 0] } : {}}
+                      transition={{ duration: 0.5 }}
+                    >
+                      {feature.icon}
+                    </motion.div>
+                    <CardTitle className="text-white">{feature.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-300">
+                      {feature.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -371,36 +458,86 @@ export default function LandingPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
             {pricingPlans.map((plan, index) => (
-              <Card key={index} className={`relative ${plan.popular ? 'border-blue-500 bg-blue-500/10' : 'bg-white/5 border-white/10'} hover:scale-105 transition-all duration-300`}>
-                {plan.popular && (
-                  <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-600">
-                    Most Popular
-                  </Badge>
-                )}
-                <CardHeader className="text-center">
-                  <CardTitle className="text-white text-2xl">{plan.name}</CardTitle>
-                  <div className="text-3xl font-bold text-white">
-                    {plan.price}
-                    <span className="text-lg font-normal text-gray-300">/{plan.duration}</span>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center gap-3 text-gray-300">
-                        <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button 
-                    onClick={() => handlePlanSelection(plan.name)}
-                    className={`w-full ${plan.popular ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700' : 'bg-white/10 hover:bg-white/20'} transition-all duration-300`}
-                  >
-                    {plan.ctaText}
-                  </Button>
-                </CardContent>
-              </Card>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ 
+                  scale: 1.05, 
+                  y: -10,
+                  transition: { duration: 0.3 }
+                }}
+              >
+                <Card className={`relative h-full ${plan.popular ? 'border-blue-500 bg-blue-500/10' : 'bg-white/5 border-white/10'} transition-all duration-300`}>
+                  {plan.popular && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-600">
+                        <motion.div
+                          animate={{ scale: [1, 1.1, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        >
+                          Most Popular
+                        </motion.div>
+                      </Badge>
+                    </motion.div>
+                  )}
+                  <CardHeader className="text-center">
+                    <CardTitle className="text-white text-2xl">{plan.name}</CardTitle>
+                    <motion.div 
+                      className="text-3xl font-bold text-white"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {plan.price}
+                      <span className="text-lg font-normal text-gray-300">/{plan.duration}</span>
+                    </motion.div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <ul className="space-y-3">
+                      {plan.features.map((feature, featureIndex) => (
+                        <motion.li 
+                          key={featureIndex} 
+                          className="flex items-center gap-3 text-gray-300"
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 + featureIndex * 0.05 }}
+                        >
+                          <motion.div
+                            whileHover={{ scale: 1.2, rotate: 180 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
+                          </motion.div>
+                          <span>{feature}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Button 
+                        onClick={() => handlePlanSelection(plan.name)}
+                        className={`w-full ${plan.popular ? 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700' : 'bg-white/10 hover:bg-white/20'} transition-all duration-300 group`}
+                      >
+                        {plan.ctaText}
+                        <motion.div
+                          className="ml-2"
+                          animate={{ x: [0, 5, 0] }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                          <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </motion.div>
+                      </Button>
+                    </motion.div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
