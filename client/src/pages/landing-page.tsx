@@ -224,33 +224,64 @@ export default function LandingPage() {
                 <svg width="32" height="32" viewBox="0 0 32 32" className="w-full h-full">
                   <defs>
                     <linearGradient id="landingIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{stopColor:"#667eea", stopOpacity:1}} />
-                      <stop offset="50%" style={{stopColor:"#764ba2", stopOpacity:1}} />
-                      <stop offset="100%" style={{stopColor:"#f093fb", stopOpacity:1}} />
+                      <stop offset="0%" style={{stopColor:"#4f46e5", stopOpacity:1}} />
+                      <stop offset="30%" style={{stopColor:"#7c3aed", stopOpacity:1}} />
+                      <stop offset="60%" style={{stopColor:"#db2777", stopOpacity:1}} />
+                      <stop offset="100%" style={{stopColor:"#f59e0b", stopOpacity:1}} />
                     </linearGradient>
+                    <radialGradient id="landingGlow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" style={{stopColor:"#ffffff", stopOpacity:0.3}} />
+                      <stop offset="100%" style={{stopColor:"#ffffff", stopOpacity:0}} />
+                    </radialGradient>
                   </defs>
-                  <circle cx="16" cy="16" r="15" fill="url(#landingIconGrad)"/>
-                  <g transform="translate(16,16)" stroke="#ffffff" strokeWidth="1.5" fill="#ffffff">
-                    <circle cx="0" cy="0" r="3" opacity="0.9"/>
-                    <path d="M 0,-3 Q -4,-6 -7,-4" fill="none" opacity="0.8"/>
-                    <path d="M 0,-3 Q 4,-6 7,-4" fill="none" opacity="0.8"/>
-                    <path d="M -3,0 Q -6,-4 -9,-1" fill="none" opacity="0.8"/>
-                    <path d="M 3,0 Q 6,-4 9,-1" fill="none" opacity="0.8"/>
-                    <path d="M 0,3 Q -4,6 -7,4" fill="none" opacity="0.8"/>
-                    <path d="M 0,3 Q 4,6 7,4" fill="none" opacity="0.8"/>
-                    <circle cx="-7" cy="-4" r="1.5" opacity="0.9"/>
-                    <circle cx="7" cy="-4" r="1.5" opacity="0.9"/>
-                    <circle cx="-9" cy="-1" r="1.5" opacity="0.9"/>
-                    <circle cx="9" cy="-1" r="1.5" opacity="0.9"/>
-                    <circle cx="-7" cy="4" r="1.5" opacity="0.9"/>
-                    <circle cx="7" cy="4" r="1.5" opacity="0.9"/>
+                  
+                  {/* Main circle with gradient */}
+                  <circle cx="16" cy="16" r="15" fill="url(#landingIconGrad)" stroke="#ffffff" strokeWidth="0.5" opacity="0.95"/>
+                  
+                  {/* Inner glow effect */}
+                  <circle cx="16" cy="16" r="12" fill="url(#landingGlow)"/>
+                  
+                  {/* Brain structure */}
+                  <g transform="translate(16,16)" stroke="#ffffff" strokeWidth="1.2" fill="none">
+                    {/* Central processing unit */}
+                    <circle cx="0" cy="0" r="2.5" fill="#ffffff" opacity="0.9"/>
+                    
+                    {/* Primary neural pathways */}
+                    <path d="M 0,-2.5 Q -6,-8 -10,-6" stroke="#ffffff" strokeWidth="1.5" opacity="0.9"/>
+                    <path d="M 0,-2.5 Q 6,-8 10,-6" stroke="#ffffff" strokeWidth="1.5" opacity="0.9"/>
+                    <path d="M -2.5,0 Q -8,-6 -12,-2" stroke="#ffffff" strokeWidth="1.5" opacity="0.9"/>
+                    <path d="M 2.5,0 Q 8,-6 12,-2" stroke="#ffffff" strokeWidth="1.5" opacity="0.9"/>
+                    <path d="M 0,2.5 Q -6,8 -10,6" stroke="#ffffff" strokeWidth="1.5" opacity="0.9"/>
+                    <path d="M 0,2.5 Q 6,8 10,6" stroke="#ffffff" strokeWidth="1.5" opacity="0.9"/>
+                    
+                    {/* Secondary connections */}
+                    <path d="M -10,-6 Q -8,-2 -12,-2" stroke="#ffffff" strokeWidth="1" opacity="0.7"/>
+                    <path d="M 10,-6 Q 8,-2 12,-2" stroke="#ffffff" strokeWidth="1" opacity="0.7"/>
+                    <path d="M -10,6 Q -8,2 -12,2" stroke="#ffffff" strokeWidth="1" opacity="0.7"/>
+                    <path d="M 10,6 Q 8,2 12,2" stroke="#ffffff" strokeWidth="1" opacity="0.7"/>
+                    
+                    {/* Neural nodes */}
+                    <circle cx="-10" cy="-6" r="1.8" fill="#ffffff" opacity="0.95"/>
+                    <circle cx="10" cy="-6" r="1.8" fill="#ffffff" opacity="0.95"/>
+                    <circle cx="-12" cy="-2" r="1.8" fill="#ffffff" opacity="0.95"/>
+                    <circle cx="12" cy="-2" r="1.8" fill="#ffffff" opacity="0.95"/>
+                    <circle cx="-10" cy="6" r="1.8" fill="#ffffff" opacity="0.95"/>
+                    <circle cx="10" cy="6" r="1.8" fill="#ffffff" opacity="0.95"/>
+                    
+                    {/* Micro processors */}
+                    <circle cx="-10" cy="-6" r="0.8" fill="#4f46e5" opacity="0.8"/>
+                    <circle cx="10" cy="-6" r="0.8" fill="#7c3aed" opacity="0.8"/>
+                    <circle cx="-12" cy="-2" r="0.8" fill="#db2777" opacity="0.8"/>
+                    <circle cx="12" cy="-2" r="0.8" fill="#f59e0b" opacity="0.8"/>
+                    <circle cx="-10" cy="6" r="0.8" fill="#4f46e5" opacity="0.8"/>
+                    <circle cx="10" cy="6" r="0.8" fill="#7c3aed" opacity="0.8"/>
                   </g>
                 </svg>
               </div>
               <span 
                 className="text-xl font-black tracking-tight"
                 style={{
-                  background: "linear-gradient(90deg, #667eea, #764ba2)",
+                  background: "linear-gradient(90deg, #4f46e5, #7c3aed, #db2777, #f59e0b)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text"
