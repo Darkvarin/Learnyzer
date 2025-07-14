@@ -682,6 +682,13 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Maintained premium gradient background and glow effects for professional look
   - Logo now clearly represents a brain without confusing abstract elements
   - Simple design perfect for trademark registration and brand recognition
+- July 14, 2025: Conversion from SVG to PNG logo format for better website compatibility
+  - Replaced all inline SVG logos with PNG image format across header, home page, and landing page
+  - Updated logo components to use /generated-icon.png for consistent AI robot branding
+  - PNG format ensures better cross-browser compatibility and loading performance
+  - Maintained responsive sizing and proper object-contain scaling for all screen sizes
+  - Clean AI robot design with glowing effect provides simple, recognizable brand identity
+  - Eliminated complex SVG rendering issues and improved website load times
 
 ## User Preferences
 

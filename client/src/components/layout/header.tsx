@@ -115,48 +115,11 @@ export function Header() {
               {/* Use the new professional logo SVG */}
               <div className="flex items-center space-x-2">
                 <div className="relative w-8 h-8">
-                  <svg width="32" height="32" viewBox="0 0 32 32" className="w-full h-full">
-                    <defs>
-                      <linearGradient id="headerIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style={{stopColor:"#4f46e5", stopOpacity:1}} />
-                        <stop offset="30%" style={{stopColor:"#7c3aed", stopOpacity:1}} />
-                        <stop offset="60%" style={{stopColor:"#db2777", stopOpacity:1}} />
-                        <stop offset="100%" style={{stopColor:"#f59e0b", stopOpacity:1}} />
-                      </linearGradient>
-                      <radialGradient id="headerGlow" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" style={{stopColor:"#ffffff", stopOpacity:0.3}} />
-                        <stop offset="100%" style={{stopColor:"#ffffff", stopOpacity:0}} />
-                      </radialGradient>
-                    </defs>
-                    
-                    {/* Main circle with gradient */}
-                    <circle cx="16" cy="16" r="15" fill="url(#headerIconGrad)" stroke="#ffffff" strokeWidth="0.5" opacity="0.95"/>
-                    
-                    {/* Inner glow effect */}
-                    <circle cx="16" cy="16" r="12" fill="url(#headerGlow)"/>
-                    
-                    {/* Simple Brain Shape */}
-                    <g transform="translate(16,16)">
-                      {/* Main brain outline */}
-                      <path d="M -10,-6 Q -12,-10 -6,-10 Q 0,-12 6,-10 Q 12,-10 10,-6 Q 12,-2 10,2 Q 12,6 8,8 Q 4,10 0,9 Q -4,10 -8,8 Q -12,6 -10,2 Q -12,-2 -10,-6 Z" 
-                            fill="rgba(255,255,255,0.9)" 
-                            stroke="#ffffff" 
-                            strokeWidth="1.5" 
-                            opacity="0.95"/>
-                      
-                      {/* Central brain division line */}
-                      <path d="M 0,-10 Q 0,-5 0,0 Q 0,5 0,9" 
-                            stroke="rgba(255,255,255,0.6)" 
-                            strokeWidth="1" 
-                            opacity="0.7"/>
-                      
-                      {/* Simple brain texture lines */}
-                      <path d="M -6,-6 Q -4,-4 -6,-2" stroke="rgba(255,255,255,0.6)" strokeWidth="0.8" opacity="0.6"/>
-                      <path d="M 6,-6 Q 4,-4 6,-2" stroke="rgba(255,255,255,0.6)" strokeWidth="0.8" opacity="0.6"/>
-                      <path d="M -6,2 Q -4,4 -6,6" stroke="rgba(255,255,255,0.6)" strokeWidth="0.8" opacity="0.6"/>
-                      <path d="M 6,2 Q 4,4 6,6" stroke="rgba(255,255,255,0.6)" strokeWidth="0.8" opacity="0.6"/>
-                    </g>
-                  </svg>
+                  <img 
+                    src="/generated-icon.png" 
+                    alt="Learnyzer Logo" 
+                    className="w-full h-full object-contain rounded"
+                  />
                 </div>
                 <span 
                   className={`${isMobile ? 'text-lg' : 'text-xl'} font-black tracking-tight`}
