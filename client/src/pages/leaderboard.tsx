@@ -36,70 +36,70 @@ function LeaderboardTable({ data, isLoading }: { data: any[]; isLoading: boolean
   return (
     <div className="rounded-xl overflow-hidden bg-[#0C101F]/90 border border-purple-500/20 shadow-lg">
       <div className="overflow-x-auto">
-        <table className="w-full table-auto">
+        <table className="w-full table-auto min-w-[600px]">
           <thead>
             <tr className="bg-gradient-to-r from-purple-500/20 via-purple-500/10 to-purple-500/20 text-left">
-              <th className="px-4 py-3 font-medium text-white/80 text-sm">Rank</th>
-              <th className="px-4 py-3 font-medium text-white/80 text-sm">Student</th>
+              <th className="px-2 sm:px-4 py-3 font-medium text-white/80 text-xs sm:text-sm">Rank</th>
+              <th className="px-2 sm:px-4 py-3 font-medium text-white/80 text-xs sm:text-sm">Student</th>
               <th 
-                className="px-4 py-3 font-medium text-white/80 text-sm cursor-pointer"
+                className="px-2 sm:px-4 py-3 font-medium text-white/80 text-xs sm:text-sm cursor-pointer"
                 onClick={() => toggleSort('level')}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   Level
                   {sortField === 'level' && (
-                    sortDirection === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+                    sortDirection === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />
                   )}
                 </div>
               </th>
               <th 
-                className="px-4 py-3 font-medium text-white/80 text-sm cursor-pointer"
+                className="px-2 sm:px-4 py-3 font-medium text-white/80 text-xs sm:text-sm cursor-pointer"
                 onClick={() => toggleSort('xp')}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   XP
                   {sortField === 'xp' && (
-                    sortDirection === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+                    sortDirection === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />
                   )}
                 </div>
               </th>
               <th 
-                className="px-4 py-3 font-medium text-white/80 text-sm cursor-pointer"
+                className="px-2 sm:px-4 py-3 font-medium text-white/80 text-xs sm:text-sm cursor-pointer"
                 onClick={() => toggleSort('streak')}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   Streak
                   {sortField === 'streak' && (
-                    sortDirection === 'asc' ? <ChevronUp size={16} /> : <ChevronDown size={16} />
+                    sortDirection === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />
                   )}
                 </div>
               </th>
-              <th className="px-4 py-3 font-medium text-white/80 text-sm">Rank</th>
+              <th className="px-2 sm:px-4 py-3 font-medium text-white/80 text-xs sm:text-sm">Rank</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-purple-500/10">
             {isLoading ? (
               Array(10).fill(0).map((_, idx) => (
                 <tr key={idx} className="transition-colors hover:bg-purple-500/5">
-                  <td className="px-4 py-3"><Skeleton className="h-4 w-8" /></td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <Skeleton className="h-8 w-8 rounded-full" />
-                      <Skeleton className="h-4 w-24" />
+                  <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-8" /></td>
+                  <td className="px-2 sm:px-4 py-2 sm:py-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <Skeleton className="h-6 w-6 sm:h-8 sm:w-8 rounded-full" />
+                      <Skeleton className="h-4 w-20 sm:w-24" />
                     </div>
                   </td>
-                  <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
-                  <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
-                  <td className="px-4 py-3"><Skeleton className="h-4 w-12" /></td>
-                  <td className="px-4 py-3"><Skeleton className="h-4 w-16" /></td>
+                  <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-10 sm:w-12" /></td>
+                  <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-10 sm:w-12" /></td>
+                  <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-10 sm:w-12" /></td>
+                  <td className="px-2 sm:px-4 py-2 sm:py-3"><Skeleton className="h-4 w-12 sm:w-16" /></td>
                 </tr>
               ))
             ) : (
               sortedData.map((student, idx) => (
                 <tr key={idx} className="transition-colors hover:bg-purple-500/5">
-                  <td className="px-4 py-3 font-mono text-base font-bold">
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 font-mono text-sm sm:text-base font-bold">
                     {idx < 3 ? (
-                      <div className={`inline-flex items-center justify-center h-8 w-8 rounded-full
+                      <div className={`inline-flex items-center justify-center h-6 w-6 sm:h-8 sm:w-8 rounded-full text-xs sm:text-sm
                         ${idx === 0 ? 'bg-amber-500/20 text-amber-400' : 
                           idx === 1 ? 'bg-slate-500/20 text-slate-400' : 
                           'bg-amber-900/20 text-amber-700'}
@@ -107,36 +107,36 @@ function LeaderboardTable({ data, isLoading }: { data: any[]; isLoading: boolean
                         {idx + 1}
                       </div>
                     ) : (
-                      <span className="text-white/60 pl-3">{idx + 1}</span>
+                      <span className="text-white/60 pl-2 sm:pl-3 text-xs sm:text-sm">{idx + 1}</span>
                     )}
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <Avatar>
+                  <td className="px-2 sm:px-4 py-2 sm:py-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
                         <AvatarImage src={student.profileImage} />
-                        <AvatarFallback className="bg-gradient-to-br from-purple-600/30 to-purple-400/10">
+                        <AvatarFallback className="bg-gradient-to-br from-purple-600/30 to-purple-400/10 text-xs sm:text-sm">
                           {student.name.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-medium text-white/90">{student.name}</p>
+                        <p className="font-medium text-white/90 text-xs sm:text-sm">{student.name}</p>
                         <p className="text-xs text-white/60">{student.grade}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="inline-flex items-center px-2 py-1 rounded bg-purple-500/10 text-purple-400 text-sm">
+                  <td className="px-2 sm:px-4 py-2 sm:py-3">
+                    <div className="inline-flex items-center px-1.5 sm:px-2 py-1 rounded bg-purple-500/10 text-purple-400 text-xs sm:text-sm">
                       Lvl {student.level}
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-mono text-cyan-400">{student.xp.toLocaleString()}</td>
-                  <td className="px-4 py-3">
-                    <div className="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-500/10 text-amber-400 text-sm">
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 font-mono text-cyan-400 text-xs sm:text-sm">{student.xp.toLocaleString()}</td>
+                  <td className="px-2 sm:px-4 py-2 sm:py-3">
+                    <div className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-1 rounded bg-amber-500/10 text-amber-400 text-xs sm:text-sm">
                       <span className="animate-pulse">●</span> {student.streak} days
                     </div>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded 
+                  <td className="px-2 sm:px-4 py-2 sm:py-3">
+                    <div className={`inline-flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 py-1 rounded text-xs sm:text-sm
                       ${student.rank.toLowerCase().includes('bronze') ? 'bg-amber-900/20 text-amber-700' : 
                         student.rank.toLowerCase().includes('silver') ? 'bg-slate-500/20 text-slate-400' :
                         student.rank.toLowerCase().includes('gold') ? 'bg-amber-500/20 text-amber-400' :
@@ -148,7 +148,9 @@ function LeaderboardTable({ data, isLoading }: { data: any[]; isLoading: boolean
                         'bg-rose-500/20 text-rose-400'
                       }`}
                     >
-                      <Medal size={14} /> {student.rank}
+                      <Medal size={12} className="sm:w-4 sm:h-4" /> 
+                      <span className="hidden sm:inline">{student.rank}</span>
+                      <span className="sm:hidden">{student.rank.split(' ')[0]}</span>
                     </div>
                   </td>
                 </tr>
@@ -273,8 +275,8 @@ export default function LeaderboardPage() {
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container max-w-6xl mx-auto px-4 pt-20 pb-16 md:pt-24 relative z-10">
-        <div className="flex justify-between items-center mb-6">
+      <main className="flex-1 container max-w-6xl mx-auto px-2 sm:px-4 pt-20 pb-16 md:pt-24 relative z-10">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 sm:gap-0">
           <div>
             <PageHeader
               title="Indian Leaderboard"
@@ -295,7 +297,7 @@ export default function LeaderboardPage() {
           </div>
           
           <Link href="/dashboard">
-            <Button variant="outline" className="bg-background/40 border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-cyan-400">
+            <Button variant="outline" className="bg-background/40 border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-cyan-400 w-full sm:w-auto">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Dashboard
             </Button>
@@ -320,14 +322,14 @@ export default function LeaderboardPage() {
               <Button
                 key={idx}
                 variant={selectedCategory === category ? "default" : "outline"}
-                className={
+                className={`text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2 ${
                   selectedCategory === category 
                     ? "bg-purple-600 hover:bg-purple-700 text-white" 
                     : "bg-[#0C101F]/90 border-purple-500/20 text-white/80 hover:text-white"
-                }
+                }`}
                 onClick={() => setSelectedCategory(category)}
               >
-                {category === 'all' ? 'All Categories' : category}
+                {category === 'all' ? 'All' : category}
               </Button>
             ))}
           </div>
@@ -335,12 +337,14 @@ export default function LeaderboardPage() {
 
         <Tabs defaultValue="indian" className="w-full">
           <div className="flex justify-between items-center mb-4">
-            <TabsList className="bg-[#0C101F]/90 border border-purple-500/20">
-              <TabsTrigger value="indian" className="data-[state=active]:bg-purple-500/20">
-                Indian Rankings
+            <TabsList className="bg-[#0C101F]/90 border border-purple-500/20 grid grid-cols-2 w-full sm:w-auto">
+              <TabsTrigger value="indian" className="data-[state=active]:bg-purple-500/20 text-xs sm:text-sm">
+                <span className="hidden sm:inline">Indian Rankings</span>
+                <span className="sm:hidden">Indian</span>
               </TabsTrigger>
-              <TabsTrigger value="friends" className="data-[state=active]:bg-purple-500/20">
-                <Users className="h-4 w-4 mr-2" /> Friends
+              <TabsTrigger value="friends" className="data-[state=active]:bg-purple-500/20 text-xs sm:text-sm">
+                <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" /> 
+                <span>Friends</span>
               </TabsTrigger>
             </TabsList>
           </div>
