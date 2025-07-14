@@ -132,7 +132,7 @@ export default function HomePage() {
             {/* Professional Logo */}
             <Link href="/" className="flex items-center group">
               <img 
-                src="/learnyzer-logo.svg" 
+                src="/images/learnyzer-logo.svg" 
                 alt="Learnyzer Logo" 
                 className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-300"
               />

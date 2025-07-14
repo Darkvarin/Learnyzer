@@ -221,7 +221,7 @@ export default function LandingPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <img 
-                src="/learnyzer-logo.svg" 
+                src="/images/learnyzer-logo.svg" 
                 alt="Learnyzer Logo" 
                 className="h-8 w-auto object-contain"
               />

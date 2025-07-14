@@ -114,7 +114,7 @@ export function Header() {
             <Link href="/" className="flex items-center group">
               {/* Use the new professional logo SVG */}
               <img 
-                src="/learnyzer-logo.svg" 
+                src="/images/learnyzer-logo.svg" 
                 alt="Learnyzer Logo" 
                 className={`${isMobile ? 'h-6 w-auto' : 'h-8 w-auto'} object-contain group-hover:scale-105 transition-transform duration-300`}
               />
