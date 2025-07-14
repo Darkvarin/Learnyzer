@@ -241,43 +241,26 @@ export default function LandingPage() {
                   {/* Inner glow effect */}
                   <circle cx="16" cy="16" r="12" fill="url(#landingGlow)"/>
                   
-                  {/* Brain structure */}
-                  <g transform="translate(16,16)" stroke="#ffffff" strokeWidth="1" fill="none">
-                    {/* Left brain hemisphere */}
-                    <path d="M -8,-8 Q -12,-4 -12,0 Q -12,4 -8,8 Q -4,6 -2,2 Q -1,0 -2,-2 Q -4,-6 -8,-8 Z" 
-                          fill="rgba(255,255,255,0.15)" stroke="#ffffff" strokeWidth="1.2" opacity="0.9"/>
+                  {/* Simple Brain Shape */}
+                  <g transform="translate(16,16)">
+                    {/* Main brain outline */}
+                    <path d="M -10,-6 Q -12,-10 -6,-10 Q 0,-12 6,-10 Q 12,-10 10,-6 Q 12,-2 10,2 Q 12,6 8,8 Q 4,10 0,9 Q -4,10 -8,8 Q -12,6 -10,2 Q -12,-2 -10,-6 Z" 
+                          fill="rgba(255,255,255,0.9)" 
+                          stroke="#ffffff" 
+                          strokeWidth="1.5" 
+                          opacity="0.95"/>
                     
-                    {/* Right brain hemisphere */}
-                    <path d="M 8,-8 Q 12,-4 12,0 Q 12,4 8,8 Q 4,6 2,2 Q 1,0 2,-2 Q 4,-6 8,-8 Z" 
-                          fill="rgba(255,255,255,0.15)" stroke="#ffffff" strokeWidth="1.2" opacity="0.9"/>
+                    {/* Central brain division line */}
+                    <path d="M 0,-10 Q 0,-5 0,0 Q 0,5 0,9" 
+                          stroke="rgba(255,255,255,0.6)" 
+                          strokeWidth="1" 
+                          opacity="0.7"/>
                     
-                    {/* Central connecting structure (corpus callosum) */}
-                    <path d="M -2,-1 Q 0,-0.5 2,-1" stroke="#ffffff" strokeWidth="1.5" opacity="0.8"/>
-                    <path d="M -2,0 Q 0,0.5 2,0" stroke="#ffffff" strokeWidth="1.5" opacity="0.8"/>
-                    <path d="M -2,1 Q 0,1.5 2,1" stroke="#ffffff" strokeWidth="1.5" opacity="0.8"/>
-                    
-                    {/* Neural networks - left hemisphere */}
-                    <circle cx="-6" cy="-4" r="1" fill="#4f46e5" opacity="0.9"/>
-                    <circle cx="-8" cy="-1" r="1" fill="#7c3aed" opacity="0.9"/>
-                    <circle cx="-6" cy="3" r="1" fill="#db2777" opacity="0.9"/>
-                    <circle cx="-4" cy="0" r="1" fill="#f59e0b" opacity="0.9"/>
-                    
-                    {/* Neural networks - right hemisphere */}
-                    <circle cx="6" cy="-4" r="1" fill="#4f46e5" opacity="0.9"/>
-                    <circle cx="8" cy="-1" r="1" fill="#7c3aed" opacity="0.9"/>
-                    <circle cx="6" cy="3" r="1" fill="#db2777" opacity="0.9"/>
-                    <circle cx="4" cy="0" r="1" fill="#f59e0b" opacity="0.9"/>
-                    
-                    {/* Neural connections */}
-                    <path d="M -6,-4 Q -5,-2 -4,0" stroke="#ffffff" strokeWidth="0.8" opacity="0.6"/>
-                    <path d="M -8,-1 Q -6,1 -4,0" stroke="#ffffff" strokeWidth="0.8" opacity="0.6"/>
-                    <path d="M -6,3 Q -5,1 -4,0" stroke="#ffffff" strokeWidth="0.8" opacity="0.6"/>
-                    <path d="M 6,-4 Q 5,-2 4,0" stroke="#ffffff" strokeWidth="0.8" opacity="0.6"/>
-                    <path d="M 8,-1 Q 6,1 4,0" stroke="#ffffff" strokeWidth="0.8" opacity="0.6"/>
-                    <path d="M 6,3 Q 5,1 4,0" stroke="#ffffff" strokeWidth="0.8" opacity="0.6"/>
-                    
-                    {/* Cross-hemisphere connections */}
-                    <path d="M -4,0 Q 0,-1 4,0" stroke="#ffffff" strokeWidth="0.8" opacity="0.5"/>
+                    {/* Simple brain texture lines */}
+                    <path d="M -6,-6 Q -4,-4 -6,-2" stroke="rgba(255,255,255,0.6)" strokeWidth="0.8" opacity="0.6"/>
+                    <path d="M 6,-6 Q 4,-4 6,-2" stroke="rgba(255,255,255,0.6)" strokeWidth="0.8" opacity="0.6"/>
+                    <path d="M -6,2 Q -4,4 -6,6" stroke="rgba(255,255,255,0.6)" strokeWidth="0.8" opacity="0.6"/>
+                    <path d="M 6,2 Q 4,4 6,6" stroke="rgba(255,255,255,0.6)" strokeWidth="0.8" opacity="0.6"/>
                   </g>
                 </svg>
               </div>
