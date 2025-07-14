@@ -131,37 +131,45 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Professional Logo */}
             <Link href="/" className="flex items-center group">
-              <div className="flex items-center">
-                <img 
-                  src="/images/learnyzer-logo-simple.svg" 
-                  alt="Learnyzer Logo" 
-                  className="h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-300"
-                  onError={(e) => {
-                    console.log('Logo failed to load, showing fallback');
-                    e.currentTarget.style.display = 'none';
-                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                    if (fallback) fallback.style.display = 'flex';
-                  }}
-                />
-                <div 
-                  className="hidden items-center space-x-3"
-                  style={{ display: 'none' }}
-                >
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#667eea] via-[#764ba2] to-[#f093fb] flex items-center justify-center">
-                    <span className="text-white font-bold">L</span>
-                  </div>
-                  <span 
-                    className="text-2xl font-black tracking-tight"
-                    style={{
-                      background: "linear-gradient(90deg, #667eea, #764ba2)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text"
-                    }}
-                  >
-                    Learnyzer
-                  </span>
+              <div className="flex items-center space-x-3">
+                <div className="relative w-10 h-10">
+                  <svg width="40" height="40" viewBox="0 0 40 40" className="w-full h-full">
+                    <defs>
+                      <linearGradient id="homeLogoIconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style={{stopColor:"#667eea", stopOpacity:1}} />
+                        <stop offset="50%" style={{stopColor:"#764ba2", stopOpacity:1}} />
+                        <stop offset="100%" style={{stopColor:"#f093fb", stopOpacity:1}} />
+                      </linearGradient>
+                    </defs>
+                    <circle cx="20" cy="20" r="19" fill="url(#homeLogoIconGrad)"/>
+                    <g transform="translate(20,20)" stroke="#ffffff" strokeWidth="2" fill="#ffffff">
+                      <circle cx="0" cy="0" r="4" opacity="0.9"/>
+                      <path d="M 0,-4 Q -5,-8 -9,-5" fill="none" opacity="0.8"/>
+                      <path d="M 0,-4 Q 5,-8 9,-5" fill="none" opacity="0.8"/>
+                      <path d="M -4,0 Q -8,-5 -11,-1" fill="none" opacity="0.8"/>
+                      <path d="M 4,0 Q 8,-5 11,-1" fill="none" opacity="0.8"/>
+                      <path d="M 0,4 Q -5,8 -9,5" fill="none" opacity="0.8"/>
+                      <path d="M 0,4 Q 5,8 9,5" fill="none" opacity="0.8"/>
+                      <circle cx="-9" cy="-5" r="2" opacity="0.9"/>
+                      <circle cx="9" cy="-5" r="2" opacity="0.9"/>
+                      <circle cx="-11" cy="-1" r="2" opacity="0.9"/>
+                      <circle cx="11" cy="-1" r="2" opacity="0.9"/>
+                      <circle cx="-9" cy="5" r="2" opacity="0.9"/>
+                      <circle cx="9" cy="5" r="2" opacity="0.9"/>
+                    </g>
+                  </svg>
                 </div>
+                <span 
+                  className="text-2xl font-black tracking-tight"
+                  style={{
+                    background: "linear-gradient(90deg, #667eea, #764ba2)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text"
+                  }}
+                >
+                  Learnyzer
+                </span>
               </div>
             </Link>
 
