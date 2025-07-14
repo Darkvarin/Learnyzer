@@ -221,11 +221,9 @@ export default function LandingPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <div className="relative w-8 h-8">
-                <img 
-                  src="/images/learnyzer-logo.png" 
-                  alt="Learnyzer Logo" 
-                  className="w-full h-full object-contain rounded"
-                />
+                <div className="w-full h-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                  <div className="text-white text-lg font-bold">🧠</div>
+                </div>
               </div>
               <span 
                 className="text-xl font-black tracking-tight"

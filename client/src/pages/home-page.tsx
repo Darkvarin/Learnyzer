@@ -133,11 +133,9 @@ export default function HomePage() {
             <Link href="/" className="flex items-center group">
               <div className="flex items-center space-x-3">
                 <div className="relative w-10 h-10">
-                  <img 
-                    src="/images/learnyzer-logo.png" 
-                    alt="Learnyzer Logo" 
-                    className="w-full h-full object-contain rounded"
-                  />
+                  <div className="w-full h-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <div className="text-white text-xl font-bold">🧠</div>
+                  </div>
                 </div>
                 <span 
                   className="text-2xl font-black tracking-tight"
