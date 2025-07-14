@@ -222,7 +222,7 @@ export default function LandingPage() {
             <div className="flex items-center space-x-2">
               <div className="relative w-8 h-8">
                 <img 
-                  src="/generated-icon.png" 
+                  src="/images/learnyzer-logo.png" 
                   alt="Learnyzer Logo" 
                   className="w-full h-full object-contain rounded"
                 />

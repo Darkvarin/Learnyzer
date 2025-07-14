@@ -134,7 +134,7 @@ export default function HomePage() {
               <div className="flex items-center space-x-3">
                 <div className="relative w-10 h-10">
                   <img 
-                    src="/generated-icon.png" 
+                    src="/images/learnyzer-logo.png" 
                     alt="Learnyzer Logo" 
                     className="w-full h-full object-contain rounded"
                   />
