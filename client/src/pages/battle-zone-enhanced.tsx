@@ -513,10 +513,13 @@ export default function BattleZoneEnhanced() {
       
       <main className="flex-1 container mx-auto px-2 md:px-4 pt-20 pb-20 md:pt-24 md:pb-6 relative z-10">
         {battleToShow ? (
-          <BattleDetail 
-            battle={battleToShow}
-            onClose={handleCloseBattleDetail}
-          />
+          <>
+            {console.log('Passing battle to BattleDetail:', battleToShow)}
+            <BattleDetail 
+              battle={battleToShow}
+              onClose={handleCloseBattleDetail}
+            />
+          </>
         ) : (
         <>
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8">
