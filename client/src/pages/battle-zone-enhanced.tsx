@@ -104,12 +104,30 @@ export default function BattleZoneEnhanced() {
         });
       }
     },
-    onError: (error: any) => {
-      toast({
-        title: "Failed to join battle",
-        description: error.message || "There was an error joining the battle.",
-        variant: "destructive",
-      });
+    onError: async (error: any, battleId) => {
+      // If already joined, open the battle interface
+      if (error.message && error.message.includes("Already joined")) {
+        try {
+          const battleResponse = await apiRequest("GET", `/api/enhanced-battles/${battleId}`);
+          setSelectedBattle(battleResponse);
+          toast({
+            title: "Battle opened!",
+            description: "You're already in this battle. Opening battle interface...",
+          });
+        } catch (fetchError) {
+          toast({
+            title: "Already in battle",
+            description: "You're already a participant in this battle.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({
+          title: "Failed to join battle",
+          description: error.message || "There was an error joining the battle.",
+          variant: "destructive",
+        });
+      }
     }
   });
 
@@ -368,7 +386,6 @@ export default function BattleZoneEnhanced() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log("View button clicked for battle:", battle.id, battle);
                 setSelectedBattle(battle);
               }}
               className="bg-gray-500/10 border-gray-500/30 hover:bg-gray-500/20 text-gray-400 relative z-50 flex-1 sm:flex-initial"
@@ -383,7 +400,6 @@ export default function BattleZoneEnhanced() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log("Watch button clicked for battle:", battle.id);
                 spectateBattleMutation.mutate(battle.id);
               }}
               className="bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20 text-purple-400 relative z-50 flex-1 sm:flex-initial"
@@ -392,20 +408,36 @@ export default function BattleZoneEnhanced() {
               <Eye className="w-4 h-4 mr-1" />
               Watch
             </Button>
-            <Button
-              size="sm"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                joinBattleMutation.mutate(battle.id);
-              }}
-              disabled={joinBattleMutation.isPending}
-              className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 relative z-50 flex-1 sm:flex-initial"
-              style={{ pointerEvents: 'auto' }}
-            >
-              <Sword className="w-4 h-4 mr-1" />
-              Join Battle
-            </Button>
+            {battle.isParticipant ? (
+              <Button
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setSelectedBattle(battle);
+                }}
+                className="bg-gradient-to-r from-green-600/80 to-emerald-600/80 hover:from-green-600/90 hover:to-emerald-600/90 relative z-50 flex-1 sm:flex-initial"
+                style={{ pointerEvents: 'auto' }}
+              >
+                <Sword className="w-4 h-4 mr-1" />
+                Enter Battle
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  joinBattleMutation.mutate(battle.id);
+                }}
+                disabled={joinBattleMutation.isPending}
+                className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 relative z-50 flex-1 sm:flex-initial"
+                style={{ pointerEvents: 'auto' }}
+              >
+                <Sword className="w-4 h-4 mr-1" />
+                Join Battle
+              </Button>
+            )}
           </div>
         </div>
 
@@ -436,8 +468,7 @@ export default function BattleZoneEnhanced() {
     (enhancedBattlesData?.active?.find(b => b.id === selectedBattle.id) || selectedBattle) : 
     null;
 
-  console.log("Current selectedBattle:", selectedBattle);
-  console.log("Battle to show:", battleToShow);
+
 
   return (
     <div className="min-h-screen flex flex-col bg-dark text-white relative overflow-hidden">

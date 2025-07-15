@@ -728,6 +728,13 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - **SOLUTION**: Updated `battleToShow` logic to properly reference `enhancedBattlesData?.active?.find()` for battle lookup
   - **RESULT**: "Join Battle" now successfully opens BattleDetail component and shows battle interface
   - **USER EXPERIENCE**: Students can now join battles without encountering blank screens or component crashes
+- July 15, 2025: "Already joined battle" smart error handling implementation
+  - **INTELLIGENT ERROR HANDLING**: Enhanced join battle mutation to detect "already joined" errors and automatically open battle interface
+  - **DYNAMIC BUTTON STATES**: Battle cards now show "Enter Battle" (green) for joined battles vs "Join Battle" (cyan) for new battles
+  - **SEAMLESS UX**: When clicking join on already-joined battle, system automatically opens battle interface with success message
+  - **CONDITIONAL UI**: Implemented `battle.isParticipant` check to display appropriate button based on participation status
+  - **SMART RECOVERY**: System gracefully handles API errors by fetching battle details and opening interface when appropriate
+  - **RESULT**: No more confusing "already joined" error messages - users get direct access to their battles
 - July 14, 2025: Fixed support chatbot mobile positioning conflicts
   - Resolved chatbot icon overlapping with navigation links and leaderboard button on mobile
   - Moved chatbot position from bottom-6 to bottom-20 on mobile to avoid navigation conflicts
