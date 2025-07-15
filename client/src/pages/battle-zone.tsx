@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
-import { Sword, Plus, Users, Clock, Target, Trophy, Flame, ArrowLeft, Send, Eye } from "lucide-react";
+import { Sword, Plus, Users, Clock, Target, Trophy, Flame, ArrowLeft, Send, Eye, CheckCircle, XCircle, RotateCcw } from "lucide-react";
 
 export default function BattleZone() {
   const { toast } = useToast();
@@ -386,6 +386,10 @@ export default function BattleZone() {
 function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
   const [answer, setAnswer] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [score, setScore] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(600); // 10 minutes in seconds
   const { toast } = useToast();
 
   // Demo battle question based on exam type
@@ -409,8 +413,25 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
 
   const currentQuestion = demoQuestion[battle.examType as keyof typeof demoQuestion] || demoQuestion.JEE;
 
+  // Timer effect
+  useEffect(() => {
+    if (timeRemaining > 0 && !submitted) {
+      const timer = setTimeout(() => setTimeRemaining(prev => prev - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (timeRemaining === 0 && !submitted) {
+      // Auto-submit when time is up
+      handleSubmitAnswer();
+    }
+  }, [timeRemaining, submitted]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const handleSubmitAnswer = () => {
-    if (!selectedOption && !answer) {
+    if (!selectedOption && !answer && !submitted) {
       toast({
         title: "No Answer",
         description: "Please select an option or provide an answer.",
@@ -419,11 +440,126 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
       return;
     }
 
+    const isCorrect = selectedOption === currentQuestion.correct;
+    const points = isCorrect ? 10 : 0;
+    
+    setSubmitted(true);
+    setScore(points);
+    
     toast({
-      title: "Answer Submitted!",
-      description: "Your answer has been submitted successfully.",
+      title: isCorrect ? "Correct!" : "Incorrect!",
+      description: isCorrect 
+        ? `Great job! You earned ${points} points.` 
+        : `The correct answer was: ${currentQuestion.correct}`,
+      variant: isCorrect ? "default" : "destructive",
     });
+
+    // Show results after a brief delay
+    setTimeout(() => {
+      setShowResults(true);
+    }, 2000);
   };
+
+  // Show results screen after submission
+  if (showResults) {
+    return (
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Battles
+          </Button>
+          <div className="h-6 w-px bg-gray-600"></div>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Battle Results</h1>
+            <p className="text-gray-400">{battle.title}</p>
+          </div>
+        </div>
+
+        {/* Results Card */}
+        <div className="glassmorphism border border-purple-500/30 p-8 rounded-xl text-center">
+          <div className="flex justify-center mb-6">
+            {score > 0 ? (
+              <CheckCircle className="w-16 h-16 text-green-400" />
+            ) : (
+              <XCircle className="w-16 h-16 text-red-400" />
+            )}
+          </div>
+          
+          <h2 className="text-3xl font-bold text-white mb-2">
+            {score > 0 ? "Correct!" : "Incorrect!"}
+          </h2>
+          
+          <p className="text-gray-300 mb-6">
+            You scored <span className="text-2xl font-bold text-purple-400">{score}</span> points
+          </p>
+          
+          <div className="bg-gray-800/50 border border-gray-600/50 rounded-lg p-4 mb-6">
+            <p className="text-sm text-gray-400 mb-2">Correct Answer:</p>
+            <p className="text-white font-medium">{currentQuestion.correct}</p>
+          </div>
+
+          <div className="flex gap-4 justify-center">
+            <Button
+              onClick={onBack}
+              className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white px-6 py-2"
+            >
+              <Trophy className="w-4 h-4 mr-2" />
+              View Leaderboard
+            </Button>
+            
+            <Button
+              onClick={() => {
+                setShowResults(false);
+                setSubmitted(false);
+                setSelectedOption("");
+                setTimeRemaining(600);
+                setScore(0);
+              }}
+              variant="outline"
+              className="border-gray-600 text-gray-300 hover:bg-gray-800/50"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Practice Again
+            </Button>
+          </div>
+        </div>
+
+        {/* Battle Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="glassmorphism border border-cyan-500/30 p-4 rounded-xl">
+            <div className="flex items-center gap-2 text-cyan-400 mb-2">
+              <Target className="w-4 h-4" />
+              <span className="font-medium">Accuracy</span>
+            </div>
+            <p className="text-white text-xl font-bold">{score > 0 ? "100%" : "0%"}</p>
+          </div>
+          
+          <div className="glassmorphism border border-purple-500/30 p-4 rounded-xl">
+            <div className="flex items-center gap-2 text-purple-400 mb-2">
+              <Clock className="w-4 h-4" />
+              <span className="font-medium">Time Taken</span>
+            </div>
+            <p className="text-white text-xl font-bold">{formatTime(600 - timeRemaining)}</p>
+          </div>
+          
+          <div className="glassmorphism border border-amber-500/30 p-4 rounded-xl">
+            <div className="flex items-center gap-2 text-amber-400 mb-2">
+              <Trophy className="w-4 h-4" />
+              <span className="font-medium">Coins Earned</span>
+            </div>
+            <p className="text-white text-xl font-bold">{score > 0 ? "5" : "1"}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -460,7 +596,9 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
             <Clock className="w-4 h-4" />
             <span className="font-medium">Time Remaining</span>
           </div>
-          <p className="text-white text-xl font-bold">{battle.duration || 10} min</p>
+          <p className={`text-xl font-bold ${timeRemaining < 60 ? 'text-red-400' : timeRemaining < 180 ? 'text-yellow-400' : 'text-white'}`}>
+            {formatTime(timeRemaining)}
+          </p>
         </div>
         
         <div className="glassmorphism border border-amber-500/30 p-4 rounded-xl">
@@ -488,43 +626,90 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
           
           {/* Multiple Choice Options */}
           <div className="space-y-3">
-            {currentQuestion.options.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => setSelectedOption(option)}
-                className={`w-full p-4 text-left rounded-lg border transition-all duration-200 ${
-                  selectedOption === option
-                    ? 'border-purple-500/50 bg-purple-500/10 text-white'
-                    : 'border-gray-600/50 bg-gray-800/30 text-gray-300 hover:border-purple-500/30 hover:bg-purple-500/5'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-4 h-4 rounded-full border-2 ${
-                    selectedOption === option
-                      ? 'border-purple-500 bg-purple-500'
-                      : 'border-gray-500'
-                  }`}>
-                    {selectedOption === option && (
-                      <div className="w-full h-full rounded-full bg-white scale-50"></div>
-                    )}
+            {currentQuestion.options.map((option, index) => {
+              const isSelected = selectedOption === option;
+              const isCorrect = option === currentQuestion.correct;
+              const isSubmitted = submitted;
+              
+              let optionStyle = 'border-gray-600/50 bg-gray-800/30 text-gray-300';
+              
+              if (isSubmitted) {
+                if (isCorrect) {
+                  optionStyle = 'border-green-500/50 bg-green-500/10 text-green-400';
+                } else if (isSelected && !isCorrect) {
+                  optionStyle = 'border-red-500/50 bg-red-500/10 text-red-400';
+                } else {
+                  optionStyle = 'border-gray-600/30 bg-gray-800/20 text-gray-500';
+                }
+              } else if (isSelected) {
+                optionStyle = 'border-purple-500/50 bg-purple-500/10 text-white';
+              } else {
+                optionStyle = 'border-gray-600/50 bg-gray-800/30 text-gray-300 hover:border-purple-500/30 hover:bg-purple-500/5';
+              }
+              
+              return (
+                <button
+                  key={index}
+                  onClick={() => !submitted && setSelectedOption(option)}
+                  disabled={submitted}
+                  className={`w-full p-4 text-left rounded-lg border transition-all duration-200 ${optionStyle}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                      isSubmitted && isCorrect
+                        ? 'border-green-500 bg-green-500'
+                        : isSubmitted && isSelected && !isCorrect
+                        ? 'border-red-500 bg-red-500'
+                        : isSelected && !isSubmitted
+                        ? 'border-purple-500 bg-purple-500'
+                        : 'border-gray-500'
+                    }`}>
+                      {isSubmitted && isCorrect ? (
+                        <CheckCircle className="w-3 h-3 text-white" />
+                      ) : isSubmitted && isSelected && !isCorrect ? (
+                        <XCircle className="w-3 h-3 text-white" />
+                      ) : isSelected && !isSubmitted ? (
+                        <div className="w-full h-full rounded-full bg-white scale-50"></div>
+                      ) : null}
+                    </div>
+                    <span>{String.fromCharCode(65 + index)}. {option}</span>
                   </div>
-                  <span>{String.fromCharCode(65 + index)}. {option}</span>
-                </div>
-              </button>
-            ))}
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Submit Button */}
         <div className="flex justify-end">
-          <Button
-            onClick={handleSubmitAnswer}
-            className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white px-6 py-2"
-            disabled={!selectedOption}
-          >
-            <Send className="w-4 h-4 mr-2" />
-            Submit Answer
-          </Button>
+          {!submitted ? (
+            <Button
+              onClick={handleSubmitAnswer}
+              className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white px-6 py-2"
+              disabled={!selectedOption}
+            >
+              <Send className="w-4 h-4 mr-2" />
+              Submit Answer
+            </Button>
+          ) : (
+            <div className="flex items-center gap-4">
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+                score > 0 ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
+              }`}>
+                {score > 0 ? (
+                  <CheckCircle className="w-4 h-4" />
+                ) : (
+                  <XCircle className="w-4 h-4" />
+                )}
+                <span className="font-medium">
+                  {score > 0 ? 'Correct!' : 'Incorrect!'}
+                </span>
+              </div>
+              <span className="text-gray-400 text-sm">
+                Results will appear in a moment...
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
