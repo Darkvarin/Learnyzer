@@ -465,7 +465,7 @@ export default function BattleZoneEnhanced() {
 
   // Get the battle detail from our current data or fetch it
   const battleToShow = selectedBattle ? 
-    (enhancedBattlesData?.active?.find(b => b.id === selectedBattle.id) || selectedBattle) : 
+    (battlesData?.active?.find(b => b.id === selectedBattle.id) || selectedBattle) : 
     null;
 
 
