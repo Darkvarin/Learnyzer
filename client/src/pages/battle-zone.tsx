@@ -40,6 +40,48 @@ export default function BattleZone() {
     queryKey: ["/api/enhanced-battles"],
   });
 
+  // Fetch user data to get selected exam
+  const { data: userData } = useQuery({
+    queryKey: ["/api/auth/me"],
+  });
+
+  // Get exam-specific subjects
+  const getExamSubjects = (examType: string) => {
+    switch (examType) {
+      case 'JEE':
+        return ['Physics', 'Chemistry', 'Mathematics'];
+      case 'NEET':
+        return ['Physics', 'Chemistry', 'Biology'];
+      case 'UPSC':
+        return ['History', 'Geography', 'Polity', 'Economics', 'Science & Technology', 'Environment', 'Current Affairs', 'Ethics'];
+      case 'CLAT':
+        return ['English Language', 'Current Affairs', 'Legal Reasoning', 'Logical Reasoning', 'Quantitative Techniques'];
+      case 'CUET':
+        return ['English', 'Hindi', 'Mathematics', 'Physics', 'Chemistry', 'Biology', 'History', 'Geography', 'Political Science', 'Economics'];
+      case 'CSE':
+        return ['Programming', 'Data Structures', 'Algorithms', 'Computer Networks', 'Operating Systems', 'Database Management', 'Software Engineering'];
+      case 'CGLE':
+        return ['General Awareness', 'Quantitative Aptitude', 'English Language', 'Reasoning'];
+      default:
+        return ['Physics', 'Chemistry', 'Mathematics', 'Biology'];
+    }
+  };
+
+  // Get available subjects based on user's exam or battle form exam type
+  const userExam = userData?.track;
+  const availableSubjects = getExamSubjects(userExam || battleForm.examType);
+
+  // Update exam type in form when user data is loaded
+  useEffect(() => {
+    if (userExam && battleForm.examType !== userExam) {
+      setBattleForm(prev => ({
+        ...prev,
+        examType: userExam,
+        subject: "" // Reset subject when exam type changes
+      }));
+    }
+  }, [userExam]);
+
   // Create battle mutation
   const createBattleMutation = useMutation({
     mutationFn: (data: any) => apiRequest("POST", "/api/enhanced-battles", data),
@@ -52,7 +94,7 @@ export default function BattleZone() {
       setBattleForm({
         title: "",
         type: "1v1",
-        examType: "JEE",
+        examType: userExam || "JEE",
         subject: "",
         numQuestions: "5",
         duration: "10",
@@ -182,6 +224,15 @@ export default function BattleZone() {
                 <DialogTitle className="text-cyan-400">Create New Battle</DialogTitle>
               </DialogHeader>
               
+              {userExam && (
+                <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3 mb-4">
+                  <div className="flex items-center gap-2 text-green-400 text-sm">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span className="font-medium">Exam Locked:</span> You can only create battles for {userExam} subjects
+                  </div>
+                </div>
+              )}
+              
               <div className="space-y-4 pr-2">
                 <div>
                   <label className="text-sm font-medium text-gray-300">Title</label>
@@ -212,30 +263,46 @@ export default function BattleZone() {
 
                 <div>
                   <label className="text-sm font-medium text-gray-300">Exam Type</label>
-                  <Select value={battleForm.examType} onValueChange={(value) => setBattleForm({...battleForm, examType: value})}>
-                    <SelectTrigger className="bg-gray-800/50 border-gray-600/50 text-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="JEE">JEE</SelectItem>
-                      <SelectItem value="NEET">NEET</SelectItem>
-                      <SelectItem value="UPSC">UPSC</SelectItem>
-                      <SelectItem value="CLAT">CLAT</SelectItem>
-                      <SelectItem value="CUET">CUET</SelectItem>
-                      <SelectItem value="CSE">CSE</SelectItem>
-                      <SelectItem value="CGLE">CGLE</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  {userExam ? (
+                    <div className="bg-gray-800/50 border border-green-500/50 rounded-md px-3 py-2 flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <span className="text-green-400 font-medium">{userExam}</span>
+                      <span className="text-xs text-gray-400 ml-auto">Locked</span>
+                    </div>
+                  ) : (
+                    <Select value={battleForm.examType} onValueChange={(value) => {
+                      setBattleForm({...battleForm, examType: value, subject: ""});
+                    }}>
+                      <SelectTrigger className="bg-gray-800/50 border-gray-600/50 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="JEE">JEE</SelectItem>
+                        <SelectItem value="NEET">NEET</SelectItem>
+                        <SelectItem value="UPSC">UPSC</SelectItem>
+                        <SelectItem value="CLAT">CLAT</SelectItem>
+                        <SelectItem value="CUET">CUET</SelectItem>
+                        <SelectItem value="CSE">CSE</SelectItem>
+                        <SelectItem value="CGLE">CGLE</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-300">Subject</label>
-                  <Input
-                    placeholder="e.g. Physics, Chemistry"
-                    value={battleForm.subject}
-                    onChange={(e) => setBattleForm({...battleForm, subject: e.target.value})}
-                    className="bg-gray-800/50 border-gray-600/50 text-white"
-                  />
+                  <label className="text-sm font-medium text-gray-300">
+                    Subject {userExam && <span className="text-xs text-green-400">({userExam} subjects only)</span>}
+                  </label>
+                  <Select value={battleForm.subject} onValueChange={(value) => setBattleForm({...battleForm, subject: value})}>
+                    <SelectTrigger className="bg-gray-800/50 border-gray-600/50 text-white">
+                      <SelectValue placeholder="Select a subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableSubjects.map((subject) => (
+                        <SelectItem key={subject} value={subject}>{subject}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
