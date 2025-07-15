@@ -123,7 +123,8 @@ export default function BattleZone() {
       queryClient.invalidateQueries({ queryKey: ["/api/enhanced-battles"] });
       
       // Find the battle and open battle detail
-      const battle = battles?.active?.find((b: any) => b.id === battleId);
+      const battle = battles?.active?.find((b: any) => b.id === battleId) || 
+                   battles?.find((b: any) => b.id === battleId);
       if (battle) {
         setSelectedBattle(battle);
         setShowBattleDetail(true);

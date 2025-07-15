@@ -189,16 +189,16 @@ export function BattleZoneSection() {
                               <div 
                                 key={idx}
                                 className="w-6 h-6 rounded-full bg-background/80 border border-purple-500/30 flex items-center justify-center text-xs"
-                                title={participant.name || `Player ${idx + 1}`}
+                                title={String(participant.name || `Player ${idx + 1}`)}
                               >
                                 {participant.profileImage ? (
                                   <img 
                                     src={participant.profileImage}
-                                    alt={participant.name || `Player ${idx + 1}`}
+                                    alt={String(participant.name || `Player ${idx + 1}`)}
                                     className="w-full h-full rounded-full object-cover"
                                   />
                                 ) : (
-                                  <span>{(participant.name || 'P').charAt(0)}</span>
+                                  <span>{String(participant.name || 'P').charAt(0)}</span>
                                 )}
                               </div>
                             ))
