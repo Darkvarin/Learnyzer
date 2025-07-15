@@ -54,6 +54,7 @@ function App() {
                     <Route path="/landing" component={LandingPage} />
                     <ProtectedRoute path="/dashboard" component={Dashboard} />
                     <ProtectedRoute path="/battle-zone" component={BattleZone} />
+                    <ProtectedRoute path="/enhanced-battles" component={BattleZone} />
                     <ProtectedRoute path="/ai-tools" component={AiTools} />
                     <ProtectedRoute path="/ai-tools/study-notes" component={StudyNotesGenerator} />
                     <ProtectedRoute path="/ai-tools/answer-checker" component={AnswerChecker} />

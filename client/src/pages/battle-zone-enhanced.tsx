@@ -19,6 +19,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { BattleDetail } from "@/components/battle/battle-detail";
+import { AdvancedBattleInterface } from "@/components/battle/advanced-battle-interface";
+import { BattleLobby } from "@/components/battle/battle-lobby";
 
 interface EnhancedBattle extends Battle {
   format?: string;
@@ -38,6 +40,7 @@ interface EnhancedBattle extends Battle {
 export default function BattleZoneEnhanced() {
   const [selectedBattle, setSelectedBattle] = useState<EnhancedBattle | null>(null);
   const [activeTab, setActiveTab] = useState("battles");
+  const [showAdvancedInterface, setShowAdvancedInterface] = useState(false);
   
   const { data: battlesData, isLoading } = useQuery<{
     active: EnhancedBattle[],
@@ -423,6 +426,7 @@ export default function BattleZoneEnhanced() {
                   try {
                     const fullBattle = await apiRequest("GET", `/api/enhanced-battles/${battle.id}`);
                     setSelectedBattle(fullBattle);
+                    setShowAdvancedInterface(true); // Open advanced interface for participants
                   } catch (error) {
                     console.error("Error fetching battle details:", error);
                     setSelectedBattle(battle); // Fallback to existing data
@@ -436,10 +440,17 @@ export default function BattleZoneEnhanced() {
             ) : (
               <Button
                 size="sm"
-                onClick={(e) => {
+                onClick={async (e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  joinBattleMutation.mutate(battle.id);
+                  // Join the battle first
+                  try {
+                    await joinBattleMutation.mutateAsync(battle.id);
+                    // Then open the advanced interface
+                    setShowAdvancedInterface(true);
+                  } catch (error) {
+                    console.error("Error joining battle:", error);
+                  }
                 }}
                 disabled={joinBattleMutation.isPending}
                 className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 flex-1 sm:flex-initial"
@@ -965,6 +976,27 @@ export default function BattleZoneEnhanced() {
         </>
         )}
       </main>
+      
+      {/* Battle Interface Modal */}
+      {selectedBattle && (
+        <>
+          {showAdvancedInterface ? (
+            <AdvancedBattleInterface
+              battle={selectedBattle}
+              onClose={() => {
+                setSelectedBattle(null);
+                setShowAdvancedInterface(false);
+              }}
+            />
+          ) : (
+            <BattleDetail
+              battle={selectedBattle}
+              onClose={() => setSelectedBattle(null)}
+              onOpenAdvanced={() => setShowAdvancedInterface(true)}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 }

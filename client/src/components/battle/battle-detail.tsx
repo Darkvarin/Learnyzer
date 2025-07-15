@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Send, Clock, CheckCircle, AlertCircle, Users, Target, Eye } from 'lucide-react';
+import { Loader2, Send, Clock, CheckCircle, AlertCircle, Users, Target, Eye, Zap } from 'lucide-react';
 import { format } from 'date-fns';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -32,9 +32,10 @@ interface EnhancedBattle extends Battle {
 interface BattleDetailProps {
   battle: EnhancedBattle;
   onClose: () => void;
+  onOpenAdvanced?: () => void;
 }
 
-export function BattleDetail({ battle, onClose }: BattleDetailProps) {
+export function BattleDetail({ battle, onClose, onOpenAdvanced }: BattleDetailProps) {
   const { user } = useAuth();
   const [answer, setAnswer] = useState('');
   const [timeLeft, setTimeLeft] = useState<string>('');
@@ -162,8 +163,10 @@ export function BattleDetail({ battle, onClose }: BattleDetailProps) {
   };
   
   // Check if the current user has submitted an answer
-  const hasSubmitted = user && (submissions.has(user.id) || battle.participants?.some(p => 
-    p.id === user.id && p.submission));
+  const hasSubmitted = user && (
+    (Array.isArray(submissions) ? submissions.some(s => s.userId === user.id) : submissions?.has?.(user.id)) ||
+    battle.participants?.some(p => p.id === user.id && p.submission)
+  );
   
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4">
@@ -196,13 +199,25 @@ export function BattleDetail({ battle, onClose }: BattleDetailProps) {
                 </span>
               </div>
             </div>
-            <Button 
-              variant="outline" 
-              onClick={onClose} 
-              className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30 text-red-300 hover:text-red-200 transition-all duration-200"
-            >
-              ✕ Close
-            </Button>
+            <div className="flex items-center gap-3">
+              {onOpenAdvanced && (
+                <Button 
+                  variant="outline" 
+                  onClick={onOpenAdvanced}
+                  className="bg-purple-500/20 border-purple-500/50 hover:bg-purple-500/30 text-purple-300 hover:text-purple-200 transition-all duration-200"
+                >
+                  <Zap className="w-4 h-4 mr-2" />
+                  Advanced
+                </Button>
+              )}
+              <Button 
+                variant="outline" 
+                onClick={onClose} 
+                className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30 text-red-300 hover:text-red-200 transition-all duration-200"
+              >
+                ✕ Close
+              </Button>
+            </div>
           </div>
         </div>
         

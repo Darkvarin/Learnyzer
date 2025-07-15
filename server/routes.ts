@@ -1534,9 +1534,140 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
-  // Register Enhanced Battle Routes
-  const { registerEnhancedBattleRoutes } = await import('./services/enhanced-battle-service');
-  registerEnhancedBattleRoutes(app);
+  // Enhanced Battle Routes
+  console.log("=== REGISTERING ENHANCED BATTLE ROUTES ===");
+  
+  // Get all enhanced battles
+  app.get("/api/enhanced-battles", async (req, res) => {
+    console.log("Registering route: GET /api/enhanced-battles");
+    try {
+      const activeBattles = await storage.getActiveBattles();
+      const upcomingBattles = await storage.getUpcomingBattles();
+      const pastBattles = req.user?.id ? await storage.getPastBattles(req.user.id) : [];
+      
+      // Add demo battles for testing
+      const demoBattles = await enhancedBattleService.getDemoBattles();
+      
+      res.json({
+        active: [...activeBattles, ...demoBattles],
+        upcoming: upcomingBattles,
+        past: pastBattles
+      });
+    } catch (error) {
+      console.error("Error fetching enhanced battles:", error);
+      res.status(500).json({ error: "Failed to fetch battles" });
+    }
+  });
+
+  // Get enhanced battle details
+  app.get("/api/enhanced-battles/:battleId", async (req, res) => {
+    console.log("Registering route: GET /api/enhanced-battles/:battleId");
+    try {
+      const battleId = parseInt(req.params.battleId);
+      const userId = req.user?.id;
+      
+      // Handle demo battles
+      if (battleId >= 9998) {
+        const demoBattles = await enhancedBattleService.getDemoBattles();
+        const demoBattle = demoBattles.find(b => b.id === battleId);
+        if (demoBattle) {
+          return res.json(demoBattle);
+        }
+      }
+      
+      const battle = await enhancedBattleService.getBattleDetails(battleId, userId);
+      res.json(battle);
+    } catch (error) {
+      console.error("Error fetching battle details:", error);
+      res.status(500).json({ error: "Failed to fetch battle details" });
+    }
+  });
+
+  // Create enhanced battle
+  app.post("/api/enhanced-battles", requireAuth, async (req, res) => {
+    console.log("Registering route: POST /api/enhanced-battles");
+    try {
+      const userId = req.user.id;
+      const battle = await enhancedBattleService.createTournamentBattle(req.body, userId);
+      res.json(battle);
+    } catch (error) {
+      console.error("Error creating enhanced battle:", error);
+      res.status(500).json({ error: "Failed to create battle" });
+    }
+  });
+
+  // Join enhanced battle
+  app.post("/api/enhanced-battles/:battleId/join", requireAuth, async (req, res) => {
+    console.log("Registering route: POST /api/enhanced-battles/:battleId/join");
+    try {
+      const battleId = parseInt(req.params.battleId);
+      const userId = req.user.id;
+      
+      // Handle demo battles
+      if (battleId >= 9998) {
+        return res.json({ success: true, message: "Joined demo battle" });
+      }
+      
+      const result = await storage.joinBattle(battleId, userId);
+      res.json(result);
+    } catch (error) {
+      console.error("Error joining battle:", error);
+      res.status(500).json({ error: "Failed to join battle" });
+    }
+  });
+
+  // Spectate enhanced battle
+  app.post("/api/enhanced-battles/:battleId/spectate", requireAuth, async (req, res) => {
+    console.log("Registering route: POST /api/enhanced-battles/:battleId/spectate");
+    try {
+      const battleId = parseInt(req.params.battleId);
+      const userId = req.user.id;
+      
+      // Handle demo battles
+      if (battleId >= 9998) {
+        return res.json({ success: true, message: "Spectating demo battle" });
+      }
+      
+      const result = await enhancedBattleService.addSpectator(battleId, userId);
+      res.json(result);
+    } catch (error) {
+      console.error("Error spectating battle:", error);
+      res.status(500).json({ error: "Failed to spectate battle" });
+    }
+  });
+
+  // Submit answer to enhanced battle
+  app.post("/api/enhanced-battles/:battleId/submit", requireAuth, async (req, res) => {
+    console.log("Registering route: POST /api/enhanced-battles/:battleId/submit");
+    try {
+      const battleId = parseInt(req.params.battleId);
+      const userId = req.user.id;
+      const { answer } = req.body;
+      
+      // Handle demo battles
+      if (battleId >= 9998) {
+        return res.json({ success: true, message: "Demo answer submitted" });
+      }
+      
+      const result = await storage.submitBattleAnswer(battleId, userId, answer);
+      res.json(result);
+    } catch (error) {
+      console.error("Error submitting answer:", error);
+      res.status(500).json({ error: "Failed to submit answer" });
+    }
+  });
+
+  // Get demo battles
+  app.post("/api/demo-battles", async (req, res) => {
+    console.log("Registering route: POST /api/demo-battles");
+    try {
+      const demoBattles = await enhancedBattleService.getDemoBattles();
+      res.json(demoBattles);
+    } catch (error) {
+      console.error("Error fetching demo battles:", error);
+      res.status(500).json({ error: "Failed to fetch demo battles" });
+    }
+  });
 
   // Export the broadcast functions for use throughout the application
   (global as any).broadcastToBattle = broadcastToBattle;

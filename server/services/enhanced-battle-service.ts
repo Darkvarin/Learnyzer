@@ -1,861 +1,355 @@
-import { storage } from "../storage";
-import { z } from "zod";
-import { fromZodError } from "zod-validation-error";
-import type { Express, Request, Response } from "express";
-import { eq, and, inArray, desc, sql } from "drizzle-orm";
-import { battles, battleParticipants, tournaments, powerUps, userPowerUps, battleQuestions, battleSpectators, userCoins } from "@shared/schema";
-import { db } from "../../db";
-import OpenAI from "openai";
+import { db } from '@db';
+import { battles, battleQuestions, battleSpectators, powerUps, userPowerUps } from '@shared/schema';
+import { eq, and, desc, sql } from 'drizzle-orm';
+import OpenAI from 'openai';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-// Enhanced battle creation schema
-const enhancedBattleSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  type: z.enum(["1v1", "2v2", "3v3", "4v4", "tournament", "blitz"]),
-  format: z.enum(["standard", "blitz", "endurance", "exam_simulation"]).default("standard"),
-  difficulty: z.enum(["beginner", "intermediate", "advanced", "expert"]).default("intermediate"),
-  examType: z.enum(["JEE", "NEET", "UPSC", "CLAT", "CUET", "CSE", "CGLE"]).optional(),
-  subject: z.string().optional(),
-  duration: z.number().min(5, "Duration must be at least 5 minutes"),
-  topics: z.array(z.string()).min(1, "At least one topic is required"),
-  entryFee: z.number().min(0).default(0),
-  prizePool: z.number().min(0).default(0),
-  maxParticipants: z.number().min(2).max(32).default(8),
-  battleMode: z.enum(["public", "private"]).default("public"),
-  spectatorMode: z.boolean().default(true),
-  questionsCount: z.number().min(1).max(20).default(1),
-  passingScore: z.number().min(0).max(100).default(60),
-  timePerQuestion: z.number().min(60).max(1800).default(300), // 1 minute to 30 minutes
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Power-up usage schema
-const powerUpUsageSchema = z.object({
-  powerUpId: z.number(),
-  battleId: z.number(),
-  targetUserId: z.number().optional(),
-  metadata: z.record(z.any()).optional()
-});
-
-export const enhancedBattleService = {
-  /**
-   * Get enhanced battles with additional metadata
-   */
-  async getEnhancedBattles(req: Request, res: Response) {
-    console.log("=== ENHANCED BATTLES SERVICE CALLED ===");
-    console.log("Request method:", req.method);
-    console.log("Request URL:", req.url);
-    console.log("Request params:", req.params);
-    console.log("Request query:", req.query);
-    
+export class EnhancedBattleService {
+  // Get enhanced battle details with participants and spectators
+  async getBattleDetails(battleId: number, userId?: number) {
     try {
-      console.log("Enhanced battles request:", req.params, req.query);
-      
-      // Check if this is a specific battle ID request
-      const battleId = req.params.battleId;
-      if (battleId) {
-        console.log("Fetching specific battle:", battleId);
-        const battle = await db.query.battles.findFirst({
-          where: eq(battles.id, parseInt(battleId)),
-          with: {
-            participants: {
-              with: {
-                user: {
-                  columns: {
-                    id: true,
-                    name: true,
-                    profileImage: true,
-                    level: true,
-                    rank: true
-                  }
+      const battle = await db.query.battles.findFirst({
+        where: eq(battles.id, battleId),
+        with: {
+          participants: {
+            with: {
+              user: {
+                columns: {
+                  id: true,
+                  name: true,
+                  profileImage: true,
+                  level: true,
+                  rank: true,
+                  rankPoints: true,
                 }
               }
             }
           }
-        });
-        
-        if (!battle) {
-          return res.status(404).json({ message: "Battle not found" });
-        }
-        
-        return res.json(battle);
-      }
-
-      console.log("Fetching all enhanced battles...");
-
-      try {
-        console.log("Attempting to query battles table...");
-        const activeBattles = await db.query.battles.findMany({
-          where: eq(battles.status, "waiting"),
-          orderBy: desc(battles.createdAt)
-        });
-        console.log("Active battles found:", activeBattles.length);
-
-        const upcomingBattles = await db.query.battles.findMany({
-          where: eq(battles.status, "scheduled"),
-          orderBy: battles.scheduledFor
-        });
-        console.log("Upcoming battles found:", upcomingBattles.length);
-
-        const completedBattles = await db.query.battles.findMany({
-          where: eq(battles.status, "completed"),
-          orderBy: desc(battles.createdAt),
-          limit: 10
-        });
-        console.log("Completed battles found:", completedBattles.length);
-
-        console.log("About to return battle data...");
-        
-        // Enhance battle data with basic info - simplified for now
-        const enhanceeBattleData = (battleList: any[]) => {
-          return battleList.map(battle => ({
-            ...battle,
-            participantCount: 0, // Will be populated later
-            spectatorCount: 0,   // Will be populated later
-            isCreator: req.user ? battle.createdBy === (req.user as any).id : false,
-            isParticipant: false, // Will be populated later
-            isSpectating: false,  // Will be populated later
-            canJoin: true,        // Will be calculated later
-            participants: []      // Will be populated later
-          }));
-        };
-
-        res.json({
-          active: enhanceeBattleData(activeBattles),
-          upcoming: enhanceeBattleData(upcomingBattles),
-          past: enhanceeBattleData(completedBattles)
-        });
-        
-      } catch (queryError) {
-        console.error("Database query error:", queryError);
-        throw queryError;
-      }
-    } catch (error) {
-      console.error("Enhanced battles fetch error:", error);
-      res.status(400).json({ message: "Invalid battle ID" });
-    }
-  },
-
-  /**
-   * Create enhanced battle with advanced features
-   */
-  async createEnhancedBattle(req: Request, res: Response) {
-    try {
-      const validatedData = enhancedBattleSchema.parse(req.body);
-      const userId = (req.user as any).id;
-
-      // Check if user has sufficient coins for entry fee (10 coins)
-      const entryFeeCoins = 10;
-      const { coinService } = await import("./coin-service");
-      const userCoinRecord = await db.query.userCoins.findFirst({
-        where: eq(userCoins.userId, userId)
-      });
-      
-      if (!userCoinRecord || userCoinRecord.coins < entryFeeCoins) {
-        return res.status(400).json({ 
-          message: `Insufficient coins. You need ${entryFeeCoins} coins to create this battle.` 
-        });
-      }
-
-      // Deduct entry fee coins
-      await coinService.spendCoins(userId, entryFeeCoins, `Battle entry fee - ${validatedData.title}`, 'battle_entry');
-
-      // Calculate reward points based on difficulty and format
-      let baseReward = 50;
-      switch (validatedData.difficulty) {
-        case "expert": baseReward = 200; break;
-        case "advanced": baseReward = 150; break;
-        case "intermediate": baseReward = 100; break;
-        case "beginner": baseReward = 75; break;
-      }
-
-      // Format multiplier
-      const formatMultiplier = {
-        "blitz": 1.2,
-        "endurance": 1.5,
-        "exam_simulation": 1.8,
-        "standard": 1.0
-      }[validatedData.format];
-
-      const finalReward = Math.floor(baseReward * formatMultiplier);
-      const finalPrizePool = validatedData.prizePool || (validatedData.entryFee * validatedData.maxParticipants);
-
-      // Create the enhanced battle
-      const [newBattle] = await db.insert(battles).values({
-        title: validatedData.title,
-        type: validatedData.type,
-        format: validatedData.format,
-        difficulty: validatedData.difficulty,
-        examType: validatedData.examType,
-        subject: validatedData.subject,
-        duration: validatedData.duration,
-        topics: validatedData.topics,
-        rewardPoints: finalReward,
-        entryFee: validatedData.entryFee,
-        prizePool: finalPrizePool,
-        maxParticipants: validatedData.maxParticipants,
-        battleMode: validatedData.battleMode,
-        spectatorMode: validatedData.spectatorMode,
-        questionsCount: validatedData.questionsCount,
-        passingScore: validatedData.passingScore,
-        timePerQuestion: validatedData.timePerQuestion,
-        createdBy: userId,
-        status: "waiting"
-      }).returning();
-
-      // Generate AI questions for the battle
-      await enhancedBattleService.generateBattleQuestions(newBattle.id, validatedData);
-
-      // Deduct entry fee if applicable
-      if (validatedData.entryFee > 0) {
-        await storage.addUserXP(userId, -validatedData.entryFee);
-      }
-
-      // Auto-join creator to the battle
-      await db.insert(battleParticipants).values({
-        battleId: newBattle.id,
-        userId: userId,
-        team: 0
-      });
-
-      res.status(201).json({ 
-        message: "Enhanced battle created successfully!",
-        battleId: newBattle.id,
-        battle: newBattle
-      });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const validationError = fromZodError(error);
-        return res.status(400).json({ message: validationError.message });
-      }
-      console.error("Enhanced battle creation error:", error);
-      res.status(500).json({ message: "Error creating enhanced battle" });
-    }
-  },
-
-  /**
-   * Generate AI questions for battle
-   */
-  async generateBattleQuestions(battleId: number, battleData: any) {
-    try {
-      const questionsPrompt = `Generate ${battleData.questionsCount} competitive exam questions for a battle challenge:
-
-Battle Details:
-- Exam Type: ${battleData.examType || 'General'}
-- Subject: ${battleData.subject || 'General'}
-- Topics: ${battleData.topics.join(', ')}
-- Difficulty: ${battleData.difficulty}
-- Duration per question: ${battleData.timePerQuestion} seconds
-- Format: ${battleData.format}
-
-Requirements:
-1. Questions should be ${battleData.difficulty} level
-2. Each question should be answerable within ${battleData.timePerQuestion} seconds
-3. Include clear, specific answers
-4. Provide detailed explanations
-5. Focus on ${battleData.examType} exam patterns
-
-Generate questions in this JSON format:
-{
-  "questions": [
-    {
-      "question": "Question text here",
-      "type": "descriptive", // or "mcq" or "numerical"
-      "options": ["A", "B", "C", "D"], // for MCQ only
-      "correctAnswer": "Correct answer",
-      "explanation": "Detailed explanation",
-      "difficulty": "${battleData.difficulty}",
-      "topic": "Specific topic",
-      "marks": 1
-    }
-  ]
-}
-
-Make questions challenging but fair for ${battleData.difficulty} level students.`;
-
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content: "You are an expert exam question generator for Indian competitive exams. Generate high-quality, exam-pattern questions."
-          },
-          {
-            role: "user",
-            content: questionsPrompt
-          }
-        ],
-        max_tokens: 2000,
-        temperature: 0.7,
-        response_format: { type: "json_object" }
-      });
-
-      const questionsResponse = JSON.parse(completion.choices[0].message.content || "{}");
-      
-      if (questionsResponse.questions) {
-        for (let i = 0; i < questionsResponse.questions.length; i++) {
-          const q = questionsResponse.questions[i];
-          await db.insert(battleQuestions).values({
-            battleId: battleId,
-            questionNumber: i + 1,
-            question: q.question,
-            options: q.options || null,
-            correctAnswer: q.correctAnswer,
-            explanation: q.explanation,
-            difficulty: q.difficulty,
-            subject: battleData.subject,
-            topic: q.topic,
-            marks: q.marks || 1,
-            timeLimit: battleData.timePerQuestion,
-            questionType: q.type || "descriptive"
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error generating battle questions:", error);
-      // Continue without questions - can be generated later
-    }
-  },
-
-  /**
-   * Join enhanced battle with entry fee handling
-   */
-  async joinEnhancedBattle(req: Request, res: Response) {
-    try {
-      const battleId = parseInt(req.params.battleId);
-      const userId = (req.user as any).id;
-
-      // Get battle details
-      const battle = await db.query.battles.findFirst({
-        where: eq(battles.id, battleId),
-        with: {
-          participants: true
         }
       });
 
       if (!battle) {
-        return res.status(404).json({ message: "Battle not found" });
+        throw new Error('Battle not found');
       }
 
-      if (battle.status !== "waiting") {
-        return res.status(400).json({ message: "Battle is not open for joining" });
-      }
-
-      // Check if already joined
-      const existingParticipant = battle.participants.find(p => p.userId === userId);
-      if (existingParticipant) {
-        return res.status(400).json({ message: "Already joined this battle" });
-      }
-
-      // Check capacity
-      if (battle.participants.length >= (battle.maxParticipants || 8)) {
-        return res.status(400).json({ message: "Battle is full" });
-      }
-
-      // Check entry fee (now in coins)
-      if (battle.entryFee && battle.entryFee > 0) {
-        const { coinService } = await import("./coin-service");
-        const userCoinRecord = await db.query.userCoins.findFirst({
-          where: eq(userCoins.userId, userId)
-        });
-        
-        if (!userCoinRecord || userCoinRecord.coins < battle.entryFee) {
-          return res.status(400).json({ 
-            message: `Insufficient coins. You need ${battle.entryFee} coins to join this battle.` 
-          });
-        }
-
-        // Deduct entry fee coins
-        await coinService.spendCoins(userId, battle.entryFee, `Battle entry fee - ${battle.title}`, 'battle_entry', battle.id);
-      }
-
-      // Determine team assignment for team battles
-      let team = 0;
-      if (battle.type && battle.type.includes("v")) {
-        // Count participants per team
-        const teamCounts = battle.participants.reduce((acc, p) => {
-          acc[p.team] = (acc[p.team] || 0) + 1;
-          return acc;
-        }, {} as Record<number, number>);
-
-        // Assign to team with fewer players
-        team = (teamCounts[0] || 0) <= (teamCounts[1] || 0) ? 0 : 1;
-      }
-
-      // Join the battle
-      await db.insert(battleParticipants).values({
-        battleId: battleId,
-        userId: userId,
-        team: team
-      });
-
-      // Check if battle should auto-start
-      const updatedParticipantCount = battle.participants.length + 1;
-      
-      // Auto-start demo battles immediately when someone joins
-      const isDemoBattle = battle.title.toLowerCase().includes('demo');
-      const shouldStart = isDemoBattle || (battle.autoStart && updatedParticipantCount >= (battle.maxParticipants || 8));
-      
-      if (shouldStart) {
-        await db.update(battles)
-          .set({ 
-            status: "in_progress",
-            startTime: new Date()
-          })
-          .where(eq(battles.id, battleId));
-          
-        console.log(`Auto-starting ${isDemoBattle ? 'demo' : 'regular'} battle ${battleId}`);
-      }
-
-      res.json({ 
-        message: "Successfully joined the enhanced battle!",
-        team: team,
-        entryFeePaid: battle.entryFee || 0,
-        currency: "coins"
-      });
-    } catch (error) {
-      console.error("Enhanced battle join error:", error);
-      res.status(500).json({ message: "Error joining enhanced battle" });
-    }
-  },
-
-  /**
-   * Spectate a battle
-   */
-  async spectateBattle(req: Request, res: Response) {
-    try {
-      const battleId = parseInt(req.params.battleId);
-      const userId = (req.user as any).id;
-
-      // Get battle details
-      const battle = await db.query.battles.findFirst({
-        where: eq(battles.id, battleId)
-      });
-
-      if (!battle) {
-        return res.status(404).json({ message: "Battle not found" });
-      }
-
-      if (!battle.spectatorMode) {
-        return res.status(400).json({ message: "Spectator mode is disabled for this battle" });
-      }
-
-      // Check if already spectating
-      const existingSpectator = await db.select()
+      // Get spectator count
+      const spectatorCount = await db
+        .select({ count: sql<number>`count(*)` })
         .from(battleSpectators)
-        .where(and(
+        .where(eq(battleSpectators.battleId, battleId));
+
+      // Get battle questions
+      const questions = await db.query.battleQuestions.findMany({
+        where: eq(battleQuestions.battleId, battleId),
+        orderBy: [battleQuestions.order]
+      });
+
+      // Check if user is a participant
+      const isParticipant = userId ? battle.participants?.some(p => p.userId === userId) : false;
+
+      // Check if user is a spectator
+      const isSpectator = userId ? await db.query.battleSpectators.findFirst({
+        where: and(
           eq(battleSpectators.battleId, battleId),
           eq(battleSpectators.userId, userId)
-        ));
+        )
+      }) : false;
 
-      if (existingSpectator.length > 0) {
-        return res.status(400).json({ message: "Already spectating this battle" });
-      }
-
-
-
-      // Add as spectator
-      await db.insert(battleSpectators).values({
-        battleId: battleId,
-        userId: userId
-      });
-
-      res.json({ message: "Now spectating the battle!" });
+      return {
+        ...battle,
+        spectatorCount: spectatorCount[0]?.count || 0,
+        questions,
+        isParticipant,
+        isSpectator: !!isSpectator,
+        // Enhanced battle properties
+        format: battle.type,
+        difficulty: battle.difficulty || 'Medium',
+        examType: battle.examType || 'General',
+        subject: battle.subject || 'Mixed',
+        entryFee: battle.entryFee || 10,
+        prizePool: battle.prizePool || 50,
+        maxParticipants: battle.maxParticipants || 8,
+        battleMode: battle.battleMode || 'Standard',
+        spectatorMode: true,
+        questionsCount: questions.length || 5,
+        participants: battle.participants?.map(p => ({
+          id: p.user.id,
+          name: p.user.name,
+          profileImage: p.user.profileImage,
+          team: p.team,
+          score: p.score,
+          status: p.status,
+          powerUps: [], // Will be populated from userPowerUps
+          rank: p.user.rank,
+          accuracy: p.accuracy,
+          streak: p.streak,
+          level: p.user.level,
+          rankPoints: p.user.rankPoints,
+        })) || []
+      };
     } catch (error) {
-      console.error("Battle spectate error:", error);
-      res.status(500).json({ message: "Error joining as spectator" });
+      console.error('Error getting battle details:', error);
+      throw error;
     }
-  },
+  }
 
-  /**
-   * Use power-up in battle
-   */
-  async usePowerUp(req: Request, res: Response) {
+  // Generate AI battle questions
+  async generateBattleQuestions(battleId: number, examType: string, subject: string, difficulty: string, count: number = 5) {
     try {
-      const validatedData = powerUpUsageSchema.parse(req.body);
-      const userId = (req.user as any).id;
+      const prompt = `Generate ${count} multiple choice questions for a competitive academic battle.
+      
+      Requirements:
+      - Exam Type: ${examType}
+      - Subject: ${subject}
+      - Difficulty: ${difficulty}
+      - Each question should have 4 options (A, B, C, D)
+      - Include detailed explanations for correct answers
+      - Questions should be challenging but fair for competitive exam preparation
+      - Format as JSON array with structure: { question, options: [A, B, C, D], correct_answer, explanation }
+      
+      Focus on concepts commonly tested in ${examType} exams for ${subject}.`;
 
-      // Check if user owns the power-up
-      const userPowerUp = await db.query.userPowerUps.findFirst({
-        where: and(
-          eq(userPowerUps.userId, userId),
-          eq(userPowerUps.powerUpId, validatedData.powerUpId)
-        ),
-        with: {
-          powerUp: true
-        }
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+        messages: [
+          { role: 'system', content: 'You are an expert educator creating competitive exam questions. Generate high-quality, accurate questions with proper explanations.' },
+          { role: 'user', content: prompt }
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.3,
       });
 
-      if (!userPowerUp || userPowerUp.quantity <= 0) {
-        return res.status(400).json({ message: "You don't own this power-up" });
+      const questionsData = JSON.parse(response.choices[0].message.content || '{"questions": []}');
+      const questions = questionsData.questions || [];
+
+      // Save questions to database
+      for (let i = 0; i < questions.length; i++) {
+        const question = questions[i];
+        await db.insert(battleQuestions).values({
+          battleId,
+          question: question.question,
+          options: question.options,
+          correctAnswer: question.correct_answer,
+          explanation: question.explanation,
+          order: i + 1,
+          points: this.calculateQuestionPoints(difficulty),
+        });
       }
 
-      // Check if battle allows power-ups
-      const battle = await db.query.battles.findFirst({
-        where: eq(battles.id, validatedData.battleId)
-      });
-
-      if (!battle || battle.status !== "in_progress") {
-        return res.status(400).json({ message: "Cannot use power-ups in this battle state" });
-      }
-
-      // Apply power-up effect (implementation depends on power-up type)
-      await enhancedBattleService.applyPowerUpEffect(userPowerUp.powerUp, validatedData);
-
-      // Consume the power-up
-      if (userPowerUp.quantity === 1) {
-        await db.delete(userPowerUps)
-          .where(and(
-            eq(userPowerUps.userId, userId),
-            eq(userPowerUps.powerUpId, validatedData.powerUpId)
-          ));
-      } else {
-        await db.update(userPowerUps)
-          .set({ quantity: userPowerUp.quantity - 1 })
-          .where(and(
-            eq(userPowerUps.userId, userId),
-            eq(userPowerUps.powerUpId, validatedData.powerUpId)
-          ));
-      }
-
-      res.json({ 
-        message: `Power-up "${userPowerUp.powerUp.name}" activated!`,
-        effect: userPowerUp.powerUp.effect
-      });
+      return questions;
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        const validationError = fromZodError(error);
-        return res.status(400).json({ message: validationError.message });
-      }
-      console.error("Power-up usage error:", error);
-      res.status(500).json({ message: "Error using power-up" });
+      console.error('Error generating battle questions:', error);
+      throw error;
     }
-  },
+  }
 
-  /**
-   * Apply power-up effects
-   */
-  async applyPowerUpEffect(powerUp: any, usageData: any) {
-    // This would implement specific power-up effects
-    // For now, just log the usage
-    console.log(`Applied power-up: ${powerUp.name} with effect: ${powerUp.effect}`);
-    
-    // TODO: Implement specific effects like:
-    // - extra_time: Add time to current question
-    // - hint: Provide AI hint
-    // - eliminate_option: Remove wrong MCQ options
-    // - double_points: Double score for next correct answer
-    // - shield: Protect from next wrong answer penalty
-  },
+  // Calculate points based on difficulty
+  private calculateQuestionPoints(difficulty: string): number {
+    switch (difficulty.toLowerCase()) {
+      case 'easy': return 10;
+      case 'medium': return 20;
+      case 'hard': return 30;
+      case 'expert': return 50;
+      default: return 20;
+    }
+  }
 
-  /**
-   * Get available power-ups
-   */
-  async getPowerUps(req: Request, res: Response) {
+  // Create tournament-style battle
+  async createTournamentBattle(battleData: any, creatorId: number) {
     try {
-      const powerUpsList = await db.query.powerUps.findMany({
-        where: eq(powerUps.isActive, true),
-        orderBy: [powerUps.cost]
-      });
+      const [battle] = await db.insert(battles).values({
+        title: battleData.title,
+        type: battleData.type,
+        status: 'waiting',
+        creatorId,
+        examType: battleData.examType,
+        subject: battleData.subject,
+        difficulty: battleData.difficulty,
+        duration: battleData.duration,
+        maxParticipants: battleData.maxParticipants,
+        entryFee: battleData.entryFee,
+        prizePool: battleData.prizePool,
+        battleMode: battleData.battleMode || 'Tournament',
+        scheduledAt: battleData.scheduledAt ? new Date(battleData.scheduledAt) : null,
+        topics: battleData.topics || [],
+        rules: battleData.rules || [],
+        createdAt: new Date(),
+      }).returning();
 
-      res.json(powerUpsList);
+      // Generate questions for the battle
+      await this.generateBattleQuestions(
+        battle.id,
+        battleData.examType,
+        battleData.subject,
+        battleData.difficulty,
+        battleData.questionsCount || 5
+      );
+
+      return battle;
     } catch (error) {
-      console.error("Power-ups fetch error:", error);
-      res.status(500).json({ message: "Error fetching power-ups" });
+      console.error('Error creating tournament battle:', error);
+      throw error;
     }
-  },
+  }
 
-  /**
-   * Get user's power-up inventory
-   */
-  async getUserPowerUps(req: Request, res: Response) {
+  // Get available power-ups for a user
+  async getUserPowerUps(userId: number) {
     try {
-      const userId = (req.user as any).id;
-
-      const userPowerUpsList = await db.query.userPowerUps.findMany({
+      const userPowerUpsData = await db.query.userPowerUps.findMany({
         where: eq(userPowerUps.userId, userId),
         with: {
           powerUp: true
         }
       });
 
-      res.json(userPowerUpsList);
+      return userPowerUpsData.map(up => ({
+        id: up.powerUp.id,
+        name: up.powerUp.name,
+        description: up.powerUp.description,
+        cost: up.powerUp.cost,
+        effect: up.powerUp.effect,
+        cooldown: up.powerUp.cooldown,
+        quantity: up.quantity,
+        active: up.active,
+      }));
     } catch (error) {
-      console.error("User power-ups fetch error:", error);
-      res.status(500).json({ message: "Error fetching user power-ups" });
-    }
-  },
-
-  async submitAnswer(req: any, res: Response) {
-    try {
-      const battleIdParam = req.params.battleId;
-      console.log('Raw battleId param:', battleIdParam, 'type:', typeof battleIdParam);
-      
-      if (!battleIdParam || battleIdParam === 'undefined' || battleIdParam === 'NaN') {
-        console.error('Invalid battleId parameter:', battleIdParam);
-        return res.status(400).json({ message: "Invalid battle ID" });
-      }
-      
-      const battleId = parseInt(battleIdParam, 10);
-      console.log('Parsed battleId:', battleId, 'isValid:', !isNaN(battleId));
-      
-      if (isNaN(battleId)) {
-        console.error('Failed to parse battleId:', battleIdParam);
-        return res.status(400).json({ message: "Invalid battle ID format" });
-      }
-      
-      const userId = req.user?.id;
-      const { answer } = req.body;
-
-      console.log('Submit answer request:', { battleId, userId, answer });
-
-      if (!userId) {
-        return res.status(401).json({ message: "Authentication required" });
-      }
-
-      if (!answer || !answer.trim()) {
-        return res.status(400).json({ message: "Answer is required" });
-      }
-
-      // Check if user is a participant in this battle
-      const [participant] = await db.select()
-        .from(battleParticipants)
-        .where(and(
-          eq(battleParticipants.battleId, battleId),
-          eq(battleParticipants.userId, userId)
-        ));
-
-      if (!participant) {
-        return res.status(403).json({ message: "You are not a participant in this battle" });
-      }
-
-      // Check if user has already submitted an answer
-      if (participant.submission) {
-        return res.status(400).json({ message: "Answer already submitted" });
-      }
-
-      // Update participant's submission
-      await db.update(battleParticipants)
-        .set({
-          submission: answer.trim(),
-          submittedAt: new Date()
-        })
-        .where(and(
-          eq(battleParticipants.battleId, battleId),
-          eq(battleParticipants.userId, userId)
-        ));
-
-      res.json({ 
-        message: "Answer submitted successfully",
-        submittedAt: new Date()
-      });
-    } catch (error) {
-      console.error("Submit answer error:", error);
-      res.status(500).json({ message: "Failed to submit answer" });
-    }
-  },
-
-  /**
-   * Get tournaments (placeholder for future implementation)
-   */
-  async getTournaments(req: Request, res: Response) {
-    try {
-      // Placeholder tournament data for now
-      const tournaments = [];
-      res.json({ tournaments });
-    } catch (error) {
-      console.error("Get tournaments error:", error);
-      res.status(500).json({ message: "Error fetching tournaments" });
-    }
-  },
-
-  /**
-   * Create a demo battle with AI bots for testing UI
-   */
-  async createDemoBattle(req: Request, res: Response) {
-    try {
-      const { type, examType, subject, difficulty } = req.body;
-      const userId = req.user ? (req.user as any).id : 999; // Use demo user ID if not authenticated
-
-      // Determine correct participant count based on battle type
-      const getMaxParticipants = (battleType: string) => {
-        switch(battleType) {
-          case "1v1": return 2;
-          case "2v2": return 4;
-          case "3v3": return 6;
-          case "4v4": return 8;
-          default: return 2;
-        }
-      };
-
-      const maxParticipants = getMaxParticipants(type);
-
-      // Create demo battle with AI bots - no coin cost
-      const [demoBattle] = await db.insert(battles).values({
-        title: `Demo ${type} Battle - ${subject}`,
-        type: type || "1v1",
-        format: "standard",
-        difficulty: difficulty || "intermediate",
-        examType: examType || "JEE",
-        subject: subject || "Physics",
-        duration: 5, // 5 minutes for demo
-        topics: [subject || "Physics"], // JSONB array format
-        rewardPoints: 0, // No reward for demo
-        entryFee: 0, // No cost for demo
-        prizePool: 0, // No prize for demo
-        maxParticipants: maxParticipants,
-        battleMode: "public",
-        spectatorMode: true,
-        autoStart: true,
-        questionsCount: 1,
-        status: "waiting",
-        createdBy: userId
-      }).returning();
-
-      // Add the real user as participant
-      await db.insert(battleParticipants).values({
-        battleId: demoBattle.id,
-        userId: userId,
-        team: 0
-      });
-
-      // Create AI bot opponents based on battle type
-      const totalParticipants = demoBattle.maxParticipants || 2;
-      
-      // Add AI bots to fill remaining slots
-      for (let i = 1; i < totalParticipants; i++) {
-        // Determine team assignment for team battles
-        let team = 0;
-        if (type.includes("v")) {
-          // For team battles, alternate teams: user is team 0, bots fill both teams
-          team = i % 2; // This ensures balanced teams
-        }
-
-        await db.insert(battleParticipants).values({
-          battleId: demoBattle.id,
-          userId: -(100 + i), // Negative IDs for AI bots
-          team: team,
-          answer: null,
-          score: Math.floor(Math.random() * 100) // Random AI bot scores
-        });
-      }
-
-      // Auto-start the demo battle since it's full
-      await db.update(battles)
-        .set({ 
-          status: "in_progress",
-          startTime: new Date()
-        })
-        .where(eq(battles.id, demoBattle.id));
-
-      // Generate a simple demo question for the battle (without AI to avoid timeout)
-      await db.insert(battleQuestions).values({
-        battleId: demoBattle.id,
-        questionNumber: 1,
-        question: `Demo ${examType} ${subject} Question: What is the basic principle being tested?`,
-        options: JSON.stringify(["A) Option 1", "B) Option 2", "C) Option 3", "D) Option 4"]),
-        correctAnswer: "A",
-        explanation: "This is a demo question for practice. The correct answer demonstrates the concept.",
-        difficulty: difficulty || "intermediate",
-        subject: subject,
-        topic: `${subject} Basics`,
-        marks: 1,
-        timeLimit: 300,
-        questionType: "mcq"
-      });
-
-      res.json({
-        message: "Demo battle created successfully!",
-        battleId: demoBattle.id,
-        type: type,
-        participants: totalParticipants,
-        status: "in_progress",
-        isDemo: true,
-        details: `${type} battle with ${totalParticipants} participants (1 real + ${totalParticipants - 1} AI bots)`
-      });
-    } catch (error) {
-      console.error("Demo battle creation error:", error);
-      res.status(500).json({ message: "Error creating demo battle" });
-    }
-  },
-
-  /**
-   * Generate a demo question for practice battles
-   */
-  async generateDemoQuestion(examType: string, subject: string, difficulty: string) {
-    try {
-      const prompt = `Generate a ${difficulty} level ${examType} ${subject} multiple choice question for educational practice.
-
-Return ONLY a valid JSON object with this exact structure:
-{
-  "question": "Question text here",
-  "options": ["A) Option 1", "B) Option 2", "C) Option 3", "D) Option 4"],
-  "correctAnswer": "A",
-  "explanation": "Clear explanation of why this is correct and others are wrong"
-}
-
-Make it a realistic exam-style question with 4 options labeled A, B, C, D.`;
-
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.3,
-        max_tokens: 500,
-        response_format: { type: "json_object" }
-      });
-
-      const questionData = JSON.parse(response.choices[0].message.content || "{}");
-      return questionData;
-    } catch (error) {
-      console.error("Demo question generation error:", error);
-      return null;
+      console.error('Error getting user power-ups:', error);
+      throw error;
     }
   }
-};
 
-export function registerEnhancedBattleRoutes(app: Express) {
-  console.log("=== REGISTERING ENHANCED BATTLE ROUTES ===");
-  
-  // Add auth middleware
-  const requireAuth = (req: any, res: any, next: any) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Authentication required" });
+  // Activate power-up during battle
+  async activatePowerUp(battleId: number, userId: number, powerUpId: string) {
+    try {
+      // Check if user has the power-up
+      const userPowerUp = await db.query.userPowerUps.findFirst({
+        where: and(
+          eq(userPowerUps.userId, userId),
+          eq(userPowerUps.powerUpId, powerUpId)
+        )
+      });
+
+      if (!userPowerUp || userPowerUp.quantity <= 0) {
+        throw new Error('Power-up not available');
+      }
+
+      // Update power-up quantity
+      await db
+        .update(userPowerUps)
+        .set({ 
+          quantity: userPowerUp.quantity - 1,
+          active: true,
+          lastUsed: new Date()
+        })
+        .where(and(
+          eq(userPowerUps.userId, userId),
+          eq(userPowerUps.powerUpId, powerUpId)
+        ));
+
+      return { success: true, message: 'Power-up activated successfully' };
+    } catch (error) {
+      console.error('Error activating power-up:', error);
+      throw error;
     }
-    next();
-  };
+  }
 
-  // Enhanced battle routes with debug logging - using different route pattern to avoid conflicts
-  console.log("Registering route: GET /api/enhanced-battles");
-  app.get("/api/enhanced-battles", (req, res) => {
-    console.log("=== Route GET /api/enhanced-battles HIT ===");
-    enhancedBattleService.getEnhancedBattles(req, res);
-  });
-  
-  console.log("Registering route: GET /api/enhanced-battles/:battleId");
-  app.get("/api/enhanced-battles/:battleId", (req, res) => {
-    console.log("=== Route GET /api/enhanced-battles/:battleId HIT ===");
-    enhancedBattleService.getEnhancedBattles(req, res);
-  });
-  console.log("Registering route: POST /api/enhanced-battles");
-  app.post("/api/enhanced-battles", requireAuth, enhancedBattleService.createEnhancedBattle);
-  console.log("Registering route: POST /api/enhanced-battles/:battleId/join");
-  app.post("/api/enhanced-battles/:battleId/join", requireAuth, enhancedBattleService.joinEnhancedBattle);
-  console.log("Registering route: POST /api/enhanced-battles/:battleId/spectate");
-  app.post("/api/enhanced-battles/:battleId/spectate", requireAuth, enhancedBattleService.spectateBattle);
-  console.log("Registering route: POST /api/enhanced-battles/:battleId/submit");
-  app.post("/api/enhanced-battles/:battleId/submit", requireAuth, enhancedBattleService.submitAnswer);
-  
-  // Demo battle route - no authentication required
-  console.log("Registering route: POST /api/demo-battles");
-  app.post("/api/demo-battles", (req: any, res: any) => {
-    enhancedBattleService.createDemoBattle(req, res);
-  });
-  
-  // Power-up routes
-  app.get("/api/power-ups", enhancedBattleService.getPowerUps); // No auth for public viewing
-  app.get("/api/user/power-ups", requireAuth, enhancedBattleService.getUserPowerUps);
-  app.post("/api/power-ups/use", requireAuth, enhancedBattleService.usePowerUp);
-  
-  // Tournament routes
-  app.get("/api/tournaments", enhancedBattleService.getTournaments); // No auth for public viewing
+  // Get all power-ups available in the system
+  async getAllPowerUps() {
+    try {
+      return await db.query.powerUps.findMany({
+        orderBy: [powerUps.cost]
+      });
+    } catch (error) {
+      console.error('Error getting power-ups:', error);
+      throw error;
+    }
+  }
+
+  // Add spectator to battle
+  async addSpectator(battleId: number, userId: number) {
+    try {
+      // Check if already spectating
+      const existing = await db.query.battleSpectators.findFirst({
+        where: and(
+          eq(battleSpectators.battleId, battleId),
+          eq(battleSpectators.userId, userId)
+        )
+      });
+
+      if (existing) {
+        return { success: true, message: 'Already spectating' };
+      }
+
+      await db.insert(battleSpectators).values({
+        battleId,
+        userId,
+        joinedAt: new Date()
+      });
+
+      return { success: true, message: 'Added as spectator' };
+    } catch (error) {
+      console.error('Error adding spectator:', error);
+      throw error;
+    }
+  }
+
+  // Get demo battles for testing
+  async getDemoBattles() {
+    return [
+      {
+        id: 9999,
+        title: "🔥 Epic JEE Physics Championship",
+        type: "2v2",
+        status: "waiting",
+        examType: "JEE",
+        subject: "Physics",
+        difficulty: "Hard",
+        duration: 15,
+        maxParticipants: 4,
+        entryFee: 25,
+        prizePool: 100,
+        battleMode: "Championship",
+        spectatorMode: true,
+        questionsCount: 5,
+        participants: [
+          { id: 1, name: "PhysicsKing", team: 0, score: 0, status: "ready" },
+          { id: 2, name: "QuantumMaster", team: 1, score: 0, status: "ready" }
+        ],
+        spectatorCount: 12,
+        topics: ["Mechanics", "Thermodynamics"],
+        scheduledAt: new Date(Date.now() + 300000), // 5 minutes from now
+        createdAt: new Date(),
+      },
+      {
+        id: 9998,
+        title: "⚡ NEET Biology Blitz",
+        type: "1v1",
+        status: "in_progress",
+        examType: "NEET",
+        subject: "Biology",
+        difficulty: "Medium",
+        duration: 10,
+        maxParticipants: 2,
+        entryFee: 15,
+        prizePool: 30,
+        battleMode: "Speed Round",
+        spectatorMode: true,
+        questionsCount: 8,
+        participants: [
+          { id: 3, name: "BioWarrior", team: 0, score: 45, status: "answering" },
+          { id: 4, name: "CellExpert", team: 1, score: 40, status: "submitted" }
+        ],
+        spectatorCount: 8,
+        topics: ["Cell Biology", "Genetics"],
+        scheduledAt: new Date(Date.now() - 300000), // Started 5 minutes ago
+        createdAt: new Date(),
+      }
+    ];
+  }
 }
+
+export const enhancedBattleService = new EnhancedBattleService();
