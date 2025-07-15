@@ -229,5 +229,30 @@ export const coinService = {
     const description = `${activityType.replace('_', ' ')} reward`;
 
     return await this.addCoins(userId, amount, description, 'activity', 0);
+  },
+
+  /**
+   * Award coins endpoint for API
+   */
+  async awardCoins(req: Request, res: Response) {
+    try {
+      const { coins, reason } = req.body;
+      const userId = (req.user as any).id;
+      
+      if (!coins || coins <= 0) {
+        return res.status(400).json({ message: "Valid coin amount required" });
+      }
+      
+      const result = await this.addCoins(userId, coins, reason || "Battle reward", "battle", 0);
+      
+      res.json({ 
+        message: "Coins awarded successfully",
+        coinsEarned: coins,
+        newBalance: result.coins
+      });
+    } catch (error) {
+      console.error("Error awarding coins:", error);
+      res.status(500).json({ message: "Failed to award coins" });
+    }
   }
 };

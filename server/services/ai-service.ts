@@ -2458,5 +2458,59 @@ Focus on visual clarity and educational value.`;
         improvementTrends: []
       };
     }
+  },
+
+  /**
+   * Generate AI insights for battle answers
+   */
+  async generateAnswerInsight(req: Request, res: Response) {
+    try {
+      const { question, userAnswer, correctAnswer, explanation, examType } = req.body;
+      
+      if (!question || !userAnswer || !correctAnswer) {
+        return res.status(400).json({ message: "Question, user answer, and correct answer are required" });
+      }
+
+      const user = req.user as any;
+      const isCorrect = userAnswer === correctAnswer;
+
+      const prompt = `
+        You are an expert AI tutor providing personalized insights for ${examType || 'competitive exam'} preparation.
+        
+        Question: ${question}
+        Student's Answer: ${userAnswer}
+        Correct Answer: ${correctAnswer}
+        Basic Explanation: ${explanation}
+        
+        Provide a detailed, encouraging insight that:
+        1. ${isCorrect ? 'Celebrates the correct answer and explains why it\'s right' : 'Gently explains why the answer was incorrect'}
+        2. Gives deeper conceptual understanding beyond the basic explanation
+        3. Connects to ${examType} exam patterns and similar question types
+        4. Provides a helpful tip or memory technique
+        5. Encourages continued learning with specific next steps
+        
+        Keep it motivational, educational, and exam-focused. Limit to 100 words.
+      `;
+
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { 
+            role: "system", 
+            content: "You are an expert AI tutor who provides personalized, encouraging insights to help students learn from their answers." 
+          },
+          { role: "user", content: prompt }
+        ],
+        max_tokens: 200,
+        temperature: 0.7
+      });
+
+      const insight = completion.choices[0].message.content?.trim() || "Great effort! Keep practicing to improve your understanding.";
+
+      res.json({ insight });
+    } catch (error) {
+      console.error("Error generating AI insight:", error);
+      res.status(500).json({ message: "Failed to generate AI insight" });
+    }
   }
 };

@@ -163,6 +163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/ai/tools/answer-check", requireAuth, aiService.checkAnswer);
   app.post("/api/ai/tools/flashcards", requireAuth, aiService.generateFlashcards);
   app.post("/api/ai/tools/generate-pdf", requireAuth, PDFService.generatePDFFromNotes);
+  app.post("/api/ai/answer-insight", requireAuth, aiService.generateAnswerInsight);
   
   // Diagram-heavy PDF generation endpoint
   app.post("/api/ai/tools/generate-diagram-pdf", requireAuth, async (req, res) => {
@@ -308,6 +309,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/coins/daily-bonus", requireAuth, async (req, res) => {
     const { coinService } = await import("./services/coin-service");
     await coinService.claimDailyBonus(req, res);
+  });
+  app.post("/api/coins/award", requireAuth, async (req, res) => {
+    const { coinService } = await import("./services/coin-service");
+    await coinService.awardCoins(req, res);
+  });
+  app.post("/api/user/add-xp", requireAuth, async (req, res) => {
+    try {
+      const { xp, source } = req.body;
+      const userId = (req.user as any).id;
+      
+      if (!xp || xp <= 0) {
+        return res.status(400).json({ message: "Valid XP amount required" });
+      }
+      
+      await storage.addUserXP(userId, xp);
+      
+      res.json({ 
+        message: "XP awarded successfully",
+        xpEarned: xp,
+        source: source || "battle_completion"
+      });
+    } catch (error) {
+      console.error("Error awarding XP:", error);
+      res.status(500).json({ message: "Failed to award XP" });
+    }
   });
   
   // Rewards routes

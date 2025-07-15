@@ -388,41 +388,129 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
   const [selectedOption, setSelectedOption] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(600); // 10 minutes in seconds
+  const [totalQuestions] = useState(5); // 5 questions per battle
+  const [timeRemaining, setTimeRemaining] = useState(300); // 5 minutes in seconds
+  const [answers, setAnswers] = useState<string[]>([]);
+  const [aiInsight, setAiInsight] = useState("");
+  const [loadingInsight, setLoadingInsight] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  // Demo battle question based on exam type
-  const demoQuestion = {
-    JEE: {
-      question: "A particle moves in a straight line with constant acceleration. If its velocity changes from 10 m/s to 30 m/s in 4 seconds, what is its acceleration?",
-      options: ["2.5 m/s²", "5 m/s²", "7.5 m/s²", "10 m/s²"],
-      correct: "5 m/s²"
-    },
-    NEET: {
-      question: "Which of the following is the powerhouse of the cell?",
-      options: ["Nucleus", "Mitochondria", "Ribosome", "Endoplasmic Reticulum"],
-      correct: "Mitochondria"
-    },
-    CSE: {
-      question: "What is the time complexity of binary search in a sorted array?",
-      options: ["O(n)", "O(log n)", "O(n²)", "O(1)"],
-      correct: "O(log n)"
-    }
+  // Demo battle questions based on exam type (5 questions each)
+  const demoQuestions = {
+    JEE: [
+      {
+        question: "A particle moves in a straight line with constant acceleration. If its velocity changes from 10 m/s to 30 m/s in 4 seconds, what is its acceleration?",
+        options: ["2.5 m/s²", "5 m/s²", "7.5 m/s²", "10 m/s²"],
+        correct: "5 m/s²",
+        explanation: "Using v = u + at, where v = 30 m/s, u = 10 m/s, t = 4s. So, 30 = 10 + a(4), which gives a = 5 m/s²"
+      },
+      {
+        question: "What is the derivative of sin(x) with respect to x?",
+        options: ["cos(x)", "-cos(x)", "sin(x)", "-sin(x)"],
+        correct: "cos(x)",
+        explanation: "The derivative of sin(x) is cos(x). This is a fundamental derivative in calculus."
+      },
+      {
+        question: "In how many ways can 5 students be arranged in a row?",
+        options: ["20", "60", "120", "240"],
+        correct: "120",
+        explanation: "This is 5! (5 factorial) = 5 × 4 × 3 × 2 × 1 = 120 ways"
+      },
+      {
+        question: "The pH of pure water at 25°C is:",
+        options: ["6", "7", "8", "9"],
+        correct: "7",
+        explanation: "Pure water has a pH of 7 at 25°C, making it neutral (neither acidic nor basic)."
+      },
+      {
+        question: "What is the unit of electric current?",
+        options: ["Volt", "Ampere", "Ohm", "Watt"],
+        correct: "Ampere",
+        explanation: "Electric current is measured in Amperes (A), named after André-Marie Ampère."
+      }
+    ],
+    NEET: [
+      {
+        question: "Which of the following is the powerhouse of the cell?",
+        options: ["Nucleus", "Mitochondria", "Ribosome", "Endoplasmic Reticulum"],
+        correct: "Mitochondria",
+        explanation: "Mitochondria are called the powerhouse of the cell because they produce ATP through cellular respiration."
+      },
+      {
+        question: "What is the normal human body temperature?",
+        options: ["96.8°F", "98.6°F", "100.4°F", "102.2°F"],
+        correct: "98.6°F",
+        explanation: "Normal human body temperature is approximately 98.6°F (37°C)."
+      },
+      {
+        question: "Which blood group is known as the universal donor?",
+        options: ["A", "B", "AB", "O"],
+        correct: "O",
+        explanation: "O negative blood type is the universal donor because it lacks A, B, and Rh antigens."
+      },
+      {
+        question: "DNA replication occurs during which phase of cell cycle?",
+        options: ["G1 phase", "S phase", "G2 phase", "M phase"],
+        correct: "S phase",
+        explanation: "DNA replication occurs during the S (Synthesis) phase of the cell cycle."
+      },
+      {
+        question: "Which enzyme is responsible for DNA replication?",
+        options: ["RNA polymerase", "DNA polymerase", "Ligase", "Helicase"],
+        correct: "DNA polymerase",
+        explanation: "DNA polymerase is the main enzyme responsible for DNA replication, adding nucleotides to the growing DNA strand."
+      }
+    ],
+    CSE: [
+      {
+        question: "What is the time complexity of binary search in a sorted array?",
+        options: ["O(n)", "O(log n)", "O(n²)", "O(1)"],
+        correct: "O(log n)",
+        explanation: "Binary search has O(log n) time complexity because it eliminates half of the search space in each iteration."
+      },
+      {
+        question: "Which data structure uses LIFO (Last In First Out) principle?",
+        options: ["Queue", "Stack", "Array", "Tree"],
+        correct: "Stack",
+        explanation: "Stack follows LIFO principle where the last element added is the first one to be removed."
+      },
+      {
+        question: "What does SQL stand for?",
+        options: ["Simple Query Language", "Structured Query Language", "Standard Query Language", "System Query Language"],
+        correct: "Structured Query Language",
+        explanation: "SQL stands for Structured Query Language, used for managing relational databases."
+      },
+      {
+        question: "In object-oriented programming, what is inheritance?",
+        options: ["Creating objects", "Hiding data", "Deriving new classes from existing ones", "Combining functions"],
+        correct: "Deriving new classes from existing ones",
+        explanation: "Inheritance allows a class to inherit properties and methods from another class, promoting code reusability."
+      },
+      {
+        question: "What is the worst-case time complexity of Quick Sort?",
+        options: ["O(n log n)", "O(n²)", "O(n)", "O(log n)"],
+        correct: "O(n²)",
+        explanation: "Quick Sort has O(n²) worst-case time complexity when the pivot is always the smallest or largest element."
+      }
+    ]
   };
 
-  const currentQuestion = demoQuestion[battle.examType as keyof typeof demoQuestion] || demoQuestion.JEE;
+  const questionSet = demoQuestions[battle.examType as keyof typeof demoQuestions] || demoQuestions.JEE;
+  const currentQuestion = questionSet[currentQuestionIndex];
 
   // Timer effect
   useEffect(() => {
-    if (timeRemaining > 0 && !submitted) {
+    if (timeRemaining > 0 && !showResults) {
       const timer = setTimeout(() => setTimeRemaining(prev => prev - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (timeRemaining === 0 && !submitted) {
+    } else if (timeRemaining === 0 && !showResults) {
       // Auto-submit when time is up
       handleSubmitAnswer();
     }
-  }, [timeRemaining, submitted]);
+  }, [timeRemaining, showResults]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -430,7 +518,7 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleSubmitAnswer = () => {
+  const handleSubmitAnswer = async () => {
     if (!selectedOption && !answer && !submitted) {
       toast({
         title: "No Answer",
@@ -444,8 +532,25 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
     const points = isCorrect ? 10 : 0;
     
     setSubmitted(true);
-    setScore(points);
+    setScore(prev => prev + points);
+    setAnswers(prev => [...prev, selectedOption]);
     
+    // Get AI insight
+    setLoadingInsight(true);
+    try {
+      const response = await apiRequest("POST", "/api/ai/answer-insight", {
+        question: currentQuestion.question,
+        userAnswer: selectedOption,
+        correctAnswer: currentQuestion.correct,
+        explanation: currentQuestion.explanation,
+        examType: battle.examType
+      });
+      setAiInsight(response.insight);
+    } catch (error) {
+      setAiInsight("Unable to generate AI insight at this time.");
+    }
+    setLoadingInsight(false);
+
     toast({
       title: isCorrect ? "Correct!" : "Incorrect!",
       description: isCorrect 
@@ -454,10 +559,44 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
       variant: isCorrect ? "default" : "destructive",
     });
 
-    // Show results after a brief delay
+    // Move to next question or show final results
     setTimeout(() => {
-      setShowResults(true);
-    }, 2000);
+      if (currentQuestionIndex < totalQuestions - 1) {
+        // Next question
+        setCurrentQuestionIndex(prev => prev + 1);
+        setSelectedOption("");
+        setSubmitted(false);
+        setAiInsight("");
+      } else {
+        // Show final results
+        setShowResults(true);
+        // Award coins and XP
+        awardRewards();
+      }
+    }, 3000);
+  };
+
+  const awardRewards = async () => {
+    try {
+      const coinsEarned = Math.max(5, Math.floor(score / 2)); // Minimum 5 coins, bonus for performance
+      const xpEarned = score * 2; // 2 XP per point
+      
+      await apiRequest("POST", "/api/coins/award", {
+        coins: coinsEarned,
+        reason: `Battle: ${battle.title}`
+      });
+      
+      await apiRequest("POST", "/api/user/add-xp", {
+        xp: xpEarned,
+        source: "battle_completion"
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["/api/coins"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user/stats"] });
+      
+    } catch (error) {
+      console.error("Error awarding rewards:", error);
+    }
   };
 
   // Show results screen after submission
@@ -497,12 +636,18 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
           </h2>
           
           <p className="text-gray-300 mb-6">
-            You scored <span className="text-2xl font-bold text-purple-400">{score}</span> points
+            You scored <span className="text-2xl font-bold text-purple-400">{score}</span> out of {totalQuestions * 10} points
           </p>
           
           <div className="bg-gray-800/50 border border-gray-600/50 rounded-lg p-4 mb-6">
-            <p className="text-sm text-gray-400 mb-2">Correct Answer:</p>
-            <p className="text-white font-medium">{currentQuestion.correct}</p>
+            <p className="text-sm text-gray-400 mb-2">Battle Summary:</p>
+            <div className="space-y-2">
+              <p className="text-white">Questions Answered: {totalQuestions}</p>
+              <p className="text-white">Correct Answers: {Math.floor(score / 10)}</p>
+              <p className="text-white">Accuracy: {Math.round((score / (totalQuestions * 10)) * 100)}%</p>
+              <p className="text-white">Coins Earned: {Math.max(5, Math.floor(score / 2))}</p>
+              <p className="text-white">XP Earned: {score * 2}</p>
+            </div>
           </div>
 
           <div className="flex gap-4 justify-center">
@@ -519,8 +664,11 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
                 setShowResults(false);
                 setSubmitted(false);
                 setSelectedOption("");
-                setTimeRemaining(600);
+                setCurrentQuestionIndex(0);
+                setTimeRemaining(300);
                 setScore(0);
+                setAnswers([]);
+                setAiInsight("");
               }}
               variant="outline"
               className="border-gray-600 text-gray-300 hover:bg-gray-800/50"
@@ -538,7 +686,7 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
               <Target className="w-4 h-4" />
               <span className="font-medium">Accuracy</span>
             </div>
-            <p className="text-white text-xl font-bold">{score > 0 ? "100%" : "0%"}</p>
+            <p className="text-white text-xl font-bold">{Math.round((score / (totalQuestions * 10)) * 100)}%</p>
           </div>
           
           <div className="glassmorphism border border-purple-500/30 p-4 rounded-xl">
@@ -546,7 +694,7 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
               <Clock className="w-4 h-4" />
               <span className="font-medium">Time Taken</span>
             </div>
-            <p className="text-white text-xl font-bold">{formatTime(600 - timeRemaining)}</p>
+            <p className="text-white text-xl font-bold">{formatTime(300 - timeRemaining)}</p>
           </div>
           
           <div className="glassmorphism border border-amber-500/30 p-4 rounded-xl">
@@ -554,7 +702,7 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
               <Trophy className="w-4 h-4" />
               <span className="font-medium">Coins Earned</span>
             </div>
-            <p className="text-white text-xl font-bold">{score > 0 ? "5" : "1"}</p>
+            <p className="text-white text-xl font-bold">{Math.max(5, Math.floor(score / 2))}</p>
           </div>
         </div>
       </div>
@@ -610,13 +758,27 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
         </div>
       </div>
 
+      {/* Question Progress */}
+      <div className="glassmorphism border border-gray-600/30 p-4 rounded-xl mb-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-gray-400 text-sm">Progress</span>
+          <span className="text-gray-400 text-sm">{currentQuestionIndex + 1} of {totalQuestions}</span>
+        </div>
+        <div className="w-full bg-gray-700 rounded-full h-2">
+          <div 
+            className="bg-gradient-to-r from-purple-500 to-cyan-500 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%` }}
+          ></div>
+        </div>
+      </div>
+
       {/* Question Section */}
       <div className="glassmorphism border border-purple-500/30 p-6 rounded-xl">
         <div className="flex items-center gap-2 mb-4">
           <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center">
-            <span className="text-purple-400 font-bold">1</span>
+            <span className="text-purple-400 font-bold">{currentQuestionIndex + 1}</span>
           </div>
-          <h2 className="text-xl font-bold text-white">Question 1</h2>
+          <h2 className="text-xl font-bold text-white">Question {currentQuestionIndex + 1}</h2>
         </div>
         
         <div className="mb-6">
@@ -680,6 +842,27 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
           </div>
         </div>
 
+        {/* AI Insights Section */}
+        {submitted && (
+          <div className="mt-6 p-4 bg-gray-800/50 border border-gray-600/50 rounded-lg">
+            <h4 className="text-sm font-medium text-gray-300 mb-2">📚 AI Insights & Explanation</h4>
+            {loadingInsight ? (
+              <div className="flex items-center gap-2 text-gray-400">
+                <div className="w-4 h-4 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+                <span>Generating AI insights...</span>
+              </div>
+            ) : aiInsight ? (
+              <div className="text-gray-200 text-sm leading-relaxed">
+                {aiInsight}
+              </div>
+            ) : (
+              <div className="text-gray-200 text-sm leading-relaxed">
+                <strong>Explanation:</strong> {currentQuestion.explanation}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Submit Button */}
         <div className="flex justify-end">
           {!submitted ? (
@@ -694,19 +877,22 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
           ) : (
             <div className="flex items-center gap-4">
               <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-                score > 0 ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
+                selectedOption === currentQuestion.correct ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
               }`}>
-                {score > 0 ? (
+                {selectedOption === currentQuestion.correct ? (
                   <CheckCircle className="w-4 h-4" />
                 ) : (
                   <XCircle className="w-4 h-4" />
                 )}
                 <span className="font-medium">
-                  {score > 0 ? 'Correct!' : 'Incorrect!'}
+                  {selectedOption === currentQuestion.correct ? 'Correct!' : 'Incorrect!'}
                 </span>
               </div>
               <span className="text-gray-400 text-sm">
-                Results will appear in a moment...
+                {currentQuestionIndex < totalQuestions - 1 
+                  ? "Next question in a moment..." 
+                  : "Final results loading..."
+                }
               </span>
             </div>
           )}
