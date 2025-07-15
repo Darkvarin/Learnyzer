@@ -383,10 +383,17 @@ export default function BattleZoneEnhanced() {
             <Button
               size="sm"
               variant="outline"
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                setSelectedBattle(battle);
+                // Fetch complete battle details to ensure we have all data
+                try {
+                  const fullBattle = await apiRequest("GET", `/api/enhanced-battles/${battle.id}`);
+                  setSelectedBattle(fullBattle);
+                } catch (error) {
+                  console.error("Error fetching battle details:", error);
+                  setSelectedBattle(battle); // Fallback to existing data
+                }
               }}
               className="bg-gray-500/10 border-gray-500/30 hover:bg-gray-500/20 text-gray-400 flex-1 sm:flex-initial"
             >
@@ -409,10 +416,17 @@ export default function BattleZoneEnhanced() {
             {battle.isParticipant ? (
               <Button
                 size="sm"
-                onClick={(e) => {
+                onClick={async (e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setSelectedBattle(battle);
+                  // Fetch complete battle details to ensure we have all data
+                  try {
+                    const fullBattle = await apiRequest("GET", `/api/enhanced-battles/${battle.id}`);
+                    setSelectedBattle(fullBattle);
+                  } catch (error) {
+                    console.error("Error fetching battle details:", error);
+                    setSelectedBattle(battle); // Fallback to existing data
+                  }
                 }}
                 className="bg-gradient-to-r from-green-600/80 to-emerald-600/80 hover:from-green-600/90 hover:to-emerald-600/90 flex-1 sm:flex-initial"
               >
