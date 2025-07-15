@@ -9,12 +9,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
-import { Sword, Plus, Users, Clock, Target, Trophy, Flame } from "lucide-react";
+import { Sword, Plus, Users, Clock, Target, Trophy, Flame, ArrowLeft, Send, Eye } from "lucide-react";
 
 export default function BattleZone() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [selectedBattle, setSelectedBattle] = useState<any>(null);
+  const [showBattleDetail, setShowBattleDetail] = useState(false);
   
   const [battleForm, setBattleForm] = useState({
     title: "",
@@ -63,12 +65,19 @@ export default function BattleZone() {
   // Join battle mutation
   const joinBattleMutation = useMutation({
     mutationFn: (battleId: number) => apiRequest("POST", `/api/enhanced-battles/${battleId}/join`),
-    onSuccess: () => {
+    onSuccess: (data, battleId) => {
       toast({
         title: "Joined Battle!",
         description: "You have successfully joined the battle.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/enhanced-battles"] });
+      
+      // Find the battle and open battle detail
+      const battle = battles?.active?.find((b: any) => b.id === battleId);
+      if (battle) {
+        setSelectedBattle(battle);
+        setShowBattleDetail(true);
+      }
     },
     onError: (error: any) => {
       toast({
@@ -125,6 +134,17 @@ export default function BattleZone() {
       <MobileNavigation />
       
       <main className="flex-1 container mx-auto px-2 md:px-4 pt-20 pb-20 md:pt-24 md:pb-6 relative z-10">
+        {/* Battle Detail View */}
+        {showBattleDetail && selectedBattle && (
+          <BattleDetail 
+            battle={selectedBattle} 
+            onBack={() => setShowBattleDetail(false)} 
+          />
+        )}
+        
+        {/* Main Battle Zone View */}
+        {!showBattleDetail && (
+          <>
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8">
           <div className="space-y-4">
@@ -355,7 +375,166 @@ export default function BattleZone() {
             </div>
           </div>
         )}
+        </>
+        )}
       </main>
+    </div>
+  );
+}
+
+// Battle Detail Component
+function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
+  const [answer, setAnswer] = useState("");
+  const [selectedOption, setSelectedOption] = useState("");
+  const { toast } = useToast();
+
+  // Demo battle question based on exam type
+  const demoQuestion = {
+    JEE: {
+      question: "A particle moves in a straight line with constant acceleration. If its velocity changes from 10 m/s to 30 m/s in 4 seconds, what is its acceleration?",
+      options: ["2.5 m/s²", "5 m/s²", "7.5 m/s²", "10 m/s²"],
+      correct: "5 m/s²"
+    },
+    NEET: {
+      question: "Which of the following is the powerhouse of the cell?",
+      options: ["Nucleus", "Mitochondria", "Ribosome", "Endoplasmic Reticulum"],
+      correct: "Mitochondria"
+    },
+    CSE: {
+      question: "What is the time complexity of binary search in a sorted array?",
+      options: ["O(n)", "O(log n)", "O(n²)", "O(1)"],
+      correct: "O(log n)"
+    }
+  };
+
+  const currentQuestion = demoQuestion[battle.examType as keyof typeof demoQuestion] || demoQuestion.JEE;
+
+  const handleSubmitAnswer = () => {
+    if (!selectedOption && !answer) {
+      toast({
+        title: "No Answer",
+        description: "Please select an option or provide an answer.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Answer Submitted!",
+      description: "Your answer has been submitted successfully.",
+    });
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-6">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onBack}
+          className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Battles
+        </Button>
+        <div className="h-6 w-px bg-gray-600"></div>
+        <div>
+          <h1 className="text-2xl font-bold text-white">{battle.title}</h1>
+          <p className="text-gray-400">{battle.examType} • {battle.subject} • {battle.type}</p>
+        </div>
+      </div>
+
+      {/* Battle Info */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="glassmorphism border border-cyan-500/30 p-4 rounded-xl">
+          <div className="flex items-center gap-2 text-cyan-400 mb-2">
+            <Users className="w-4 h-4" />
+            <span className="font-medium">Participants</span>
+          </div>
+          <p className="text-white text-xl font-bold">{battle.participants?.length || 1}</p>
+        </div>
+        
+        <div className="glassmorphism border border-purple-500/30 p-4 rounded-xl">
+          <div className="flex items-center gap-2 text-purple-400 mb-2">
+            <Clock className="w-4 h-4" />
+            <span className="font-medium">Time Remaining</span>
+          </div>
+          <p className="text-white text-xl font-bold">{battle.duration || 10} min</p>
+        </div>
+        
+        <div className="glassmorphism border border-amber-500/30 p-4 rounded-xl">
+          <div className="flex items-center gap-2 text-amber-400 mb-2">
+            <Trophy className="w-4 h-4" />
+            <span className="font-medium">Prize Pool</span>
+          </div>
+          <p className="text-white text-xl font-bold">{battle.prizePool || 50} coins</p>
+        </div>
+      </div>
+
+      {/* Question Section */}
+      <div className="glassmorphism border border-purple-500/30 p-6 rounded-xl">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center">
+            <span className="text-purple-400 font-bold">1</span>
+          </div>
+          <h2 className="text-xl font-bold text-white">Question 1</h2>
+        </div>
+        
+        <div className="mb-6">
+          <p className="text-gray-200 text-lg leading-relaxed mb-4">
+            {currentQuestion.question}
+          </p>
+          
+          {/* Multiple Choice Options */}
+          <div className="space-y-3">
+            {currentQuestion.options.map((option, index) => (
+              <button
+                key={index}
+                onClick={() => setSelectedOption(option)}
+                className={`w-full p-4 text-left rounded-lg border transition-all duration-200 ${
+                  selectedOption === option
+                    ? 'border-purple-500/50 bg-purple-500/10 text-white'
+                    : 'border-gray-600/50 bg-gray-800/30 text-gray-300 hover:border-purple-500/30 hover:bg-purple-500/5'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-4 h-4 rounded-full border-2 ${
+                    selectedOption === option
+                      ? 'border-purple-500 bg-purple-500'
+                      : 'border-gray-500'
+                  }`}>
+                    {selectedOption === option && (
+                      <div className="w-full h-full rounded-full bg-white scale-50"></div>
+                    )}
+                  </div>
+                  <span>{String.fromCharCode(65 + index)}. {option}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <div className="flex justify-end">
+          <Button
+            onClick={handleSubmitAnswer}
+            className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white px-6 py-2"
+            disabled={!selectedOption}
+          >
+            <Send className="w-4 h-4 mr-2" />
+            Submit Answer
+          </Button>
+        </div>
+      </div>
+
+      {/* Spectator Info */}
+      <div className="glassmorphism border border-gray-600/30 p-4 rounded-xl">
+        <div className="flex items-center gap-2 text-gray-400 mb-2">
+          <Eye className="w-4 h-4" />
+          <span>Battle Status: Active • {battle.spectatorCount || 0} spectators watching</span>
+        </div>
+      </div>
     </div>
   );
 }
