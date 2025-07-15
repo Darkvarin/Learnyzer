@@ -131,161 +131,148 @@ export function BattleDetail({ battle, onClose, onOpenAdvanced }: BattleDetailPr
   const participants = battle.participants || [];
 
   return (
-    <div className="space-y-6">
-      {/* Compact Header */}
-      <div className="relative bg-gradient-to-r from-cyan-900/50 via-blue-900/50 to-purple-900/50 p-4 rounded-xl border border-cyan-500/30">
-        <div className="flex justify-between items-center">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <h2 className="text-xl font-bold bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent">
-                {battle.title}
-              </h2>
-            </div>
-            <div className="flex items-center gap-3 text-xs text-gray-300">
-              <span className="flex items-center gap-1">
-                <Users className="w-3 h-3 text-cyan-400" />
-                {battle.type}
-              </span>
-              <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3 text-blue-400" />
-                {battle.duration}m
-              </span>
-              <Badge variant="outline" className="text-xs px-2 py-0 h-5">
-                {battle.examType}
-              </Badge>
-            </div>
+    <>
+      {/* Battle Header */}
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            <h2 className="text-xl font-bold bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent">
+              {battle.title}
+            </h2>
           </div>
-          <div className="flex items-center gap-2">
-            {onOpenAdvanced && (
-              <Button 
-                size="sm"
-                variant="outline" 
-                onClick={onOpenAdvanced}
-                className="bg-purple-500/20 border-purple-500/50 hover:bg-purple-500/30 text-purple-300 text-xs px-3 py-1 h-7"
-              >
-                <Zap className="w-3 h-3 mr-1" />
-                Advanced
-              </Button>
-            )}
+          <div className="flex items-center gap-3 text-xs text-gray-300">
+            <span className="flex items-center gap-1">
+              <Users className="w-3 h-3 text-cyan-400" />
+              {battle.type}
+            </span>
+            <span className="flex items-center gap-1">
+              <Clock className="w-3 h-3 text-blue-400" />
+              {battle.duration}m
+            </span>
+            <Badge variant="outline" className="text-xs px-2 py-0 h-5">
+              {battle.examType}
+            </Badge>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {onOpenAdvanced && (
             <Button 
               size="sm"
               variant="outline" 
-              onClick={onClose} 
-              className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30 text-red-300 text-xs px-3 py-1 h-7"
+              onClick={onOpenAdvanced}
+              className="bg-purple-500/20 border-purple-500/50 hover:bg-purple-500/30 text-purple-300 text-xs px-3 py-1 h-7"
             >
-              ✕
+              <Zap className="w-3 h-3 mr-1" />
+              Advanced
             </Button>
-          </div>
+          )}
+          <Button 
+            size="sm"
+            variant="outline" 
+            onClick={onClose} 
+            className="bg-red-500/20 border-red-500/50 hover:bg-red-500/30 text-red-300 text-xs px-3 py-1 h-7"
+          >
+            ✕
+          </Button>
         </div>
       </div>
-      
-      {/* Content area */}
-      <div className="space-y-4">
-        {/* Timer */}
-        {battle.status === 'in_progress' && (
-          <div className="bg-gradient-to-r from-orange-500/20 to-red-500/20 p-3 rounded-lg border border-orange-500/30 text-center">
-            <div className="flex items-center justify-center gap-2">
-              <Clock className="w-4 h-4 text-orange-400" />
-              <span className="text-orange-300 font-bold">{timeLeft || 'Calculating...'}</span>
-            </div>
+
+      {/* Timer */}
+      {battle.status === 'in_progress' && (
+        <div className="bg-gradient-to-r from-orange-500/20 to-red-500/20 p-3 rounded-lg border border-orange-500/30 text-center mb-4">
+          <div className="flex items-center justify-center gap-2">
+            <Clock className="w-4 h-4 text-orange-400" />
+            <span className="text-orange-300 font-bold">{timeLeft || 'Calculating...'}</span>
           </div>
-        )}
-        
-        {/* Main Question */}
-        <Card className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 border border-purple-500/30">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg text-purple-300 flex items-center gap-2">
-              <Target className="w-4 h-4" />
-              Question 1/{battle.questionsCount || 1}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="bg-gradient-to-r from-gray-700/50 to-gray-600/50 p-4 rounded-lg border border-gray-600/50">
-              <p className="text-white leading-relaxed">
-                Sample question for {battle.examType} - {battle.subject}
-              </p>
-            </div>
-            
-            {battle.status === 'in_progress' && !hasSubmitted && (
-              <div className="space-y-3">
-                <Textarea
-                  placeholder="Enter your answer here..."
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                  className="bg-gray-800/50 border-gray-600/50 text-white placeholder-gray-400 min-h-[100px]"
-                />
-                <Button 
-                  onClick={handleSubmitAnswer}
-                  disabled={submitAnswerMutation.isPending || !answer.trim()}
-                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-                >
-                  {submitAnswerMutation.isPending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4 mr-2" />
-                      Submit Answer
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
-            
-            {hasSubmitted && (
-              <div className="flex items-center gap-2 p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
-                <CheckCircle className="w-4 h-4 text-green-400" />
-                <span className="text-green-300 text-sm">Answer submitted successfully!</span>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-        
-        {/* Participants */}
-        <Card className="bg-gradient-to-br from-cyan-800/20 to-blue-800/20 border border-cyan-500/30">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-cyan-300 flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              Participants ({participants.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {participants.map((participant: any, index: number) => (
-                <div key={participant.id} className="bg-gray-700/50 p-2 rounded border border-gray-600/50">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="w-6 h-6 border border-cyan-500/50">
-                      <AvatarImage src={participant.avatar} />
-                      <AvatarFallback className="bg-cyan-600/50 text-cyan-100 text-xs">
-                        {participant.name?.charAt(0)?.toUpperCase() || 'W'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white text-xs font-medium truncate">
-                        {participant.name}
-                        {participant.id === user?.id && <span className="text-purple-300"> (You)</span>}
-                      </p>
-                    </div>
-                    {battle.status === 'in_progress' && (Array.isArray(submissions) ? submissions.some(s => s.userId === participant.id) : submissions?.has?.(participant.id)) && (
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                    )}
-                  </div>
-                </div>
-              ))}
-              
-              {(!battle.participants || battle.participants.length === 0) && (
-                <div className="col-span-full text-center py-4">
-                  <Users className="w-6 h-6 text-gray-500 mx-auto mb-2" />
-                  <p className="text-gray-400 text-xs">Waiting for participants...</p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        </div>
+      )}
+      
+      {/* Question */}
+      <div className="bg-gradient-to-r from-gray-700/50 to-gray-600/50 p-4 rounded-lg border border-gray-600/50 mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <Target className="w-4 h-4 text-purple-300" />
+          <span className="text-purple-300 font-medium">Question 1/{battle.questionsCount || 1}</span>
+        </div>
+        <p className="text-white leading-relaxed">
+          Sample question for {battle.examType} - {battle.subject}
+        </p>
       </div>
-    </div>
+      
+      {/* Answer Area */}
+      {battle.status === 'in_progress' && !hasSubmitted && (
+        <div className="mb-4">
+          <Textarea
+            placeholder="Enter your answer here..."
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            className="bg-gray-800/50 border-gray-600/50 text-white placeholder-gray-400 min-h-[100px] mb-3"
+          />
+          <Button 
+            onClick={handleSubmitAnswer}
+            disabled={submitAnswerMutation.isPending || !answer.trim()}
+            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+          >
+            {submitAnswerMutation.isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4 mr-2" />
+                Submit Answer
+              </>
+            )}
+          </Button>
+        </div>
+      )}
+      
+      {/* Success Message */}
+      {hasSubmitted && (
+        <div className="flex items-center gap-2 p-3 bg-green-500/20 border border-green-500/30 rounded-lg mb-4">
+          <CheckCircle className="w-4 h-4 text-green-400" />
+          <span className="text-green-300 text-sm">Answer submitted successfully!</span>
+        </div>
+      )}
+      
+      {/* Participants */}
+      <div className="bg-gradient-to-br from-cyan-800/20 to-blue-800/20 p-4 rounded-lg border border-cyan-500/30">
+        <div className="flex items-center gap-2 mb-3">
+          <Users className="w-4 h-4 text-cyan-300" />
+          <span className="text-cyan-300 font-medium">Participants ({participants.length})</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {participants.map((participant: any, index: number) => (
+            <div key={participant.id} className="bg-gray-700/50 p-2 rounded border border-gray-600/50">
+              <div className="flex items-center gap-2">
+                <Avatar className="w-6 h-6 border border-cyan-500/50">
+                  <AvatarImage src={participant.avatar} />
+                  <AvatarFallback className="bg-cyan-600/50 text-cyan-100 text-xs">
+                    {participant.name?.charAt(0)?.toUpperCase() || 'W'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <p className="text-white text-xs font-medium truncate">
+                    {participant.name}
+                    {participant.id === user?.id && <span className="text-purple-300"> (You)</span>}
+                  </p>
+                </div>
+                {battle.status === 'in_progress' && (Array.isArray(submissions) ? submissions.some(s => s.userId === participant.id) : submissions?.has?.(participant.id)) && (
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                )}
+              </div>
+            </div>
+          ))}
+          
+          {(!battle.participants || battle.participants.length === 0) && (
+            <div className="col-span-full text-center py-4">
+              <Users className="w-6 h-6 text-gray-500 mx-auto mb-2" />
+              <p className="text-gray-400 text-xs">Waiting for participants...</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
