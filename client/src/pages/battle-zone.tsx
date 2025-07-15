@@ -28,12 +28,12 @@ export default function BattleZone() {
 
   // Fetch battles
   const { data: battles, isLoading } = useQuery({
-    queryKey: ["/api/battles"],
+    queryKey: ["/api/enhanced-battles"],
   });
 
   // Create battle mutation
   const createBattleMutation = useMutation({
-    mutationFn: (data: any) => apiRequest("POST", "/api/battles", data),
+    mutationFn: (data: any) => apiRequest("POST", "/api/enhanced-battles", data),
     onSuccess: () => {
       toast({
         title: "Battle Created!",
@@ -49,7 +49,7 @@ export default function BattleZone() {
         difficulty: "intermediate",
         maxParticipants: "2"
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/battles"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/enhanced-battles"] });
     },
     onError: (error: any) => {
       toast({
@@ -62,13 +62,13 @@ export default function BattleZone() {
 
   // Join battle mutation
   const joinBattleMutation = useMutation({
-    mutationFn: (battleId: number) => apiRequest("POST", `/api/battles/${battleId}/join`),
+    mutationFn: (battleId: number) => apiRequest("POST", `/api/enhanced-battles/${battleId}/join`),
     onSuccess: () => {
       toast({
         title: "Joined Battle!",
         description: "You have successfully joined the battle.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/battles"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/enhanced-battles"] });
     },
     onError: (error: any) => {
       toast({
