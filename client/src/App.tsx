@@ -12,8 +12,7 @@ import { ScrollToTop } from "@/components/scroll-to-top";
 import { SupportChatbot } from "@/components/support-chatbot";
 
 import Dashboard from "@/pages/dashboard";
-import BattleZone from "@/pages/battle-zone";
-import BattleZoneEnhanced from "@/pages/battle-zone-enhanced";
+import BattleZone from "@/pages/battle-zone-enhanced";
 import AiTools from "@/pages/ai-tools";
 
 import NotFound from "@/pages/not-found";
@@ -55,7 +54,6 @@ function App() {
                     <Route path="/landing" component={LandingPage} />
                     <ProtectedRoute path="/dashboard" component={Dashboard} />
                     <ProtectedRoute path="/battle-zone" component={BattleZone} />
-                    <ProtectedRoute path="/battle-zone-enhanced" component={BattleZoneEnhanced} />
                     <ProtectedRoute path="/ai-tools" component={AiTools} />
                     <ProtectedRoute path="/ai-tools/study-notes" component={StudyNotesGenerator} />
                     <ProtectedRoute path="/ai-tools/answer-checker" component={AnswerChecker} />

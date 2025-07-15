@@ -306,7 +306,7 @@ export default function BattleZoneEnhanced() {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 text-cyan-400" />
@@ -361,7 +361,7 @@ export default function BattleZoneEnhanced() {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-2 relative z-50" style={{ pointerEvents: 'auto' }}>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 relative z-50" style={{ pointerEvents: 'auto' }}>
             <Button
               size="sm"
               variant="outline"
@@ -371,7 +371,7 @@ export default function BattleZoneEnhanced() {
                 console.log("View button clicked for battle:", battle.id, battle);
                 setSelectedBattle(battle);
               }}
-              className="bg-gray-500/10 border-gray-500/30 hover:bg-gray-500/20 text-gray-400 relative z-50"
+              className="bg-gray-500/10 border-gray-500/30 hover:bg-gray-500/20 text-gray-400 relative z-50 flex-1 sm:flex-initial"
               style={{ pointerEvents: 'auto' }}
             >
               <Eye className="w-4 h-4 mr-1" />
@@ -386,7 +386,7 @@ export default function BattleZoneEnhanced() {
                 console.log("Watch button clicked for battle:", battle.id);
                 spectateBattleMutation.mutate(battle.id);
               }}
-              className="bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20 text-purple-400 relative z-50"
+              className="bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20 text-purple-400 relative z-50 flex-1 sm:flex-initial"
               style={{ pointerEvents: 'auto' }}
             >
               <Eye className="w-4 h-4 mr-1" />
@@ -401,7 +401,7 @@ export default function BattleZoneEnhanced() {
                 joinBattleMutation.mutate(battle.id);
               }}
               disabled={joinBattleMutation.isPending}
-              className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 relative z-50"
+              className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 relative z-50 flex-1 sm:flex-initial"
               style={{ pointerEvents: 'auto' }}
             >
               <Sword className="w-4 h-4 mr-1" />
@@ -460,7 +460,7 @@ export default function BattleZoneEnhanced() {
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 pt-20 pb-20 md:pt-24 md:pb-6 relative z-10">
+      <main className="flex-1 container mx-auto px-2 md:px-4 pt-20 pb-20 md:pt-24 md:pb-6 relative z-10">
         {battleToShow ? (
           <BattleDetail 
             battle={battleToShow}
@@ -468,17 +468,17 @@ export default function BattleZoneEnhanced() {
           />
         ) : (
         <>
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="p-3 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 rounded-xl">
                 <Sword className="w-8 h-8 text-cyan-400" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold font-gaming bg-gradient-to-r from-cyan-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold font-gaming bg-gradient-to-r from-cyan-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
                   Battle Zone 2.0
                 </h1>
-                <p className="text-gray-300 mt-1">Enhanced competitive exam challenges with advanced features</p>
+                <p className="text-gray-300 mt-1 text-sm md:text-base">Enhanced competitive exam challenges with advanced features</p>
               </div>
             </div>
             
@@ -504,14 +504,15 @@ export default function BattleZoneEnhanced() {
           }}>
             <DialogTrigger asChild>
               <Button 
-                className="mt-4 md:mt-0 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-gaming"
+                className="mt-4 md:mt-0 bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-white font-gaming text-sm md:text-base px-3 md:px-4"
                 onClick={() => {
                   setActiveTab("create");
                   setCreateDialogOpen(true);
                 }}
               >
                 <Crown className="w-4 h-4 mr-2" />
-                Create Enhanced Battle
+                <span className="hidden sm:inline">Create Enhanced Battle</span>
+                <span className="sm:hidden">Create Battle</span>
               </Button>
             </DialogTrigger>
           </Dialog>
@@ -523,14 +524,15 @@ export default function BattleZoneEnhanced() {
           }}>
             <DialogTrigger asChild>
               <Button 
-                className="mt-4 md:mt-0 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-gaming"
+                className="mt-4 md:mt-0 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-gaming text-sm md:text-base px-3 md:px-4"
                 onClick={() => {
                   setActiveTab("demo");
                   setCreateDialogOpen(true);
                 }}
               >
                 <Bot className="w-4 h-4 mr-2" />
-                Demo Battle (Practice)
+                <span className="hidden sm:inline">Demo Battle (Practice)</span>
+                <span className="sm:hidden">Demo Battle</span>
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-background/95 backdrop-blur-sm border border-cyan-500/30">
@@ -805,22 +807,26 @@ export default function BattleZoneEnhanced() {
         </div>
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-background/40 border border-cyan-500/30 w-full justify-start mb-6 grid grid-cols-4 lg:grid-cols-4">
-            <TabsTrigger value="battles" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
-              <Sword className="h-4 w-4 mr-2" />
-              Battles
+          <TabsList className="bg-background/40 border border-cyan-500/30 w-full justify-start mb-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4">
+            <TabsTrigger value="battles" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400 text-xs md:text-sm">
+              <Sword className="h-4 w-4 mr-1 md:mr-2" />
+              <span className="hidden sm:inline">Battles</span>
+              <span className="sm:hidden">Battle</span>
             </TabsTrigger>
-            <TabsTrigger value="tournaments" className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400">
-              <Trophy className="h-4 w-4 mr-2" />
-              Tournaments
+            <TabsTrigger value="tournaments" className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400 text-xs md:text-sm">
+              <Trophy className="h-4 w-4 mr-1 md:mr-2" />
+              <span className="hidden sm:inline">Tournaments</span>
+              <span className="sm:hidden">Tours</span>
             </TabsTrigger>
-            <TabsTrigger value="powerups" className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-400">
-              <Zap className="h-4 w-4 mr-2" />
-              Power-ups
+            <TabsTrigger value="powerups" className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-400 text-xs md:text-sm">
+              <Zap className="h-4 w-4 mr-1 md:mr-2" />
+              <span className="hidden sm:inline">Power-ups</span>
+              <span className="sm:hidden">Power</span>
             </TabsTrigger>
-            <TabsTrigger value="history" className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400">
-              <History className="h-4 w-4 mr-2" />
-              History
+            <TabsTrigger value="history" className="data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-400 text-xs md:text-sm">
+              <History className="h-4 w-4 mr-1 md:mr-2" />
+              <span className="hidden sm:inline">History</span>
+              <span className="sm:hidden">Hist</span>
             </TabsTrigger>
           </TabsList>
           
@@ -840,7 +846,7 @@ export default function BattleZoneEnhanced() {
                     ))}
                   </div>
                 ) : battlesData?.active && battlesData.active.length > 0 ? (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                     {battlesData.active.map((battle) => (
                       <BattleCard key={battle.id} battle={battle} />
                     ))}
@@ -863,7 +869,7 @@ export default function BattleZoneEnhanced() {
                     <Calendar className="w-5 h-5" />
                     Scheduled Battles
                   </h3>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                     {battlesData.upcoming.map((battle) => (
                       <BattleCard key={battle.id} battle={battle} />
                     ))}

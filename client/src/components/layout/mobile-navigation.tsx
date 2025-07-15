@@ -24,8 +24,8 @@ export function MobileNavigation() {
           label="Dashboard"
         />
         <MobileNavLink 
-          href="/battle-zone-enhanced" 
-          isActive={location === '/battle-zone-enhanced'}
+          href="/battle-zone" 
+          isActive={location === '/battle-zone'}
           icon={<Sword className="h-5 w-5" />} 
           label="Battle"
         />

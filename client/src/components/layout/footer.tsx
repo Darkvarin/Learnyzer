@@ -57,7 +57,7 @@ export function Footer() {
               </li>
               <li>
                 <Link 
-                  href="/battle-zone-enhanced" 
+                  href="/battle-zone" 
                   className="text-muted-foreground hover:text-primary transition-colors text-sm block"
                   onClick={(e) => {
                     e.stopPropagation();

@@ -152,7 +152,7 @@ export function Header() {
                   Dashboard
                 </NavLink>
                 <NavLink 
-                  href="/battle-zone-enhanced" 
+                  href="/battle-zone" 
                   active={activeLink === "battle-zone"}
                   setActive={() => setActiveLink("battle-zone")}
                 >

@@ -60,11 +60,11 @@ export function BattleZoneSection() {
             textShadow: "0 0 10px rgba(139, 92, 246, 0.3)"
           }}>Battle Zone</h2>
           <div className="flex gap-2">
-            <Link href="/battle-zone-enhanced" className="text-purple-500 hover:text-purple-400 transition-colors duration-300 text-sm flex items-center group">
+            <Link href="/battle-zone" className="text-purple-500 hover:text-purple-400 transition-colors duration-300 text-sm flex items-center group">
               Classic Battles
               <span className="ml-1 transform group-hover:translate-x-1 transition-transform duration-300">→</span>
             </Link>
-            <Link href="/battle-zone-enhanced" className="text-orange-500 hover:text-orange-400 transition-colors duration-300 text-sm flex items-center group font-semibold">
+            <Link href="/battle-zone" className="text-orange-500 hover:text-orange-400 transition-colors duration-300 text-sm flex items-center group font-semibold">
               Enhanced 2.0
               <span className="ml-1 transform group-hover:translate-x-1 transition-transform duration-300">🚀</span>
             </Link>
@@ -250,7 +250,7 @@ export function BattleZoneSection() {
                 </div>
                 <p className="text-purple-400/90 font-gaming mb-2">No active battles right now</p>
                 <p className="text-sm text-gray-400 max-w-md mb-6">Start a new battle or check back later for active battles</p>
-                <Link href="/battle-zone-enhanced">
+                <Link href="/battle-zone">
                   <Button className="bg-background/80 hover:bg-purple-950/80 border border-purple-500/40 hover:border-purple-400/60 text-purple-400 hover:text-purple-300 transition-all duration-300 group">
                     <span>Create Battle</span>
                     <span className="ml-2 transform group-hover:translate-x-1 transition-transform duration-300">→</span>
