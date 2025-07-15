@@ -12,7 +12,7 @@ import { ScrollToTop } from "@/components/scroll-to-top";
 import { SupportChatbot } from "@/components/support-chatbot";
 
 import Dashboard from "@/pages/dashboard";
-import BattleZone from "@/pages/battle-zone-enhanced";
+import BattleZone from "@/pages/battle-zone";
 import AiTools from "@/pages/ai-tools";
 
 import NotFound from "@/pages/not-found";
