@@ -511,17 +511,15 @@ export default function BattleZoneEnhanced() {
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-2 md:px-4 pt-20 pb-20 md:pt-24 md:pb-6 relative z-10">
-        {battleToShow ? (
-          <>
-            {console.log('Passing battle to BattleDetail:', battleToShow)}
-            <BattleDetail 
-              battle={battleToShow}
-              onClose={handleCloseBattleDetail}
-            />
-          </>
-        ) : (
-        <>
+      {battleToShow ? (
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 pt-20 px-4 overflow-y-auto">
+          <BattleDetail 
+            battle={battleToShow}
+            onClose={handleCloseBattleDetail}
+          />
+        </div>
+      ) : (
+        <main className="flex-1 container mx-auto px-2 md:px-4 pt-20 pb-20 md:pt-24 md:pb-6 relative z-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -976,9 +974,8 @@ export default function BattleZoneEnhanced() {
             )}
           </TabsContent>
         </Tabs>
-        </>
-        )}
-      </main>
+        </main>
+      )}
       
       {/* Battle Interface Modal */}
       {selectedBattle && (
