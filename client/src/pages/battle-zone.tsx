@@ -23,10 +23,17 @@ export default function BattleZone() {
     type: "1v1",
     examType: "JEE",
     subject: "",
+    numQuestions: "5",
     duration: "10",
     difficulty: "intermediate",
     maxParticipants: "2"
   });
+
+  // Auto-calculate duration based on number of questions
+  const calculateDuration = (numQuestions: string) => {
+    const questions = parseInt(numQuestions);
+    return (questions * 2).toString(); // 2 minutes per question
+  };
 
   // Fetch battles
   const { data: battles, isLoading } = useQuery({
@@ -47,6 +54,7 @@ export default function BattleZone() {
         type: "1v1",
         examType: "JEE",
         subject: "",
+        numQuestions: "5",
         duration: "10",
         difficulty: "intermediate",
         maxParticipants: "2"
@@ -91,6 +99,7 @@ export default function BattleZone() {
   const handleCreateBattle = () => {
     createBattleMutation.mutate({
       ...battleForm,
+      numQuestions: parseInt(battleForm.numQuestions),
       duration: parseInt(battleForm.duration),
       maxParticipants: parseInt(battleForm.maxParticipants),
       entryFee: 25,
@@ -168,12 +177,12 @@ export default function BattleZone() {
                 Create Battle
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-md glassmorphism border-cyan-500/30">
+            <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto glassmorphism border-cyan-500/30">
               <DialogHeader>
                 <DialogTitle className="text-cyan-400">Create New Battle</DialogTitle>
               </DialogHeader>
               
-              <div className="space-y-4">
+              <div className="space-y-4 pr-2">
                 <div>
                   <label className="text-sm font-medium text-gray-300">Title</label>
                   <Input
@@ -230,18 +239,29 @@ export default function BattleZone() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-300">Duration</label>
-                  <Select value={battleForm.duration} onValueChange={(value) => setBattleForm({...battleForm, duration: value})}>
+                  <label className="text-sm font-medium text-gray-300">Number of Questions</label>
+                  <Select value={battleForm.numQuestions} onValueChange={(value) => {
+                    const duration = calculateDuration(value);
+                    setBattleForm({...battleForm, numQuestions: value, duration});
+                  }}>
                     <SelectTrigger className="bg-gray-800/50 border-gray-600/50 text-white">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="5">5 minutes</SelectItem>
-                      <SelectItem value="10">10 minutes</SelectItem>
-                      <SelectItem value="15">15 minutes</SelectItem>
-                      <SelectItem value="30">30 minutes</SelectItem>
+                      <SelectItem value="3">3 questions</SelectItem>
+                      <SelectItem value="5">5 questions</SelectItem>
+                      <SelectItem value="10">10 questions</SelectItem>
+                      <SelectItem value="15">15 questions</SelectItem>
+                      <SelectItem value="20">20 questions</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-gray-300">Duration (Auto-calculated)</label>
+                  <div className="bg-gray-800/50 border border-gray-600/50 rounded-md px-3 py-2 text-gray-400 text-sm">
+                    {calculateDuration(battleForm.numQuestions)} minutes (2 min per question)
+                  </div>
                 </div>
 
                 <div>

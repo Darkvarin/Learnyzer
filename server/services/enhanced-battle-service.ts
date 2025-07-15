@@ -184,7 +184,7 @@ export class EnhancedBattleService {
         battleData.examType,
         battleData.subject,
         battleData.difficulty,
-        battleData.questionsCount || 5
+        battleData.numQuestions || battleData.questionsCount || 5
       );
 
       return battle;
