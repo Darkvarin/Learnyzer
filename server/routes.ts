@@ -1559,6 +1559,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get demo battles - MUST be before the parameterized route
+  app.get("/api/enhanced-battles/demo", async (req, res) => {
+    console.log("Registering route: GET /api/enhanced-battles/demo");
+    try {
+      const demoBattles = await enhancedBattleService.getDemoBattles();
+      res.json(demoBattles);
+    } catch (error) {
+      console.error("Error fetching demo battles:", error);
+      res.status(500).json({ error: "Failed to fetch demo battles" });
+    }
+  });
+
   // Get enhanced battle details
   app.get("/api/enhanced-battles/:battleId", async (req, res) => {
     console.log("Registering route: GET /api/enhanced-battles/:battleId");

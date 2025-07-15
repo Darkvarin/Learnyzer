@@ -1,5 +1,5 @@
 import { db } from '@db';
-import { battles, battleQuestions, battleSpectators, powerUps, userPowerUps } from '@shared/schema';
+import { battles, battleQuestions, battleSpectators, powerUps, userPowerUps, battleParticipants, users } from '@shared/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
 import OpenAI from 'openai';
 
@@ -12,44 +12,53 @@ export class EnhancedBattleService {
   // Get enhanced battle details with participants and spectators
   async getBattleDetails(battleId: number, userId?: number) {
     try {
+      // First get basic battle info
       const battle = await db.query.battles.findFirst({
-        where: eq(battles.id, battleId),
-        with: {
-          participants: {
-            with: {
-              user: {
-                columns: {
-                  id: true,
-                  name: true,
-                  profileImage: true,
-                  level: true,
-                  rank: true,
-                  rankPoints: true,
-                }
-              }
-            }
-          }
-        }
+        where: eq(battles.id, battleId)
       });
 
       if (!battle) {
         throw new Error('Battle not found');
       }
 
+      // Get participants separately to avoid relation issues
+      const participantsData = await db
+        .select({
+          id: battleParticipants.id,
+          userId: battleParticipants.userId,
+          team: battleParticipants.team,
+          score: battleParticipants.score,
+          submission: battleParticipants.submission,
+          userName: users.name,
+          userProfileImage: users.profileImage
+        })
+        .from(battleParticipants)
+        .leftJoin(users, eq(battleParticipants.userId, users.id))
+        .where(eq(battleParticipants.battleId, battleId));
+
+      // Format participants for frontend
+      const participants = participantsData.map(p => ({
+        id: p.userId,
+        name: p.userName,
+        avatar: p.userProfileImage,
+        team: p.team,
+        score: p.score,
+        submission: p.submission
+      }));
+
       // Get spectator count
-      const spectatorCount = await db
+      const spectatorCountResult = await db
         .select({ count: sql<number>`count(*)` })
         .from(battleSpectators)
         .where(eq(battleSpectators.battleId, battleId));
 
       // Get battle questions
       const questions = await db.query.battleQuestions.findMany({
-        where: eq(battleQuestions.battleId, battleId),
-        orderBy: [battleQuestions.order]
+        where: eq(battleQuestions.battleId, battleId)
       });
 
       // Check if user is a participant
-      const isParticipant = userId ? battle.participants?.some(p => p.userId === userId) : false;
+      const isParticipant = userId ? participantsData.some(p => p.userId === userId) : false;
 
       // Check if user is a spectator
       const isSpectator = userId ? await db.query.battleSpectators.findFirst({
@@ -61,7 +70,8 @@ export class EnhancedBattleService {
 
       return {
         ...battle,
-        spectatorCount: spectatorCount[0]?.count || 0,
+        participants,
+        spectatorCount: spectatorCountResult[0]?.count || 0,
         questions,
         isParticipant,
         isSpectator: !!isSpectator,
@@ -75,21 +85,7 @@ export class EnhancedBattleService {
         maxParticipants: battle.maxParticipants || 8,
         battleMode: battle.battleMode || 'Standard',
         spectatorMode: true,
-        questionsCount: questions.length || 5,
-        participants: battle.participants?.map(p => ({
-          id: p.user.id,
-          name: p.user.name,
-          profileImage: p.user.profileImage,
-          team: p.team,
-          score: p.score,
-          status: p.status,
-          powerUps: [], // Will be populated from userPowerUps
-          rank: p.user.rank,
-          accuracy: p.accuracy,
-          streak: p.streak,
-          level: p.user.level,
-          rankPoints: p.user.rankPoints,
-        })) || []
+        questionsCount: questions.length || 1
       };
     } catch (error) {
       console.error('Error getting battle details:', error);
