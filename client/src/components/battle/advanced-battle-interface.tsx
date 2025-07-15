@@ -373,8 +373,8 @@ export function AdvancedBattleInterface({ battle, onClose }: AdvancedBattleProps
   };
   
   return (
-    <div className="fixed inset-0 bg-black/95 backdrop-blur-lg z-50 flex items-center justify-center p-2">
-      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-2 border-cyan-500/40 rounded-3xl w-full max-w-7xl max-h-[98vh] overflow-hidden shadow-2xl shadow-cyan-500/20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <div className="w-full max-w-7xl mx-auto p-4">
         
         {/* Battle Header */}
         <div className="relative bg-gradient-to-r from-cyan-900/60 via-blue-900/60 to-purple-900/60 p-6 border-b border-cyan-500/30">
