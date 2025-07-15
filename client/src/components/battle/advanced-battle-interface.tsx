@@ -373,7 +373,7 @@ export function AdvancedBattleInterface({ battle, onClose }: AdvancedBattleProps
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 pt-20">
       <div className="w-full max-w-7xl mx-auto p-4">
         
         {/* Battle Header */}

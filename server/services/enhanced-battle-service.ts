@@ -60,13 +60,15 @@ export class EnhancedBattleService {
       // Check if user is a participant
       const isParticipant = userId ? participantsData.some(p => p.userId === userId) : false;
 
-      // Check if user is a spectator
-      const isSpectator = userId ? await db.query.battleSpectators.findFirst({
-        where: and(
+      // Check if user is a spectator - simplified query without leftAt reference
+      const isSpectator = userId ? await db
+        .select({ id: battleSpectators.id })
+        .from(battleSpectators)
+        .where(and(
           eq(battleSpectators.battleId, battleId),
           eq(battleSpectators.userId, userId)
-        )
-      }) : false;
+        ))
+        .limit(1) : [];
 
       return {
         ...battle,
@@ -74,7 +76,7 @@ export class EnhancedBattleService {
         spectatorCount: spectatorCountResult[0]?.count || 0,
         questions,
         isParticipant,
-        isSpectator: !!isSpectator,
+        isSpectator: Array.isArray(isSpectator) ? isSpectator.length > 0 : !!isSpectator,
         // Enhanced battle properties
         format: battle.type,
         difficulty: battle.difficulty || 'Medium',
