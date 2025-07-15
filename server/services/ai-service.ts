@@ -2512,5 +2512,76 @@ Focus on visual clarity and educational value.`;
       console.error("Error generating AI insight:", error);
       res.status(500).json({ message: "Failed to generate AI insight" });
     }
+  },
+
+  /**
+   * Generate comprehensive battle insights for all questions
+   */
+  async generateBattleInsights(req: Request, res: Response) {
+    try {
+      const { questionsAndAnswers, examType, totalScore, totalQuestions } = req.body;
+      
+      if (!questionsAndAnswers || !Array.isArray(questionsAndAnswers)) {
+        return res.status(400).json({ message: "Questions and answers array is required" });
+      }
+
+      const user = req.user as any;
+      const percentage = Math.round((totalScore / (totalQuestions * 10)) * 100);
+      
+      // Analyze performance patterns
+      const correctAnswers = questionsAndAnswers.filter(qa => qa.isCorrect).length;
+      const incorrectAnswers = questionsAndAnswers.filter(qa => !qa.isCorrect).length;
+      
+      // Build comprehensive insight prompt
+      const prompt = `
+        You are an expert AI tutor providing comprehensive analysis for ${examType || 'competitive exam'} preparation.
+        
+        BATTLE PERFORMANCE ANALYSIS:
+        - Total Questions: ${totalQuestions}
+        - Correct Answers: ${correctAnswers}
+        - Incorrect Answers: ${incorrectAnswers}
+        - Score: ${totalScore}/${totalQuestions * 10} points (${percentage}%)
+        - Exam Type: ${examType}
+        
+        DETAILED QUESTION ANALYSIS:
+        ${questionsAndAnswers.map((qa, index) => `
+        Question ${index + 1}: ${qa.question}
+        Student Answer: ${qa.userAnswer}
+        Correct Answer: ${qa.correctAnswer}
+        Result: ${qa.isCorrect ? 'CORRECT ✓' : 'INCORRECT ✗'}
+        `).join('\n')}
+        
+        Provide a comprehensive, encouraging analysis that includes:
+        
+        1. **Overall Performance Summary**: Congratulate strengths and acknowledge areas for improvement
+        2. **Key Learning Points**: Extract 3-4 main concepts from the questions that are crucial for ${examType}
+        3. **Mistake Pattern Analysis**: If there were incorrect answers, identify common themes or knowledge gaps
+        4. **Study Recommendations**: Specific topics to focus on based on performance
+        5. **Motivation & Next Steps**: Encouraging message with actionable next steps
+        
+        Keep it educational, personalized, and exam-focused. Limit to 250 words maximum.
+        Make it sound like a caring tutor who wants to help the student succeed.
+      `;
+
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { 
+            role: "system", 
+            content: `You are an expert ${examType} preparation tutor who provides comprehensive, encouraging performance analysis to help students improve their exam preparation.` 
+          },
+          { role: "user", content: prompt }
+        ],
+        max_tokens: 400,
+        temperature: 0.6
+      });
+
+      const insight = completion.choices[0].message.content?.trim() || "Great effort completing this battle! Continue practicing to improve your performance.";
+
+      res.json({ insight });
+    } catch (error) {
+      console.error("Error generating battle insights:", error);
+      res.status(500).json({ message: "Failed to generate comprehensive insights" });
+    }
   }
 };

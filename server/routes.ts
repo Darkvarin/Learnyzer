@@ -164,6 +164,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/ai/tools/flashcards", requireAuth, aiService.generateFlashcards);
   app.post("/api/ai/tools/generate-pdf", requireAuth, PDFService.generatePDFFromNotes);
   app.post("/api/ai/answer-insight", requireAuth, aiService.generateAnswerInsight);
+  app.post("/api/ai/battle-insights", requireAuth, aiService.generateBattleInsights);
   
   // Diagram-heavy PDF generation endpoint
   app.post("/api/ai/tools/generate-diagram-pdf", requireAuth, async (req, res) => {

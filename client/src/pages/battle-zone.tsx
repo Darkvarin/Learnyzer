@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
-import { Sword, Plus, Users, Clock, Target, Trophy, Flame, ArrowLeft, Send, Eye, CheckCircle, XCircle, RotateCcw } from "lucide-react";
+import { Sword, Plus, Users, Clock, Target, Trophy, Flame, ArrowLeft, Send, Eye, CheckCircle, XCircle, RotateCcw, Brain } from "lucide-react";
 
 export default function BattleZone() {
   const { toast } = useToast();
@@ -534,22 +534,6 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
     setSubmitted(true);
     setScore(prev => prev + points);
     setAnswers(prev => [...prev, selectedOption]);
-    
-    // Get AI insight
-    setLoadingInsight(true);
-    try {
-      const response = await apiRequest("POST", "/api/ai/answer-insight", {
-        question: currentQuestion.question,
-        userAnswer: selectedOption,
-        correctAnswer: currentQuestion.correct,
-        explanation: currentQuestion.explanation,
-        examType: battle.examType
-      });
-      setAiInsight(response.insight);
-    } catch (error) {
-      setAiInsight("Unable to generate AI insight at this time.");
-    }
-    setLoadingInsight(false);
 
     toast({
       title: isCorrect ? "Correct!" : "Incorrect!",
@@ -566,14 +550,40 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
         setCurrentQuestionIndex(prev => prev + 1);
         setSelectedOption("");
         setSubmitted(false);
-        setAiInsight("");
       } else {
-        // Show final results
+        // Show final results and generate AI insights for all questions
         setShowResults(true);
-        // Award coins and XP
+        generateAllInsights();
         awardRewards();
       }
-    }, 3000);
+    }, 2000); // Reduced time since no AI insight loading
+  };
+
+  const generateAllInsights = async () => {
+    setLoadingInsight(true);
+    try {
+      // Prepare all questions and answers for comprehensive insight
+      const questionsAndAnswers = questionSet.map((question, index) => ({
+        question: question.question,
+        userAnswer: answers[index] || "No answer provided",
+        correctAnswer: question.correct,
+        explanation: question.explanation,
+        isCorrect: answers[index] === question.correct
+      }));
+
+      const response = await apiRequest("POST", "/api/ai/battle-insights", {
+        questionsAndAnswers,
+        examType: battle.examType,
+        totalScore: score,
+        totalQuestions: totalQuestions
+      });
+      
+      setAiInsight(response.insight);
+    } catch (error) {
+      console.error("Error generating insights:", error);
+      setAiInsight("Unable to generate comprehensive insights at this time. Great effort completing the battle!");
+    }
+    setLoadingInsight(false);
   };
 
   const awardRewards = async () => {
@@ -677,6 +687,29 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
               Practice Again
             </Button>
           </div>
+        </div>
+
+        {/* AI Insights Section */}
+        <div className="glassmorphism border border-cyan-500/30 p-6 rounded-xl mb-6">
+          <div className="flex items-center gap-2 text-cyan-400 mb-4">
+            <Brain className="w-5 h-5" />
+            <h3 className="text-lg font-semibold">AI Performance Analysis</h3>
+          </div>
+          
+          {loadingInsight ? (
+            <div className="flex items-center gap-3 text-gray-300">
+              <div className="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+              <span>Analyzing your performance...</span>
+            </div>
+          ) : aiInsight ? (
+            <div className="bg-gray-800/50 border border-gray-600/30 rounded-lg p-4">
+              <p className="text-gray-200 leading-relaxed whitespace-pre-line">{aiInsight}</p>
+            </div>
+          ) : (
+            <div className="bg-gray-800/50 border border-gray-600/30 rounded-lg p-4">
+              <p className="text-gray-400">AI insights will appear here after your battle is complete.</p>
+            </div>
+          )}
         </div>
 
         {/* Battle Summary */}
