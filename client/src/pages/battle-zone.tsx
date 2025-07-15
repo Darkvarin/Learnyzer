@@ -164,7 +164,7 @@ export default function BattleZone() {
       <Header />
       <MobileNavigation />
       
-      <main className="flex-1 container mx-auto px-4 pt-20 pb-20 md:pt-24 md:pb-6 relative z-10">
+      <main className="flex-1 container mx-auto px-2 sm:px-4 pt-20 pb-20 md:pt-24 md:pb-6 relative z-10">
         {selectedBattle && battleDetail ? (
           <BattleDetail 
             battle={battleDetail}
@@ -172,26 +172,27 @@ export default function BattleZone() {
           />
         ) : (
           <>
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
               <div>
-                <h1 className="text-3xl font-bold font-gaming relative inline-block" style={{
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold font-gaming relative inline-block" style={{
                   textShadow: "0 0 10px rgba(6, 182, 212, 0.3), 0 0 15px rgba(125, 39, 255, 0.2)"
                 }}>
                   Exam Battle Arena
                   {/* Solo Leveling underline effect */}
                   <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent"></span>
                 </h1>
-                <p className="text-gray-300 mt-2 pl-1 flex items-center">
-                  <Sword className="w-4 h-4 text-cyan-500 mr-2" />
+                <p className="text-gray-300 mt-2 pl-1 flex items-center text-xs sm:text-sm">
+                  <Sword className="w-3 h-3 sm:w-4 sm:h-4 text-cyan-500 mr-2" />
                   Compete with other entrance exam aspirants to test your knowledge and earn rewards
                 </p>
               </div>
           
               <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="mt-4 md:mt-0 bg-gradient-to-r from-warning-600 to-danger-600 hover:from-warning-500 hover:to-danger-500">
-                    <Sword className="w-4 h-4 mr-2" />
-                    Create Exam Challenge
+                  <Button className="w-full sm:w-auto bg-gradient-to-r from-warning-600 to-danger-600 hover:from-warning-500 hover:to-danger-500 text-xs sm:text-sm">
+                    <Sword className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                    <span className="hidden sm:inline">Create Exam Challenge</span>
+                    <span className="sm:hidden">Create Challenge</span>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="!fixed !top-1/2 !left-1/2 !transform !-translate-x-1/2 !-translate-y-1/2 bg-background/90 backdrop-blur-sm border border-cyan-500/30 shadow-glow overflow-hidden max-w-md w-full mx-auto max-h-[90vh] overflow-y-auto p-4 sm:p-6">
@@ -286,18 +287,21 @@ export default function BattleZone() {
             </div>
             
             <Tabs defaultValue="active" className="w-full">
-              <TabsList className="bg-background/40 border border-cyan-500/30 w-full justify-start mb-6">
-                <TabsTrigger value="active" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
-                  <Sword className="h-4 w-4 mr-2" />
-                  Live Competitions
+              <TabsList className="bg-background/40 border border-cyan-500/30 w-full grid grid-cols-3 mb-6">
+                <TabsTrigger value="active" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400 text-xs sm:text-sm">
+                  <Sword className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Live Competitions</span>
+                  <span className="sm:hidden">Live</span>
                 </TabsTrigger>
-                <TabsTrigger value="upcoming" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Scheduled Tests
+                <TabsTrigger value="upcoming" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400 text-xs sm:text-sm">
+                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Scheduled Tests</span>
+                  <span className="sm:hidden">Scheduled</span>
                 </TabsTrigger>
-                <TabsTrigger value="past" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400">
-                  <History className="h-4 w-4 mr-2" />
-                  Previous Exams
+                <TabsTrigger value="past" className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-400 text-xs sm:text-sm">
+                  <History className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Previous Exams</span>
+                  <span className="sm:hidden">Previous</span>
                 </TabsTrigger>
               </TabsList>
               
@@ -335,7 +339,7 @@ export default function BattleZone() {
                   ))
                 ) : battles?.active && battles.active.length > 0 ? (
                   battles.active.map((battle) => (
-                    <div key={battle.id} className="battle-card glassmorphism rounded-lg p-4 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                    <div key={battle.id} className="battle-card glassmorphism rounded-lg p-3 sm:p-4 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
                       {/* Cyberpunk corner decorations with subtle Solo Leveling influence */}
                       <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-purple-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
                       <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-purple-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
@@ -346,10 +350,10 @@ export default function BattleZone() {
                       {/* Battle energy pulse - only visible on hover */}
                       <div className="absolute -right-10 top-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-purple-500/10 filter blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-                        <div>
-                          <div className="flex items-center space-x-3">
-                            <div className={`w-12 h-12 relative flex items-center justify-center`}>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 relative z-10">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 sm:space-x-3">
+                            <div className={`w-10 h-10 sm:w-12 sm:h-12 relative flex items-center justify-center`}>
                               {/* Solo Leveling hexagon clip frame */}
                               <div className="absolute inset-0 hex-clip-sm overflow-hidden">
                                 <div className={`w-full h-full bg-gradient-to-br ${
@@ -363,21 +367,21 @@ export default function BattleZone() {
                                   </div>
                                 </div>
                               </div>
-                              <Sword className="h-5 w-5 text-white relative z-10" />
+                              <Sword className="h-4 w-4 sm:h-5 sm:w-5 text-white relative z-10" />
                             </div>
-                            <div>
-                              <h3 className="font-bold font-gaming text-white">{battle.title}</h3>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-bold font-gaming text-white text-sm sm:text-base truncate">{battle.title}</h3>
                               <p className="text-xs text-cyan-400/80">{battle.type} · {battle.duration} mins · AI Judged</p>
                             </div>
                           </div>
                         </div>
                         
-                        <div className="flex items-center">
-                          <div className="bg-background/50 border-l border-t border-b border-cyan-500/30 px-3 py-2 rounded-l-md text-center">
+                        <div className="flex items-center w-full sm:w-auto">
+                          <div className="bg-background/50 border-l border-t border-b border-cyan-500/30 px-2 sm:px-3 py-2 rounded-l-md text-center flex-1 sm:flex-none">
                             <span className="text-xs text-cyan-400/70">Rewards</span>
-                            <div className="flex items-center space-x-1 mt-1">
-                              <span className="text-primary font-bold">{battle.rewardPoints}</span>
-                              <span className="text-primary">RP</span>
+                            <div className="flex items-center justify-center space-x-1 mt-1">
+                              <span className="text-primary font-bold text-sm">{battle.rewardPoints}</span>
+                              <span className="text-primary text-xs">RP</span>
                             </div>
                           </div>
                           <Button 
@@ -385,7 +389,7 @@ export default function BattleZone() {
                               battle.type.includes('1v1') 
                                 ? 'bg-gradient-to-r from-cyan-600/80 to-primary/80 hover:from-cyan-600/90 hover:to-primary/90' 
                                 : 'bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90'
-                            } text-white font-bold py-2 px-4 rounded-r-md transition-all duration-300 h-full shadow-glow`}
+                            } text-white font-bold py-2 px-3 sm:px-4 rounded-r-md transition-all duration-300 h-full shadow-glow flex-1 sm:flex-none text-xs sm:text-sm`}
                             onClick={() => handleJoinBattle(battle.id)}
                             disabled={joinBattleMutation.isPending}
                           >
@@ -394,18 +398,18 @@ export default function BattleZone() {
                         </div>
                       </div>
                       
-                      <div className="mt-4 pt-4 border-t border-cyan-500/20 relative">
+                      <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-cyan-500/20 relative">
                         {/* Solo Leveling energy line */}
                         <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/70 to-transparent"></div>
                         
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center space-x-3">
-                            <div className="flex -space-x-2">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
+                          <div className="flex items-center space-x-2 sm:space-x-3">
+                            <div className="flex -space-x-1 sm:-space-x-2">
                               {battle.participants && battle.participants.length > 0 ? (
                                 battle.participants.map((participant, idx) => (
                                   <div 
                                     key={idx}
-                                    className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface flex items-center justify-center text-xs"
+                                    className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-dark-card border border-dark-surface flex items-center justify-center text-xs"
                                     title={participant.name || `Player ${idx + 1}`}
                                   >
                                     {participant.profileImage ? (
@@ -415,19 +419,19 @@ export default function BattleZone() {
                                         className="w-full h-full rounded-full object-cover"
                                       />
                                     ) : (
-                                      <span>{(participant.name || 'P').charAt(0)}</span>
+                                      <span className="text-xs">{(participant.name || 'P').charAt(0)}</span>
                                     )}
                                   </div>
                                 ))
                               ) : (
-                                <div className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface" />
+                                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-dark-card border border-dark-surface" />
                               )}
                             </div>
                             <span className="text-xs text-gray-400">
                               {battle.participants && battle.participants.length || 0} players waiting
                             </span>
                           </div>
-                          <div className="flex items-center space-x-3">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 gap-2 sm:gap-0">
                             <div className="text-xs text-gray-400">
                               <span>Topics: </span>
                               <span className="text-white">{battle.topics ? Array.isArray(battle.topics) ? 
@@ -437,7 +441,7 @@ export default function BattleZone() {
                             <Button 
                               size="sm" 
                               variant="outline" 
-                              className="bg-background/40 border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-cyan-400"
+                              className="bg-background/40 border-cyan-500/30 hover:bg-cyan-500/10 hover:border-cyan-500/50 text-cyan-400 w-full sm:w-auto text-xs"
                               onClick={() => handleViewBattle(battle)}
                             >
                               <Eye className="h-3 w-3 mr-1" />
@@ -449,15 +453,15 @@ export default function BattleZone() {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-12 text-gray-400">
+                  <div className="text-center py-8 sm:py-12 text-gray-400">
                     <div className="flex justify-center mb-3">
-                      <Sword className="h-12 w-12 opacity-50" />
+                      <Sword className="h-8 w-8 sm:h-12 sm:w-12 opacity-50" />
                     </div>
-                    <p className="text-lg mb-2">No active battles right now</p>
+                    <p className="text-base sm:text-lg mb-2">No active battles right now</p>
                     <p className="text-sm mb-4">Create a battle and invite others to join!</p>
                     <Button 
                       onClick={() => setCreateDialogOpen(true)}
-                      className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 border border-cyan-500/30 shadow-glow"
+                      className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 border border-cyan-500/30 shadow-glow text-sm"
                     >
                       <Sword className="h-4 w-4 mr-2" />
                       Create Your First Battle
@@ -474,7 +478,7 @@ export default function BattleZone() {
                   </div>
                 ) : battles?.upcoming && battles.upcoming.length > 0 ? (
                   battles.upcoming.map((battle) => (
-                    <div key={battle.id} className="battle-card glassmorphism rounded-lg p-4 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                    <div key={battle.id} className="battle-card glassmorphism rounded-lg p-3 sm:p-4 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
                       {/* Cyberpunk corner decorations with subtle Solo Leveling influence */}
                       <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-amber-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
                       <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-amber-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
@@ -482,25 +486,25 @@ export default function BattleZone() {
                       {/* Subtle calendar reminder glow */}
                       <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/5 via-transparent to-warning-500/5 opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
                       
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-                        <div>
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 relative flex items-center justify-center">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 relative z-10">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 sm:space-x-3">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 relative flex items-center justify-center">
                               {/* Calendar icon with cyberpunk styling */}
                               <div className="absolute inset-0 rounded-md border border-amber-500/40 bg-gradient-to-br from-transparent to-amber-900/20 overflow-hidden flex items-center justify-center"></div>
-                              <Calendar className="h-5 w-5 text-amber-400 relative z-10" />
+                              <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-amber-400 relative z-10" />
                             </div>
-                            <div>
-                              <h3 className="font-bold font-gaming text-white">{battle.title}</h3>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-bold font-gaming text-white text-sm sm:text-base truncate">{battle.title}</h3>
                               <p className="text-xs text-amber-400/80">{battle.type} · {battle.duration} mins · Starts in {battle.startsIn}</p>
                             </div>
                           </div>
                         </div>
                         
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 w-full sm:w-auto">
                           <Button 
                             variant="outline" 
-                            className="bg-background/40 border-amber-500/30 hover:bg-amber-500/10 hover:border-amber-500/50 text-amber-400 text-sm"
+                            className="bg-background/40 border-amber-500/30 hover:bg-amber-500/10 hover:border-amber-500/50 text-amber-400 text-xs sm:text-sm w-full sm:w-auto"
                             onClick={() => handleViewBattle(battle)}
                           >
                             <Eye className="h-3 w-3 mr-1" />
@@ -509,15 +513,15 @@ export default function BattleZone() {
                         </div>
                       </div>
                       
-                      <div className="mt-4 border-t border-dark-border pt-4">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center space-x-3">
-                            <div className="flex -space-x-2">
+                      <div className="mt-3 sm:mt-4 border-t border-dark-border pt-3 sm:pt-4">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
+                          <div className="flex items-center space-x-2 sm:space-x-3">
+                            <div className="flex -space-x-1 sm:-space-x-2">
                               {battle.participants && battle.participants.length > 0 ? (
                                 battle.participants.map((participant, idx) => (
                                   <div 
                                     key={idx}
-                                    className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface flex items-center justify-center text-xs"
+                                    className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-dark-card border border-dark-surface flex items-center justify-center text-xs"
                                     title={participant.name || `Player ${idx + 1}`}
                                   >
                                     {participant.profileImage ? (
@@ -527,12 +531,12 @@ export default function BattleZone() {
                                         className="w-full h-full rounded-full object-cover"
                                       />
                                     ) : (
-                                      <span>{(participant.name || 'P').charAt(0)}</span>
+                                      <span className="text-xs">{(participant.name || 'P').charAt(0)}</span>
                                     )}
                                   </div>
                                 ))
                               ) : (
-                                <div className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface" />
+                                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-dark-card border border-dark-surface" />
                               )}
                             </div>
                             <span className="text-xs text-gray-400">
@@ -552,11 +556,11 @@ export default function BattleZone() {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-12 text-gray-400">
+                  <div className="text-center py-8 sm:py-12 text-gray-400">
                     <div className="flex justify-center mb-3">
-                      <Calendar className="h-12 w-12 opacity-50" />
+                      <Calendar className="h-8 w-8 sm:h-12 sm:w-12 opacity-50" />
                     </div>
-                    <p>No upcoming battles scheduled</p>
+                    <p className="text-sm sm:text-base">No upcoming battles scheduled</p>
                   </div>
                 )}
               </TabsContent>
@@ -569,7 +573,7 @@ export default function BattleZone() {
                   </div>
                 ) : battles?.past && battles.past.length > 0 ? (
                   battles.past.map((battle) => (
-                    <div key={battle.id} className="battle-card glassmorphism rounded-lg p-4 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
+                    <div key={battle.id} className="battle-card glassmorphism rounded-lg p-3 sm:p-4 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden group">
                       {/* Subtle cyberpunk corner decorations */}
                       <div className="absolute top-0 left-0 w-6 h-6 border-t border-l border-gray-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
                       <div className="absolute bottom-0 right-0 w-6 h-6 border-b border-r border-gray-500/30 opacity-70 group-hover:opacity-100 transition-opacity"></div>
@@ -577,30 +581,30 @@ export default function BattleZone() {
                       {/* Very subtle history glow */}
                       <div className="absolute inset-0 bg-gradient-to-tr from-gray-500/5 via-transparent to-gray-500/5 opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
                       
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-                        <div>
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 relative flex items-center justify-center">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 relative z-10">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 sm:space-x-3">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 relative flex items-center justify-center">
                               {/* History icon with subtle styling */}
                               <div className="absolute inset-0 rounded-md border border-gray-500/30 bg-gradient-to-br from-transparent to-gray-800/20 overflow-hidden flex items-center justify-center"></div>
-                              <History className="h-5 w-5 text-gray-400 relative z-10" />
+                              <History className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 relative z-10" />
                             </div>
-                            <div>
-                              <h3 className="font-bold font-gaming text-gray-300">{battle.title}</h3>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-bold font-gaming text-gray-300 text-sm sm:text-base truncate">{battle.title}</h3>
                               <p className="text-xs text-gray-400">{battle.type} · {battle.duration} mins · {formatDate(battle.completedAt)}</p>
                             </div>
                           </div>
                         </div>
                         
-                        <div className="flex items-center space-x-2">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
                           {battle.winner && (
-                            <div className="bg-warning-500/10 border border-warning-500/30 rounded-md px-3 py-1">
+                            <div className="bg-warning-500/10 border border-warning-500/30 rounded-md px-2 sm:px-3 py-1 text-center sm:text-left">
                               <span className="text-xs text-warning-400">Winner: {battle.winner}</span>
                             </div>
                           )}
                           <Button 
                             variant="outline" 
-                            className="bg-background/40 border-gray-500/30 hover:bg-gray-500/10 hover:border-gray-500/50 text-gray-400 text-sm"
+                            className="bg-background/40 border-gray-500/30 hover:bg-gray-500/10 hover:border-gray-500/50 text-gray-400 text-xs sm:text-sm w-full sm:w-auto"
                             onClick={() => handleViewBattle(battle)}
                           >
                             <Eye className="h-3 w-3 mr-1" />
@@ -609,15 +613,15 @@ export default function BattleZone() {
                         </div>
                       </div>
                       
-                      <div className="mt-4 border-t border-dark-border pt-4">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center space-x-3">
-                            <div className="flex -space-x-2">
+                      <div className="mt-3 sm:mt-4 border-t border-dark-border pt-3 sm:pt-4">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
+                          <div className="flex items-center space-x-2 sm:space-x-3">
+                            <div className="flex -space-x-1 sm:-space-x-2">
                               {battle.participants && battle.participants.length > 0 ? (
                                 battle.participants.map((participant, idx) => (
                                   <div 
                                     key={idx}
-                                    className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface flex items-center justify-center text-xs opacity-70"
+                                    className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-dark-card border border-dark-surface flex items-center justify-center text-xs opacity-70"
                                     title={participant.name || `Player ${idx + 1}`}
                                   >
                                     {participant.profileImage ? (
@@ -627,12 +631,12 @@ export default function BattleZone() {
                                         className="w-full h-full rounded-full object-cover"
                                       />
                                     ) : (
-                                      <span>{(participant.name || 'P').charAt(0)}</span>
+                                      <span className="text-xs">{(participant.name || 'P').charAt(0)}</span>
                                     )}
                                   </div>
                                 ))
                               ) : (
-                                <div className="w-6 h-6 rounded-full bg-dark-card border border-dark-surface opacity-70" />
+                                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-dark-card border border-dark-surface opacity-70" />
                               )}
                             </div>
                             <span className="text-xs text-gray-400">
@@ -650,11 +654,11 @@ export default function BattleZone() {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-12 text-gray-400">
+                  <div className="text-center py-8 sm:py-12 text-gray-400">
                     <div className="flex justify-center mb-3">
-                      <History className="h-12 w-12 opacity-50" />
+                      <History className="h-8 w-8 sm:h-12 sm:w-12 opacity-50" />
                     </div>
-                    <p>You haven't participated in any battles yet</p>
+                    <p className="text-sm sm:text-base">You haven't participated in any battles yet</p>
                   </div>
                 )}
               </TabsContent>
