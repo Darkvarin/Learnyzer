@@ -379,7 +379,7 @@ export default function BattleZoneEnhanced() {
               </div>
             )}
           </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 relative z-50" style={{ pointerEvents: 'auto' }}>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <Button
               size="sm"
               variant="outline"
@@ -388,8 +388,7 @@ export default function BattleZoneEnhanced() {
                 e.stopPropagation();
                 setSelectedBattle(battle);
               }}
-              className="bg-gray-500/10 border-gray-500/30 hover:bg-gray-500/20 text-gray-400 relative z-50 flex-1 sm:flex-initial"
-              style={{ pointerEvents: 'auto' }}
+              className="bg-gray-500/10 border-gray-500/30 hover:bg-gray-500/20 text-gray-400 flex-1 sm:flex-initial"
             >
               <Eye className="w-4 h-4 mr-1" />
               View
@@ -402,8 +401,7 @@ export default function BattleZoneEnhanced() {
                 e.stopPropagation();
                 spectateBattleMutation.mutate(battle.id);
               }}
-              className="bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20 text-purple-400 relative z-50 flex-1 sm:flex-initial"
-              style={{ pointerEvents: 'auto' }}
+              className="bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20 text-purple-400 flex-1 sm:flex-initial"
             >
               <Eye className="w-4 h-4 mr-1" />
               Watch
@@ -416,8 +414,7 @@ export default function BattleZoneEnhanced() {
                   e.stopPropagation();
                   setSelectedBattle(battle);
                 }}
-                className="bg-gradient-to-r from-green-600/80 to-emerald-600/80 hover:from-green-600/90 hover:to-emerald-600/90 relative z-50 flex-1 sm:flex-initial"
-                style={{ pointerEvents: 'auto' }}
+                className="bg-gradient-to-r from-green-600/80 to-emerald-600/80 hover:from-green-600/90 hover:to-emerald-600/90 flex-1 sm:flex-initial"
               >
                 <Sword className="w-4 h-4 mr-1" />
                 Enter Battle
@@ -431,8 +428,7 @@ export default function BattleZoneEnhanced() {
                   joinBattleMutation.mutate(battle.id);
                 }}
                 disabled={joinBattleMutation.isPending}
-                className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 relative z-50 flex-1 sm:flex-initial"
-                style={{ pointerEvents: 'auto' }}
+                className="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600/90 hover:to-blue-600/90 flex-1 sm:flex-initial"
               >
                 <Sword className="w-4 h-4 mr-1" />
                 Join Battle

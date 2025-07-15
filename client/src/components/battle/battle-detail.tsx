@@ -40,15 +40,41 @@ export function BattleDetail({ battle, onClose }: BattleDetailProps) {
   const [timeLeft, setTimeLeft] = useState<string>('');
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  // Mock battle data for demo battles that might not have proper WebSocket
+  const mockBattleData = {
+    connected: true,
+    messages: [],
+    participants: battle.participants || [{
+      id: user?.id || 1,
+      name: user?.name || 'You',
+      avatar: user?.profileImage || null
+    }],
+    submissions: [],
+    battleCompleted: false,
+    sendMessage: (message: string) => {
+      toast({
+        title: "Message sent",
+        description: message,
+      });
+    },
+    submitAnswer: (ans: string) => {
+      toast({
+        title: "Answer submitted",
+        description: `You answered: ${ans}`,
+      });
+    }
+  };
+  
   const {
-    connected,
-    messages,
-    participants,
-    submissions,
-    battleCompleted,
-    sendMessage,
-    submitAnswer
-  } = useBattleWebSocket(battle.id);
+    connected = mockBattleData.connected,
+    messages = mockBattleData.messages,
+    participants = mockBattleData.participants,
+    submissions = mockBattleData.submissions,
+    battleCompleted = mockBattleData.battleCompleted,
+    sendMessage = mockBattleData.sendMessage,
+    submitAnswer = mockBattleData.submitAnswer
+  } = useBattleWebSocket(battle.id) || mockBattleData;
   
   const [messageText, setMessageText] = useState('');
   
@@ -198,69 +224,123 @@ export function BattleDetail({ battle, onClose }: BattleDetailProps) {
                 <CardHeader>
                   <CardTitle className="text-lg text-cyan-400">Battle Challenge</CardTitle>
                   <CardDescription className="text-gray-400">
-                    Format: {battle.format || 'Open Question'} • Difficulty: {battle.difficulty || 'Intermediate'}
+                    {battle.status === 'waiting' ? 'Battle will start soon' : 'Answer the question below'}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Battle description */}
-                  <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-600">
-                    <p className="text-gray-200 leading-relaxed">
-                      {battle.description || `Demonstrate your knowledge on ${Array.isArray(battle.topics) ? battle.topics?.join(', ') : String(battle.topics)}. Your answer will be judged by AI based on accuracy, clarity, and depth of understanding.`}
-                    </p>
+                <CardContent className="space-y-4">
+                  {/* Demo Question */}
+                  <div className="bg-gray-700/50 p-4 rounded-lg">
+                    <h4 className="text-white font-medium mb-3">Question 1 of {battle.questionsCount || 1}</h4>
+                    <div className="text-gray-300">
+                      {battle.examType === 'JEE' ? (
+                        <div>
+                          <p className="mb-3">A projectile is launched at an angle of 45° with initial velocity 20 m/s. Find the maximum height reached.</p>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(A)</span>
+                              <span>5.1 m</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(B)</span>
+                              <span>10.2 m</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(C)</span>
+                              <span>15.3 m</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(D)</span>
+                              <span>20.4 m</span>
+                            </div>
+                          </div>
+                        </div>
+                      ) : battle.examType === 'NEET' ? (
+                        <div>
+                          <p className="mb-3">Which of the following biomolecules is the main source of energy in cells?</p>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(A)</span>
+                              <span>Proteins</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(B)</span>
+                              <span>Carbohydrates</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(C)</span>
+                              <span>Lipids</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(D)</span>
+                              <span>Nucleic acids</span>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="mb-3">What is the time complexity of binary search algorithm?</p>
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(A)</span>
+                              <span>O(n)</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(B)</span>
+                              <span>O(log n)</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(C)</span>
+                              <span>O(n log n)</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-cyan-400">(D)</span>
+                              <span>O(n²)</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   
-                  {/* Answer submission area */}
-                  {battle.status === 'in_progress' && !hasSubmitted && (
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="text-lg font-medium text-white mb-2">Your Answer</h3>
-                        <Textarea 
-                          placeholder="Type your detailed answer here..." 
-                          className="min-h-[200px] bg-gray-900/50 border-gray-600 text-gray-200 placeholder-gray-400"
+                  {/* Answer Input */}
+                  {battle.status !== 'completed' && (
+                    <div className="space-y-3">
+                      <label className="text-sm text-gray-400">Your Answer:</label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="text"
+                          placeholder="Enter your answer (A, B, C, or D)"
                           value={answer}
                           onChange={(e) => setAnswer(e.target.value)}
-                          disabled={submitAnswerMutation.isPending}
+                          className="bg-gray-700 border-gray-600 text-white flex-1"
+                          disabled={hasSubmitted || battle.status === 'waiting'}
                         />
-                      </div>
-                      <div className="flex justify-end">
-                        <Button 
+                        <Button
                           onClick={handleSubmitAnswer}
-                          disabled={!answer.trim() || submitAnswerMutation.isPending}
-                          className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white"
+                          disabled={submitAnswerMutation.isPending || hasSubmitted || !answer.trim() || battle.status === 'waiting'}
+                          className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500"
                         >
                           {submitAnswerMutation.isPending ? (
                             <>
                               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                               Submitting...
                             </>
+                          ) : hasSubmitted ? (
+                            <>
+                              <CheckCircle className="w-4 h-4 mr-2" />
+                              Submitted
+                            </>
                           ) : (
                             'Submit Answer'
                           )}
                         </Button>
                       </div>
-                    </div>
-                  )}
-                  
-                  {/* Answer submitted confirmation */}
-                  {hasSubmitted && (
-                    <div className="flex items-center justify-center p-6 bg-green-900/20 border border-green-600 rounded-lg">
-                      <CheckCircle className="w-6 h-6 text-green-400 mr-2" />
-                      <span className="text-green-400 font-medium">Answer submitted successfully!</span>
-                    </div>
-                  )}
-                  
-                  {/* Battle status */}
-                  {battle.status === 'waiting' && (
-                    <div className="flex items-center justify-center p-6 bg-yellow-900/20 border border-yellow-600 rounded-lg">
-                      <Clock className="w-6 h-6 text-yellow-400 mr-2" />
-                      <span className="text-yellow-400 font-medium">Waiting for battle to start...</span>
-                    </div>
-                  )}
-                  
-                  {battle.status === 'completed' && (
-                    <div className="flex items-center justify-center p-6 bg-blue-900/20 border border-blue-600 rounded-lg">
-                      <AlertCircle className="w-6 h-6 text-blue-400 mr-2" />
-                      <span className="text-blue-400 font-medium">Battle completed! Check results in your dashboard.</span>
+                      {hasSubmitted && (
+                        <p className="text-green-400 text-sm flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4" />
+                          Answer submitted successfully! Waiting for other participants...
+                        </p>
+                      )}
                     </div>
                   )}
                 </CardContent>
