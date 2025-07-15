@@ -588,9 +588,26 @@ Make questions challenging but fair for ${battleData.difficulty} level students.
 
   async submitAnswer(req: any, res: Response) {
     try {
-      const battleId = parseInt(req.params.battleId);
+      const battleIdParam = req.params.battleId;
+      console.log('Raw battleId param:', battleIdParam, 'type:', typeof battleIdParam);
+      
+      if (!battleIdParam || battleIdParam === 'undefined' || battleIdParam === 'NaN') {
+        console.error('Invalid battleId parameter:', battleIdParam);
+        return res.status(400).json({ message: "Invalid battle ID" });
+      }
+      
+      const battleId = parseInt(battleIdParam, 10);
+      console.log('Parsed battleId:', battleId, 'isValid:', !isNaN(battleId));
+      
+      if (isNaN(battleId)) {
+        console.error('Failed to parse battleId:', battleIdParam);
+        return res.status(400).json({ message: "Invalid battle ID format" });
+      }
+      
       const userId = req.user?.id;
       const { answer } = req.body;
+
+      console.log('Submit answer request:', { battleId, userId, answer });
 
       if (!userId) {
         return res.status(401).json({ message: "Authentication required" });
