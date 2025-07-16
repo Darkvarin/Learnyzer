@@ -1144,7 +1144,7 @@ export default function AiTutor() {
                                           aiResponse: msg.content,
                                           subject: currentSubject
                                         }, {
-                                          voicePreference: 'nova', // Use OpenAI nova voice
+                                          voicePreference: 'alloy', // Use OpenAI alloy voice for Indian accent
                                           language: voiceLanguage
                                         })}
                                         disabled={isGeneratingTeaching}
@@ -1175,11 +1175,11 @@ export default function AiTutor() {
                                         onClick={async () => {
                                           console.log('🎤 Testing OpenAI TTS...');
                                           
-                                          const success = await clientTTSService.speak("Hello! This is the new OpenAI text-to-speech system with consistent voice quality.", {
-                                            voice: 'nova',
+                                          const success = await clientTTSService.speak("Namaste! This is the new OpenAI text-to-speech system with Indian accent simulation. Acha, can you hear me clearly? Very good!", {
+                                            voice: 'alloy',
                                             language: 'english',
                                             gender: 'female',
-                                            rate: 0.9
+                                            rate: 0.85
                                           });
                                           
                                           if (!success) {

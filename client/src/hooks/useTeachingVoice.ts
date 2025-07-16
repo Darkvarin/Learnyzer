@@ -57,14 +57,14 @@ export function useTeachingVoice() {
       if (result.teachingExplanation) {
         console.log('🎓 Teaching with OpenAI TTS for consistent quality');
         
-        // Use OpenAI TTS directly for reliable voice quality
-        const preferredVoice = voiceSettings?.voicePreference || 'nova'; // Default to Nova
+        // Use OpenAI TTS directly for reliable voice quality with Indian accent simulation
+        const preferredVoice = 'alloy'; // Use Alloy for warmer, more expressive tone
         
         const success = await clientTTSService.speak(result.teachingExplanation, {
           voice: preferredVoice,
           language: voiceSettings?.language || 'english',
           gender: 'female',
-          rate: 0.9
+          rate: 0.85 // Slightly slower for better Indian accent
         });
         
         if (!success) {

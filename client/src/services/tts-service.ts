@@ -30,13 +30,16 @@ class ClientTTSService {
       this.stop();
 
       const {
-        voice = 'nova', // Nova has pleasant female voice suitable for Indian content
+        voice = 'alloy', // Alloy has warmer, more expressive tone for Indian content
         language = 'english',
         gender = 'female',
-        rate = 0.9
+        rate = 0.85 // Slightly slower for better Indian accent simulation
       } = options;
 
-      console.log(`🎤 Requesting TTS from server: ${text.substring(0, 50)}...`);
+      // Preprocess text for Indian accent characteristics
+      const processedText = this.preprocessForIndianAccent(text, language);
+
+      console.log(`🎤 Requesting TTS from server: ${processedText.substring(0, 50)}...`);
       console.log(`🔧 Voice settings: ${voice}, ${language}, ${gender}, rate: ${rate}`);
 
       // Call our backend TTS API
@@ -46,7 +49,7 @@ class ClientTTSService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          text,
+          text: processedText,
           voice,
           language,
           gender
@@ -153,10 +156,43 @@ class ClientTTSService {
    */
   getRecommendedVoice(language: 'english' | 'hindi' = 'english', gender: 'female' | 'male' = 'female') {
     if (gender === 'female') {
-      return 'nova'; // Most natural female voice for Indian English content
+      return 'alloy'; // Warmer, more expressive voice for Indian content
     } else {
       return 'echo'; // Clear male voice
     }
+  }
+
+  /**
+   * Process text to simulate Indian accent characteristics
+   */
+  private preprocessForIndianAccent(text: string, language: 'english' | 'hindi'): string {
+    if (language === 'hindi') {
+      return text; // Keep Hindi text as is
+    }
+
+    // Add Indian English pronunciation patterns and expressions
+    let processedText = text
+      // Add slight Hinglish mixing for natural flow
+      .replace(/\bvery good\b/gi, 'bahut accha')
+      .replace(/\bexcellent\b/gi, 'excellent hai')
+      .replace(/\bunderstand\b/gi, 'samajh gaya')
+      
+      // Adjust phrasing to be more Indian English
+      .replace(/\bGreat question\b/gi, 'Very good question')
+      .replace(/\bYou see\b/gi, 'Actually, you see')
+      .replace(/\bOkay\b/gi, 'Acha, okay')
+      
+      // Add characteristic Indian English expressions
+      .replace(/\bLet me tell you\b/gi, 'Let me tell you na')
+      .replace(/\bKeep going\b/gi, 'Keep going, you are doing well')
+      .replace(/\bbasically\b/gi, 'basically what happens is')
+      
+      // Pronunciation hints that work better with OpenAI voices
+      .replace(/\bwould\b/gi, 'vould')
+      .replace(/\bwas\b/gi, 'vas')
+      .replace(/\bwere\b/gi, 'vere');
+
+    return processedText;
   }
 }
 

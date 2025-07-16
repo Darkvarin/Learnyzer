@@ -2048,9 +2048,9 @@ CRITICAL REQUIREMENTS:
 - Keep explanations VERY SHORT: maximum 15-20 seconds when spoken (about 60-80 words)
 - Be concise but engaging
 - One key concept or insight only
-- Use simple, clear language
+- Use simple, clear language with Indian English expressions
 - Make it conversational and encouraging
-${language === 'hindi' ? '- RESPOND IN HINGLISH (mix of Hindi and English words naturally, like "Acha Ekansh! Math mein concept clear karne ke liye, integration problems ko tackle karte time substitution method use karo. Ye approach simple hai aur confidence boost karta hai. Keep practicing!")' : '- RESPOND ONLY IN ENGLISH language'}
+${language === 'hindi' ? '- RESPOND IN HINGLISH (mix of Hindi and English words naturally, like "Acha! Math mein concept clear karne ke liye, integration problems ko tackle karte time substitution method use karo. Ye approach simple hai aur confidence boost karta hai. Keep practicing!")' : '- RESPOND IN INDIAN ENGLISH with natural expressions like "Acha", "Very good", "Actually you see", "Keep going", "You are doing well"'}
 
 STUDENT CONTEXT:
 - Exam: ${userExam || 'Competitive exam'}
@@ -2062,16 +2062,16 @@ STUDENT QUESTION: "${userMessage}"
 ${aiResponse ? `AI RESPONSE SUMMARY: "${aiResponse.substring(0, 100)}..."` : ''}
 
 Create a SHORT teaching voice explanation (60-80 words max) that:
-1. Briefly acknowledges the student's question
-2. Gives ONE key insight or tip
-3. Encourages the student
+1. Briefly acknowledges the student's question with Indian expressions ("Acha", "Very good question")
+2. Gives ONE key insight or tip using Indian English phrasing
+3. Encourages the student with warm Indian expressions ("Keep going", "You are doing well")
 ` : `
 TOPIC TO TEACH: "${topic}"
 
 Create a SHORT teaching voice explanation (60-80 words max) that:
-1. Briefly introduces the key concept
-2. Gives one practical tip
-3. Motivates continued learning
+1. Briefly introduces the key concept with Indian expressions ("Actually", "You see")
+2. Gives one practical tip using Indian English phrasing
+3. Motivates continued learning with encouraging Indian expressions
 `}
 
 Generate ONLY the spoken explanation text (no markdown, no formatting). Keep it SHORT and conversational.`;

@@ -188,13 +188,16 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
 
 ## Changelog
 - June 30, 2025: Initial setup
-- July 16, 2025: **COMPLETE MIGRATION TO OPENAI TTS** - Replaced all browser speechSynthesis with OpenAI Text-to-Speech API
+- July 16, 2025: **COMPLETE MIGRATION TO OPENAI TTS WITH INDIAN ACCENT SIMULATION** - Enhanced TTS system for authentic Indian learning experience
   - Eliminated unreliable browser TTS dependency for consistent voice quality across all devices
   - Integrated OpenAI TTS service (client/src/services/tts-service.ts) with server-side audio generation
-  - Enhanced voice system with premium OpenAI voices: nova, shimmer, alloy, echo, fable, onyx
-  - Updated useVoice.ts and useTeachingVoice.ts hooks to use OpenAI TTS primarily with browser fallback
-  - AI Tutor now provides consistent female voice experience across all platforms and browsers
-  - Teaching voice system generates intelligent explanations with OpenAI TTS for superior audio quality
+  - **INDIAN ACCENT ENHANCEMENT**: Switched to 'alloy' voice with text preprocessing for Indian English characteristics
+  - Added comprehensive text preprocessing system to simulate Indian accent patterns and expressions
+  - Enhanced teaching prompts to use natural Indian English phrases ("Acha", "Very good", "Actually you see", "Keep going")
+  - Updated speech rate to 0.85x for better comprehension and Indian accent simulation
+  - Implemented Hinglish support with natural Hindi-English code mixing for Indian students
+  - AI Tutor now provides authentic Indian English voice experience with consistent female voice (Alloy)
+  - Teaching voice system generates explanations using Indian conversational patterns and encouraging expressions
   - Fixed voice reliability issues and eliminated mid-speech interruptions through server-side generation
 - June 30, 2025: Enhanced AI integration with GPT-4o and DALL-E 3
   - Added comprehensive AI Visual Learning Lab
