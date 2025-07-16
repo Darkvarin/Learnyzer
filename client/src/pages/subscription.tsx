@@ -45,6 +45,8 @@ interface PricingPlan {
     aiVisualLabLimit: number;
     aiTutorSessionLimit: number;
     visualPackageLimit: number;
+    mockTestLimit: number;
+    mockTestQuestions: number;
   };
 }
 
@@ -60,13 +62,16 @@ const pricingPlans: PricingPlan[] = [
       "3 visual lab generations", 
       "2 AI tutor sessions",
       "1 visual learning package",
+      "5 mock tests (20 questions each)",
       "Basic exam preparation content"
     ],
     limits: {
       aiChatLimit: 5,
       aiVisualLabLimit: 3,
       aiTutorSessionLimit: 2,
-      visualPackageLimit: 1
+      visualPackageLimit: 1,
+      mockTestLimit: 5,
+      mockTestQuestions: 20
     }
   },
   {
@@ -78,6 +83,7 @@ const pricingPlans: PricingPlan[] = [
     features: [
       "Access to all AI tools",
       "No AI tutor access",
+      "10 mock tests (30 questions each)",
       "Basic analytics",
       "Monthly billing"
     ],
@@ -85,7 +91,9 @@ const pricingPlans: PricingPlan[] = [
       aiChatLimit: 50,
       aiVisualLabLimit: 25,
       aiTutorSessionLimit: 0,
-      visualPackageLimit: 10
+      visualPackageLimit: 10,
+      mockTestLimit: 10,
+      mockTestQuestions: 30
     }
   },
   {
@@ -98,6 +106,7 @@ const pricingPlans: PricingPlan[] = [
     features: [
       "2 AI tutor lessons daily",
       "All AI tools (20 uses/day)",
+      "25 mock tests (50 questions each)",
       "Performance analytics",
       "Monthly billing"
     ],
@@ -105,7 +114,9 @@ const pricingPlans: PricingPlan[] = [
       aiChatLimit: 20,
       aiVisualLabLimit: 20,
       aiTutorSessionLimit: 2,
-      visualPackageLimit: 20
+      visualPackageLimit: 20,
+      mockTestLimit: 25,
+      mockTestQuestions: 50
     }
   },
   {
@@ -118,6 +129,7 @@ const pricingPlans: PricingPlan[] = [
     features: [
       "3 AI tutor lessons daily",
       "All AI tools (40 uses/day)",
+      "50 mock tests (unlimited questions)",
       "Advanced analytics",
       "Quarterly billing"
     ],
@@ -125,7 +137,9 @@ const pricingPlans: PricingPlan[] = [
       aiChatLimit: 40,
       aiVisualLabLimit: 40,
       aiTutorSessionLimit: 3,
-      visualPackageLimit: 40
+      visualPackageLimit: 40,
+      mockTestLimit: 50,
+      mockTestQuestions: 999
     }
   },
   {
@@ -138,6 +152,7 @@ const pricingPlans: PricingPlan[] = [
     features: [
       "3 AI tutor lessons daily",
       "All AI tools (40 uses/day)",
+      "50 mock tests (unlimited questions)",
       "Advanced analytics",
       "6-month billing"
     ],
@@ -145,7 +160,9 @@ const pricingPlans: PricingPlan[] = [
       aiChatLimit: 40,
       aiVisualLabLimit: 40,
       aiTutorSessionLimit: 3,
-      visualPackageLimit: 40
+      visualPackageLimit: 40,
+      mockTestLimit: 50,
+      mockTestQuestions: 999
     }
   },
   {
@@ -159,6 +176,7 @@ const pricingPlans: PricingPlan[] = [
     features: [
       "3 AI tutor lessons daily",
       "All AI tools (40 uses/day)",
+      "Unlimited mock tests & questions",
       "Priority support",
       "Annual billing"
     ],
@@ -166,7 +184,9 @@ const pricingPlans: PricingPlan[] = [
       aiChatLimit: 40,
       aiVisualLabLimit: 40,
       aiTutorSessionLimit: 3,
-      visualPackageLimit: 40
+      visualPackageLimit: 40,
+      mockTestLimit: 999,
+      mockTestQuestions: 999
     }
   }
 ];
