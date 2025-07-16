@@ -829,6 +829,9 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - **USER EXPERIENCE**: Clear error messages guide students to contact support for exam changes while maintaining educational focus
   - **DATABASE INTEGRATION**: Leverages existing examLocked, selectedExam, and examLockedAt fields for seamless access control
   - **SUBSCRIPTION INTEGRATION**: Works alongside subscription-based access control for dual-layer protection system
+  - **CRITICAL BUG FIX**: Fixed validateExamAccess parameter order - subject now passed as third parameter (requestedSubject) instead of second (requestedExam)
+  - **ENHANCED SUBJECT MATCHING**: Improved subject validation to allow partial matches (e.g., "contract law" allowed for CLAT "Legal Reasoning" subject)
+  - **VERIFIED WORKING**: CLAT students can now ask about contract law, legal reasoning, and other CLAT-specific topics without errors
 - July 16, 2025: Enhanced Battle Zone database schema fixes and intelligent waiting system
   - **CRITICAL DATABASE FIXES**: Resolved all missing column errors preventing battle creation and participation
   - Added missing columns: current_question_number, questions_completed, question_start_time, question_answers to battle_participants table

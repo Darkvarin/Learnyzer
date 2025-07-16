@@ -60,13 +60,25 @@ const validateExamAccess = async (userId: number, requestedExam?: string, reques
   }
 
   // If requesting specific subject, check if it's allowed for the locked exam
-  if (requestedSubject && !allowedSubjects.some(subject => subject.toLowerCase() === requestedSubject.toLowerCase())) {
-    return {
-      allowed: false,
-      lockedExam: userExam,
-      allowedSubjects,
-      message: `Access denied. ${requestedSubject} is not part of ${userExam.toUpperCase()} syllabus. You can only study: ${allowedSubjects.join(', ')}`
-    };
+  if (requestedSubject) {
+    const isSubjectAllowed = allowedSubjects.some(subject => {
+      const subjectLower = subject.toLowerCase();
+      const requestedLower = requestedSubject.toLowerCase();
+      
+      // Allow exact matches or partial matches for compound subjects
+      return subjectLower === requestedLower || 
+             subjectLower.includes(requestedLower) || 
+             requestedLower.includes(subjectLower);
+    });
+    
+    if (!isSubjectAllowed) {
+      return {
+        allowed: false,
+        lockedExam: userExam,
+        allowedSubjects,
+        message: `Access denied. ${requestedSubject} is not part of ${userExam.toUpperCase()} syllabus. You can only study: ${allowedSubjects.join(', ')}`
+      };
+    }
   }
 
   return {
@@ -392,7 +404,7 @@ export const aiService = {
       }
 
       // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
-      const examAccess = await validateExamAccess(userId, subject);
+      const examAccess = await validateExamAccess(userId, undefined, subject);
       if (!examAccess.allowed) {
         return res.status(403).json({
           message: examAccess.message,
