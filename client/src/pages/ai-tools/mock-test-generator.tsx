@@ -332,17 +332,21 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
       <Header />
       
       <main className="container mx-auto px-4 pt-24 pb-20 max-w-4xl">
+        {/* Back Button - Made more prominent */}
+        <div className="mb-4">
+          <Button 
+            onClick={onBack}
+            variant="outline"
+            className="flex items-center gap-2 mb-4 bg-dark-surface hover:bg-dark-hover border-primary/50 hover:border-primary text-white"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Tests
+          </Button>
+        </div>
+
         {/* Test Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
-            <Button 
-              variant="ghost" 
-              onClick={onBack}
-              className="flex items-center gap-2 text-gray-400 hover:text-white"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Tests
-            </Button>
             
             <div className="flex items-center gap-3">
               {/* Score Display */}
