@@ -32,6 +32,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Set up SEO routes (sitemap.xml, robots.txt, schema.json)
   setupSEORoutes(app);
 
+  // Health check endpoint for load balancers and monitoring
+  app.get('/api/health', (req, res) => {
+    res.status(200).json({ 
+      status: 'healthy', 
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development'
+    });
+  });
+
   // Auth routes
   app.post("/api/auth/register", authService.register);
   app.post("/api/auth/login", authService.login);

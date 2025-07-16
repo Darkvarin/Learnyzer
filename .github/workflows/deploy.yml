@@ -1,0 +1,78 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build application
+      run: npm run build
+      env:
+        NODE_ENV: production
+        
+    - name: Run tests (if available)
+      run: npm test --if-present
+      
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: ${{ secrets.EC2_PORT || 22 }}
+        script: |
+          # Navigate to application directory
+          cd /home/${{ secrets.EC2_USERNAME }}/learnyzer
+          
+          # Stop the application
+          pm2 stop learnyzer || true
+          
+          # Pull latest changes
+          git pull origin main
+          
+          # Install dependencies
+          npm ci --production
+          
+          # Build application
+          npm run build
+          
+          # Run database migrations if needed
+          npm run db:push || true
+          
+          # Start application with PM2
+          pm2 start ecosystem.config.js || pm2 restart learnyzer
+          
+          # Save PM2 configuration
+          pm2 save
+          
+          echo "Deployment completed successfully!"
+
+  health-check:
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: success()
+    
+    steps:
+    - name: Health Check
+      run: |
+        sleep 30
+        curl -f ${{ secrets.APP_URL }}/api/health || exit 1
+        echo "Health check passed!"
