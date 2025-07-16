@@ -544,7 +544,10 @@ export default function AuthPage() {
                                   />
                                 </FormControl>
                                 <div className="space-y-1 leading-none">
-                                  <FormLabel className="text-sm text-primary-foreground/90 cursor-pointer">
+                                  <FormLabel 
+                                    className="text-sm text-primary-foreground/90 cursor-pointer"
+                                    onClick={() => field.onChange(!field.value)}
+                                  >
                                     I agree to the{" "}
                                     <a 
                                       href="/terms" 
