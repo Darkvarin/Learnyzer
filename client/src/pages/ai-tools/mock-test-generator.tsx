@@ -859,6 +859,18 @@ export default function MockTestGenerator() {
       <Header />
       
       <main className="container mx-auto px-4 pt-24 pb-20 max-w-6xl">
+        {/* Back Button */}
+        <div className="mb-4">
+          <Button 
+            variant="outline"
+            onClick={() => window.history.back()}
+            className="flex items-center gap-2 bg-dark-surface hover:bg-dark-hover border-primary/50 hover:border-primary text-white"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to AI Tools
+          </Button>
+        </div>
+
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-warning/20 rounded-lg">
