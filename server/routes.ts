@@ -4,6 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { setupAuth } from "./auth";
 import { authService } from "./services/auth-service";
 import { userService } from "./services/user-service";
+import { otpService } from "./services/otp-service";
 import { aiService, generateStudyNotesUtil, generateEducationalImageUtil } from "./services/ai-service";
 import { courseService } from "./services/course-service";
 import { battleService } from "./services/battle-service";
@@ -47,6 +48,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/login", authService.login);
   app.post("/api/auth/logout", authService.logout);
   app.get("/api/auth/me", authService.getCurrentUser);
+
+  // OTP routes
+  app.post("/api/otp/send", async (req: any, res) => {
+    try {
+      const { mobile } = req.body;
+      
+      if (!mobile) {
+        return res.status(400).json({ message: "Mobile number is required" });
+      }
+
+      const result = await otpService.sendOTP(mobile);
+      
+      if (result.success) {
+        res.json({ 
+          success: true, 
+          sessionId: result.sessionId,
+          message: result.message 
+        });
+      } else {
+        res.status(400).json({ 
+          success: false, 
+          message: result.message 
+        });
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to send OTP. Please try again." 
+      });
+    }
+  });
+
+  app.post("/api/otp/verify", async (req: any, res) => {
+    try {
+      const { sessionId, otp } = req.body;
+      
+      if (!sessionId || !otp) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Session ID and OTP are required" 
+        });
+      }
+
+      const result = await otpService.verifyOTP(sessionId, otp);
+      res.json(result);
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to verify OTP. Please try again." 
+      });
+    }
+  });
 
 
 

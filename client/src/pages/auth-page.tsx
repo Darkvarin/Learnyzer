@@ -11,27 +11,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
-import { Brain, Sword, Trophy } from 'lucide-react';
-import { firebasePhoneAuth } from '@/lib/firebase';
+import { Brain, Sword, Trophy, Phone, Shield } from 'lucide-react';
+import { registerSchema } from '@shared/schema';
 
 // Validation schemas
 const loginSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
-  acceptTerms: z.boolean().refine((value) => value === true, {
-    message: "You must accept the terms and conditions to register",
-  }),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -41,6 +27,13 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
   const [, navigate] = useLocation();
   const { user, loginMutation, registerMutation } = useAuth();
+  
+  // OTP verification state
+  const [otpStep, setOtpStep] = useState(1); // 1: Basic info, 2: OTP verification
+  const [sessionId, setSessionId] = useState<string>("");
+  const [isOtpSending, setIsOtpSending] = useState(false);
+  const [isOtpVerifying, setIsOtpVerifying] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
   
 
 
@@ -67,11 +60,104 @@ export default function AuthPage() {
       name: "",
       username: "",
       email: "",
+      mobile: "",
       password: "",
       confirmPassword: "",
+      otp: "",
       acceptTerms: false,
     },
   });
+
+  // Timer effect for OTP resend
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendTimer > 0) {
+      timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendTimer]);
+
+  // Send OTP function
+  const sendOTP = async (mobile: string) => {
+    setIsOtpSending(true);
+    try {
+      const response = await fetch('/api/otp/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mobile }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSessionId(result.sessionId);
+        setOtpStep(2);
+        setResendTimer(30);
+        toast({
+          title: "OTP Sent",
+          description: result.message,
+        });
+      } else {
+        toast({
+          title: "Failed to send OTP",
+          description: result.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send OTP. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsOtpSending(false);
+    }
+  };
+
+  // Verify OTP function
+  const verifyOTP = async (otp: string) => {
+    setIsOtpVerifying(true);
+    try {
+      const response = await fetch('/api/otp/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionId, otp }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast({
+          title: "Mobile Verified",
+          description: "Your mobile number has been verified successfully!",
+        });
+        return true;
+      } else {
+        toast({
+          title: "Invalid OTP",
+          description: result.message,
+          variant: "destructive",
+        });
+        return false;
+      }
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      toast({
+        title: "Error",
+        description: "Failed to verify OTP. Please try again.",
+        variant: "destructive",
+      });
+      return false;
+    } finally {
+      setIsOtpVerifying(false);
+    }
+  };
 
 
 
@@ -90,15 +176,27 @@ export default function AuthPage() {
   };
 
   const onRegisterSubmit = async (data: RegisterForm) => {
-    try {
-      await registerMutation.mutateAsync(data);
-      toast({
-        title: "Registration successful",
-        description: "Welcome to Learnyzer! Your account has been created.",
-      });
-      navigate("/");
-    } catch (error) {
-      // Error handling is done in the mutation callbacks
+    if (otpStep === 1) {
+      // Step 1: Send OTP to mobile number
+      await sendOTP(data.mobile);
+    } else if (otpStep === 2) {
+      // Step 2: Verify OTP and complete registration
+      const isOtpValid = await verifyOTP(data.otp);
+      if (isOtpValid) {
+        try {
+          await registerMutation.mutateAsync({
+            ...data,
+            mobileVerified: true
+          });
+          toast({
+            title: "Registration successful",
+            description: "Welcome to Learnyzer! Your account has been created.",
+          });
+          navigate("/");
+        } catch (error) {
+          // Error handling is done in the mutation callbacks
+        }
+      }
     }
   };
 
@@ -287,10 +385,78 @@ export default function AuthPage() {
                         )}
                       />
 
+                      {/* Mobile Number Field */}
                       <FormField
                         control={registerForm.control}
-                        name="password"
+                        name="mobile"
                         render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-primary-foreground/90 flex items-center">
+                              <div className="w-1 h-4 bg-primary/50 mr-2"></div>
+                              <Phone className="w-4 h-4 mr-1" />
+                              Mobile Number
+                            </FormLabel>
+                            <FormControl>
+                              <Input 
+                                className="cyber-input bg-background/40 border-primary/30 focus:border-primary transition-colors" 
+                                placeholder="9876543210" 
+                                {...field} 
+                                disabled={otpStep === 2}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* OTP Field - Only visible in step 2 */}
+                      {otpStep === 2 && (
+                        <FormField
+                          control={registerForm.control}
+                          name="otp"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-primary-foreground/90 flex items-center">
+                                <div className="w-1 h-4 bg-primary/50 mr-2"></div>
+                                <Shield className="w-4 h-4 mr-1" />
+                                Enter OTP
+                              </FormLabel>
+                              <FormControl>
+                                <Input 
+                                  className="cyber-input bg-background/40 border-primary/30 focus:border-primary transition-colors text-center tracking-widest" 
+                                  placeholder="000000" 
+                                  maxLength={6}
+                                  {...field} 
+                                />
+                              </FormControl>
+                              <FormMessage />
+                              <div className="text-sm text-cyan-300/70 mt-2">
+                                OTP sent to +91{registerForm.getValues().mobile}
+                                {resendTimer > 0 ? (
+                                  <span className="block">Resend OTP in {resendTimer}s</span>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => sendOTP(registerForm.getValues().mobile)}
+                                    className="text-primary hover:text-primary/80 underline ml-2"
+                                    disabled={isOtpSending}
+                                  >
+                                    Resend OTP
+                                  </button>
+                                )}
+                              </div>
+                            </FormItem>
+                          )}
+                        />
+                      )}
+
+                      {/* Password fields - Only visible in step 1 */}
+                      {otpStep === 1 && (
+                        <>
+                          <FormField
+                            control={registerForm.control}
+                            name="password"
+                            render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-primary-foreground/90 flex items-center">
                               <div className="w-1 h-4 bg-primary/50 mr-2"></div>
@@ -330,69 +496,101 @@ export default function AuthPage() {
                         )}
                       />
                       
-                      {/* Terms and Conditions Checkbox */}
-                      <FormField
-                        control={registerForm.control}
-                        name="acceptTerms"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-primary/20 p-4 bg-background/20">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                              />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                              <FormLabel className="text-sm text-primary-foreground/90 cursor-pointer">
-                                I agree to the{" "}
-                                <a 
-                                  href="/terms" 
-                                  target="_blank" 
-                                  className="text-primary hover:text-primary/80 underline font-medium"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  Terms and Conditions
-                                </a>{" "}
-                                and{" "}
-                                <a 
-                                  href="/privacy" 
-                                  target="_blank" 
-                                  className="text-primary hover:text-primary/80 underline font-medium"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  Privacy Policy
-                                </a>
-                              </FormLabel>
-                              <FormMessage />
-                            </div>
-                          </FormItem>
-                        )}
-                      />
+                          {/* Terms and Conditions - Only visible in step 1 */}
+                          <FormField
+                            control={registerForm.control}
+                            name="acceptTerms"
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                    className="border-primary/50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                                  />
+                                </FormControl>
+                                <div className="space-y-1 leading-none">
+                                  <FormLabel className="text-sm text-primary-foreground/80">
+                                    I accept the{" "}
+                                    <a href="/terms" className="text-primary hover:underline">
+                                      Terms and Conditions
+                                    </a>
+                                    {" "}and{" "}
+                                    <a href="/privacy" className="text-primary hover:underline">
+                                      Privacy Policy
+                                    </a>
+                                  </FormLabel>
+                                </div>
+                              </FormItem>
+                            )}
+                          />
+                        </>
+                      )}
                     </CardContent>
                     <CardFooter>
-                      <Button 
-                        type="submit" 
-                        className="w-full animated-gradient-border relative overflow-hidden group"
-                        disabled={registerMutation.isPending}
-                      >
-                        <span className="absolute inset-0.5 bg-background/95 rounded-md overflow-hidden">
-                          <span className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                        </span>
-                        <span className="relative z-10">
-                          {registerMutation.isPending ? (
-                            <span className="flex items-center justify-center">
-                              <svg className="animate-spin mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              Creating account...
-                            </span>
-                          ) : (
-                            "Create Account"
-                          )}
-                        </span>
-                      </Button>
+                      <div className="w-full space-y-3">
+                        {otpStep === 2 && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => {
+                              setOtpStep(1);
+                              setSessionId("");
+                              registerForm.setValue("otp", "");
+                            }}
+                            className="w-full border-primary/30 text-primary hover:bg-primary/10"
+                          >
+                            ← Back to Mobile Number
+                          </Button>
+                        )}
+                        
+                        <Button 
+                          type="submit" 
+                          className="w-full animated-gradient-border relative overflow-hidden group"
+                          disabled={registerMutation.isPending || isOtpSending || isOtpVerifying}
+                        >
+                          <span className="absolute inset-0.5 bg-background/95 rounded-md overflow-hidden">
+                            <span className="absolute inset-0 bg-gradient-to-r from-primary/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                          </span>
+                          <span className="relative z-10">
+                            {registerMutation.isPending ? (
+                              <span className="flex items-center justify-center">
+                                <svg className="animate-spin mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Creating account...
+                              </span>
+                            ) : isOtpSending ? (
+                              <span className="flex items-center justify-center">
+                                <svg className="animate-spin mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Sending OTP...
+                              </span>
+                            ) : isOtpVerifying ? (
+                              <span className="flex items-center justify-center">
+                                <svg className="animate-spin mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Verifying OTP...
+                              </span>
+                            ) : otpStep === 1 ? (
+                              <span className="flex items-center justify-center">
+                                <Phone className="mr-2 h-4 w-4" />
+                                Send OTP
+                              </span>
+                            ) : (
+                              <span className="flex items-center justify-center">
+                                <Shield className="mr-2 h-4 w-4" />
+                                Verify & Register
+                              </span>
+                            )}
+                          </span>
+                        </Button>
+                      </div>
                     </CardFooter>
                   </form>
                 </Form>

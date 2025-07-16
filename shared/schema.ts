@@ -713,7 +713,22 @@ export const insertUserSchema = createInsertSchema(users, {
   username: (schema) => schema.min(3, "Username must be at least 3 characters"),
   password: (schema) => schema.min(6, "Password must be at least 6 characters"),
   name: (schema) => schema.min(2, "Name must be at least 2 characters"),
-  mobile: (schema) => schema.regex(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit Indian number").optional(),
+  mobile: (schema) => schema.regex(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit Indian number"),
+});
+
+// Registration schema for frontend form validation
+export const registerSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  email: z.string().email("Must be a valid email"),
+  mobile: z.string().regex(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit Indian number"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string(),
+  otp: z.string().length(6, "OTP must be 6 digits"),
+  acceptTerms: z.boolean().refine((val) => val === true, "You must accept the terms and conditions"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 
