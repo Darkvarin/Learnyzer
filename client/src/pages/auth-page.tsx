@@ -179,10 +179,17 @@ export default function AuthPage() {
   };
 
   const onRegisterSubmit = async (data: RegisterForm) => {
+    console.log('=== FORM SUBMISSION DEBUG ===');
+    console.log('Current OTP Step:', otpStep);
+    console.log('Form Data:', data);
+    console.log('Form Errors:', registerForm.formState.errors);
+    console.log('Form Valid:', registerForm.formState.isValid);
+    
     if (otpStep === 1) {
       // Step 1: Validate form and send OTP to mobile number
       const mobileRegex = /^[6-9]\d{9}$/;
-      if (!mobileRegex.test(data.mobile)) {
+      if (!data.mobile || !mobileRegex.test(data.mobile)) {
+        console.log('Mobile validation failed:', data.mobile);
         toast({
           title: "Invalid Mobile Number",
           description: "Please enter a valid 10-digit Indian mobile number starting with 6-9",
@@ -192,6 +199,7 @@ export default function AuthPage() {
       }
       
       if (!data.acceptTerms) {
+        console.log('Terms not accepted:', data.acceptTerms);
         toast({
           title: "Terms Required",
           description: "Please accept the terms and conditions to continue",
@@ -200,7 +208,7 @@ export default function AuthPage() {
         return;
       }
       
-      console.log('Form data:', data);
+      console.log('✓ Validation passed. Sending OTP to mobile:', data.mobile);
       await sendOTP(data.mobile);
     } else if (otpStep === 2) {
       // Step 2: Verify OTP and complete registration
@@ -355,7 +363,10 @@ export default function AuthPage() {
 
               <TabsContent value="register">
                 <Form {...registerForm}>
-                  <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
+                  <form onSubmit={(e) => {
+                    console.log('Registration form submit event triggered');
+                    registerForm.handleSubmit(onRegisterSubmit)(e);
+                  }}>
                     <CardContent className="space-y-4">
                       <FormField
                         control={registerForm.control}

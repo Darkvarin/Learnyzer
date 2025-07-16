@@ -724,7 +724,7 @@ export const registerSchema = z.object({
   mobile: z.string().regex(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit Indian number"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string(),
-  otp: z.string().length(6, "OTP must be 6 digits"),
+  otp: z.string().optional(), // Make OTP optional since it's only needed in step 2
   acceptTerms: z.boolean().refine((val) => val === true, "You must accept the terms and conditions"),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
