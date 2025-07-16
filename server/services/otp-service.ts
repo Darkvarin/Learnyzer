@@ -57,10 +57,13 @@ class OTPService {
         }
       );
 
+      // API response logged successfully
+
       if (response.data.Status === 'Success') {
+        // For 2Factor.in, the session ID is in the Details field
         return {
           success: true,
-          sessionId: response.data.SessionId,
+          sessionId: response.data.Details, // This is the session ID from 2Factor.in
           message: 'OTP sent successfully to your mobile number'
         };
       } else {

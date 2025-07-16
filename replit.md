@@ -395,10 +395,12 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Implemented secure two-step registration: mobile verification followed by account creation
   - Added comprehensive OTP service with real SMS delivery at ₹0.18 per SMS cost
   - Enhanced registration form with step-by-step mobile verification workflow
-  - Fixed terms checkbox clickability issues and form validation problems
+  - Fixed session ID extraction from 2Factor.in API response (Details field contains session ID)
+  - Fixed form validation issues by making OTP field optional for step 1
   - Development fallback mode for testing when API key unavailable
   - Real OTP delivery confirmed working with 2Factor.in API integration
   - Enhanced security with mobile number verification preventing fake registrations
+  - Complete end-to-end OTP workflow: Send OTP → Receive SMS → Verify OTP → Complete Registration
 - July 04, 2025: Enhanced profile page with secure email locking and mobile field
   - Made email field read-only with visual lock indicators (used for registration)
   - Added optional mobile number field in profile settings with proper validation

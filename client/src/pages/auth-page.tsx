@@ -95,6 +95,7 @@ export default function AuthPage() {
       console.log('OTP Result:', result);
 
       if (result.success) {
+        // Session ID set successfully
         setSessionId(result.sessionId);
         setOtpStep(2);
         setResendTimer(30);
@@ -123,6 +124,20 @@ export default function AuthPage() {
 
   // Verify OTP function
   const verifyOTP = async (otp: string) => {
+    console.log('=== OTP VERIFICATION DEBUG ===');
+    console.log('Session ID:', sessionId);
+    console.log('OTP:', otp);
+    
+    if (!sessionId) {
+      console.error('No session ID available for verification');
+      toast({
+        title: "Session Error",
+        description: "Please request a new OTP",
+        variant: "destructive",
+      });
+      return false;
+    }
+    
     setIsOtpVerifying(true);
     try {
       const response = await fetch('/api/otp/verify', {
@@ -134,6 +149,7 @@ export default function AuthPage() {
       });
 
       const result = await response.json();
+      console.log('OTP Verification Result:', result);
 
       if (result.success) {
         toast({

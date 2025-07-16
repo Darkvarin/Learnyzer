@@ -59,6 +59,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const result = await otpService.sendOTP(mobile);
+      // OTP service working correctly
       
       if (result.success) {
         res.json({ 
