@@ -1053,27 +1053,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // TTS API endpoint - OpenAI TTS with Indian accent voices
+  // TTS API endpoint - Free Indian accent TTS with OpenAI fallback
   app.post("/api/tts/generate", async (req, res) => {
     try {
-      const { text, voice, language, gender } = req.body;
+      const { text, voice, language, gender, useFree = true } = req.body;
       
       if (!text || typeof text !== 'string' || !text.trim()) {
         return res.status(400).json({ error: "Text is required" });
+      }
+
+      console.log(`🎤 TTS request: ${text.length} chars, voice: ${voice}, free: ${useFree}`);
+
+      // Try free Indian accent TTS first
+      if (useFree) {
+        const { freeTTSService } = await import("./services/free-tts-service");
+        
+        const freeResult = await freeTTSService.generateSpeech(text, {
+          voice: voice || 'indian_female',
+          language: language as 'english' | 'hindi' || 'english',
+          speed: 0.8
+        });
+
+        if (freeResult.success && freeResult.audioUrl) {
+          // If it's a direct URL, fetch the audio
+          if (freeResult.audioUrl.startsWith('http')) {
+            try {
+              const audioResponse = await fetch(freeResult.audioUrl);
+              if (audioResponse.ok) {
+                const audioBuffer = Buffer.from(await audioResponse.arrayBuffer());
+                const audioBase64 = audioBuffer.toString('base64');
+                
+                console.log(`✅ Generated ${audioBuffer.length} bytes of free Indian accent audio`);
+                
+                return res.json({
+                  success: true,
+                  audioBase64,
+                  mimeType: 'audio/mpeg',
+                  voice: 'indian_accent_free',
+                  provider: 'free_indian_tts'
+                });
+              }
+            } catch (fetchError) {
+              console.log('⚠️ Failed to fetch audio from free service, trying fallback...');
+            }
+          } else if (freeResult.audioUrl.startsWith('data:')) {
+            // Data URL format
+            const audioBase64 = freeResult.audioUrl.split(',')[1];
+            
+            console.log(`✅ Generated free Indian accent audio from data URL`);
+            
+            return res.json({
+              success: true,
+              audioBase64,
+              mimeType: 'audio/wav',
+              voice: 'indian_accent_free',
+              provider: 'free_indian_tts'
+            });
+          }
+        }
+        
+        console.log('⚠️ Free Indian TTS failed, falling back to OpenAI...');
+      }
+
+      // Fallback to OpenAI TTS if free services fail or not requested
+      if (!process.env.OPENAI_API_KEY) {
+        return res.status(500).json({ error: "No TTS service available" });
       }
 
       const { TTSService } = await import("./services/tts-service");
       
       // Get recommended voice based on preferences
       const recommendedVoice = TTSService.getRecommendedVoice(language || 'english', gender || 'female');
-      const selectedVoice = voice || recommendedVoice;
+      const selectedVoice = (voice === 'indian_female' ? 'alloy' : voice) || recommendedVoice;
       
-      console.log(`🎤 TTS request: ${text.length} chars, voice: ${selectedVoice}`);
+      console.log(`🎤 OpenAI TTS fallback: ${selectedVoice}`);
       
       const result = await TTSService.generateSpeechBase64(text, {
         voice: selectedVoice,
         model: 'tts-1', // Fast model for real-time response
-        speed: 0.9
+        speed: 0.85
       });
       
       if (result.success) {
@@ -1081,7 +1139,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           success: true,
           audioBase64: result.audioBase64,
           mimeType: result.mimeType,
-          voice: result.voice
+          voice: result.voice,
+          provider: 'openai_fallback'
         });
       } else {
         console.error("TTS generation failed:", result.error);

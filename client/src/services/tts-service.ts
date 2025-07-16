@@ -3,7 +3,7 @@
  */
 
 interface TTSOptions {
-  voice?: 'nova' | 'shimmer' | 'alloy' | 'echo' | 'fable' | 'onyx';
+  voice?: 'nova' | 'shimmer' | 'alloy' | 'echo' | 'fable' | 'onyx' | 'indian_female' | 'indian_male';
   language?: 'english' | 'hindi';
   gender?: 'female' | 'male';
   rate?: number;
@@ -30,10 +30,10 @@ class ClientTTSService {
       this.stop();
 
       const {
-        voice = 'alloy', // Alloy has warmer, more expressive tone for Indian content
+        voice = 'indian_female', // Use free Indian accent by default
         language = 'english',
         gender = 'female',
-        rate = 0.85 // Slightly slower for better Indian accent simulation
+        rate = 0.8 // Optimized for Indian accent
       } = options;
 
       // Preprocess text for Indian accent characteristics
@@ -52,7 +52,8 @@ class ClientTTSService {
           text: processedText,
           voice,
           language,
-          gender
+          gender,
+          useFree: true // Try free Indian accent TTS first
         })
       });
 
@@ -146,8 +147,8 @@ class ClientTTSService {
    */
   getAvailableVoices() {
     return {
-      female: ['nova', 'shimmer', 'alloy'],
-      male: ['echo', 'fable', 'onyx']
+      female: ['indian_female', 'nova', 'shimmer', 'alloy'],
+      male: ['indian_male', 'echo', 'fable', 'onyx']
     };
   }
 
@@ -156,9 +157,9 @@ class ClientTTSService {
    */
   getRecommendedVoice(language: 'english' | 'hindi' = 'english', gender: 'female' | 'male' = 'female') {
     if (gender === 'female') {
-      return 'alloy'; // Warmer, more expressive voice for Indian content
+      return 'indian_female'; // Free Indian accent female voice
     } else {
-      return 'echo'; // Clear male voice
+      return 'indian_male'; // Free Indian accent male voice
     }
   }
 
