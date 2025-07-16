@@ -1064,17 +1064,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`🎤 TTS request: ${text.length} chars, voice: ${voice}, free: ${useFree}`);
 
-      // For authentic Indian accent, direct client to use browser TTS
-      if (useFree && (voice === 'indian_female' || language === 'hindi')) {
-        console.log('🎤 Directing to browser TTS for authentic Indian accent');
+      // Always use browser TTS for free requests to avoid service issues
+      if (useFree) {
+        console.log('🎤 Directing to browser TTS for reliable speech synthesis');
         
         return res.json({
           success: true,
           useBrowserTTS: true,
           text: text,
-          voice: 'indian_accent_browser',
-          provider: 'browser_indian_native',
-          message: 'Using browser native Indian voice for authentic accent'
+          voice: 'browser_optimized',
+          provider: 'browser_native',
+          message: 'Using browser native speech for reliable TTS'
         });
       }
 

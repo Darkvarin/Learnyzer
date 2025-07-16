@@ -68,9 +68,9 @@ class ClientTTSService {
         throw new Error(result.error || 'TTS request failed');
       }
 
-      // Check if server wants us to use browser TTS for Indian accent
+      // Check if server wants us to use browser TTS
       if ((result as any).useBrowserTTS) {
-        console.log('🎤 Server directed to browser TTS for authentic Indian accent');
+        console.log('🎤 Server directed to browser TTS for reliable speech');
         return this.fallbackToBrowserTTS((result as any).text || text, options);
       }
 
@@ -158,11 +158,10 @@ class ClientTTSService {
       const voices = speechSynthesis.getVoices();
       console.log('🔍 Available voices:', voices.map(v => `${v.name} (${v.lang})`));
       
-      // Enhanced Indian voice detection
-      const indianVoice = voices.find(voice => 
-        voice.lang === 'en-IN' || 
-        voice.lang === 'hi-IN' ||
-        voice.name.toLowerCase().includes('indian') ||
+      // Enhanced Indian voice detection - prioritize English voices
+      const indianEnglishVoice = voices.find(voice => 
+        voice.lang === 'en-IN' ||
+        (voice.name.toLowerCase().includes('indian') && voice.lang.startsWith('en')) ||
         voice.name.toLowerCase().includes('raveena') ||
         voice.name.toLowerCase().includes('aditi') ||
         voice.name.toLowerCase().includes('priya') ||
@@ -181,7 +180,7 @@ class ClientTTSService {
         (voice.name.toLowerCase().includes('female') || voice.name.toLowerCase().includes('woman'))
       );
 
-      let selectedVoice = indianVoice || britishVoice || femaleVoice || voices.find(v => v.lang.startsWith('en'));
+      let selectedVoice = indianEnglishVoice || britishVoice || femaleVoice || voices.find(v => v.lang.startsWith('en'));
 
       if (selectedVoice) {
         console.log('✅ Selected voice:', selectedVoice.name, '(' + selectedVoice.lang + ')');
@@ -208,14 +207,19 @@ class ClientTTSService {
           utterance.onend = () => {
             console.log(`✅ Completed sentence ${i + 1}/${sentences.length}`);
             // Small pause between sentences
-            setTimeout(resolve, 200);
+            setTimeout(resolve, 300);
           };
           
           utterance.onerror = (error) => {
             console.error(`❌ Sentence ${i + 1} failed:`, error);
-            resolve(); // Continue with next sentence
+            setTimeout(resolve, 100); // Continue with next sentence after brief pause
           };
 
+          // Ensure speech synthesis is ready
+          if (speechSynthesis.paused) {
+            speechSynthesis.resume();
+          }
+          
           speechSynthesis.speak(utterance);
         });
       }
