@@ -1,6 +1,6 @@
 import type { Express, Request, Response } from "express";
 
-// Define site routes with priorities and update frequencies
+// Define clean, SEO-optimized site routes with priorities and update frequencies
 const siteRoutes = [
   {
     url: "/",
@@ -9,9 +9,9 @@ const siteRoutes = [
     lastmod: new Date().toISOString().split('T')[0]
   },
   {
-    url: "/dashboard",
+    url: "/landing",
     priority: 0.9,
-    changefreq: "daily",
+    changefreq: "weekly",
     lastmod: new Date().toISOString().split('T')[0]
   },
   {
@@ -45,6 +45,12 @@ const siteRoutes = [
     lastmod: new Date().toISOString().split('T')[0]
   },
   {
+    url: "/ai-tools/mock-test-generator",
+    priority: 0.7,
+    changefreq: "weekly",
+    lastmod: new Date().toISOString().split('T')[0]
+  },
+  {
     url: "/ai-tools/performance",
     priority: 0.7,
     changefreq: "weekly",
@@ -60,6 +66,36 @@ const siteRoutes = [
     url: "/leaderboard",
     priority: 0.6,
     changefreq: "daily",
+    lastmod: new Date().toISOString().split('T')[0]
+  },
+  {
+    url: "/subscription",
+    priority: 0.7,
+    changefreq: "monthly",
+    lastmod: new Date().toISOString().split('T')[0]
+  },
+  {
+    url: "/feedback",
+    priority: 0.5,
+    changefreq: "monthly",
+    lastmod: new Date().toISOString().split('T')[0]
+  },
+  {
+    url: "/terms",
+    priority: 0.3,
+    changefreq: "yearly",
+    lastmod: new Date().toISOString().split('T')[0]
+  },
+  {
+    url: "/privacy",
+    priority: 0.3,
+    changefreq: "yearly",
+    lastmod: new Date().toISOString().split('T')[0]
+  },
+  {
+    url: "/contact",
+    priority: 0.5,
+    changefreq: "monthly",
     lastmod: new Date().toISOString().split('T')[0]
   }
 ];
@@ -124,29 +160,45 @@ export function generateRobotsTxt(baseUrl: string): string {
   return `User-agent: *
 Allow: /
 
-# Important pages for crawlers
+# Important SEO-friendly pages for crawlers
 Allow: /
-Allow: /dashboard
+Allow: /landing
 Allow: /ai-tutor
 Allow: /ai-visual-lab
-Allow: /ai-tools
+Allow: /ai-tools/
 Allow: /battle-zone
-Allow: /jee-preparation
-Allow: /neet-preparation
-Allow: /upsc-preparation
-Allow: /clat-preparation
-Allow: /cuet-preparation
+Allow: /leaderboard
+Allow: /subscription
+Allow: /feedback
+Allow: /terms
+Allow: /privacy
+Allow: /contact
 
-# Block admin and sensitive areas
-Disallow: /admin
+# Block admin, development, and sensitive areas
+Disallow: /admin/
 Disallow: /api/
+Disallow: /auth
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /create-profile
 Disallow: /security-dashboard
 Disallow: /lead-generation
+Disallow: /websocket-test
+Disallow: /battle-zone-enhanced
+Disallow: /enhanced-battles
+Disallow: /refund
+Disallow: /shipping
+Disallow: /rewards
+Disallow: /courses
+
+# Block duplicate routes that could cause SEO conflicts
+Disallow: /*?*
+Disallow: /*/*?*
 
 # Sitemap location
 Sitemap: ${baseUrl}/sitemap.xml
 
-# Crawl delay (be respectful)
+# Crawl delay (be respectful to server)
 Crawl-delay: 1`;
 }
 

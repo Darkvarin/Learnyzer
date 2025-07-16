@@ -21,7 +21,6 @@ import CreateProfile from "@/pages/create-profile";
 import ProfileSettings from "@/pages/profile-settings";
 import LeaderboardPage from "@/pages/leaderboard";
 import HomePage from "./pages/home-page";
-import WebSocketTest from "./pages/websocket-test";
 import AiTutor from "./pages/ai-tutor";
 import StudyNotesGenerator from "./pages/ai-tools/study-notes";
 import AnswerChecker from "./pages/ai-tools/answer-checker";
@@ -34,9 +33,7 @@ import CustomerFeedback from "./pages/customer-feedback";
 import SubscriptionPage from "./pages/subscription";
 import TermsPage from "./pages/terms";
 import PrivacyPage from "./pages/privacy";
-import RefundPage from "./pages/refund";
 import ContactPage from "./pages/contact";
-import ShippingPage from "./pages/shipping";
 import LandingPage from "./pages/landing-page";
 
 function App() {
@@ -54,8 +51,6 @@ function App() {
                     <Route path="/landing" component={LandingPage} />
                     <ProtectedRoute path="/dashboard" component={Dashboard} />
                     <ProtectedRoute path="/battle-zone" component={BattleZone} />
-                    <ProtectedRoute path="/battle-zone-enhanced" component={BattleZone} />
-                    <ProtectedRoute path="/enhanced-battles" component={BattleZone} />
                     <ProtectedRoute path="/ai-tools" component={AiTools} />
                     <ProtectedRoute path="/ai-tools/study-notes" component={StudyNotesGenerator} />
                     <ProtectedRoute path="/ai-tools/answer-checker" component={AnswerChecker} />
@@ -69,12 +64,9 @@ function App() {
                     <Route path="/feedback" component={CustomerFeedback} />
                     <Route path="/terms" component={TermsPage} />
                     <Route path="/privacy" component={PrivacyPage} />
-                    <Route path="/refund" component={RefundPage} />
                     <Route path="/contact" component={ContactPage} />
-                    <Route path="/shipping" component={ShippingPage} />                
                     <ProtectedRoute path="/profile" component={ProfileSettings} />
                     <ProtectedRoute path="/create-profile" component={CreateProfile} />
-                    <ProtectedRoute path="/websocket-test" component={WebSocketTest} />
                     <ProtectedRoute path="/leaderboard" component={LeaderboardPage} />
                     <Route path="/auth" component={AuthPage} />
                     <Route component={NotFound} />
