@@ -470,12 +470,12 @@ export const aiService = {
           );
           
           if (!isUpscRelevant) {
-            console.log(`[AI Tutor] Message "${messageToCheck}" not relevant to UPSC syllabus - blocking request`);
+            console.log(`[AI Tutor] Message "${messageToCheck}" not relevant to ${user.track.toUpperCase()} syllabus - blocking request`);
             return res.status(403).json({ 
-              message: `This topic is not part of the UPSC syllabus. Please ask about History, Geography, Political Science, Economics, Current Affairs, Environment, Internal Security, Ethics, or Public Administration topics relevant to UPSC preparation.`,
+              message: `This topic is not part of the ${user.track.toUpperCase()} syllabus. Please ask about ${allowedSubjects.join(', ')} topics relevant to ${user.track.toUpperCase()} preparation.`,
               allowedSubjects,
               examType: user.track,
-              suggestion: "Try asking about: Indian History, Indian Geography, Indian Polity, Indian Economy, Current Affairs, or Environmental Studies"
+              suggestion: `Try asking about: ${allowedSubjects.slice(0, 3).join(', ')} or other ${user.track.toUpperCase()} subjects`
             });
           } else {
             console.log(`[AI Tutor] Message is UPSC-relevant, proceeding with response`);
@@ -531,18 +531,42 @@ ${user?.track ? `
 - ALLOWED SUBJECTS: ${getExamSubjects(user.track).join(', ')}
 - MANDATORY: REJECT any question outside these subjects
 - MANDATORY: Every response must be ${user.track.toUpperCase()}-exam specific
-- MANDATORY: Include UPSC syllabus references, exam patterns, previous year questions
+- MANDATORY: Include ${user.track.toUpperCase()} syllabus references, exam patterns, previous year questions
 - MANDATORY: No generic academic content - only ${user.track.toUpperCase()} preparation material
-- If asked about non-UPSC topics, respond: "This topic is not part of UPSC syllabus. Let's focus on [suggest UPSC topic]"
+- If asked about non-${user.track.toUpperCase()} topics, respond: "This topic is not part of ${user.track.toUpperCase()} syllabus. Let's focus on [suggest ${user.track.toUpperCase()} topic]"
 ` : '- Student has not selected specific exam track yet'}
 
-🎯 UPSC-SPECIFIC CONTENT REQUIREMENTS:
+🎯 ${user?.track?.toUpperCase() || 'EXAM'}-SPECIFIC CONTENT REQUIREMENTS:
+${user?.track === 'upsc' ? `
 - Reference UPSC Prelims/Mains syllabus
 - Mention specific papers (GS 1, GS 2, GS 3, GS 4, CSAT)  
 - Include previous year questions examples
 - Provide answer writing techniques
 - Give UPSC-specific preparation tips
-- Use UPSC terminology and framework
+- Use UPSC terminology and framework` : user?.track === 'clat' ? `
+- Reference CLAT exam pattern and syllabus
+- Focus on Legal Reasoning, Logical Reasoning, English, Quantitative Techniques, and General Knowledge
+- Include previous year CLAT questions examples
+- Provide legal reasoning techniques and case study analysis
+- Give CLAT-specific preparation tips and time management strategies
+- Use legal terminology and CLAT framework` : user?.track === 'jee' ? `
+- Reference JEE Main/Advanced syllabus and exam pattern
+- Focus on Physics, Chemistry, Mathematics concepts
+- Include previous year JEE questions examples
+- Provide problem-solving techniques and shortcuts
+- Give JEE-specific preparation tips and time management
+- Use technical terminology and JEE framework` : user?.track === 'neet' ? `
+- Reference NEET exam pattern and syllabus
+- Focus on Physics, Chemistry, Biology concepts
+- Include previous year NEET questions examples
+- Provide medical entrance preparation techniques
+- Give NEET-specific preparation tips and time management
+- Use medical terminology and NEET framework` : `
+- Reference ${user?.track?.toUpperCase()} exam pattern and syllabus
+- Focus on ${getExamSubjects(user?.track || '').join(', ')} subjects
+- Include previous year questions examples
+- Provide exam-specific preparation techniques
+- Give ${user?.track?.toUpperCase()}-specific tips and strategies`}
 
 Student Profile:
 - Name: ${user?.name}
