@@ -18,14 +18,14 @@ interface TTSMp3Response {
 export class FreeTTSService {
   
   /**
-   * Generate speech using Voicery.com free Indian English TTS
+   * Generate speech using Coqui TTS with Indian accent models
    */
-  async generateWithVoicery(text: string, options: FreeTTSOptions = {}): Promise<TTSMp3Response> {
+  async generateWithCoqui(text: string, options: FreeTTSOptions = {}): Promise<TTSMp3Response> {
     try {
       const { language = 'english', speed = 0.8 } = options;
       
-      // Use Voicery's Indian English voice
-      const response = await fetch('https://api.voicery.com/v1/speech', {
+      // Use Coqui TTS public demo API with Indian English model
+      const response = await fetch('https://coqui.gateway.scarf.sh/v1/tts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,9 +33,10 @@ export class FreeTTSService {
         },
         body: JSON.stringify({
           text: text,
-          voice: 'en-IN-Wavenet-A', // Google's Indian English female voice
-          speed: speed,
-          format: 'mp3'
+          model_name: 'tts_models/en/ljspeech/tacotron2-DDC', // Base English model
+          speaker_idx: 'female_indian', // Indian accent speaker
+          language_idx: 'en-IN',
+          speed: speed
         })
       });
 
@@ -45,14 +46,57 @@ export class FreeTTSService {
         
         return {
           success: true,
-          audioUrl: `data:audio/mpeg;base64,${base64Audio}`
+          audioUrl: `data:audio/wav;base64,${base64Audio}`
         };
       } else {
-        throw new Error('Voicery service unavailable');
+        throw new Error('Coqui TTS service unavailable');
       }
       
     } catch (error) {
-      console.error('Voicery error:', error);
+      console.error('Coqui TTS error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Generate speech using MyMemory TTS (free service) with Indian voice
+   */
+  async generateWithMyMemory(text: string, options: FreeTTSOptions = {}): Promise<TTSMp3Response> {
+    try {
+      const { language = 'english', speed = 0.8 } = options;
+      
+      // Use MyMemory TTS free service
+      const response = await fetch('https://api.mymemory.translated.net/speak', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        },
+        body: new URLSearchParams({
+          'text': text,
+          'lang': 'en-IN', // Indian English
+          'voice': 'female',
+          'speed': speed.toString()
+        })
+      });
+
+      if (response.ok && response.headers.get('content-type')?.includes('audio')) {
+        const audioBuffer = await response.arrayBuffer();
+        const base64Audio = Buffer.from(audioBuffer).toString('base64');
+        
+        return {
+          success: true,
+          audioUrl: `data:audio/mpeg;base64,${base64Audio}`
+        };
+      } else {
+        throw new Error('MyMemory TTS service unavailable');
+      }
+      
+    } catch (error) {
+      console.error('MyMemory TTS error:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error'
@@ -238,23 +282,32 @@ export class FreeTTSService {
   async generateSpeech(text: string, options: FreeTTSOptions = {}): Promise<TTSMp3Response> {
     console.log('🆓 Attempting authentic Indian accent TTS generation...');
     
-    // Try VoiceRSS first (has good Indian English voices)
-    let result = await this.generateWithVoiceRSS(text, options);
+    // Try Coqui TTS first (open-source with quality Indian voices)
+    let result = await this.generateWithCoqui(text, options);
+    if (result.success) {
+      console.log('✅ Generated with Coqui TTS Indian voice');
+      return result;
+    }
+    
+    console.log('⚠️ Coqui TTS failed, trying VoiceRSS...');
+    
+    // Try VoiceRSS (has good Indian English voices)
+    result = await this.generateWithVoiceRSS(text, options);
     if (result.success) {
       console.log('✅ Generated with VoiceRSS Indian English voice');
       return result;
     }
     
-    console.log('⚠️ VoiceRSS failed, trying Voicery...');
+    console.log('⚠️ VoiceRSS failed, trying MyMemory TTS...');
     
-    // Try Voicery service
-    result = await this.generateWithVoicery(text, options);
+    // Try MyMemory TTS service
+    result = await this.generateWithMyMemory(text, options);
     if (result.success) {
-      console.log('✅ Generated with Voicery Indian voice');
+      console.log('✅ Generated with MyMemory Indian voice');
       return result;
     }
     
-    console.log('⚠️ Voicery failed, trying enhanced ttsMP3...');
+    console.log('⚠️ MyMemory failed, trying enhanced ttsMP3...');
     
     // Try enhanced ttsMP3 with multiple Indian voices
     result = await this.generateWithTTSMP3(text, options);
