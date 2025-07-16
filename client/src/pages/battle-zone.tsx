@@ -191,7 +191,8 @@ export default function BattleZone() {
         {showBattleDetail && selectedBattle && (
           <BattleDetail 
             battle={selectedBattle} 
-            onBack={() => setShowBattleDetail(false)} 
+            onBack={() => setShowBattleDetail(false)}
+            userData={userData}
           />
         )}
         
@@ -472,7 +473,7 @@ export default function BattleZone() {
 }
 
 // Battle Detail Component
-function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
+function BattleDetail({ battle, onBack, userData }: { battle: any; onBack: () => void; userData: any }) {
   const [answer, setAnswer] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
   const [submitted, setSubmitted] = useState(false);
