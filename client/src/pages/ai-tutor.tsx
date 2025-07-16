@@ -8,6 +8,7 @@ import { useUser } from "@/contexts/user-context";
 import { useToast } from "@/hooks/use-toast";
 import { useVoice } from "@/hooks/useVoice";
 import { useTeachingVoice } from "@/hooks/useTeachingVoice";
+import { clientTTSService } from "@/services/tts-service";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { SubscriptionGuard, useSubscriptionTracking } from "@/components/subscription/subscription-guard";
@@ -1143,7 +1144,7 @@ export default function AiTutor() {
                                           aiResponse: msg.content,
                                           subject: currentSubject
                                         }, {
-                                          voicePreference: selectedVoice,
+                                          voicePreference: 'nova', // Use OpenAI nova voice
                                           language: voiceLanguage
                                         })}
                                         disabled={isGeneratingTeaching}
@@ -1167,31 +1168,32 @@ export default function AiTutor() {
                                         )}
                                       </Button>
                                       
-                                      {/* TTS Debug Button */}
+                                      {/* OpenAI TTS Test Button */}
                                       <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => {
-                                          console.log('🔧 TTS DEBUG TEST STARTING...');
+                                        onClick={async () => {
+                                          console.log('🎤 Testing OpenAI TTS...');
                                           
-                                          // List all available voices for debugging
-                                          if (window.speechSynthesis) {
-                                            const voices = window.speechSynthesis.getVoices();
-                                            console.log('📋 ALL AVAILABLE VOICES:');
-                                            voices.forEach((voice, index) => {
-                                              console.log(`${index + 1}. ${voice.name} (${voice.lang}) ${voice.gender || ''}`);
+                                          const success = await clientTTSService.speak("Hello! This is the new OpenAI text-to-speech system with consistent voice quality.", {
+                                            voice: 'nova',
+                                            language: 'english',
+                                            gender: 'female',
+                                            rate: 0.9
+                                          });
+                                          
+                                          if (!success) {
+                                            console.log('OpenAI TTS failed, testing browser fallback...');
+                                            speak("Fallback: Browser TTS is working if you hear this.", {
+                                              rate: 0.9,
+                                              voicePreference: 'nova',
+                                              language: 'english'
                                             });
                                           }
-                                          
-                                          speak("Hello Sanjay! This is a test of the voice system. Can you hear me clearly?", {
-                                            rate: 0.95,
-                                            voicePreference: 'neerja',
-                                            language: 'english'
-                                          });
                                         }}
                                         className="text-xs bg-orange-500/10 border-orange-500/30 text-orange-300 hover:bg-orange-500/20"
                                       >
-                                        🔧 Test Voice
+                                        🎤 Test OpenAI Voice
                                       </Button>
 
                                     </div>

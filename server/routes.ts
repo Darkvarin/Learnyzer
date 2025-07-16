@@ -1053,6 +1053,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // TTS API endpoint - OpenAI TTS with Indian accent voices
+  app.post("/api/tts/generate", async (req, res) => {
+    try {
+      const { text, voice, language, gender } = req.body;
+      
+      if (!text || typeof text !== 'string' || !text.trim()) {
+        return res.status(400).json({ error: "Text is required" });
+      }
+
+      const { TTSService } = await import("./services/tts-service");
+      
+      // Get recommended voice based on preferences
+      const recommendedVoice = TTSService.getRecommendedVoice(language || 'english', gender || 'female');
+      const selectedVoice = voice || recommendedVoice;
+      
+      console.log(`🎤 TTS request: ${text.length} chars, voice: ${selectedVoice}`);
+      
+      const result = await TTSService.generateSpeechBase64(text, {
+        voice: selectedVoice,
+        model: 'tts-1', // Fast model for real-time response
+        speed: 0.9
+      });
+      
+      if (result.success) {
+        res.json({
+          success: true,
+          audioBase64: result.audioBase64,
+          mimeType: result.mimeType,
+          voice: result.voice
+        });
+      } else {
+        console.error("TTS generation failed:", result.error);
+        res.status(500).json({ error: result.error || "TTS generation failed" });
+      }
+    } catch (error) {
+      console.error("Error in TTS generation:", error);
+      res.status(500).json({ error: "TTS service temporarily unavailable" });
+    }
+  });
+
   // Payment routes
   app.post("/api/payment/create-order", paymentService.createOrder);
   app.post("/api/payment/verify-payment", paymentService.verifyPayment);

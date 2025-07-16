@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useVoice } from './useVoice';
+import { clientTTSService } from '../services/tts-service';
 
 interface TeachingVoiceRequest {
   topic?: string;
@@ -34,7 +35,7 @@ export function useTeachingVoice() {
   });
 
   const teachConcept = async (data: TeachingVoiceRequest, voiceSettings?: {
-    voicePreference?: 'neerja' | 'swara' | 'auto'; // Removed male voice option
+    voicePreference?: 'nova' | 'shimmer' | 'alloy'; // OpenAI female voices
     language?: 'english' | 'hindi';
   }) => {
     // If already speaking/teaching, stop it
@@ -52,16 +53,28 @@ export function useTeachingVoice() {
         language: voiceSettings?.language || 'english'
       };
       const result = await generateTeachingVoice.mutateAsync(requestData);
-      // Speak the teaching explanation with user voice settings
+      // Speak the teaching explanation with OpenAI TTS
       if (result.teachingExplanation) {
-        // Try immediate speech first (works better after user interaction)
-        // Use Indian accent female voice based on language preference
-        const preferredVoice = voiceSettings?.language === 'hindi' ? 'swara' : 'neerja';
-        speak(result.teachingExplanation, {
-          rate: 0.95, // Adjusted rate for better comprehension
-          voicePreference: preferredVoice, // Indian accent female voices only
-          language: voiceSettings?.language || 'english'
+        console.log('🎓 Teaching with OpenAI TTS for consistent quality');
+        
+        // Use OpenAI TTS directly for reliable voice quality
+        const preferredVoice = voiceSettings?.voicePreference || 'nova'; // Default to Nova
+        
+        const success = await clientTTSService.speak(result.teachingExplanation, {
+          voice: preferredVoice,
+          language: voiceSettings?.language || 'english',
+          gender: 'female',
+          rate: 0.9
         });
+        
+        if (!success) {
+          // Fallback to browser TTS if OpenAI fails
+          speak(result.teachingExplanation, {
+            rate: 0.95,
+            voicePreference: preferredVoice,
+            language: voiceSettings?.language || 'english'
+          });
+        }
       } else {
         console.error('No teaching explanation received!', result);
       }
@@ -73,6 +86,10 @@ export function useTeachingVoice() {
   };
 
   const stopTeaching = () => {
+    // Stop OpenAI TTS service
+    clientTTSService.stop();
+    
+    // Also stop browser TTS as fallback
     stopSpeaking();
     setIsGenerating(false);
   };
@@ -80,6 +97,7 @@ export function useTeachingVoice() {
   // Cleanup when hook is unmounted
   useEffect(() => {
     return () => {
+      clientTTSService.stop();
       stopSpeaking();
       setIsGenerating(false);
     };
