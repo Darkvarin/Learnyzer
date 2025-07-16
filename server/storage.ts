@@ -299,19 +299,17 @@ export const storage = {
       accuracy = `${Math.floor(avgScore)}%`;
     }
     
-    // Count AI sessions
-    const result = await db.execute(sql`
-      SELECT COUNT(*) as count FROM ${schema.conversations}
-      WHERE ${schema.conversations.userId} = ${userId}
-    `);
-    const aiSessions = result.rows && result.rows[0] ? Number(result.rows[0].count) : 0;
+    // Count AI sessions using Drizzle query
+    const conversations = await db.query.conversations.findMany({
+      where: eq(schema.conversations.userId, userId)
+    });
+    const aiSessions = conversations.length;
     
-    // Count battles won
-    const wonResult = await db.execute(sql`
-      SELECT COUNT(*) as count FROM ${schema.battles}
-      WHERE ${schema.battles.winnerId} = ${userId}
-    `);
-    const battlesWon = wonResult.rows && wonResult.rows[0] ? Number(wonResult.rows[0].count) : 0;
+    // Count battles won using Drizzle query  
+    const wonBattles = await db.query.battles.findMany({
+      where: eq(schema.battles.winnerId, userId)
+    });
+    const battlesWon = wonBattles.length;
     
     return {
       level: user.level,
