@@ -192,11 +192,11 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - **COMPLETELY FREE SOLUTION**: Implemented multi-provider free TTS system with authentic Indian accents
   - **PRIMARY SERVICE**: ttsMP3.com with 'Raveena' Indian English female voice for natural pronunciation
   - **FALLBACK SYSTEM**: ResponsiveVoice and SpeechT5 APIs for reliability with automatic failover
-  - **ENHANCED TEXT PREPROCESSING**: Advanced Indian English characteristic simulation with natural expressions
+  - **MINIMAL TEXT PROCESSING**: Removed aggressive text preprocessing to preserve natural English content
   - **AUTHENTIC PRONUNCIATION**: Real Indian accent voices instead of simulated Western voices
   - **COST OPTIMIZATION**: Zero TTS costs while maintaining superior Indian accent quality
   - **SEAMLESS INTEGRATION**: Transparent fallback to OpenAI TTS if free services unavailable
-  - **HINGLISH SUPPORT**: Natural Hindi-English code mixing with authentic Indian pronunciation patterns
+  - **NATURAL SPEECH**: Clean English content spoken with authentic Indian accent pronunciation
   - **TEACHING VOICE UPGRADE**: AI explanations now spoken with genuine Indian accent female voices
   - **ENHANCED USER EXPERIENCE**: Students hear authentic Indian English pronunciation for better learning connection
 - June 30, 2025: Enhanced AI integration with GPT-4o and DALL-E 3

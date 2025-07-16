@@ -164,36 +164,18 @@ class ClientTTSService {
   }
 
   /**
-   * Process text to simulate Indian accent characteristics
+   * Process text to simulate Indian accent characteristics (minimal processing)
    */
   private preprocessForIndianAccent(text: string, language: 'english' | 'hindi'): string {
     if (language === 'hindi') {
       return text; // Keep Hindi text as is
     }
 
-    // Add Indian English pronunciation patterns and expressions
-    let processedText = text
-      // Add slight Hinglish mixing for natural flow
-      .replace(/\bvery good\b/gi, 'bahut accha')
-      .replace(/\bexcellent\b/gi, 'excellent hai')
-      .replace(/\bunderstand\b/gi, 'samajh gaya')
-      
-      // Adjust phrasing to be more Indian English
-      .replace(/\bGreat question\b/gi, 'Very good question')
-      .replace(/\bYou see\b/gi, 'Actually, you see')
-      .replace(/\bOkay\b/gi, 'Acha, okay')
-      
-      // Add characteristic Indian English expressions
-      .replace(/\bLet me tell you\b/gi, 'Let me tell you na')
-      .replace(/\bKeep going\b/gi, 'Keep going, you are doing well')
-      .replace(/\bbasically\b/gi, 'basically what happens is')
-      
-      // Pronunciation hints that work better with OpenAI voices
-      .replace(/\bwould\b/gi, 'vould')
-      .replace(/\bwas\b/gi, 'vas')
-      .replace(/\bwere\b/gi, 'vere');
-
-    return processedText;
+    // Keep minimal processing - the authentic Indian voice handles the accent
+    // Only do basic cleanup for better pronunciation
+    return text
+      .replace(/\s+/g, ' ') // Clean up extra spaces
+      .trim(); // Remove leading/trailing spaces
   }
 }
 

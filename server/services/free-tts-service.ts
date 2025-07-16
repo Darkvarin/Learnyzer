@@ -186,47 +186,16 @@ export class FreeTTSService {
   }
 
   /**
-   * Process text to enhance Indian accent characteristics
+   * Process text to enhance Indian accent characteristics (minimal processing)
    */
   private preprocessForIndianAccent(text: string, language: 'english' | 'hindi'): string {
     if (language === 'hindi') {
       return text; // Keep Hindi text as is
     }
 
-    // Enhanced Indian English preprocessing
-    let processedText = text
-      // Add natural Indian expressions
-      .replace(/\bHello\b/gi, 'Namaste')
-      .replace(/\bvery good\b/gi, 'bahut accha')
-      .replace(/\bexcellent\b/gi, 'excellent hai')
-      .replace(/\bunderstand\b/gi, 'samajh')
-      .replace(/\bbasically\b/gi, 'basically yaar')
-      
-      // Indian English phrasing
-      .replace(/\bGreat question\b/gi, 'Acha question')
-      .replace(/\bYou see\b/gi, 'Dekho, you see')
-      .replace(/\bOkay\b/gi, 'Acha, okay')
-      .replace(/\bLet me tell you\b/gi, 'Let me tell you na')
-      
-      // Pronunciation adjustments for clearer Indian accent
-      .replace(/\bwould\b/gi, 'vould')
-      .replace(/\bwas\b/gi, 'vas')
-      .replace(/\bwere\b/gi, 'vere')
-      .replace(/\bthree\b/gi, 'tree')
-      .replace(/\bthirty\b/gi, 'tirty')
-      
-      // Add emphasis markers for better pronunciation
-      .replace(/important/gi, 'very important')
-      .replace(/concept/gi, 'main concept')
-      .replace(/\b(\w+)ing\b/gi, '$1-ing') // Add slight pause before -ing
-      
-      // Add natural Indian filler words
-      .replace(/\. /g, ', you know. ')
-      .replace(/However,/gi, 'But actually,')
-      .replace(/Therefore,/gi, 'So basically,');
-
-    return processedText;
-  }
+    // Keep minimal processing - just return the original text
+    // The Indian accent comes from the voice itself, not text manipulation
+    return text;
 }
 
 export const freeTTSService = new FreeTTSService();
