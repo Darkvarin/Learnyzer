@@ -343,6 +343,7 @@ export class FreeTTSService {
     // Keep minimal processing - just return the original text
     // The Indian accent comes from the voice itself, not text manipulation
     return text;
+  }
 }
 
 export const freeTTSService = new FreeTTSService();

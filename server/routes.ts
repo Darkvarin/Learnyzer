@@ -1064,55 +1064,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`🎤 TTS request: ${text.length} chars, voice: ${voice}, free: ${useFree}`);
 
-      // Try free Indian accent TTS first
-      if (useFree) {
-        const { freeTTSService } = await import("./services/free-tts-service");
+      // For authentic Indian accent, direct client to use browser TTS
+      if (useFree && (voice === 'indian_female' || language === 'hindi')) {
+        console.log('🎤 Directing to browser TTS for authentic Indian accent');
         
-        const freeResult = await freeTTSService.generateSpeech(text, {
-          voice: voice || 'indian_female',
-          language: language as 'english' | 'hindi' || 'english',
-          speed: 0.8
+        return res.json({
+          success: true,
+          useBrowserTTS: true,
+          text: text,
+          voice: 'indian_accent_browser',
+          provider: 'browser_indian_native',
+          message: 'Using browser native Indian voice for authentic accent'
         });
-
-        if (freeResult.success && freeResult.audioUrl) {
-          // If it's a direct URL, fetch the audio
-          if (freeResult.audioUrl.startsWith('http')) {
-            try {
-              const audioResponse = await fetch(freeResult.audioUrl);
-              if (audioResponse.ok) {
-                const audioBuffer = Buffer.from(await audioResponse.arrayBuffer());
-                const audioBase64 = audioBuffer.toString('base64');
-                
-                console.log(`✅ Generated ${audioBuffer.length} bytes of free Indian accent audio`);
-                
-                return res.json({
-                  success: true,
-                  audioBase64,
-                  mimeType: 'audio/mpeg',
-                  voice: 'indian_accent_free',
-                  provider: 'free_indian_tts'
-                });
-              }
-            } catch (fetchError) {
-              console.log('⚠️ Failed to fetch audio from free service, trying fallback...');
-            }
-          } else if (freeResult.audioUrl.startsWith('data:')) {
-            // Data URL format
-            const audioBase64 = freeResult.audioUrl.split(',')[1];
-            
-            console.log(`✅ Generated free Indian accent audio from data URL`);
-            
-            return res.json({
-              success: true,
-              audioBase64,
-              mimeType: 'audio/wav',
-              voice: 'indian_accent_free',
-              provider: 'free_indian_tts'
-            });
-          }
-        }
-        
-        console.log('⚠️ Free Indian TTS failed, falling back to OpenAI...');
       }
 
       // Fallback to OpenAI TTS with enhanced Indian accent simulation
