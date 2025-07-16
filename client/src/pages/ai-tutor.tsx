@@ -1173,7 +1173,17 @@ export default function AiTutor() {
                                         size="sm"
                                         onClick={() => {
                                           console.log('🔧 TTS DEBUG TEST STARTING...');
-                                          speak("Hello Sanjay! This is a test of the Indian accent TTS system. Can you hear me clearly?", {
+                                          
+                                          // List all available voices for debugging
+                                          if (window.speechSynthesis) {
+                                            const voices = window.speechSynthesis.getVoices();
+                                            console.log('📋 ALL AVAILABLE VOICES:');
+                                            voices.forEach((voice, index) => {
+                                              console.log(`${index + 1}. ${voice.name} (${voice.lang}) ${voice.gender || ''}`);
+                                            });
+                                          }
+                                          
+                                          speak("Hello Sanjay! This is a test of the voice system. Can you hear me clearly?", {
                                             rate: 0.95,
                                             voicePreference: 'neerja',
                                             language: 'english'

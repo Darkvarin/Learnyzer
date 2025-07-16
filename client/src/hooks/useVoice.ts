@@ -153,33 +153,46 @@ export function useVoice() {
           return !maleName; // Exclude male voices
         });
         
-        console.log('Available Indian female voices:', femaleIndianVoices.map(v => `${v.name} (${v.lang})`));
+        console.log('🇮🇳 Indian voices found:', allIndianVoices.map(v => `${v.name} (${v.lang})`));
+        console.log('♀️ Female Indian voices:', femaleIndianVoices.map(v => `${v.name} (${v.lang})`));
         
-        // Step 3: Preference hierarchy for ENGLISH content (avoid Hindi voices for English)
-        // Priority 1: Microsoft Neerja (Best Indian English accent)
-        selectedVoice = indianEnglishVoices.find(voice => voice.name.includes('Neerja'));
+        // Step 3: REALISTIC voice selection based on what's actually available
+        console.log('🔍 Available voices:', voices.map(v => `${v.name} (${v.lang})`));
         
-        // Priority 2: Other Microsoft Indian English female voices
+        // Priority 1: Look for ANY Indian English voices (en-IN)
+        selectedVoice = voices.find(voice => 
+          voice.lang === 'en-IN' && 
+          !['male', 'prabhat', 'madhur'].some(male => voice.name.toLowerCase().includes(male))
+        );
+        
+        // Priority 2: Look for any voice with "India" in name
         if (!selectedVoice) {
-          selectedVoice = indianEnglishVoices.find(voice => 
-            voice.name.includes('Microsoft') && 
-            (voice.name.includes('Aditi') || voice.name.includes('Kavya') || voice.name.includes('Priya'))
+          selectedVoice = voices.find(voice => 
+            voice.name.toLowerCase().includes('india') && 
+            voice.lang.startsWith('en') &&
+            !['male', 'prabhat', 'madhur'].some(male => voice.name.toLowerCase().includes(male))
           );
         }
         
-        // Priority 3: Any en-IN female voice
+        // Priority 3: Use best available female English voices (avoid Hindi for English content)
         if (!selectedVoice) {
-          selectedVoice = indianEnglishVoices.find(voice => voice.lang === 'en-IN');
-        }
-        
-        // Priority 4: Any Indian English voice
-        if (!selectedVoice && indianEnglishVoices.length > 0) {
-          selectedVoice = indianEnglishVoices[0];
-        }
-        
-        // Only use Hindi voices as last resort for English content
-        if (!selectedVoice) {
-          selectedVoice = femaleIndianVoices.find(voice => voice.name.includes('Swara'));
+          const goodFemaleVoices = voices.filter(voice => {
+            const isMale = ['male', 'mark', 'david', 'daniel', 'james', 'kevin', 'ryan', 'aaron', 'thomas'].some(name => 
+              voice.name.toLowerCase().includes(name)
+            );
+            const isFemale = ['female', 'anna', 'aria', 'linda', 'hazel', 'zoe', 'samantha', 'karen', 'fiona', 'susan', 'mary'].some(name => 
+              voice.name.toLowerCase().includes(name)
+            );
+            const isEnglish = voice.lang.startsWith('en') && !voice.lang.includes('hi');
+            return isEnglish && (isFemale || !isMale);
+          });
+          
+          // Prefer specific good female voices
+          selectedVoice = goodFemaleVoices.find(v => v.name.includes('Samantha')) || 
+                         goodFemaleVoices.find(v => v.name.includes('Anna')) ||
+                         goodFemaleVoices.find(v => v.name.includes('Karen')) ||
+                         goodFemaleVoices.find(v => v.name.includes('Susan')) ||
+                         goodFemaleVoices[0];
         }
         
         // Final fallback: Any female English voice (avoid male voices completely)
@@ -204,10 +217,12 @@ export function useVoice() {
         // Cache the selected voice for future use
         if (selectedVoice) {
           cachedVoiceRef.current = selectedVoice;
-          console.log('CACHED INDIAN FEMALE VOICE:', selectedVoice.name, selectedVoice.lang);
+          console.log('✅ CACHED FEMALE VOICE:', selectedVoice.name, selectedVoice.lang);
+        } else {
+          console.error('❌ NO SUITABLE VOICE FOUND! Using system default.');
         }
       } else {
-        console.log('USING CACHED INDIAN FEMALE VOICE:', selectedVoice.name);
+        console.log('🔄 USING CACHED VOICE:', selectedVoice.name, selectedVoice.lang);
       }
       
       // Debug logging for Indian female voice selection
