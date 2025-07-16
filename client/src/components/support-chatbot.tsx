@@ -173,16 +173,8 @@ export function SupportChatbot() {
 
     try {
       // Try to use the enhanced API endpoint first
-      console.log("Sending chat request with query:", currentQuery);
-      console.log("Request payload:", { query: currentQuery });
       const response = await apiRequest("POST", "/api/support/chat", { query: currentQuery });
-      
-      console.log("API Response received:", response);
-      console.log("Response type:", typeof response);
-      console.log("Response keys:", Object.keys(response || {}));
-      
       const botResponse = (response as any).response || (response as any).aiResponse;
-      console.log("Extracted bot response:", botResponse);
       
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
@@ -193,12 +185,8 @@ export function SupportChatbot() {
 
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error("API error, falling back to local response:", error);
-      
       // Fallback to local response generation
-      console.log("Generating local response for query:", currentQuery);
       const botResponse = generateBotResponse(currentQuery);
-      console.log("Generated local response:", botResponse);
       
       const botMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),

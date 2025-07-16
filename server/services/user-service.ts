@@ -27,7 +27,7 @@ export const userService = {
       
       return res.status(200).json(stats);
     } catch (error) {
-      console.error("Get user stats error:", error);
+      
       return res.status(500).json({ message: "Error retrieving user stats" });
     }
   },
@@ -55,7 +55,7 @@ export const userService = {
       
       return res.status(200).json(streak);
     } catch (error) {
-      console.error("Get user streak error:", error);
+      
       return res.status(500).json({ message: "Error retrieving user streak" });
     }
   },
@@ -86,7 +86,7 @@ export const userService = {
       
       return res.status(200).json({ message: "Streak reward claimed successfully" });
     } catch (error) {
-      console.error("Claim streak reward error:", error);
+      
       return res.status(500).json({ message: "Error claiming streak reward" });
     }
   },
@@ -105,7 +105,7 @@ export const userService = {
       
       return res.status(200).json(rankData);
     } catch (error) {
-      console.error("Get user rank error:", error);
+      
       return res.status(500).json({ message: "Error retrieving user rank" });
     }
   },
@@ -132,7 +132,7 @@ export const userService = {
         referrals
       });
     } catch (error) {
-      console.error("Get user referrals error:", error);
+      
       return res.status(500).json({ message: "Error retrieving user referrals" });
     }
   },
@@ -191,7 +191,7 @@ export const userService = {
         const validationError = fromZodError(error);
         return res.status(400).json({ message: validationError.message });
       }
-      console.error("Create referral error:", error);
+      
       return res.status(500).json({ message: "Error creating referral" });
     }
   },
@@ -210,7 +210,7 @@ export const userService = {
       
       return res.status(200).json(rewards);
     } catch (error) {
-      console.error("Get all rewards error:", error);
+      
       return res.status(500).json({ message: "Error retrieving rewards" });
     }
   },
@@ -260,7 +260,7 @@ export const userService = {
       
       return res.status(201).json(userReward);
     } catch (error) {
-      console.error("Claim reward error:", error);
+      
       return res.status(500).json({ message: "Error claiming reward" });
     }
   },
@@ -279,7 +279,7 @@ export const userService = {
       
       return res.status(200).json(achievements);
     } catch (error) {
-      console.error("Get all achievements error:", error);
+      
       return res.status(500).json({ message: "Error retrieving achievements" });
     }
   },
@@ -308,7 +308,7 @@ export const userService = {
       
       return res.status(200).json(achievement);
     } catch (error) {
-      console.error("Get achievement by ID error:", error);
+      
       return res.status(500).json({ message: "Error retrieving achievement" });
     }
   }

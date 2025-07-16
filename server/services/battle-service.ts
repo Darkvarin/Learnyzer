@@ -31,7 +31,6 @@ export const battleService = {
       
       return res.status(200).json({ active, upcoming, past });
     } catch (error) {
-      console.error("Get all battles error:", error);
       return res.status(500).json({ message: "Error retrieving battles" });
     }
   },
@@ -44,7 +43,6 @@ export const battleService = {
       const battles = await storage.getActiveBattles();
       return res.status(200).json(battles);
     } catch (error) {
-      console.error("Get active battles error:", error);
       return res.status(500).json({ message: "Error retrieving active battles" });
     }
   },

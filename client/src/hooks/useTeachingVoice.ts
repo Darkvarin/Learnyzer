@@ -27,20 +27,9 @@ export function useTeachingVoice() {
 
   const generateTeachingVoice = useMutation({
     mutationFn: async (data: TeachingVoiceRequest): Promise<TeachingVoiceResponse> => {
-      console.log('Sending teaching voice request:', data);
       const response = await apiRequest('POST', '/api/ai/teaching-voice', data);
-      console.log('Raw API response object:', response);
       const jsonData = await response.json();
-      console.log('Parsed JSON data:', jsonData);
       return jsonData;
-    },
-    onSuccess: (response) => {
-      console.log('Teaching voice response:', response);
-      console.log('Teaching explanation text:', response.teachingExplanation);
-      // Note: Speech is now handled in teachConcept function with user voice settings
-    },
-    onError: (error) => {
-      console.error('Error generating teaching voice:', error);
     }
   });
 
@@ -65,10 +54,6 @@ export function useTeachingVoice() {
       const result = await generateTeachingVoice.mutateAsync(requestData);
       // Speak the teaching explanation with user voice settings
       if (result.teachingExplanation) {
-        console.log('Teaching voice will speak:', result.teachingExplanation.substring(0, 100) + '...');
-        console.log('Voice settings:', voiceSettings);
-        console.log('Full teaching explanation length:', result.teachingExplanation.length);
-        
         // Try immediate speech first (works better after user interaction)
         speak(result.teachingExplanation, {
           rate: 0.95, // Adjusted rate for better comprehension
