@@ -230,21 +230,21 @@ export default function AiTutor() {
     const exam = (userData as any)?.selectedExam || (userData as any)?.track;
     switch (exam) {
       case 'neet':
-        return 'neet_biology';
+        return 'Biology';
       case 'jee':
-        return 'jee_mathematics';
+        return 'Mathematics';
       case 'upsc':
-        return 'upsc_history';
+        return 'History';
       case 'clat':
-        return 'clat_legal_reasoning';
+        return 'Legal Reasoning';
       case 'cuet':
-        return 'cuet_general';
+        return 'General Test';
       case 'cse':
-        return 'cse_programming';
+        return 'Programming';
       case 'cgle':
-        return 'cgle_general_awareness';
+        return 'General Awareness';
       default:
-        return 'general_study'; // Safe fallback that won't be blocked
+        return 'General'; // Safe fallback that won't be blocked
     }
   };
   
@@ -414,11 +414,19 @@ export default function AiTutor() {
       console.error("AI tutor error:", error);
       const errorMessage = error.message || "Unknown error";
       
-      // Check for 403 exam-specific subject validation error
-      if (error.status === 403 || errorMessage.includes("not available for") || errorMessage.includes("exam preparation")) {
+      // Check for exam access restriction errors (403 status or specific exam-related messages)
+      if (error.status === 403 || 
+          errorMessage.includes("exam access") || 
+          errorMessage.includes("locked your preparation") ||
+          errorMessage.includes("cannot ask questions") ||
+          errorMessage.includes("selected entrance exam") ||
+          errorMessage.includes("not available for") || 
+          errorMessage.includes("exam preparation")) {
         toast({
-          title: "Subject Restricted",
-          description: errorMessage.length > 100 ? errorMessage.substring(0, 97) + "..." : errorMessage,
+          title: "Exam Access Restricted",
+          description: errorMessage.includes("locked your preparation") ? 
+            "You've locked your preparation to a specific exam. Contact support to change exams." :
+            errorMessage.length > 100 ? errorMessage.substring(0, 97) + "..." : errorMessage,
           variant: "destructive",
         });
       } else if (errorMessage.includes("Usage limit exceeded")) {
