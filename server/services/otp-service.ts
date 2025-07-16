@@ -18,8 +18,11 @@ class OTPService {
 
   constructor() {
     this.apiKey = process.env.TWOFACTOR_API_KEY || '';
+    console.log('2Factor API Key status:', this.apiKey ? 'Found' : 'Not found');
     if (!this.apiKey) {
-      console.warn('2Factor API key not found. OTP service will not work.');
+      console.warn('2Factor API key not found. OTP service will use development mode.');
+    } else {
+      console.log('2Factor API key configured successfully');
     }
   }
 
@@ -35,9 +38,9 @@ class OTPService {
         };
       }
 
-      // Development mode fallback - always use for development
-      if (process.env.NODE_ENV === 'development' || !this.apiKey) {
-        console.log(`[DEV] OTP for ${cleanMobile}: 123456`);
+      // Only use development mode if API key is missing
+      if (!this.apiKey) {
+        console.log(`[DEV] OTP for ${cleanMobile}: 123456 (No API key)`);
         return {
           success: true,
           sessionId: 'dev-session-' + Date.now(),
@@ -45,12 +48,7 @@ class OTPService {
         };
       }
 
-      if (!this.apiKey) {
-        return {
-          success: false,
-          message: 'SMS service temporarily unavailable'
-        };
-      }
+      // This check is now redundant as we handle it above
 
       const response = await axios.get<OTPResponse>(
         `${this.baseUrl}/${this.apiKey}/SMS/+91${cleanMobile}/AUTOGEN/Learnyzer`,
