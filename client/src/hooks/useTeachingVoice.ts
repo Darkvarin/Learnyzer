@@ -34,7 +34,7 @@ export function useTeachingVoice() {
   });
 
   const teachConcept = async (data: TeachingVoiceRequest, voiceSettings?: {
-    voicePreference?: 'neerja' | 'prabhat' | 'auto';
+    voicePreference?: 'neerja' | 'swara' | 'auto'; // Removed male voice option
     language?: 'english' | 'hindi';
   }) => {
     // If already speaking/teaching, stop it
@@ -55,9 +55,11 @@ export function useTeachingVoice() {
       // Speak the teaching explanation with user voice settings
       if (result.teachingExplanation) {
         // Try immediate speech first (works better after user interaction)
+        // Use Indian accent female voice based on language preference
+        const preferredVoice = voiceSettings?.language === 'hindi' ? 'swara' : 'neerja';
         speak(result.teachingExplanation, {
           rate: 0.95, // Adjusted rate for better comprehension
-          voicePreference: 'neerja', // Always use female voice
+          voicePreference: preferredVoice, // Indian accent female voices only
           language: voiceSettings?.language || 'english'
         });
       } else {
