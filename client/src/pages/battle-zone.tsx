@@ -488,6 +488,11 @@ function BattleDetail({ battle, onBack, userData }: { battle: any; onBack: () =>
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Check if battle has enough participants to start
+  const currentParticipants = battle.participants?.length || 0;
+  const requiredParticipants = parseInt(battle.type?.slice(0, 1)) * 2 || 2; // Extract number from "1v1", "2v2", etc.
+  const canStart = currentParticipants >= requiredParticipants;
+
   // Demo battle questions based on exam type (5 questions each)
   const demoQuestions = {
     JEE: [
@@ -838,6 +843,118 @@ function BattleDetail({ battle, onBack, userData }: { battle: any; onBack: () =>
             </div>
             <p className="text-white text-xl font-bold">{Math.max(5, Math.floor(score / 2))}</p>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show waiting screen if not enough participants
+  if (!canStart) {
+    return (
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Battles
+          </Button>
+          <div className="h-6 w-px bg-gray-600"></div>
+          <div>
+            <h1 className="text-2xl font-bold text-white">{battle.title}</h1>
+            <p className="text-gray-400">{battle.examType} • {battle.subject} • {battle.type}</p>
+          </div>
+        </div>
+
+        {/* Waiting Screen */}
+        <div className="glassmorphism border border-purple-500/30 p-8 rounded-xl text-center">
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 border-4 border-purple-400/30 border-t-purple-400 rounded-full animate-spin"></div>
+          </div>
+          
+          <h2 className="text-3xl font-bold text-white mb-4">Waiting for Players...</h2>
+          
+          <p className="text-gray-300 mb-6 text-lg">
+            Need {requiredParticipants - currentParticipants} more player{requiredParticipants - currentParticipants !== 1 ? 's' : ''} to start this {battle.type} battle
+          </p>
+          
+          <div className="bg-gray-800/50 border border-gray-600/50 rounded-lg p-6 mb-6">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <Users className="w-6 h-6 text-cyan-400" />
+              <span className="text-xl font-bold text-white">
+                {currentParticipants} / {requiredParticipants} Players
+              </span>
+            </div>
+            
+            <div className="w-full bg-gray-700 rounded-full h-3 mb-4">
+              <div 
+                className="bg-gradient-to-r from-purple-500 to-cyan-500 h-3 rounded-full transition-all duration-300"
+                style={{ width: `${(currentParticipants / requiredParticipants) * 100}%` }}
+              ></div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="text-center">
+                <p className="text-gray-400 mb-1">Battle Type</p>
+                <p className="text-white font-semibold">{battle.type}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-gray-400 mb-1">Entry Fee</p>
+                <p className="text-white font-semibold">{battle.entryFee || 0} coins</p>
+              </div>
+              <div className="text-center">
+                <p className="text-gray-400 mb-1">Prize Pool</p>
+                <p className="text-white font-semibold">{battle.prizePool || 50} coins</p>
+              </div>
+              <div className="text-center">
+                <p className="text-gray-400 mb-1">Duration</p>
+                <p className="text-white font-semibold">{battle.duration || 10} min</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Current Participants */}
+          {battle.participants && battle.participants.length > 0 && (
+            <div className="bg-gray-800/30 border border-gray-600/30 rounded-lg p-4 mb-6">
+              <h3 className="text-lg font-semibold text-white mb-3">Current Players</h3>
+              <div className="flex justify-center gap-4">
+                {battle.participants.map((participant: any, index: number) => (
+                  <div key={index} className="flex flex-col items-center">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-cyan-500/20 rounded-full flex items-center justify-center mb-2">
+                      <span className="text-white font-bold">{participant.name?.charAt(0) || 'U'}</span>
+                    </div>
+                    <span className="text-sm text-gray-300">{participant.name || 'Unknown'}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-4 justify-center">
+            <Button
+              onClick={onBack}
+              variant="outline"
+              className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            >
+              Leave Battle
+            </Button>
+            
+            <Button
+              onClick={() => window.location.reload()}
+              className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
+          
+          <p className="text-gray-400 text-sm mt-4">
+            Share this battle with friends to start faster!
+          </p>
         </div>
       </div>
     );
