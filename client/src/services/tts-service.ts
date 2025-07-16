@@ -118,6 +118,77 @@ class ClientTTSService {
 
     } catch (error) {
       console.error('❌ TTS Service Error:', error);
+      console.log('⚠️ Trying browser fallback with Indian voice...');
+      return this.fallbackToBrowserTTS(text, options);
+    }
+  }
+
+  /**
+   * Fallback to browser speech synthesis with Indian voice preference
+   */
+  private async fallbackToBrowserTTS(text: string, options: TTSOptions = {}): Promise<boolean> {
+    try {
+      if (!('speechSynthesis' in window)) {
+        console.error('❌ Browser TTS not supported');
+        return false;
+      }
+
+      this.stop(); // Stop any current audio
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      
+      // Try to find Indian or British English voices
+      const voices = speechSynthesis.getVoices();
+      const indianVoice = voices.find(voice => 
+        voice.lang.includes('en-IN') || 
+        voice.name.toLowerCase().includes('indian') ||
+        voice.name.toLowerCase().includes('raveena') ||
+        voice.name.toLowerCase().includes('aditi')
+      );
+      
+      const britishVoice = voices.find(voice => 
+        voice.lang.includes('en-GB') || 
+        voice.name.toLowerCase().includes('british')
+      );
+
+      // Prefer Indian voice, fallback to British, then any English female
+      if (indianVoice) {
+        utterance.voice = indianVoice;
+        console.log('✅ Using browser Indian voice:', indianVoice.name);
+      } else if (britishVoice) {
+        utterance.voice = britishVoice;
+        console.log('✅ Using browser British voice:', britishVoice.name);
+      } else {
+        // Find any English female voice
+        const femaleVoice = voices.find(voice => 
+          voice.lang.startsWith('en') && voice.name.toLowerCase().includes('female')
+        );
+        if (femaleVoice) {
+          utterance.voice = femaleVoice;
+          console.log('✅ Using browser female voice:', femaleVoice.name);
+        }
+      }
+
+      utterance.rate = options.rate || 0.8;
+      utterance.pitch = 0.9; // Slightly lower pitch
+      utterance.volume = 1.0;
+
+      return new Promise((resolve) => {
+        utterance.onend = () => {
+          console.log('🔊 Browser TTS playback finished');
+          resolve(true);
+        };
+        
+        utterance.onerror = (error) => {
+          console.error('❌ Browser TTS error:', error);
+          resolve(false);
+        };
+
+        speechSynthesis.speak(utterance);
+      });
+
+    } catch (error) {
+      console.error('❌ Browser TTS fallback failed:', error);
       return false;
     }
   }

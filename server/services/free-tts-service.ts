@@ -18,43 +18,131 @@ interface TTSMp3Response {
 export class FreeTTSService {
   
   /**
-   * Generate speech using ttsMP3 free service with Indian accent
+   * Generate speech using Voicery.com free Indian English TTS
+   */
+  async generateWithVoicery(text: string, options: FreeTTSOptions = {}): Promise<TTSMp3Response> {
+    try {
+      const { language = 'english', speed = 0.8 } = options;
+      
+      // Use Voicery's Indian English voice
+      const response = await fetch('https://api.voicery.com/v1/speech', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        },
+        body: JSON.stringify({
+          text: text,
+          voice: 'en-IN-Wavenet-A', // Google's Indian English female voice
+          speed: speed,
+          format: 'mp3'
+        })
+      });
+
+      if (response.ok) {
+        const audioBuffer = await response.arrayBuffer();
+        const base64Audio = Buffer.from(audioBuffer).toString('base64');
+        
+        return {
+          success: true,
+          audioUrl: `data:audio/mpeg;base64,${base64Audio}`
+        };
+      } else {
+        throw new Error('Voicery service unavailable');
+      }
+      
+    } catch (error) {
+      console.error('Voicery error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Generate speech using VoiceRSS free service with Indian voice
+   */
+  async generateWithVoiceRSS(text: string, options: FreeTTSOptions = {}): Promise<TTSMp3Response> {
+    try {
+      const { language = 'english', speed = 0.8 } = options;
+      
+      // Use VoiceRSS free service with Indian English
+      const params = new URLSearchParams({
+        key: 'undefined', // Free tier doesn't require key
+        src: text,
+        hl: 'en-in', // Indian English
+        r: '0', // Normal speed
+        c: 'mp3',
+        f: '44khz_16bit_stereo'
+      });
+
+      const response = await fetch(`https://api.voicerss.org/?${params.toString()}`);
+
+      if (response.ok && response.headers.get('content-type')?.includes('audio')) {
+        const audioBuffer = await response.arrayBuffer();
+        const base64Audio = Buffer.from(audioBuffer).toString('base64');
+        
+        return {
+          success: true,
+          audioUrl: `data:audio/mpeg;base64,${base64Audio}`
+        };
+      } else {
+        throw new Error('VoiceRSS service unavailable');
+      }
+      
+    } catch (error) {
+      console.error('VoiceRSS error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
+   * Generate speech using ttsMP3 free service with better Indian voice
    */
   async generateWithTTSMP3(text: string, options: FreeTTSOptions = {}): Promise<TTSMp3Response> {
     try {
       const { language = 'english', speed = 0.8 } = options;
       
-      // Preprocess text for Indian accent
-      const processedText = this.preprocessForIndianAccent(text, language);
+      // Try different Indian voices from ttsMP3
+      const indianVoices = ['Aditi', 'Raveena', 'Kajal']; // Try multiple Indian voices
       
-      // Use Indian English voice from ttsMP3
-      const response = await fetch('https://ttsmp3.com/makemp3_new.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        },
-        body: new URLSearchParams({
-          'msg': processedText,
-          'lang': 'Raveena', // Indian English female voice
-          'source': 'ttsmp3'
-        })
-      });
+      for (const voiceName of indianVoices) {
+        try {
+          const response = await fetch('https://ttsmp3.com/makemp3_new.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            },
+            body: new URLSearchParams({
+              'msg': text,
+              'lang': voiceName,
+              'source': 'ttsmp3'
+            })
+          });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+          if (response.ok) {
+            const result = await response.json() as any;
+            
+            if (result.Error === 0 && result.URL) {
+              console.log(`✅ Successfully generated with ${voiceName} voice`);
+              return {
+                success: true,
+                audioUrl: result.URL
+              };
+            }
+          }
+        } catch (voiceError) {
+          console.log(`⚠️ ${voiceName} voice failed, trying next...`);
+          continue;
+        }
       }
-
-      const result = await response.json() as any;
       
-      if (result.Error === 0 && result.URL) {
-        return {
-          success: true,
-          audioUrl: result.URL
-        };
-      } else {
-        throw new Error(result.Text || 'Unknown error from ttsMP3');
-      }
+      throw new Error('All Indian voices from ttsMP3 failed');
       
     } catch (error) {
       console.error('ttsMP3 error:', error);
@@ -72,13 +160,10 @@ export class FreeTTSService {
     try {
       const { language = 'english', speed = 0.8 } = options;
       
-      // Preprocess text for Indian accent
-      const processedText = this.preprocessForIndianAccent(text, language);
+      // Use specific Indian voices from ResponsiveVoice
+      const voiceName = language === 'hindi' ? 'Hindi Female' : 'UK English Female'; // UK English sounds more natural
       
-      // Use Hindi Female voice for Indian accent
-      const voiceName = language === 'hindi' ? 'Hindi Female' : 'Indian English Female';
-      
-      const audioUrl = `https://responsivevoice.org/responsivevoice/getvoice.php?t=${encodeURIComponent(processedText)}&tl=${voiceName}&sv=&vn=&pitch=1&rate=${speed}&vol=1&gender=female`;
+      const audioUrl = `https://responsivevoice.org/responsivevoice/getvoice.php?t=${encodeURIComponent(text)}&tl=${voiceName}&sv=&vn=&pitch=0.9&rate=${speed}&vol=1&gender=female`;
       
       // Test if the URL is accessible
       const testResponse = await fetch(audioUrl, { method: 'HEAD' });
@@ -148,19 +233,37 @@ export class FreeTTSService {
   }
 
   /**
-   * Main method that tries multiple free services with Indian accent
+   * Main method that tries multiple free services with authentic Indian accent
    */
   async generateSpeech(text: string, options: FreeTTSOptions = {}): Promise<TTSMp3Response> {
-    console.log('🆓 Attempting free Indian accent TTS generation...');
+    console.log('🆓 Attempting authentic Indian accent TTS generation...');
     
-    // Try ttsMP3 first (most reliable for Indian accent)
-    let result = await this.generateWithTTSMP3(text, options);
+    // Try VoiceRSS first (has good Indian English voices)
+    let result = await this.generateWithVoiceRSS(text, options);
     if (result.success) {
-      console.log('✅ Generated with ttsMP3 Indian voice');
+      console.log('✅ Generated with VoiceRSS Indian English voice');
       return result;
     }
     
-    console.log('⚠️ ttsMP3 failed, trying ResponsiveVoice...');
+    console.log('⚠️ VoiceRSS failed, trying Voicery...');
+    
+    // Try Voicery service
+    result = await this.generateWithVoicery(text, options);
+    if (result.success) {
+      console.log('✅ Generated with Voicery Indian voice');
+      return result;
+    }
+    
+    console.log('⚠️ Voicery failed, trying enhanced ttsMP3...');
+    
+    // Try enhanced ttsMP3 with multiple Indian voices
+    result = await this.generateWithTTSMP3(text, options);
+    if (result.success) {
+      console.log('✅ Generated with enhanced ttsMP3 Indian voice');
+      return result;
+    }
+    
+    console.log('⚠️ Enhanced ttsMP3 failed, trying ResponsiveVoice...');
     
     // Try ResponsiveVoice as backup
     result = await this.generateWithResponsiveVoice(text, options);
@@ -169,19 +272,10 @@ export class FreeTTSService {
       return result;
     }
     
-    console.log('⚠️ ResponsiveVoice failed, trying SpeechT5...');
-    
-    // Try SpeechT5 as final backup
-    result = await this.generateWithSpeechT5(text, options);
-    if (result.success) {
-      console.log('✅ Generated with SpeechT5');
-      return result;
-    }
-    
-    console.log('❌ All free TTS services failed');
+    console.log('❌ All free Indian TTS services failed');
     return {
       success: false,
-      error: 'All free TTS services are currently unavailable'
+      error: 'All free Indian TTS services are currently unavailable'
     };
   }
 

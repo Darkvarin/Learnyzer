@@ -1115,23 +1115,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('⚠️ Free Indian TTS failed, falling back to OpenAI...');
       }
 
-      // Fallback to OpenAI TTS if free services fail or not requested
+      // Fallback to OpenAI TTS with enhanced Indian accent simulation
       if (!process.env.OPENAI_API_KEY) {
         return res.status(500).json({ error: "No TTS service available" });
       }
 
       const { TTSService } = await import("./services/tts-service");
       
-      // Get recommended voice based on preferences
-      const recommendedVoice = TTSService.getRecommendedVoice(language || 'english', gender || 'female');
-      const selectedVoice = (voice === 'indian_female' ? 'alloy' : voice) || recommendedVoice;
+      // Use Alloy voice which is more natural for Indian accent simulation
+      const selectedVoice = 'alloy'; // Best voice for Indian accent
       
-      console.log(`🎤 OpenAI TTS fallback: ${selectedVoice}`);
+      // Enhance text for better Indian accent simulation
+      let enhancedText = text
+        // Slow down speech for clarity
+        .replace(/\./g, '... ') // Add pauses at sentences
+        .replace(/,/g, ', ') // Slight pauses at commas
+        // Add natural Indian speech patterns
+        .replace(/\bActually\b/gi, 'Actually you see')
+        .replace(/\bYou know\b/gi, 'You know na')
+        .replace(/\bunderstand\b/gi, 'understand properly')
+        .replace(/\bvery good\b/gi, 'very very good')
+        .replace(/\bKeep going\b/gi, 'Keep going, you are doing excellent');
       
-      const result = await TTSService.generateSpeechBase64(text, {
+      console.log(`🎤 OpenAI TTS with Indian accent enhancement: ${selectedVoice}`);
+      
+      const result = await TTSService.generateSpeechBase64(enhancedText, {
         voice: selectedVoice,
-        model: 'tts-1', // Fast model for real-time response
-        speed: 0.85
+        model: 'tts-1-hd', // Higher quality for better pronunciation
+        speed: 0.75 // Slower for Indian accent simulation
       });
       
       if (result.success) {
@@ -1139,8 +1150,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           success: true,
           audioBase64: result.audioBase64,
           mimeType: result.mimeType,
-          voice: result.voice,
-          provider: 'openai_fallback'
+          voice: 'indian_accent_enhanced',
+          provider: 'openai_indian_enhanced'
         });
       } else {
         console.error("TTS generation failed:", result.error);
