@@ -31,6 +31,7 @@ export function useVoice() {
   const [transcript, setTranscript] = useState('');
   const [isSupported, setIsSupported] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const cachedVoiceRef = useRef<SpeechSynthesisVoice | null>(null);
 
   useEffect(() => {
     // Check if speech recognition is supported
@@ -121,57 +122,52 @@ export function useVoice() {
       
       const utterance = new SpeechSynthesisUtterance(cleanText);
       
-      // Find best voice based on preferences
-      const voicePreference = options?.voicePreference || 'auto';
-      const language = options?.language || 'english';
+      // CACHED VOICE SELECTION: Use previously selected voice for consistency
+      let selectedVoice = cachedVoiceRef.current;
       
-      let selectedVoice = null;
-      
-      // PRIORITY 1: Always try to find Indian voices first
-      const indianEnglishVoices = voices.filter(voice => 
-        voice.lang.includes('en-IN') || 
-        voice.name.includes('India') ||
-        voice.name.includes('Neerja') ||
-        voice.name.includes('Prabhat')
-      );
-      
-      const indianHindiVoices = voices.filter(voice => 
-        voice.lang.includes('hi-IN') || 
-        voice.lang.includes('hi') ||
-        voice.name.toLowerCase().includes('hindi') ||
-        voice.name.includes('Madhur') ||
-        voice.name.includes('Swara')
-      );
-
-      // FEMALE VOICE ONLY: Always use Neerja for English and Swara for Hindi (Akira's voice)
-      if (language === 'english' && indianEnglishVoices.length > 0) {
-        // Always use Neerja for English (Akira's English voice)
-        selectedVoice = indianEnglishVoices.find(v => v.name.includes('Neerja')) || indianEnglishVoices[0];
-      } else if (language === 'hindi' && indianHindiVoices.length > 0) {
-        // Always use Swara for Hindi/Hinglish (Akira's Hindi voice)
-        selectedVoice = indianHindiVoices.find(v => v.name.includes('Swara')) || 
-                       indianHindiVoices.find(v => !v.name.includes('Madhur')) ||
-                       indianHindiVoices[0];
+      // If no cached voice, select and cache a voice
+      if (!selectedVoice || !voices.includes(selectedVoice)) {
+        // PRIORITY: Always use Microsoft Neerja (Indian English) as primary voice
+        const preferredVoiceName = 'Microsoft Neerja - English (India)';
+        selectedVoice = voices.find(voice => voice.name === preferredVoiceName);
+        
+        // Fallback 1: Any Microsoft Neerja variant
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => voice.name.includes('Neerja'));
+        }
+        
+        // Fallback 2: Any Indian English voice
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => voice.lang === 'en-IN');
+        }
+        
+        // Fallback 3: Any English voice containing "India"
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => 
+            voice.name.includes('India') && voice.lang.startsWith('en')
+          );
+        }
+        
+        // Final fallback: Default English voice
+        if (!selectedVoice) {
+          selectedVoice = voices.find(voice => voice.lang.startsWith('en'));
+        }
+        
+        // Cache the selected voice for future use
+        if (selectedVoice) {
+          cachedVoiceRef.current = selectedVoice;
+          console.log('CACHED NEW VOICE:', selectedVoice.name);
+        }
       } else {
-        // Fallback to any female-sounding voice
-        const femaleVoiceNames = ['neerja', 'swara', 'aditi', 'kavya', 'priya', 'heera', 'female'];
-        selectedVoice = voices.find(voice => 
-          femaleVoiceNames.some(name => 
-            voice.name.toLowerCase().includes(name)
-          )
-        );
+        console.log('USING CACHED VOICE:', selectedVoice.name);
       }
       
-      // Additional debug logging
-      console.log('Voice selection details:', {
-        voicePreference,
-        language,
+      // Debug logging for voice selection
+      console.log('HARDCODED VOICE SELECTION:', {
         selectedVoiceName: selectedVoice?.name,
         selectedVoiceLang: selectedVoice?.lang,
-        indianEnglishCount: indianEnglishVoices.length,
-        indianHindiCount: indianHindiVoices.length,
-        availableIndianHindiVoices: indianHindiVoices.map(v => v.name),
-        availableIndianEnglishVoices: indianEnglishVoices.map(v => v.name)
+        totalVoicesAvailable: voices.length,
+        isNeerjaAvailable: voices.some(v => v.name.includes('Neerja'))
       });
       
       if (selectedVoice) {
@@ -227,20 +223,69 @@ export function useVoice() {
       console.log('Available voices count:', voices.length);
       
       try {
-        // Ensure speech synthesis is ready
+        // ENHANCED TTS RELIABILITY: Prevent mid-speech interruptions
         if (window.speechSynthesis.speaking) {
           console.log('Cancelling previous speech...');
           window.speechSynthesis.cancel();
-          // Small delay to ensure cancellation is complete
+          // Wait longer to ensure proper cancellation
           setTimeout(() => {
-            window.speechSynthesis.speak(utterance);
-          }, 100);
+            speakChunked(utterance, cleanText);
+          }, 200);
         } else {
-          window.speechSynthesis.speak(utterance);
+          speakChunked(utterance, cleanText);
         }
       } catch (err) {
         console.error('Failed to start speech synthesis:', err);
         setIsSpeaking(false);
+      }
+      
+      // Helper function to speak in chunks to prevent interruption
+      function speakChunked(utterance: SpeechSynthesisUtterance, text: string) {
+        // For longer texts, split into sentences to prevent timeout
+        if (text.length > 200) {
+          const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+          let currentIndex = 0;
+          
+          function speakNextSentence() {
+            if (currentIndex < sentences.length && isSpeaking) {
+              const sentence = sentences[currentIndex].trim() + '.';
+              const sentenceUtterance = new SpeechSynthesisUtterance(sentence);
+              
+              // Use same voice and settings
+              if (selectedVoice) sentenceUtterance.voice = selectedVoice;
+              sentenceUtterance.rate = options?.rate || 0.95;
+              sentenceUtterance.pitch = options?.pitch || 1.0;
+              sentenceUtterance.volume = options?.volume || 1.0;
+              
+              sentenceUtterance.onend = () => {
+                currentIndex++;
+                // Small pause between sentences
+                setTimeout(() => {
+                  if (currentIndex < sentences.length && isSpeaking) {
+                    speakNextSentence();
+                  } else {
+                    setIsSpeaking(false);
+                  }
+                }, 100);
+              };
+              
+              sentenceUtterance.onerror = () => {
+                console.warn('Sentence TTS failed, continuing to next...');
+                currentIndex++;
+                setTimeout(speakNextSentence, 100);
+              };
+              
+              window.speechSynthesis.speak(sentenceUtterance);
+            } else {
+              setIsSpeaking(false);
+            }
+          }
+          
+          speakNextSentence();
+        } else {
+          // Short text, speak normally
+          window.speechSynthesis.speak(utterance);
+        }
       }
     }
   }, []);
