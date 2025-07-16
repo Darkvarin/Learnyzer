@@ -1166,6 +1166,23 @@ export default function AiTutor() {
                                           </>
                                         )}
                                       </Button>
+                                      
+                                      {/* TTS Debug Button */}
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                          console.log('🔧 TTS DEBUG TEST STARTING...');
+                                          speak("Hello Sanjay! This is a test of the Indian accent TTS system. Can you hear me clearly?", {
+                                            rate: 0.95,
+                                            voicePreference: 'neerja',
+                                            language: 'english'
+                                          });
+                                        }}
+                                        className="text-xs bg-orange-500/10 border-orange-500/30 text-orange-300 hover:bg-orange-500/20"
+                                      >
+                                        🔧 Test Voice
+                                      </Button>
 
                                     </div>
                                   )}

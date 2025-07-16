@@ -129,20 +129,24 @@ export function useVoice() {
       if (!selectedVoice || !voices.includes(selectedVoice)) {
         // PRIORITY: Indian accent English and Hinglish FEMALE voices ONLY
         
-        // Step 1: Find all Indian voices
-        const indianVoices = voices.filter(voice => 
+        // Step 1: Find all Indian voices (prioritize English over Hindi for English content)
+        const indianEnglishVoices = voices.filter(voice => 
           voice.lang.includes('en-IN') || 
-          voice.lang.includes('hi-IN') ||
           voice.name.includes('India') ||
           voice.name.includes('Neerja') ||
-          voice.name.includes('Swara') ||
           voice.name.includes('Aditi') ||
           voice.name.includes('Kavya') ||
           voice.name.includes('Priya')
         );
         
-        // Step 2: Filter for female voices only (exclude male names)
-        const femaleIndianVoices = indianVoices.filter(voice => {
+        const indianHindiVoices = voices.filter(voice => 
+          voice.lang.includes('hi-IN') ||
+          voice.name.includes('Swara')
+        );
+        
+        // Step 2: Combine and filter for female voices only (exclude male names)
+        const allIndianVoices = [...indianEnglishVoices, ...indianHindiVoices];
+        const femaleIndianVoices = allIndianVoices.filter(voice => {
           const maleName = ['prabhat', 'madhur', 'male'].some(name => 
             voice.name.toLowerCase().includes(name)
           );
@@ -151,44 +155,50 @@ export function useVoice() {
         
         console.log('Available Indian female voices:', femaleIndianVoices.map(v => `${v.name} (${v.lang})`));
         
-        // Step 3: Preference hierarchy for Indian accent female voices
+        // Step 3: Preference hierarchy for ENGLISH content (avoid Hindi voices for English)
         // Priority 1: Microsoft Neerja (Best Indian English accent)
-        selectedVoice = femaleIndianVoices.find(voice => voice.name.includes('Neerja'));
+        selectedVoice = indianEnglishVoices.find(voice => voice.name.includes('Neerja'));
         
-        // Priority 2: Microsoft Swara (Hindi/Hinglish)
+        // Priority 2: Other Microsoft Indian English female voices
         if (!selectedVoice) {
-          selectedVoice = femaleIndianVoices.find(voice => voice.name.includes('Swara'));
-        }
-        
-        // Priority 3: Other Microsoft Indian female voices
-        if (!selectedVoice) {
-          selectedVoice = femaleIndianVoices.find(voice => 
+          selectedVoice = indianEnglishVoices.find(voice => 
             voice.name.includes('Microsoft') && 
             (voice.name.includes('Aditi') || voice.name.includes('Kavya') || voice.name.includes('Priya'))
           );
         }
         
-        // Priority 4: Any en-IN female voice
+        // Priority 3: Any en-IN female voice
         if (!selectedVoice) {
-          selectedVoice = femaleIndianVoices.find(voice => voice.lang === 'en-IN');
+          selectedVoice = indianEnglishVoices.find(voice => voice.lang === 'en-IN');
         }
         
-        // Priority 5: Any Indian female voice
-        if (!selectedVoice && femaleIndianVoices.length > 0) {
-          selectedVoice = femaleIndianVoices[0];
+        // Priority 4: Any Indian English voice
+        if (!selectedVoice && indianEnglishVoices.length > 0) {
+          selectedVoice = indianEnglishVoices[0];
+        }
+        
+        // Only use Hindi voices as last resort for English content
+        if (!selectedVoice) {
+          selectedVoice = femaleIndianVoices.find(voice => voice.name.includes('Swara'));
         }
         
         // Final fallback: Any female English voice (avoid male voices completely)
         if (!selectedVoice) {
           const femaleEnglishVoices = voices.filter(voice => {
-            const isMale = ['male', 'mark', 'david', 'daniel', 'james'].some(name => 
+            const isMale = ['male', 'mark', 'david', 'daniel', 'james', 'kevin', 'ryan', 'aaron'].some(name => 
               voice.name.toLowerCase().includes(name)
             );
-            return voice.lang.startsWith('en') && !isMale;
+            const isFemale = ['female', 'anna', 'aria', 'linda', 'hazel', 'zoe', 'samantha', 'karen', 'fiona'].some(name => 
+              voice.name.toLowerCase().includes(name)
+            );
+            return voice.lang.startsWith('en') && (isFemale || !isMale);
           });
-          if (femaleEnglishVoices.length > 0) {
-            selectedVoice = femaleEnglishVoices[0];
-          }
+          
+          // Prefer US/UK female voices if Indian not available
+          selectedVoice = femaleEnglishVoices.find(v => v.name.includes('Anna')) || 
+                         femaleEnglishVoices.find(v => v.name.includes('Aria')) ||
+                         femaleEnglishVoices.find(v => v.name.includes('Samantha')) ||
+                         femaleEnglishVoices[0];
         }
         
         // Cache the selected voice for future use
@@ -226,6 +236,9 @@ export function useVoice() {
       utterance.pitch = options?.pitch || 1.0;
       utterance.volume = options?.volume || 1.0;
       
+      // CRITICAL: Force volume to maximum for audibility
+      utterance.volume = 1.0;
+      
       utterance.onstart = () => {
         console.log('TTS started speaking');
         setIsSpeaking(true);
@@ -260,9 +273,10 @@ export function useVoice() {
         }
       };
       
-      console.log('Starting TTS with text:', cleanText.substring(0, 100) + '...');
-      console.log('Selected voice:', selectedVoice?.name || 'default');
-      console.log('Available voices count:', voices.length);
+      console.log('🔊 STARTING TTS with text:', cleanText.substring(0, 100) + '...');
+      console.log('🎤 Selected voice:', selectedVoice?.name || 'default', selectedVoice?.lang);
+      console.log('📢 Volume:', utterance.volume, 'Rate:', utterance.rate);
+      console.log('🗣️ Available voices count:', voices.length);
       
       try {
         // ENHANCED TTS RELIABILITY: Prevent mid-speech interruptions

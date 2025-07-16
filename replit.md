@@ -860,6 +860,8 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - **HIERARCHICAL PREFERENCE**: Priority order: Neerja (Indian English) → Swara (Hindi) → Aditi/Kavya/Priya → any en-IN female
   - **CONSISTENT INDIAN EXPERIENCE**: Students get authentic Indian accent English and Hinglish female voices
   - **ENHANCED DEBUGGING**: Added comprehensive logging for Indian female voice availability and selection
+  - **ENGLISH CONTENT PRIORITY**: Separates English and Hindi voices to prevent Hindi voice speaking English content
+  - **TTS DEBUG TOOLS**: Added voice test button for troubleshooting TTS issues with enhanced logging
 - July 16, 2025: Complete CI/CD and automatic GitHub integration system implementation
   - **COMPREHENSIVE CI/CD PIPELINE**: Created GitHub Actions workflow for automatic deployment from GitHub to EC2
   - GitHub Actions automatically builds, tests, and deploys on every push to main branch
