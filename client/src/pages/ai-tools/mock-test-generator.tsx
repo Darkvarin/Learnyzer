@@ -733,6 +733,11 @@ export default function MockTestGenerator() {
     queryKey: ['/api/mock-tests'],
   });
 
+  // Fetch question limit for user's subscription tier
+  const { data: questionLimitData } = useQuery({
+    queryKey: ['/api/subscription/mock-test-question-limit'],
+  });
+
   // Generate mock test mutation
   const generateTestMutation = useMutation({
     mutationFn: async () => {
@@ -823,6 +828,20 @@ export default function MockTestGenerator() {
       });
       return;
     }
+
+    // Check question count limit
+    const maxQuestions = questionLimitData?.limit || 0;
+    const requestedQuestions = parseInt(formData.questionCount);
+    
+    if (requestedQuestions > maxQuestions) {
+      toast({
+        title: "Question Limit Exceeded",
+        description: `Your subscription allows maximum ${maxQuestions} questions per test. You requested ${requestedQuestions} questions.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     generateTestMutation.mutate();
   };
 
@@ -950,6 +969,22 @@ export default function MockTestGenerator() {
                             <SelectItem value="100">100 questions</SelectItem>
                           </SelectContent>
                         </Select>
+                        {questionLimitData && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Badge variant="outline" className={`${
+                              parseInt(formData.questionCount) > questionLimitData.limit
+                                ? 'bg-red-500/20 text-red-400 border-red-500/30'
+                                : 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+                            }`}>
+                              Max: {questionLimitData.limit} questions
+                            </Badge>
+                            {parseInt(formData.questionCount) > questionLimitData.limit && (
+                              <span className="text-red-400 text-xs">
+                                Exceeds subscription limit
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
 

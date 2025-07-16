@@ -11,6 +11,8 @@ export class SubscriptionService {
       aiVisualLabLimit: 20,
       aiTutorSessionLimit: 30,
       visualPackageLimit: 10,
+      mockTestGenerationLimit: 5, // 5 mock tests per month
+      mockTestMaxQuestions: 20, // Max 20 questions per test
       courseAccessLevel: 'unlimited',
       prioritySupport: false,
       downloadLimit: 50,
@@ -21,6 +23,8 @@ export class SubscriptionService {
       aiVisualLabLimit: 0,
       aiTutorSessionLimit: 0,
       visualPackageLimit: 0,
+      mockTestGenerationLimit: 0, // No mock tests
+      mockTestMaxQuestions: 0,
       courseAccessLevel: 'locked',
       prioritySupport: false,
       downloadLimit: 0
@@ -30,6 +34,8 @@ export class SubscriptionService {
       aiVisualLabLimit: 10,
       aiTutorSessionLimit: 15,
       visualPackageLimit: 5,
+      mockTestGenerationLimit: 10, // 10 mock tests per month
+      mockTestMaxQuestions: 30, // Max 30 questions per test
       courseAccessLevel: 'premium',
       prioritySupport: false,
       downloadLimit: 25
@@ -39,6 +45,8 @@ export class SubscriptionService {
       aiVisualLabLimit: 30,
       aiTutorSessionLimit: 50,
       visualPackageLimit: 15,
+      mockTestGenerationLimit: 25, // 25 mock tests per month
+      mockTestMaxQuestions: 50, // Max 50 questions per test
       courseAccessLevel: 'unlimited',
       prioritySupport: true,
       downloadLimit: 100
@@ -48,6 +56,8 @@ export class SubscriptionService {
       aiVisualLabLimit: 40,
       aiTutorSessionLimit: 75,
       visualPackageLimit: 25,
+      mockTestGenerationLimit: 40, // 40 mock tests per month  
+      mockTestMaxQuestions: 75, // Max 75 questions per test
       courseAccessLevel: 'unlimited',
       prioritySupport: true,
       downloadLimit: 150
@@ -57,6 +67,8 @@ export class SubscriptionService {
       aiVisualLabLimit: 60,
       aiTutorSessionLimit: 100,
       visualPackageLimit: 40,
+      mockTestGenerationLimit: 60, // 60 mock tests per month
+      mockTestMaxQuestions: 100, // Max 100 questions per test
       courseAccessLevel: 'unlimited',
       prioritySupport: true,
       downloadLimit: 250
@@ -66,6 +78,8 @@ export class SubscriptionService {
       aiVisualLabLimit: 100,
       aiTutorSessionLimit: 200,
       visualPackageLimit: 75,
+      mockTestGenerationLimit: 100, // 100 mock tests per month
+      mockTestMaxQuestions: 100, // Max 100 questions per test
       courseAccessLevel: 'unlimited',
       prioritySupport: true,
       downloadLimit: 500
@@ -255,7 +269,7 @@ export class SubscriptionService {
       case 'visual_package_generation':
         return limits.visualPackageLimit;
       case 'mock_test_generation':
-        return limits.mockTestLimit || limits.aiVisualLabLimit; // Use same limit as visual lab
+        return limits.mockTestGenerationLimit || 0;
       default:
         return 0;
     }
@@ -301,7 +315,8 @@ export class SubscriptionService {
         'ai_chat',
         'ai_visual_lab', 
         'ai_tutor_session',
-        'visual_package_generation'
+        'visual_package_generation',
+        'mock_test_generation'
       ];
 
       const featureStats = await Promise.all(
@@ -375,34 +390,81 @@ export class SubscriptionService {
       basic: {
         monthly: 299,
         currency: 'INR',
-        features: ['50 AI chats/day', '10 Visual labs/day', '15 Tutor sessions/day', 'Premium courses']
+        features: ['50 AI chats/day', '10 Visual labs/day', '15 Tutor sessions/day', '10 Mock tests/month (30 questions)', 'Premium courses']
       },
       pro: {
         monthly: 599,
         currency: 'INR', 
-        features: ['150 AI chats/day', '30 Visual labs/day', '50 Tutor sessions/day', 'All courses', 'Priority support']
+        features: ['150 AI chats/day', '30 Visual labs/day', '50 Tutor sessions/day', '25 Mock tests/month (50 questions)', 'All courses', 'Priority support']
       },
       quarterly: {
         total: 1499,
         monthly: 500,
         currency: 'INR',
-        features: ['200 AI chats/day', '40 Visual labs/day', '75 Tutor sessions/day', 'All courses', 'Priority support'],
+        features: ['200 AI chats/day', '40 Visual labs/day', '75 Tutor sessions/day', '40 Mock tests/month (75 questions)', 'All courses', 'Priority support'],
         savings: '16% off'
       },
       half_yearly: {
         total: 2699,
         monthly: 450,
         currency: 'INR',
-        features: ['300 AI chats/day', '60 Visual labs/day', '100 Tutor sessions/day', 'All courses', 'Priority support'],
+        features: ['300 AI chats/day', '60 Visual labs/day', '100 Tutor sessions/day', '60 Mock tests/month (100 questions)', 'All courses', 'Priority support'],
         savings: '25% off'
       },
       yearly: {
         total: 4799,
         monthly: 400,
         currency: 'INR',
-        features: ['500 AI chats/day', '100 Visual labs/day', '200 Tutor sessions/day', 'All courses', 'Priority support'],
+        features: ['500 AI chats/day', '100 Visual labs/day', '200 Tutor sessions/day', '100 Mock tests/month (100 questions)', 'All courses', 'Priority support'],
         savings: '33% off'
       }
     };
+  }
+
+  /**
+   * Get maximum questions allowed for mock tests based on subscription tier
+   */
+  static async getMockTestQuestionLimit(userId: number): Promise<number> {
+    try {
+      const user = await db.query.users.findFirst({
+        where: eq(users.id, userId),
+        columns: {
+          id: true,
+          createdAt: true,
+          subscriptionTier: true,
+          subscriptionStatus: true,
+          subscriptionEndDate: true
+        }
+      });
+
+      if (!user) {
+        return 0;
+      }
+
+      // Determine subscription tier based on user account age (trial logic)
+      const accountAge = Date.now() - user.createdAt.getTime();
+      const oneDayInMs = 24 * 60 * 60 * 1000;
+      
+      let tier: string;
+      if (accountAge <= oneDayInMs) {
+        tier = 'free_trial'; // First day = trial period
+      } else if (user.subscriptionTier && user.subscriptionStatus === 'active' && 
+                 user.subscriptionEndDate && new Date(user.subscriptionEndDate) > new Date()) {
+        tier = user.subscriptionTier; // Use paid subscription tier
+      } else {
+        tier = 'free'; // After trial expires or no active subscription
+      }
+      
+      const limits = this.TIER_LIMITS[tier as keyof typeof this.TIER_LIMITS];
+      
+      if (!limits) {
+        return 0;
+      }
+
+      return limits.mockTestMaxQuestions || 0;
+    } catch (error) {
+      console.error('Error getting mock test question limit:', error);
+      return 0;
+    }
   }
 }

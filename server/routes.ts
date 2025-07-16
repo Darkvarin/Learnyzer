@@ -15,6 +15,7 @@ import { leaderboardService } from "./services/leaderboard-service";
 import { paymentService } from "./services/payment-service";
 
 import { SimpleSubscriptionService } from "./services/simple-subscription-service";
+import { SubscriptionService } from "./services/subscription-service";
 import { setupSEORoutes } from "./services/sitemap-generator";
 import { PDFService } from "./services/pdf-service";
 import { MockTestService } from "./services/mock-test-service";
@@ -1044,6 +1045,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/subscription/mock-test-question-limit", async (req, res) => {
+    try {
+      if (!req.user?.id) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const limit = await SubscriptionService.getMockTestQuestionLimit(req.user.id);
+      res.json({ limit });
+    } catch (error) {
+      console.error("Error getting mock test question limit:", error);
+      res.status(500).json({ message: "Failed to get mock test question limit" });
+    }
+  });
+
   app.post("/api/subscription/update", async (req, res) => {
     try {
       if (!req.user?.id) {
@@ -1164,6 +1179,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ 
           error: "Subscription required",
           message: hasAccess.message || "Please upgrade your subscription to generate mock tests"
+        });
+      }
+
+      // Check question count limit based on subscription tier
+      const maxQuestions = await SubscriptionService.getMockTestQuestionLimit(userId);
+      if (questionCount > maxQuestions) {
+        return res.status(400).json({
+          error: "Question limit exceeded",
+          message: `Your subscription tier allows maximum ${maxQuestions} questions per test. You requested ${questionCount} questions.`,
+          maxAllowed: maxQuestions,
+          requested: questionCount
         });
       }
 
