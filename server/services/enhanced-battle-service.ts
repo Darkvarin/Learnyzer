@@ -169,7 +169,7 @@ export class EnhancedBattleService {
         title: battleData.title,
         type: battleData.type,
         status: 'waiting',
-        creatorId,
+        createdBy: creatorId, // Fixed field name to match database schema
         examType: battleData.examType,
         subject: battleData.subject,
         difficulty: battleData.difficulty,
