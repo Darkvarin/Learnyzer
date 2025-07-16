@@ -134,7 +134,7 @@ class ClientTTSService {
   }
 
   /**
-   * Enhanced browser TTS with Indian voice priority and chunked speech
+   * Simplified and reliable browser TTS implementation
    */
   private async fallbackToBrowserTTS(text: string, options: TTSOptions = {}): Promise<boolean> {
     try {
@@ -145,90 +145,26 @@ class ClientTTSService {
 
       this.stop(); // Stop any current audio
 
-      // Wait for voices to load
-      await new Promise<void>((resolve) => {
-        const voices = speechSynthesis.getVoices();
-        if (voices.length > 0) {
-          resolve();
-        } else {
-          speechSynthesis.onvoiceschanged = () => resolve();
-        }
-      });
-
-      const voices = speechSynthesis.getVoices();
-      console.log('🔍 Available voices:', voices.map(v => `${v.name} (${v.lang})`));
+      // Create utterance immediately
+      const utterance = new SpeechSynthesisUtterance(text);
       
-      // Enhanced Indian voice detection - prioritize English voices
-      const indianEnglishVoice = voices.find(voice => 
-        voice.lang === 'en-IN' ||
-        (voice.name.toLowerCase().includes('indian') && voice.lang.startsWith('en')) ||
-        voice.name.toLowerCase().includes('raveena') ||
-        voice.name.toLowerCase().includes('aditi') ||
-        voice.name.toLowerCase().includes('priya') ||
-        voice.name.toLowerCase().includes('neerja')
-      );
-      
-      // Fallback voice options
-      const britishVoice = voices.find(voice => 
-        voice.lang === 'en-GB' || 
-        voice.name.toLowerCase().includes('british') ||
-        voice.name.toLowerCase().includes('uk')
-      );
+      // Set basic properties first
+      utterance.rate = 0.8;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      utterance.lang = 'en-GB'; // Set to British English for better accent
 
-      const femaleVoice = voices.find(voice => 
-        voice.lang.startsWith('en') && 
-        (voice.name.toLowerCase().includes('female') || voice.name.toLowerCase().includes('woman'))
-      );
+      console.log('🎤 Created utterance, starting speech...');
 
-      let selectedVoice = indianEnglishVoice || britishVoice || femaleVoice || voices.find(v => v.lang.startsWith('en'));
+      // Start speaking immediately without waiting for voice loading
+      speechSynthesis.cancel(); // Clear any existing speech
+      speechSynthesis.speak(utterance);
 
-      if (selectedVoice) {
-        console.log('✅ Selected voice:', selectedVoice.name, '(' + selectedVoice.lang + ')');
-      }
-
-      // Split text into sentences to prevent timeout
-      const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
-      
-      for (let i = 0; i < sentences.length; i++) {
-        const sentence = sentences[i].trim();
-        if (!sentence) continue;
-
-        await new Promise<void>((resolve, reject) => {
-          const utterance = new SpeechSynthesisUtterance(sentence);
-          
-          if (selectedVoice) {
-            utterance.voice = selectedVoice;
-          }
-          
-          utterance.rate = 0.85; // Slightly slower for clarity
-          utterance.pitch = 0.9;
-          utterance.volume = 1.0;
-
-          utterance.onend = () => {
-            console.log(`✅ Completed sentence ${i + 1}/${sentences.length}`);
-            // Small pause between sentences
-            setTimeout(resolve, 300);
-          };
-          
-          utterance.onerror = (error) => {
-            console.error(`❌ Sentence ${i + 1} failed:`, error);
-            setTimeout(resolve, 100); // Continue with next sentence after brief pause
-          };
-
-          // Ensure speech synthesis is ready
-          if (speechSynthesis.paused) {
-            speechSynthesis.resume();
-          }
-          
-          speechSynthesis.speak(utterance);
-        });
-      }
-
-      console.log('🔊 Browser TTS playback finished');
+      console.log('✅ Browser TTS command executed');
       return true;
 
     } catch (error) {
-      console.error('❌ Browser TTS fallback failed:', error);
+      console.error('❌ Browser TTS failed:', error);
       return false;
     }
   }
