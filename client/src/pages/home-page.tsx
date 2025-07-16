@@ -77,11 +77,11 @@ export default function HomePage() {
   const faqData = [
     {
       question: "What is Learnyzer and how does it help with entrance exam preparation?",
-      answer: "Learnyzer is an AI-powered learning platform specifically designed for Indian competitive entrance exams including JEE, NEET, UPSC, CLAT, and CUET. It combines personalized AI tutoring with gamified learning experiences to help students achieve better results."
+      answer: "Learnyzer is an AI-powered learning platform specifically designed for Indian competitive entrance exams including JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE. It combines personalized AI tutoring with gamified learning experiences to help students achieve better results."
     },
     {
       question: "Which entrance exams does Learnyzer support?",
-      answer: "Learnyzer supports all major Indian entrance exams: JEE Main & Advanced for engineering, NEET for medical, UPSC CSE for civil services, CLAT for law, and CUET for university admissions."
+      answer: "Learnyzer supports all major Indian entrance exams: JEE Main & Advanced for engineering, NEET for medical, UPSC CSE for civil services, CLAT for law, CUET for university admissions, CSE for computer science engineering, and CGLE for government job preparation."
     },
     {
       question: "How does the AI tutoring work on Learnyzer?",
@@ -92,8 +92,8 @@ export default function HomePage() {
       answer: "Learnyzer offers a 24-hour free trial with limited daily usage: 2 AI tutor lessons and 10 AI tool uses per day - no credit card required. After the trial, choose from our flexible subscription plans starting at ₹799/month for unlimited access."
     },
     {
-      question: "How effective is Learnyzer for JEE and NEET preparation?",
-      answer: "Learnyzer has helped thousands of students improve their exam scores with personalized AI guidance, adaptive learning paths, and comprehensive practice materials designed specifically for JEE and NEET success."
+      question: "How effective is Learnyzer for competitive exam preparation?",
+      answer: "Learnyzer has helped thousands of students improve their exam scores with personalized AI guidance, adaptive learning paths, and comprehensive practice materials designed specifically for JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE success."
     }
   ];
 
@@ -101,9 +101,9 @@ export default function HomePage() {
   return (
     <div className="min-h-screen futuristic-bg relative solo-page">
       <SEOHead
-        title="Learnyzer - AI-Powered Indian Entrance Exam Preparation | JEE, NEET, UPSC, CLAT, CUET"
-        description="Master JEE, NEET, UPSC, CLAT, and CUET with AI tutoring, gamified learning, and personalized study plans. Join thousands of successful students achieving their dreams."
-        keywords="JEE preparation, NEET coaching, UPSC preparation, CLAT exam, CUET preparation, entrance exam AI, Indian competitive exams, AI tutor, online coaching, exam preparation platform"
+        title="Learnyzer - AI-Powered Indian Entrance Exam Preparation | JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE"
+        description="Master JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE with AI tutoring, gamified learning, and personalized study plans. Join thousands of successful students achieving their dreams."
+        keywords="JEE preparation, NEET coaching, UPSC preparation, CLAT exam, CUET preparation, CSE exam, CGLE preparation, entrance exam AI, Indian competitive exams, AI tutor, online coaching, exam preparation platform"
         canonical={window.location.origin}
         structuredData={{
           ...createEducationalOrganizationSchema(),
@@ -370,7 +370,7 @@ export default function HomePage() {
               <div className="mt-8 relative">
                 <div className="absolute left-0 top-0 w-1 h-full bg-primary/30"></div>
                 <p className="text-xl pl-4 mb-8 text-gray-300 max-w-xl leading-relaxed">
-                  India's first AI-powered competitive exam preparation platform with advanced gamification. Dominate JEE, NEET, UPSC, CLAT, and CUET with voice-interactive AI tutors, real-time battles, and a complete ranking system.
+                  India's first AI-powered competitive exam preparation platform with advanced gamification. Dominate JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE with voice-interactive AI tutors, real-time battles, and a complete ranking system.
                 </p>
               </div>
               
@@ -927,7 +927,7 @@ export default function HomePage() {
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold mb-3">How does Learnyzer adapt to my exam preparation needs?</h3>
                   <p className="text-gray-400">
-                    Learnyzer uses advanced AI to analyze your performance patterns, strengths, and areas for improvement on each entrance exam. The AI tutor adjusts its teaching approach based on your responses to practice questions, progress on exam topics, and preferences to provide a truly personalized preparation experience for JEE, NEET, UPSC, CLAT, or CUET.
+                    Learnyzer uses advanced AI to analyze your performance patterns, strengths, and areas for improvement on each entrance exam. The AI tutor adjusts its teaching approach based on your responses to practice questions, progress on exam topics, and preferences to provide a truly personalized preparation experience for JEE, NEET, UPSC, CLAT, CUET, CSE, or CGLE.
                   </p>
                 </CardContent>
               </Card>
@@ -942,7 +942,7 @@ export default function HomePage() {
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold mb-3">What entrance exams does Learnyzer cover?</h3>
                   <p className="text-gray-400">
-                    Learnyzer specializes in preparation for India's most competitive entrance exams including JEE (engineering), NEET (medical), UPSC (civil services), CLAT (law), and CUET (university admissions). Our platform is exclusively designed for these high-stakes exams.
+                    Learnyzer specializes in preparation for India's most competitive entrance exams including JEE (engineering), NEET (medical), UPSC (civil services), CLAT (law), CUET (university admissions), CSE (computer science engineering), and CGLE (government job preparation). Our platform is exclusively designed for these high-stakes exams.
                   </p>
                 </CardContent>
               </Card>
@@ -991,7 +991,7 @@ export default function HomePage() {
             className="text-center max-w-3xl mx-auto"
           >
             <h2 className="text-3xl md:text-4xl font-gaming gaming-text mb-6">Ready to Conquer Your Entrance Exams?</h2>
-            <p className="text-xl opacity-80 mb-8">Join thousands of aspirants who are already preparing for JEE, NEET, UPSC, CLAT, and CUET with Learnyzer.</p>
+            <p className="text-xl opacity-80 mb-8">Join thousands of aspirants who are already preparing for JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE with Learnyzer.</p>
             <Button 
               onClick={() => navigate("/auth")}
               className="game-button py-6 px-10 text-lg"
