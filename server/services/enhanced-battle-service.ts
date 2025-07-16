@@ -177,6 +177,7 @@ export class EnhancedBattleService {
         maxParticipants: battleData.maxParticipants,
         entryFee: battleData.entryFee,
         prizePool: battleData.prizePool,
+        rewardPoints: battleData.entryFee * battleData.maxParticipants || 0, // Calculate reward points
         battleMode: battleData.battleMode || 'Tournament',
         scheduledAt: battleData.scheduledAt ? new Date(battleData.scheduledAt) : null,
         topics: battleData.topics || [],
