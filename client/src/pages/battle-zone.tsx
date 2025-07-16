@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
+import LiveQuestionTracker from "@/components/LiveQuestionTracker";
 import { Sword, Plus, Users, Clock, Target, Trophy, Flame, ArrowLeft, Send, Eye, CheckCircle, XCircle, RotateCcw, Brain } from "lucide-react";
 
 export default function BattleZone() {
@@ -631,6 +632,17 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
       variant: isCorrect ? "default" : "destructive",
     });
 
+    // Update question progress for live tracking
+    if (userData?.id) {
+      try {
+        await apiRequest("POST", `/api/enhanced-battles/${battle.id}/question-progress`, {
+          questionNumber: currentQuestionIndex + 2 // Moving to next question
+        });
+      } catch (error) {
+        console.error("Error updating question progress:", error);
+      }
+    }
+
     // Move to next question or show final results
     setTimeout(() => {
       if (currentQuestionIndex < totalQuestions - 1) {
@@ -878,6 +890,14 @@ function BattleDetail({ battle, onBack }: { battle: any; onBack: () => void }) {
           <p className="text-white text-xl font-bold">{battle.prizePool || 50} coins</p>
         </div>
       </div>
+
+      {/* Live Question Tracker */}
+      <LiveQuestionTracker 
+        battleId={battle.id}
+        totalQuestions={totalQuestions}
+        isParticipant={true}
+        currentUserId={userData?.id}
+      />
 
       {/* Question Progress */}
       <div className="glassmorphism border border-gray-600/30 p-4 rounded-xl mb-4">

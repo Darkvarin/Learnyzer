@@ -196,7 +196,11 @@ export const battleParticipants = pgTable("battle_participants", {
   isSpectator: boolean("is_spectator").default(false).notNull(),
   powerUpsUsed: jsonb("power_ups_used").default("[]").notNull(),
   streakBonus: integer("streak_bonus").default(0).notNull(),
-  difficultyBonus: integer("difficulty_bonus").default(0).notNull()
+  difficultyBonus: integer("difficulty_bonus").default(0).notNull(),
+  currentQuestionNumber: integer("current_question_number").default(1).notNull(), // Track which question student is currently on
+  questionsCompleted: integer("questions_completed").default(0).notNull(), // Track total questions completed by participant
+  questionStartTime: timestamp("question_start_time"), // When current question was started
+  questionAnswers: jsonb("question_answers").default("[]").notNull() // Store answers for each question
 });
 
 // Battle Questions Table - New for Battle Zone 2.0

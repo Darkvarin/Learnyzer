@@ -1696,6 +1696,105 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update participant's current question number for live tracking
+  app.post("/api/enhanced-battles/:battleId/question-progress", requireAuth, async (req, res) => {
+    console.log("Registering route: POST /api/enhanced-battles/:battleId/question-progress");
+    try {
+      const battleId = parseInt(req.params.battleId);
+      const userId = req.user.id;
+      const { questionNumber } = req.body;
+      
+      // Handle demo battles
+      if (battleId >= 9998) {
+        return res.json({ success: true, message: "Demo progress updated" });
+      }
+      
+      const result = await enhancedBattleService.updateParticipantQuestionProgress(battleId, userId, questionNumber);
+      
+      // Broadcast update to all participants and spectators
+      broadcastToBattle(`battle_${battleId}`, {
+        type: 'question_progress_update',
+        battleId,
+        userId,
+        questionNumber,
+        timestamp: new Date()
+      });
+      
+      res.json(result);
+    } catch (error) {
+      console.error("Error updating question progress:", error);
+      res.status(500).json({ error: "Failed to update question progress" });
+    }
+  });
+
+  // Get live question progress for all participants in a battle
+  app.get("/api/enhanced-battles/:battleId/question-progress", async (req, res) => {
+    console.log("Registering route: GET /api/enhanced-battles/:battleId/question-progress");
+    try {
+      const battleId = parseInt(req.params.battleId);
+      
+      // Handle demo battles with mock progress data
+      if (battleId >= 9998) {
+        const demoBattles = await enhancedBattleService.getDemoBattles();
+        const demoBattle = demoBattles.find(b => b.id === battleId);
+        if (demoBattle) {
+          const progressData = demoBattle.participants.map((participant, index) => ({
+            userId: participant.id,
+            userName: participant.name,
+            userProfileImage: null,
+            currentQuestionNumber: participant.currentQuestionNumber,
+            questionsCompleted: participant.questionsCompleted,
+            questionStartTime: new Date(),
+            score: participant.score,
+            rank: index + 1,
+            currentRank: index + 1,
+            isLeading: index === 0,
+            questionsBehind: demoBattle.participants[0]?.currentQuestionNumber - participant.currentQuestionNumber || 0
+          }));
+          return res.json(progressData);
+        }
+      }
+      
+      const progress = await enhancedBattleService.getBattleQuestionProgress(battleId);
+      res.json(progress);
+    } catch (error) {
+      console.error("Error getting question progress:", error);
+      res.status(500).json({ error: "Failed to get question progress" });
+    }
+  });
+
+  // Complete a question and move to next
+  app.post("/api/enhanced-battles/:battleId/complete-question", requireAuth, async (req, res) => {
+    console.log("Registering route: POST /api/enhanced-battles/:battleId/complete-question");
+    try {
+      const battleId = parseInt(req.params.battleId);
+      const userId = req.user.id;
+      const { questionNumber, answer } = req.body;
+      
+      // Handle demo battles
+      if (battleId >= 9998) {
+        return res.json({ success: true, message: "Demo question completed" });
+      }
+      
+      const result = await enhancedBattleService.completeQuestion(battleId, userId, questionNumber, answer);
+      
+      // Broadcast update to all participants and spectators
+      broadcastToBattle(`battle_${battleId}`, {
+        type: 'question_completed',
+        battleId,
+        userId,
+        questionNumber: questionNumber + 1,
+        completedQuestion: questionNumber,
+        timestamp: new Date()
+      });
+      
+      res.json(result);
+    } catch (error) {
+      console.error("Error completing question:", error);
+      res.status(500).json({ error: "Failed to complete question" });
+    }
+  });
+
   // Get demo battles
   app.post("/api/demo-battles", async (req, res) => {
     console.log("Registering route: POST /api/demo-battles");

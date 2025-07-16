@@ -29,6 +29,9 @@ export class EnhancedBattleService {
           team: battleParticipants.team,
           score: battleParticipants.score,
           submission: battleParticipants.submission,
+          currentQuestionNumber: battleParticipants.currentQuestionNumber,
+          questionsCompleted: battleParticipants.questionsCompleted,
+          questionStartTime: battleParticipants.questionStartTime,
           userName: users.name,
           userProfileImage: users.profileImage
         })
@@ -43,7 +46,10 @@ export class EnhancedBattleService {
         avatar: p.userProfileImage,
         team: p.team,
         score: p.score,
-        submission: p.submission
+        submission: p.submission,
+        currentQuestionNumber: p.currentQuestionNumber || 1,
+        questionsCompleted: p.questionsCompleted || 0,
+        questionStartTime: p.questionStartTime
       }));
 
       // Get spectator count
@@ -314,8 +320,8 @@ export class EnhancedBattleService {
         spectatorMode: true,
         questionsCount: 5,
         participants: [
-          { id: 1, name: "PhysicsKing", team: 0, score: 0, status: "ready" },
-          { id: 2, name: "QuantumMaster", team: 1, score: 0, status: "ready" }
+          { id: 1, name: "PhysicsKing", team: 0, score: 0, status: "ready", currentQuestionNumber: 1, questionsCompleted: 0 },
+          { id: 2, name: "QuantumMaster", team: 1, score: 0, status: "ready", currentQuestionNumber: 1, questionsCompleted: 0 }
         ],
         spectatorCount: 12,
         topics: ["Mechanics", "Thermodynamics"],
@@ -338,8 +344,8 @@ export class EnhancedBattleService {
         spectatorMode: true,
         questionsCount: 8,
         participants: [
-          { id: 3, name: "BioWarrior", team: 0, score: 45, status: "answering" },
-          { id: 4, name: "CellExpert", team: 1, score: 40, status: "submitted" }
+          { id: 3, name: "BioWarrior", team: 0, score: 45, status: "answering", currentQuestionNumber: 4, questionsCompleted: 3 },
+          { id: 4, name: "CellExpert", team: 1, score: 40, status: "submitted", currentQuestionNumber: 3, questionsCompleted: 2 }
         ],
         spectatorCount: 8,
         topics: ["Cell Biology", "Genetics"],
@@ -347,6 +353,85 @@ export class EnhancedBattleService {
         createdAt: new Date(),
       }
     ];
+  }
+
+  // Update participant's current question number (for live tracking)
+  async updateParticipantQuestionProgress(battleId: number, userId: number, questionNumber: number) {
+    try {
+      const [updatedParticipant] = await db
+        .update(battleParticipants)
+        .set({
+          currentQuestionNumber: questionNumber,
+          questionStartTime: new Date()
+        })
+        .where(and(
+          eq(battleParticipants.battleId, battleId),
+          eq(battleParticipants.userId, userId)
+        ))
+        .returning();
+
+      return updatedParticipant;
+    } catch (error) {
+      console.error('Error updating participant question progress:', error);
+      throw error;
+    }
+  }
+
+  // Get live question progress for all participants in a battle
+  async getBattleQuestionProgress(battleId: number) {
+    try {
+      const progressData = await db
+        .select({
+          userId: battleParticipants.userId,
+          userName: users.name,
+          userProfileImage: users.profileImage,
+          currentQuestionNumber: battleParticipants.currentQuestionNumber,
+          questionsCompleted: battleParticipants.questionsCompleted,
+          questionStartTime: battleParticipants.questionStartTime,
+          score: battleParticipants.score,
+          rank: battleParticipants.rank
+        })
+        .from(battleParticipants)
+        .leftJoin(users, eq(battleParticipants.userId, users.id))
+        .where(eq(battleParticipants.battleId, battleId))
+        .orderBy(desc(battleParticipants.currentQuestionNumber)); // Order by progress (highest first)
+
+      // Calculate live rankings based on current progress
+      const rankedProgress = progressData.map((participant, index) => ({
+        ...participant,
+        currentRank: index + 1,
+        isLeading: index === 0,
+        questionsBehind: progressData[0]?.currentQuestionNumber - participant.currentQuestionNumber || 0
+      }));
+
+      return rankedProgress;
+    } catch (error) {
+      console.error('Error getting battle question progress:', error);
+      throw error;
+    }
+  }
+
+  // Mark question as completed and move to next
+  async completeQuestion(battleId: number, userId: number, questionNumber: number, answer: string) {
+    try {
+      const [updatedParticipant] = await db
+        .update(battleParticipants)
+        .set({
+          currentQuestionNumber: questionNumber + 1,
+          questionsCompleted: questionNumber,
+          questionStartTime: new Date()
+        })
+        .where(and(
+          eq(battleParticipants.battleId, battleId),
+          eq(battleParticipants.userId, userId)
+        ))
+        .returning();
+
+      return updatedParticipant;
+    } catch (error) {
+      console.error('Error completing question:', error);
+      throw error;
+    }
   }
 }
 
