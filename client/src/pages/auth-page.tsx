@@ -79,6 +79,7 @@ export default function AuthPage() {
 
   // Send OTP function
   const sendOTP = async (mobile: string) => {
+    console.log('Sending OTP to:', mobile);
     setIsOtpSending(true);
     try {
       const response = await fetch('/api/otp/send', {
@@ -89,7 +90,9 @@ export default function AuthPage() {
         body: JSON.stringify({ mobile }),
       });
 
+      console.log('OTP Response status:', response.status);
       const result = await response.json();
+      console.log('OTP Result:', result);
 
       if (result.success) {
         setSessionId(result.sessionId);
@@ -177,15 +180,46 @@ export default function AuthPage() {
 
   const onRegisterSubmit = async (data: RegisterForm) => {
     if (otpStep === 1) {
-      // Step 1: Send OTP to mobile number
+      // Step 1: Validate form and send OTP to mobile number
+      const mobileRegex = /^[6-9]\d{9}$/;
+      if (!mobileRegex.test(data.mobile)) {
+        toast({
+          title: "Invalid Mobile Number",
+          description: "Please enter a valid 10-digit Indian mobile number starting with 6-9",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!data.acceptTerms) {
+        toast({
+          title: "Terms Required",
+          description: "Please accept the terms and conditions to continue",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      console.log('Form data:', data);
       await sendOTP(data.mobile);
     } else if (otpStep === 2) {
       // Step 2: Verify OTP and complete registration
+      if (!data.otp || data.otp.length !== 6) {
+        toast({
+          title: "Invalid OTP",
+          description: "Please enter the 6-digit OTP",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       const isOtpValid = await verifyOTP(data.otp);
       if (isOtpValid) {
         try {
+          // Remove OTP and mobile verification fields before sending to backend
+          const { otp, acceptTerms, confirmPassword, ...registrationData } = data;
           await registerMutation.mutateAsync({
-            ...data,
+            ...registrationData,
             mobileVerified: true
           });
           toast({
@@ -501,25 +535,36 @@ export default function AuthPage() {
                             control={registerForm.control}
                             name="acceptTerms"
                             render={({ field }) => (
-                              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border border-primary/20 p-4 bg-background/20">
                                 <FormControl>
                                   <Checkbox
                                     checked={field.value}
                                     onCheckedChange={field.onChange}
-                                    className="border-primary/50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                                    className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                   />
                                 </FormControl>
                                 <div className="space-y-1 leading-none">
-                                  <FormLabel className="text-sm text-primary-foreground/80">
-                                    I accept the{" "}
-                                    <a href="/terms" className="text-primary hover:underline">
+                                  <FormLabel className="text-sm text-primary-foreground/90 cursor-pointer">
+                                    I agree to the{" "}
+                                    <a 
+                                      href="/terms" 
+                                      target="_blank" 
+                                      className="text-primary hover:text-primary/80 underline font-medium"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
                                       Terms and Conditions
-                                    </a>
-                                    {" "}and{" "}
-                                    <a href="/privacy" className="text-primary hover:underline">
+                                    </a>{" "}
+                                    and{" "}
+                                    <a 
+                                      href="/privacy" 
+                                      target="_blank" 
+                                      className="text-primary hover:text-primary/80 underline font-medium"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
                                       Privacy Policy
                                     </a>
                                   </FormLabel>
+                                  <FormMessage />
                                 </div>
                               </FormItem>
                             )}

@@ -35,13 +35,13 @@ class OTPService {
         };
       }
 
-      // Development mode fallback
-      if (process.env.NODE_ENV === 'development' && !this.apiKey) {
+      // Development mode fallback - always use for development
+      if (process.env.NODE_ENV === 'development' || !this.apiKey) {
         console.log(`[DEV] OTP for ${cleanMobile}: 123456`);
         return {
           success: true,
           sessionId: 'dev-session-' + Date.now(),
-          message: 'OTP sent successfully (Development mode: use 123456)'
+          message: 'OTP sent successfully! Use 123456 for testing'
         };
       }
 
