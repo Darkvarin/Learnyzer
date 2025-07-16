@@ -243,6 +243,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user as any;
+      const userId = user.id;
+      
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access  
+      const userData = await storage.getUserById(userId);
+      if (userData?.examLocked && userData.selectedExam && examType && examType !== userData.selectedExam) {
+        return res.status(403).json({
+          error: "Exam access restricted",
+          message: `You have locked your preparation to ${userData.selectedExam} exam. You cannot generate content for ${examType}. Please contact support if you want to change your exam selection.`,
+          lockedExam: userData.selectedExam,
+          examLocked: true
+        });
+      }
 
       // Generate educational content using GPT-3.5 Turbo
       const contentResponse = await generateStudyNotesUtil({
@@ -1259,6 +1271,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Track usage
       await SimpleSubscriptionService.trackUsage(userId, "mock_test_generation");
+
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      // Import the validation function at the top of the file if not already imported
+      const user = await storage.getUserById(userId);
+      if (user?.examLocked && user.selectedExam && examType !== user.selectedExam) {
+        return res.status(403).json({
+          error: "Exam access restricted",
+          message: `You have locked your preparation to ${user.selectedExam} exam. You cannot generate mock tests for ${examType}. Please contact support if you want to change your exam selection.`,
+          lockedExam: user.selectedExam,
+          examLocked: true
+        });
+      }
 
       // Generate mock test using AI
       const mockTestData = await MockTestService.generateMockTest({

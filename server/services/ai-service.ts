@@ -28,6 +28,107 @@ const getExamSubjects = (examType: string): string[] => {
   return examSubjects[examType.toLowerCase()] || [];
 };
 
+// Function to check if user's exam is locked and validate content access
+const validateExamAccess = async (userId: number, requestedExam?: string, requestedSubject?: string) => {
+  const user = await storage.getUserById(userId);
+  
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  // If user hasn't locked an exam yet, allow access to all content
+  if (!user.examLocked || !user.selectedExam) {
+    return { 
+      allowed: true, 
+      lockedExam: null,
+      allowedSubjects: [],
+      message: 'No exam locked - full access available'
+    };
+  }
+
+  const userExam = user.selectedExam.toLowerCase();
+  const allowedSubjects = getExamSubjects(userExam);
+
+  // If requesting specific exam content, check if it matches locked exam
+  if (requestedExam && requestedExam.toLowerCase() !== userExam) {
+    return {
+      allowed: false,
+      lockedExam: userExam,
+      allowedSubjects,
+      message: `Access denied. You can only study ${userExam.toUpperCase()} content. Your exam is locked until next subscription.`
+    };
+  }
+
+  // If requesting specific subject, check if it's allowed for the locked exam
+  if (requestedSubject && !allowedSubjects.some(subject => subject.toLowerCase() === requestedSubject.toLowerCase())) {
+    return {
+      allowed: false,
+      lockedExam: userExam,
+      allowedSubjects,
+      message: `Access denied. ${requestedSubject} is not part of ${userExam.toUpperCase()} syllabus. You can only study: ${allowedSubjects.join(', ')}`
+    };
+  }
+
+  return {
+    allowed: true,
+    lockedExam: userExam,
+    allowedSubjects,
+    message: `Access granted for ${userExam.toUpperCase()} content`
+  };
+};
+
+// Function to get exam-specific forbidden keywords for content filtering
+const getExamForbiddenKeywords = (examType: string): string[] => {
+  const forbiddenKeywords: Record<string, string[]> = {
+    'jee': [
+      // Biology topics forbidden for JEE
+      'botany', 'zoology', 'anatomy', 'physiology', 'genetics', 'evolution', 'ecology', 
+      'biodiversity', 'biotechnology', 'molecular biology', 'cell biology', 'microbiology',
+      'biochemistry', 'photosynthesis', 'respiration', 'digestion', 'circulation',
+      // Humanities forbidden for JEE
+      'history', 'geography', 'political science', 'economics', 'sociology', 'philosophy',
+      'psychology', 'literature', 'linguistics', 'archaeology', 'anthropology'
+    ],
+    'neet': [
+      // Computer Science topics forbidden for NEET
+      'programming', 'coding', 'algorithms', 'data structures', 'software', 'hardware',
+      'computer science', 'artificial intelligence', 'machine learning', 'database',
+      'networks', 'operating systems', 'computer architecture', 'cybersecurity',
+      // Engineering topics forbidden for NEET
+      'mechanical engineering', 'electrical engineering', 'civil engineering',
+      // Advanced Math forbidden for NEET
+      'calculus', 'differential equations', 'linear algebra', 'complex numbers'
+    ],
+    'upsc': [
+      // Highly technical/specialized topics not relevant to UPSC
+      'quantum mechanics', 'advanced organic chemistry', 'differential equations',
+      'computer programming', 'software development', 'machine learning',
+      'biotechnology research', 'nanotechnology', 'advanced physics',
+      'specialized engineering', 'technical coding', 'algorithms'
+    ],
+    'clat': [
+      // Advanced science and math topics forbidden for CLAT
+      'quantum physics', 'organic chemistry', 'calculus', 'differential equations',
+      'advanced mathematics', 'biotechnology', 'computer programming',
+      'engineering', 'advanced biology', 'molecular biology', 'genetics'
+    ],
+    'cse': [
+      // Humanities topics forbidden for CSE
+      'history', 'geography', 'political science', 'economics', 'sociology',
+      'philosophy', 'psychology', 'literature', 'linguistics', 'archaeology',
+      'anthropology', 'fine arts', 'music theory', 'classical studies'
+    ],
+    'cgle': [
+      // Advanced technical topics forbidden for CGLE
+      'advanced programming', 'machine learning', 'quantum physics',
+      'advanced mathematics', 'biotechnology', 'nanotechnology',
+      'specialized engineering', 'research methodology', 'advanced chemistry'
+    ]
+  };
+  
+  return forbiddenKeywords[examType.toLowerCase()] || [];
+};
+
 // Middleware to check authentication
 const requireAuth = (req: Request, res: Response, next: () => void) => {
   if (!req.isAuthenticated() || !req.user) {
@@ -288,6 +389,17 @@ export const aiService = {
       
       if (!tutor) {
         return res.status(404).json({ message: "AI tutor not found" });
+      }
+
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      const examAccess = await validateExamAccess(userId, subject);
+      if (!examAccess.allowed) {
+        return res.status(403).json({
+          message: examAccess.message,
+          lockedExam: examAccess.lockedExam,
+          allowedSubjects: examAccess.allowedSubjects,
+          examLocked: true
+        });
       }
 
       // CRITICAL: Exam-specific subject validation to prevent abuse
@@ -1007,6 +1119,18 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
     
     try {
       const { topic, subject, examType, difficulty = 'medium', questionType = 'mixed', context } = req.body;
+      const userId = (req.user as any).id;
+      
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      const examAccess = await validateExamAccess(userId, examType, subject);
+      if (!examAccess.allowed) {
+        return res.status(403).json({
+          message: examAccess.message,
+          lockedExam: examAccess.lockedExam,
+          allowedSubjects: examAccess.allowedSubjects,
+          examLocked: true
+        });
+      }
       
       if (!topic) {
         return res.status(400).json({ message: 'Topic is required' });
@@ -1038,6 +1162,18 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
     
     try {
       const { question, selectedAnswer, correctAnswer, options, topic, subject } = req.body;
+      const userId = (req.user as any).id;
+      
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      const examAccess = await validateExamAccess(userId, undefined, subject);
+      if (!examAccess.allowed) {
+        return res.status(403).json({
+          message: examAccess.message,
+          lockedExam: examAccess.lockedExam,
+          allowedSubjects: examAccess.allowedSubjects,
+          examLocked: true
+        });
+      }
       
       if (!question || !selectedAnswer || !correctAnswer) {
         return res.status(400).json({ message: 'Question, selected answer, and correct answer are required' });
@@ -1074,7 +1210,6 @@ ${isCorrect ?
       let rpEarned = 0;
       
       if (isCorrect) {
-        const userId = (req.user as any).id;
         
         // Base reward for correct answer
         xpEarned += 15; // Base learning reward
@@ -1182,6 +1317,17 @@ ${isCorrect ?
     try {
       const { topic, subject, style, level, examType, preferences } = schema.parse(req.body);
       const userId = (req.user as any).id;
+      
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      const examAccess = await validateExamAccess(userId, examType, subject);
+      if (!examAccess.allowed) {
+        return res.status(403).json({
+          message: examAccess.message,
+          lockedExam: examAccess.lockedExam,
+          allowedSubjects: examAccess.allowedSubjects,
+          examLocked: true
+        });
+      }
       
       // Merge top-level style/level with preferences object for backwards compatibility
       const mergedPreferences = {
@@ -1419,6 +1565,18 @@ ADAPTATION RULES:
     
     try {
       const { question, subject, inputMode, answer, imageData } = schema.parse(req.body);
+      const userId = (req.user as any).id;
+      
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      const examAccess = await validateExamAccess(userId, undefined, subject);
+      if (!examAccess.allowed) {
+        return res.status(403).json({
+          message: examAccess.message,
+          lockedExam: examAccess.lockedExam,
+          allowedSubjects: examAccess.allowedSubjects,
+          examLocked: true
+        });
+      }
       
       let studentAnswer = answer;
       
@@ -1538,6 +1696,18 @@ ADAPTATION RULES:
     
     try {
       const { topic, count } = schema.parse(req.body);
+      const userId = (req.user as any).id;
+      
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate topic access
+      const examAccess = await validateExamAccess(userId, undefined, undefined, topic);
+      if (!examAccess.allowed) {
+        return res.status(403).json({
+          message: examAccess.message,
+          lockedExam: examAccess.lockedExam,
+          allowedSubjects: examAccess.allowedSubjects,
+          examLocked: true
+        });
+      }
       
       // Build the prompt
       const prompt = `
@@ -1613,6 +1783,20 @@ ADAPTATION RULES:
       // Check if the user is requesting their own data or if they're an admin
       if (userId !== (req.user as any).id) {
         return res.status(403).json({ message: "Unauthorized to access this data" });
+      }
+      
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked
+      const user = await storage.getUserById(userId);
+      if (user?.examLocked && subject !== 'all') {
+        const examAccess = await validateExamAccess(userId, undefined, subject);
+        if (!examAccess.allowed) {
+          return res.status(403).json({
+            message: examAccess.message,
+            lockedExam: examAccess.lockedExam,
+            allowedSubjects: examAccess.allowedSubjects,
+            examLocked: true
+          });
+        }
       }
       
       // Get the user's performance data
@@ -1799,9 +1983,22 @@ Analyze this student's performance data and provide comprehensive analytics:
 
     try {
       const { topic, userMessage, aiResponse, subject, language } = req.body;
+      const userId = user.id;
 
       if (!topic && !userMessage) {
         return res.status(400).json({ message: "Topic or user message is required" });
+      }
+      
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      const topicToCheck = topic || userMessage;
+      const examAccess = await validateExamAccess(userId, undefined, subject, topicToCheck);
+      if (!examAccess.allowed) {
+        return res.status(403).json({
+          message: examAccess.message,
+          lockedExam: examAccess.lockedExam,
+          allowedSubjects: examAccess.allowedSubjects,
+          examLocked: true
+        });
       }
 
       // Get user's exam and grade for personalized teaching
@@ -1901,6 +2098,17 @@ Generate ONLY the spoken explanation text (no markdown, no formatting). Keep it 
     try {
       const { topic, subject, style, examType, customPrompt } = schema.parse(req.body);
       const userId = (req.user as any).id;
+
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      const examAccess = await validateExamAccess(userId, examType, subject, topic);
+      if (!examAccess.allowed) {
+        return res.status(403).json({
+          message: examAccess.message,
+          lockedExam: examAccess.lockedExam,
+          allowedSubjects: examAccess.allowedSubjects,
+          examLocked: true
+        });
+      }
 
       // Create highly specific, educational DALL-E 3 prompt focused on actual diagrams
       let imagePrompt = customPrompt;
@@ -2136,6 +2344,17 @@ Keep the explanation concise and exam-oriented.`;
       const { topic, subject, examType, includeImage, includeDiagram, includeQuiz } = schema.parse(req.body);
       const userId = (req.user as any).id;
 
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      const examAccess = await validateExamAccess(userId, examType, subject, topic);
+      if (!examAccess.allowed) {
+        return res.status(403).json({
+          message: examAccess.message,
+          lockedExam: examAccess.lockedExam,
+          allowedSubjects: examAccess.allowedSubjects,
+          examLocked: true
+        });
+      }
+
       const results: any = {
         topic,
         subject,
@@ -2274,6 +2493,18 @@ Format as JSON:
     try {
       const { topic, subject, duration, difficulty, includeVisuals } = schema.parse(req.body);
       const userId = (req.user as any).id;
+      
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      const examAccess = await validateExamAccess(userId, undefined, subject, topic);
+      if (!examAccess.allowed) {
+        return res.status(403).json({
+          message: examAccess.message,
+          lockedExam: examAccess.lockedExam,
+          allowedSubjects: examAccess.allowedSubjects,
+          examLocked: true
+        });
+      }
+      
       const user = await storage.getUserById(userId);
       const tutor = await storage.getAITutorForUser(userId);
 
@@ -2442,6 +2673,19 @@ Format as JSON:
       }
 
       const user = req.user as any;
+      const userId = user.id;
+      
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      const examAccess = await validateExamAccess(userId, examType, undefined, question);
+      if (!examAccess.allowed) {
+        return res.status(403).json({
+          message: examAccess.message,
+          lockedExam: examAccess.lockedExam,
+          allowedSubjects: examAccess.allowedSubjects,
+          examLocked: true
+        });
+      }
+      
       const isCorrect = userAnswer === correctAnswer;
 
       const prompt = `
@@ -2496,6 +2740,20 @@ Format as JSON:
       }
 
       const user = req.user as any;
+      const userId = user.id;
+      
+      // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
+      if (examType) {
+        const examAccess = await validateExamAccess(userId, examType);
+        if (!examAccess.allowed) {
+          return res.status(403).json({
+            message: examAccess.message,
+            lockedExam: examAccess.lockedExam,
+            allowedSubjects: examAccess.allowedSubjects,
+            examLocked: true
+          });
+        }
+      }
       const percentage = Math.round((totalScore / (totalQuestions * 10)) * 100);
       
       // Analyze performance patterns
