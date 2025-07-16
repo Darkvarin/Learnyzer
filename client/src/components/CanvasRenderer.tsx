@@ -21,10 +21,12 @@ interface CanvasElement {
 }
 
 interface CanvasInstructions {
-  title: string;
-  canvasWidth: number;
-  canvasHeight: number;
-  backgroundColor: string;
+  title?: string;
+  width?: number;
+  height?: number;
+  canvasWidth?: number;
+  canvasHeight?: number;
+  backgroundColor?: string;
   elements: CanvasElement[];
 }
 
@@ -43,9 +45,9 @@ export function CanvasRenderer({ instructions, className = "" }: CanvasRendererP
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas dimensions
-    canvas.width = instructions.canvasWidth || 800;
-    canvas.height = instructions.canvasHeight || 600;
+    // Set canvas dimensions (support both field name formats)
+    canvas.width = instructions.canvasWidth || instructions.width || 800;
+    canvas.height = instructions.canvasHeight || instructions.height || 600;
 
     // Clear and set background
     ctx.fillStyle = instructions.backgroundColor || '#ffffff';

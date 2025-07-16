@@ -211,33 +211,28 @@ export const generateEducationalImageUtil = async (options: {
 }) => {
   const { topic, description, style = 'educational', examType } = options;
   
-  // Build DALL-E 3 prompt for educational diagrams
-  let dallePrompt = `Create a clear, educational diagram about "${topic}". ${description}. 
-  
-Style requirements:
-- Clean, professional educational illustration
-- Clear labels and annotations
-- High contrast for readability
-- Academic textbook quality
-- Simple, focused design without clutter`;
+  // Generate canvas-based diagram instead of DALL-E 3
+  try {
+    const canvasInstructions = await aiService.generateCanvasInstructions({
+      topic,
+      subject: examType || 'General',
+      examType,
+      style: 'educational_diagram'
+    });
 
-  if (examType) {
-    dallePrompt += `
-- Relevant for ${examType.toUpperCase()} exam preparation`;
+    return {
+      canvasInstructions,
+      description: `Interactive canvas diagram for ${topic}`,
+      hasVisual: true
+    };
+  } catch (error) {
+    console.error('Canvas diagram generation failed:', error);
+    return {
+      canvasInstructions: null,
+      description: `Failed to generate diagram for ${topic}`,
+      hasVisual: false
+    };
   }
-
-  const response = await openai.images.generate({
-    model: "dall-e-3",
-    prompt: dallePrompt,
-    n: 1,
-    size: "1024x1024",
-    quality: "standard",
-  });
-
-  return {
-    imageUrl: response.data?.[0]?.url || null,
-    prompt: dallePrompt
-  };
 };
 
 export const aiService = {
@@ -2149,39 +2144,25 @@ Keep the explanation concise and exam-oriented.`;
         packageComponents: []
       };
 
-      // Generate DALL-E 3 image if requested
+      // Generate Canvas-based interactive diagram if requested
       if (includeImage) {
         try {
-          const imagePrompt = `Create a highly detailed educational diagram specifically for "${topic}" in ${subject}${examType ? ` (${examType} exam preparation)` : ''}. 
-
-SPECIFIC REQUIREMENTS for ${topic}:
-- Show the exact concepts, formulas, and principles of ${topic}
-- Include step-by-step visual breakdown of how ${topic} works
-- Add clear labels, annotations, and explanations specific to ${topic}
-- Use diagrams, flowcharts, or visual representations relevant to ${topic}
-- Include key formulas, equations, or definitions related to ${topic}
-- Color-code different aspects of ${topic} for better understanding
-- Make it exam-focused with competitive exam question patterns
-- Ensure Indian educational context and NCERT alignment
-
-Create a comprehensive visual guide that teaches ${topic} completely through the illustration. Focus on accuracy and educational value for ${subject} students.`;
-
-          const imageResponse = await openai.images.generate({
-            model: "dall-e-3",
-            prompt: imagePrompt,
-            n: 1,
-            size: "1024x1024",
-            quality: "standard"
+          const canvasInstructions = await aiService.generateCanvasInstructions({
+            topic,
+            subject,
+            examType: examType || undefined,
+            style: 'comprehensive_diagram'
           });
 
-          results.educationalImage = {
-            url: imageResponse.data[0].url,
-            type: "comprehensive_illustration"
-          };
-          results.packageComponents.push("educational_image");
-        } catch (imageError) {
-          console.error("Image generation failed:", imageError);
-          results.imageError = "Failed to generate educational image";
+          if (canvasInstructions) {
+            results.canvasInstructions = canvasInstructions;
+            results.packageComponents.push("interactive_diagram");
+          } else {
+            results.diagramError = "Failed to generate canvas instructions";
+          }
+        } catch (diagramError) {
+          console.error("Canvas diagram generation failed:", diagramError);
+          results.diagramError = "Failed to generate interactive diagram";
         }
       }
 
@@ -2350,37 +2331,26 @@ Format as JSON:
 
       const sessionData = JSON.parse(sessionResponse.choices[0].message.content || '{}');
 
-      // Generate supporting visual if requested
+      // Generate supporting canvas diagram if requested
       let supportingVisual = null;
       if (includeVisuals) {
         try {
-          const visualPrompt = `Create an educational infographic for "${topic}" in ${subject} that supports a ${duration}-minute study session. 
-
-The infographic should:
-- Summarize key concepts visually
-- Include flowcharts, diagrams, or process illustrations
-- Use color coding for different concept categories
-- Include memorable visual mnemonics
-- Be optimized for quick reference during study
-- Have a modern, engaging design suitable for competitive exam prep
-
-Focus on visual clarity and educational value.`;
-
-          const visualResponse = await openai.images.generate({
-            model: "dall-e-3",
-            prompt: visualPrompt,
-            n: 1,
-            size: "1024x1024",
-            quality: "standard"
+          const canvasInstructions = await aiService.generateCanvasInstructions({
+            topic,
+            subject,
+            examType: user?.track,
+            style: 'study_session_infographic'
           });
 
-          supportingVisual = {
-            url: visualResponse.data[0].url,
-            type: "study_session_infographic",
-            description: "Visual summary and reference guide for the study session"
-          };
+          if (canvasInstructions) {
+            supportingVisual = {
+              canvasInstructions,
+              type: "interactive_study_diagram",
+              description: "Interactive visual summary and reference guide for the study session"
+            };
+          }
         } catch (visualError) {
-          console.error("Visual generation failed:", visualError);
+          console.error("Canvas diagram generation failed:", visualError);
         }
       }
 
@@ -2582,6 +2552,108 @@ Focus on visual clarity and educational value.`;
     } catch (error) {
       console.error("Error generating battle insights:", error);
       res.status(500).json({ message: "Failed to generate comprehensive insights" });
+    }
+  },
+
+  /**
+   * Generate Canvas drawing instructions for educational diagrams
+   */
+  async generateCanvasInstructions(options: {
+    topic: string;
+    subject: string;
+    examType?: string;
+    style?: string;
+  }) {
+    const { topic, subject, examType, style = 'diagram' } = options;
+    
+    const canvasPrompt = `Generate detailed Canvas drawing instructions for an educational diagram about "${topic}" in ${subject}${examType ? ` (${examType} exam preparation)` : ''}.
+
+Create a comprehensive interactive diagram that helps students understand this topic completely.
+
+Return ONLY valid JSON with this exact structure:
+{
+  "title": "${topic} - Interactive Diagram",
+  "width": 800,
+  "height": 600,
+  "elements": [
+    {
+      "type": "text",
+      "x": 50,
+      "y": 50,
+      "text": "Main Title",
+      "fontSize": 24,
+      "fontWeight": "bold",
+      "color": "#2563eb"
+    },
+    {
+      "type": "rectangle",
+      "x": 100,
+      "y": 100,
+      "width": 200,
+      "height": 80,
+      "fillColor": "#dbeafe",
+      "strokeColor": "#2563eb",
+      "strokeWidth": 2
+    },
+    {
+      "type": "circle",
+      "x": 300,
+      "y": 150,
+      "radius": 40,
+      "fillColor": "#fef3c7",
+      "strokeColor": "#f59e0b",
+      "strokeWidth": 2
+    },
+    {
+      "type": "line",
+      "x1": 150,
+      "y1": 180,
+      "x2": 260,
+      "y2": 150,
+      "strokeColor": "#374151",
+      "strokeWidth": 2
+    },
+    {
+      "type": "arrow",
+      "x1": 200,
+      "y1": 250,
+      "x2": 300,
+      "y2": 250,
+      "strokeColor": "#dc2626",
+      "strokeWidth": 3
+    }
+  ]
+}
+
+Requirements:
+- Include clear labels and titles
+- Use appropriate colors for educational content
+- Show key relationships with arrows and lines
+- Include all important concepts related to ${topic}
+- Make it visually appealing and easy to understand
+- Focus on exam-relevant content
+- Use at least 8-12 elements for comprehensive coverage`;
+
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          { 
+            role: "system", 
+            content: "You are an expert educational diagram designer. Create detailed Canvas drawing instructions for educational topics. Always return valid JSON with precise drawing commands that create comprehensive, visually appealing educational diagrams." 
+          },
+          { role: "user", content: canvasPrompt }
+        ],
+        response_format: { type: "json_object" },
+        max_tokens: 2500,
+        temperature: 0.3
+      });
+
+      const canvasInstructions = JSON.parse(response.choices[0].message.content || '{}');
+      return canvasInstructions;
+    } catch (error) {
+      console.error('Canvas instructions generation failed:', error);
+      return null;
     }
   }
 };

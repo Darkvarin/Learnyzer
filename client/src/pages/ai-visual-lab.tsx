@@ -619,14 +619,15 @@ export default function AIVisualLab() {
                         <Badge variant="secondary">{results.totalComponents} components</Badge>
                       </div>
 
-                      {results.educationalImage && (
+                      {results.canvasInstructions && (
                         <div className="bg-slate-700/30 rounded-lg p-4">
-                          <h4 className="text-cyan-400 font-medium mb-2">Visual Content</h4>
-                          <img 
-                            src={results.educationalImage.url} 
-                            alt="Educational illustration"
-                            className="w-full rounded-lg mb-2"
-                          />
+                          <h4 className="text-cyan-400 font-medium mb-2">Interactive Diagram</h4>
+                          <div className="rounded-lg overflow-hidden border border-slate-600 bg-white p-4">
+                            <CanvasRenderer 
+                              instructions={results.canvasInstructions}
+                              className="w-full"
+                            />
+                          </div>
                         </div>
                       )}
 
@@ -670,14 +671,15 @@ export default function AIVisualLab() {
                         <Badge variant="secondary">{results.estimatedCompletionTime}</Badge>
                       </div>
 
-                      {results.supportingVisual && (
+                      {results.supportingVisual && results.supportingVisual.canvasInstructions && (
                         <div className="bg-slate-700/30 rounded-lg p-4 mb-4">
                           <h4 className="text-cyan-400 font-medium mb-2">Visual Support</h4>
-                          <img 
-                            src={results.supportingVisual.url} 
-                            alt="Study session visual"
-                            className="w-full rounded-lg"
-                          />
+                          <div className="rounded-lg overflow-hidden border border-slate-600 bg-white p-4">
+                            <CanvasRenderer 
+                              instructions={results.supportingVisual.canvasInstructions}
+                              className="w-full"
+                            />
+                          </div>
                           <p className="text-xs text-slate-400 mt-2">{results.supportingVisual.description}</p>
                         </div>
                       )}
