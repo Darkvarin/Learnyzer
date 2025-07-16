@@ -100,7 +100,7 @@ const siteRoutes = [
   }
 ];
 
-// Exam-specific pages for better SEO
+// Exam-specific pages for better SEO (all 7 supported exams)
 const examPages = [
   {
     url: "/jee-preparation",
@@ -128,6 +128,18 @@ const examPages = [
   },
   {
     url: "/cuet-preparation",
+    priority: 0.8,
+    changefreq: "weekly",
+    lastmod: new Date().toISOString().split('T')[0]
+  },
+  {
+    url: "/cse-preparation",
+    priority: 0.8,
+    changefreq: "weekly",
+    lastmod: new Date().toISOString().split('T')[0]
+  },
+  {
+    url: "/cgle-preparation",
     priority: 0.8,
     changefreq: "weekly",
     lastmod: new Date().toISOString().split('T')[0]
@@ -173,6 +185,15 @@ Allow: /feedback
 Allow: /terms
 Allow: /privacy
 Allow: /contact
+
+# Exam preparation pages for all 7 supported exams
+Allow: /jee-preparation
+Allow: /neet-preparation
+Allow: /upsc-preparation
+Allow: /clat-preparation
+Allow: /cuet-preparation
+Allow: /cse-preparation
+Allow: /cgle-preparation
 
 # Block admin, development, and sensitive areas
 Disallow: /admin/
@@ -251,7 +272,7 @@ export function setupSEORoutes(app: Express): void {
         "@context": "https://schema.org",
         "@type": "EducationalOrganization",
         "name": "Learnyzer",
-        "description": "AI-powered preparation platform for Indian entrance exams including JEE, NEET, UPSC, CLAT, and CUET",
+        "description": "AI-powered preparation platform for Indian entrance exams including JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE",
         "url": baseUrl,
         "logo": `${baseUrl}/images/logo.png`,
         "sameAs": [
@@ -284,6 +305,30 @@ export function setupSEORoutes(app: Express): void {
             "@type": "Offer",
             "name": "UPSC Preparation Course",
             "description": "Civil services exam preparation with AI-powered study plans",
+            "category": "education"
+          },
+          {
+            "@type": "Offer",
+            "name": "CLAT Preparation Course",
+            "description": "Law entrance exam preparation for top law schools in India",
+            "category": "education"
+          },
+          {
+            "@type": "Offer",
+            "name": "CUET Preparation Course",
+            "description": "Common University Entrance Test preparation for central universities",
+            "category": "education"
+          },
+          {
+            "@type": "Offer",
+            "name": "CSE Preparation Course",
+            "description": "Computer Science Engineering exam preparation with programming focus",
+            "category": "education"
+          },
+          {
+            "@type": "Offer",
+            "name": "CGLE Preparation Course",
+            "description": "Combined Graduate Level Examination preparation for government jobs",
             "category": "education"
           }
         ]
