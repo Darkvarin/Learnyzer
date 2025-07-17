@@ -10,6 +10,7 @@ import { courseService } from "./services/course-service";
 import { battleService } from "./services/battle-service";
 import { enhancedBattleService } from "./services/enhanced-battle-service";
 import { notificationService } from "./services/notification-service";
+import { supportService } from "./services/support-service";
 
 import { wellnessService } from "./services/wellness-service";
 import { leaderboardService } from "./services/leaderboard-service";
@@ -1893,7 +1894,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Support Chatbot Routes
+  app.post("/api/support/chat", async (req, res) => {
+    try {
+      const { message, conversationHistory } = req.body;
+      
+      if (!message || typeof message !== 'string') {
+        return res.status(400).json({ error: "Message is required" });
+      }
 
+      const reply = await supportService.generateResponse(message, conversationHistory || []);
+      
+      res.json({ 
+        reply,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error in support chat:", error);
+      res.status(500).json({ 
+        error: "I apologize, but I'm having trouble responding right now. Please try again or contact our support team at learnyzer.ai@gmail.com." 
+      });
+    }
+  });
 
   // Export the broadcast functions for use throughout the application
   (global as any).broadcastToBattle = broadcastToBattle;
