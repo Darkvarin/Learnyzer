@@ -1774,10 +1774,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.id;
       const { questionNumber } = req.body;
       
-      // Handle demo battles
-      if (battleId >= 9998) {
-        return res.json({ success: true, message: "Demo progress updated" });
-      }
+
       
       const result = await enhancedBattleService.updateParticipantQuestionProgress(battleId, userId, questionNumber);
       
@@ -1803,27 +1800,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const battleId = parseInt(req.params.battleId);
       
-      // Handle demo battles with mock progress data
-      if (battleId >= 9998) {
-        const demoBattles = await enhancedBattleService.getDemoBattles();
-        const demoBattle = demoBattles.find(b => b.id === battleId);
-        if (demoBattle) {
-          const progressData = demoBattle.participants.map((participant, index) => ({
-            userId: participant.id,
-            userName: participant.name,
-            userProfileImage: null,
-            currentQuestionNumber: participant.currentQuestionNumber,
-            questionsCompleted: participant.questionsCompleted,
-            questionStartTime: new Date(),
-            score: participant.score,
-            rank: index + 1,
-            currentRank: index + 1,
-            isLeading: index === 0,
-            questionsBehind: demoBattle.participants[0]?.currentQuestionNumber - participant.currentQuestionNumber || 0
-          }));
-          return res.json(progressData);
-        }
-      }
+
       
       const progress = await enhancedBattleService.getBattleQuestionProgress(battleId);
       res.json(progress);
@@ -1841,10 +1818,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.id;
       const { questionNumber, answer } = req.body;
       
-      // Handle demo battles
-      if (battleId >= 9998) {
-        return res.json({ success: true, message: "Demo question completed" });
-      }
+
       
       const result = await enhancedBattleService.completeQuestion(battleId, userId, questionNumber, answer);
       
@@ -1865,17 +1839,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get demo battles
-  app.post("/api/demo-battles", async (req, res) => {
-    console.log("Registering route: POST /api/demo-battles");
-    try {
-      const demoBattles = await enhancedBattleService.getDemoBattles();
-      res.json(demoBattles);
-    } catch (error) {
-      console.error("Error fetching demo battles:", error);
-      res.status(500).json({ error: "Failed to fetch demo battles" });
-    }
-  });
+
 
   // Export the broadcast functions for use throughout the application
   (global as any).broadcastToBattle = broadcastToBattle;
