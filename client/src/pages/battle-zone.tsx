@@ -116,27 +116,48 @@ export default function BattleZone() {
   // Join battle mutation
   const joinBattleMutation = useMutation({
     mutationFn: (battleId: number) => apiRequest("POST", `/api/enhanced-battles/${battleId}/join`),
-    onSuccess: (data, battleId) => {
+    onSuccess: async (data, battleId) => {
       toast({
         title: "Joined Battle!",
         description: "You have successfully joined the battle.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/enhanced-battles"] });
       
-      // Find the battle and open battle detail
-      const battle = battles?.active?.find((b: any) => b.id === battleId) || 
-                   battles?.find((b: any) => b.id === battleId);
-      if (battle) {
-        setSelectedBattle(battle);
-        setShowBattleDetail(true);
-      }
+      // Wait for fresh data before accessing battle
+      await queryClient.invalidateQueries({ queryKey: ["/api/enhanced-battles"] });
+      
+      // Get fresh battle data and open battle detail
+      setTimeout(() => {
+        const freshBattles = queryClient.getQueryData(["/api/enhanced-battles"]) as any;
+        const battle = freshBattles?.active?.find((b: any) => b.id === battleId);
+        if (battle) {
+          setSelectedBattle(battle);
+          setShowBattleDetail(true);
+        }
+      }, 100); // Small delay to ensure query completes
     },
     onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to join battle",
-        variant: "destructive",
-      });
+      // Handle "already joined" error gracefully
+      if (error.message?.includes("already joined") || error.message?.includes("already participating")) {
+        toast({
+          title: "Entering Battle",
+          description: "Opening your battle interface...",
+        });
+        
+        // Find the battle and open it anyway
+        setTimeout(() => {
+          const battle = battles?.active?.find((b: any) => b.id === error.battleId || b.participants?.some((p: any) => p.id === userData?.id));
+          if (battle) {
+            setSelectedBattle(battle);
+            setShowBattleDetail(true);
+          }
+        }, 100);
+      } else {
+        toast({
+          title: "Error",
+          description: error.message || "Failed to join battle",
+          variant: "destructive",
+        });
+      }
     },
   });
 
@@ -152,6 +173,21 @@ export default function BattleZone() {
   };
 
   const handleJoinBattle = (battleId: number) => {
+    // Check if user is already in this battle
+    const battle = battles?.active?.find((b: any) => b.id === battleId);
+    const isAlreadyParticipant = battle?.participants?.some((p: any) => p.id === userData?.id);
+    
+    if (isAlreadyParticipant) {
+      // User is already in the battle, just open it
+      setSelectedBattle(battle);
+      setShowBattleDetail(true);
+      toast({
+        title: "Entering Battle",
+        description: "Opening your battle interface...",
+      });
+      return;
+    }
+    
     joinBattleMutation.mutate(battleId);
   };
 
@@ -398,7 +434,7 @@ export default function BattleZone() {
                       <div className="text-sm">
                         <span className="text-gray-400">Participants: </span>
                         <span className="text-cyan-400">
-                          {Array.isArray(battle.participants) ? battle.participants.length : (battle.participants || 0)}/{String(battle.maxParticipants || 0)}
+                          {battle.participants?.length || 0}/{battle.maxParticipants || 0}
                         </span>
                       </div>
                       <div className="text-sm">
@@ -431,10 +467,20 @@ export default function BattleZone() {
 
                     <Button 
                       onClick={() => handleJoinBattle(battle.id)}
-                      disabled={joinBattleMutation.isPending || ((Array.isArray(battle.participants) ? battle.participants.length : battle.participants) >= battle.maxParticipants)}
-                      className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 transition-all duration-300"
+                      disabled={joinBattleMutation.isPending || (battle.participants?.length >= battle.maxParticipants && !battle.participants?.some((p: any) => p.id === userData?.id))}
+                      className={`w-full transition-all duration-300 ${
+                        battle.participants?.some((p: any) => p.id === userData?.id) 
+                          ? "bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500" 
+                          : "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500"
+                      }`}
                     >
-                      {((Array.isArray(battle.participants) ? battle.participants.length : battle.participants) >= battle.maxParticipants) ? "Battle Full" : joinBattleMutation.isPending ? "Joining..." : "Join Battle"}
+                      {battle.participants?.some((p: any) => p.id === userData?.id) 
+                        ? "Enter Battle" 
+                        : battle.participants?.length >= battle.maxParticipants 
+                          ? "Battle Full" 
+                          : joinBattleMutation.isPending 
+                            ? "Joining..." 
+                            : "Join Battle"}
                     </Button>
                   </div>
                 </div>
@@ -511,8 +557,8 @@ function BattleDetail({ battle, onBack, userData }: { battle: any; onBack: () =>
 
   // Check if battle has enough participants to start
   const currentParticipants = battle.participants?.length || 0;
-  const requiredParticipants = parseInt(battle.type?.slice(0, 1)) * 2 || 2; // Extract number from "1v1", "2v2", etc.
-  const canStart = currentParticipants >= requiredParticipants;
+  const maxParticipants = battle.maxParticipants || 2;
+  const canStart = currentParticipants >= maxParticipants;
 
   // Demo battle questions based on exam type (5 questions each)
   const demoQuestions = {
@@ -900,21 +946,21 @@ function BattleDetail({ battle, onBack, userData }: { battle: any; onBack: () =>
           <h2 className="text-3xl font-bold text-white mb-4">Waiting for Players...</h2>
           
           <p className="text-gray-300 mb-6 text-lg">
-            Need {requiredParticipants - currentParticipants} more player{requiredParticipants - currentParticipants !== 1 ? 's' : ''} to start this {battle.type} battle
+            Need {maxParticipants - currentParticipants} more player{maxParticipants - currentParticipants !== 1 ? 's' : ''} to start this {battle.type} battle
           </p>
           
           <div className="bg-gray-800/50 border border-gray-600/50 rounded-lg p-6 mb-6">
             <div className="flex items-center justify-center gap-4 mb-4">
               <Users className="w-6 h-6 text-cyan-400" />
               <span className="text-xl font-bold text-white">
-                {currentParticipants} / {requiredParticipants} Players
+                {currentParticipants} / {maxParticipants} Players
               </span>
             </div>
             
             <div className="w-full bg-gray-700 rounded-full h-3 mb-4">
               <div 
                 className="bg-gradient-to-r from-purple-500 to-cyan-500 h-3 rounded-full transition-all duration-300"
-                style={{ width: `${(currentParticipants / requiredParticipants) * 100}%` }}
+                style={{ width: `${(currentParticipants / maxParticipants) * 100}%` }}
               ></div>
             </div>
             
