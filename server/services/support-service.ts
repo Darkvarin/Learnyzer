@@ -14,6 +14,11 @@ export interface ChatMessage {
 export class SupportService {
   async generateResponse(userMessage: string, conversationHistory: ChatMessage[] = []): Promise<string> {
     try {
+      // Validate user message
+      if (!userMessage || typeof userMessage !== 'string' || userMessage.trim().length === 0) {
+        return "I didn't receive your message properly. Could you please try asking your question again?";
+      }
+
       // Build conversation context from history
       const messages: any[] = [
         {
@@ -65,8 +70,11 @@ If you don't know something specific, be honest and direct them to learnyzer.ai@
         }
       ];
 
-      // Add conversation history (last 6 messages for context)
-      const recentHistory = conversationHistory.slice(-6);
+      // Add conversation history (last 6 messages for context, filter out null/empty content)
+      const recentHistory = conversationHistory.slice(-6).filter(msg => 
+        msg.content && typeof msg.content === 'string' && msg.content.trim().length > 0
+      );
+      
       for (const msg of recentHistory) {
         messages.push({
           role: msg.type === 'user' ? 'user' : 'assistant',
