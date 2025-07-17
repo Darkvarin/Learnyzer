@@ -183,20 +183,21 @@ export function SupportChatbot() {
                             : 'bg-gray-800/50 border border-gray-700/50'
                         }`}>
                           {message.type === 'bot' ? (
-                            <ReactMarkdown 
-                              className="text-sm text-white prose prose-invert prose-sm max-w-none"
-                              components={{
-                                p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
-                                strong: ({node, ...props}) => <strong className="text-purple-300 font-semibold" {...props} />,
-                                ul: ({node, ...props}) => <ul className="list-disc ml-4 mb-2" {...props} />,
-                                li: ({node, ...props}) => <li className="mb-1" {...props} />,
-                                h1: ({node, ...props}) => <h1 className="text-lg font-bold text-purple-300 mb-2" {...props} />,
-                                h2: ({node, ...props}) => <h2 className="text-base font-bold text-purple-300 mb-2" {...props} />,
-                                h3: ({node, ...props}) => <h3 className="text-sm font-bold text-purple-300 mb-1" {...props} />,
-                              }}
-                            >
-                              {message.content}
-                            </ReactMarkdown>
+                            <div className="text-sm text-white prose prose-invert prose-sm max-w-none">
+                              <ReactMarkdown 
+                                components={{
+                                  p: ({node, ...props}) => <p className="mb-2 last:mb-0 text-white" {...props} />,
+                                  strong: ({node, ...props}) => <strong className="text-purple-300 font-semibold" {...props} />,
+                                  ul: ({node, ...props}) => <ul className="list-disc ml-4 mb-2 text-white" {...props} />,
+                                  li: ({node, ...props}) => <li className="mb-1 text-white" {...props} />,
+                                  h1: ({node, ...props}) => <h1 className="text-lg font-bold text-purple-300 mb-2" {...props} />,
+                                  h2: ({node, ...props}) => <h2 className="text-base font-bold text-purple-300 mb-2" {...props} />,
+                                  h3: ({node, ...props}) => <h3 className="text-sm font-bold text-purple-300 mb-1" {...props} />,
+                                }}
+                              >
+                                {message.content}
+                              </ReactMarkdown>
+                            </div>
                           ) : (
                             <p className="text-sm text-white whitespace-pre-wrap">{message.content}</p>
                           )}
