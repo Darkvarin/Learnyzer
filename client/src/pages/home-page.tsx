@@ -823,7 +823,7 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-xl opacity-80 max-w-2xl mx-auto"
             >
-              Four simple steps to dominate your entrance exam preparation
+              Your complete journey from registration to exam success with India's most advanced AI-powered preparation platform
             </motion.p>
           </div>
 
@@ -838,8 +838,8 @@ export default function HomePage() {
               <Card className="border-primary/10 bg-card/50 backdrop-blur-sm h-full pt-8 relative">
                 <div className="absolute top-0 right-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-primary/30 to-transparent opacity-50 hidden lg:block"></div>
                 <CardContent>
-                  <h3 className="text-xl font-bold mb-3">Create Your Profile</h3>
-                  <p className="text-gray-400">Sign up and select your target entrance exam (JEE, NEET, UPSC, CLAT, CUET), specific subjects, and preparation goals for a personalized experience.</p>
+                  <h3 className="text-xl font-bold mb-3">Choose Your Competitive Exam</h3>
+                  <p className="text-gray-400">Register with mobile OTP verification and select from 7 major competitive exams: JEE (Engineering), NEET (Medical), UPSC (Civil Services), CLAT (Law), CUET (University), CSE (Computer Science), or CGLE (Government Jobs). Lock your exam for focused preparation.</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -854,8 +854,8 @@ export default function HomePage() {
               <Card className="border-primary/10 bg-card/50 backdrop-blur-sm h-full pt-8 relative">
                 <div className="absolute top-0 right-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-primary/30 to-transparent opacity-50 hidden lg:block"></div>
                 <CardContent>
-                  <h3 className="text-xl font-bold mb-3">Master Entrance Exams</h3>
-                  <p className="text-gray-400">Access exam-specific preparation materials tailored to JEE, NEET, UPSC, CLAT, and CUET.</p>
+                  <h3 className="text-xl font-bold mb-3">Access Premium AI Tools</h3>
+                  <p className="text-gray-400">Start with free trial or choose subscription plans. Use GPT-4o AI tutors, study notes generator, mock test creator, visual learning lab, answer checker with OCR, and performance analytics tailored to your selected exam.</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -870,8 +870,8 @@ export default function HomePage() {
               <Card className="border-primary/10 bg-card/50 backdrop-blur-sm h-full pt-8 relative">
                 <div className="absolute top-0 right-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-primary/30 to-transparent opacity-50 hidden lg:block"></div>
                 <CardContent>
-                  <h3 className="text-xl font-bold mb-3">Learn with AI</h3>
-                  <p className="text-gray-400">Engage with our AI tutor for personalized assistance and practice with interactive tools.</p>
+                  <h3 className="text-xl font-bold mb-3">Study & Compete</h3>
+                  <p className="text-gray-400">Get personalized coaching from exam-specific AI tutors, generate study materials as downloadable PDFs, participate in real-time battle zones with power-ups, and practice with interactive mock tests.</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -885,8 +885,8 @@ export default function HomePage() {
               <div className="absolute -left-4 top-0 w-12 h-12 rounded-full bg-primary/20 backdrop-blur flex items-center justify-center font-gaming text-2xl text-primary z-10">4</div>
               <Card className="border-primary/10 bg-card/50 backdrop-blur-sm h-full pt-8">
                 <CardContent>
-                  <h3 className="text-xl font-bold mb-3">Track Progress</h3>
-                  <p className="text-gray-400">Monitor your achievements, compete in battles, and climb the ranks as you improve.</p>
+                  <h3 className="text-xl font-bold mb-3">Achieve Excellence</h3>
+                  <p className="text-gray-400">Monitor performance with detailed analytics, climb 20 rank tiers from Bronze to Grandmaster, maintain daily streaks for rewards, and track progress on exam-specific leaderboards to maximize your competitive exam score.</p>
                 </CardContent>
               </Card>
             </motion.div>
