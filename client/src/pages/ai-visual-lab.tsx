@@ -17,6 +17,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { SubscriptionGuard, useSubscriptionTracking } from "@/components/subscription/subscription-guard";
 import { CanvasRenderer } from "@/components/CanvasRenderer";
+import ReactMarkdown from 'react-markdown';
 // import { TrialLockdown } from "@/components/trial/trial-lockdown"; // Replaced with existing SubscriptionGuard
 
 export default function AIVisualLab() {
@@ -634,8 +635,8 @@ export default function AIVisualLab() {
                       {results.comprehensiveGuide && (
                         <div className="bg-slate-700/30 rounded-lg p-4">
                           <h4 className="text-purple-400 font-medium mb-2">Study Guide</h4>
-                          <div className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">
-                            {results.comprehensiveGuide}
+                          <div className="text-slate-300 text-sm leading-relaxed prose prose-invert prose-sm max-w-none">
+                            <ReactMarkdown>{results.comprehensiveGuide}</ReactMarkdown>
                           </div>
                         </div>
                       )}

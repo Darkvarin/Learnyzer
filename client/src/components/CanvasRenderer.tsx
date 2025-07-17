@@ -12,6 +12,7 @@ interface CanvasElement {
   fontSize?: number;
   fontWeight?: string;
   color?: string;
+  textAlign?: 'left' | 'center' | 'right';
   radius?: number;
   width?: number;
   height?: number;
@@ -89,14 +90,10 @@ export function CanvasRenderer({ instructions, className = "" }: CanvasRendererP
     ctx.fillStyle = element.color || '#000000';
     ctx.font = `${element.fontWeight || 'normal'} ${element.fontSize || 16}px Arial`;
     
-    // Handle text alignment from the data
-    if (element.text.includes('center')) {
-      ctx.textAlign = 'center';
-    } else {
-      ctx.textAlign = 'left';
-    }
+    // Handle text alignment properly
+    ctx.textAlign = element.textAlign || 'left';
+    ctx.textBaseline = 'middle';
     
-    ctx.textBaseline = 'top';
     ctx.fillText(element.text, element.x, element.y);
   };
 

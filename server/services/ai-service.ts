@@ -2318,55 +2318,100 @@ Keep the explanation concise and exam-oriented.`;
         }
       }
 
-      // Generate comprehensive explanation
-      const explanationPrompt = `Create a comprehensive learning guide for "${topic}" in ${subject}${examType ? ` for ${examType} exam preparation` : ''}. Include:
+      // Generate comprehensive explanation with proper markdown formatting
+      const explanationPrompt = `Create a comprehensive learning guide for "${topic}" in ${subject}${examType ? ` for ${examType} exam preparation` : ''}. 
 
-1. **Concept Overview**: Clear explanation of the fundamental concepts
-2. **Visual Elements**: Description of key visual components and their significance
-3. **Exam Strategy**: How this topic appears in competitive exams
-4. **Memory Techniques**: Mnemonics and memory aids
-5. **Common Mistakes**: Typical errors students make
-6. **Practice Approach**: How to practice and master this topic
-7. **Related Topics**: Connections to other subjects/chapters
-8. **Quick Review Points**: Key facts for last-minute revision
+CRITICAL FORMATTING REQUIREMENTS:
+- Use proper markdown headers (# ## ###)
+- Use **bold** for emphasis, not raw ** symbols
+- Use bullet points with - or *
+- Use numbered lists where appropriate
+- Format should be clean and professional
 
-Format this as a comprehensive study guide that complements the visual materials.`;
+Content Structure:
+# ${topic} - Complete Study Guide
+
+## 1. Concept Overview
+Clear explanation of the fundamental concepts
+
+## 2. Key Components
+- Important elements and their significance
+- Visual representations and meanings
+
+## 3. ${examType} Exam Strategy
+How this topic appears in ${examType} competitive exams
+
+## 4. Memory Techniques
+Mnemonics and memory aids for better retention
+
+## 5. Common Mistakes to Avoid
+Typical errors students make and how to prevent them
+
+## 6. Practice Approach
+Step-by-step approach to master this topic
+
+## 7. Quick Review Points
+• Key facts for last-minute revision
+• Important formulas/rules
+• Critical concepts to remember
+
+Make this content specific to ${examType} exam requirements and use proper markdown formatting throughout.`;
 
       const explanationResponse = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
-          { role: "system", content: "You are an expert educator creating comprehensive study guides for Indian competitive exam preparation. Focus on practical learning strategies and exam success." },
+          { role: "system", content: `You are an expert educator creating comprehensive study guides for ${examType} exam preparation. Always use proper markdown formatting and focus on exam-specific content. Never use raw ** symbols - use proper markdown syntax.` },
           { role: "user", content: explanationPrompt }
         ],
-        max_tokens: 1200,
+        max_tokens: 1500,
         temperature: 0.5
       });
 
       results.comprehensiveGuide = explanationResponse.choices[0].message.content;
       results.packageComponents.push("comprehensive_guide");
 
-      // Generate quiz questions if requested
+      // Generate practice quiz specific to exam type and subject
       if (includeQuiz) {
         try {
-          const quizPrompt = `Create 5 multiple-choice questions for "${topic}" in ${subject}${examType ? ` for ${examType} exams` : ''}. Include explanations for each answer.
+          const quizPrompt = `Create a practice quiz for "${topic}" in ${subject} specifically for ${examType} exam preparation.
+
+CRITICAL REQUIREMENTS:
+- Questions must be relevant to ${examType} exam pattern and syllabus
+- Use ${examType}-specific question format and style
+- Focus on concepts from ${subject} that actually appear in ${examType} exams
+- Match difficulty level of actual ${examType} exam
+- For CGLE Law topics: focus on legal concepts, not mathematical problems
+- For UPSC topics: focus on conceptual understanding and current affairs
+- For JEE/NEET: focus on problem-solving and application
+
+Generate 5 multiple-choice questions relevant to ${examType} exam on ${subject}.
 
 Format as JSON:
 {
+  "examType": "${examType}",
+  "subject": "${subject}",
+  "topic": "${topic}",
   "questions": [
     {
-      "question": "Question text",
+      "question": "Question text relevant to ${examType} exam pattern",
       "options": ["A) ...", "B) ...", "C) ...", "D) ..."],
       "correct": 0,
-      "explanation": "Why this answer is correct"
+      "explanation": "Why this answer is correct with ${examType} exam context"
     }
   ]
 }`;
 
           const quizResponse = await openai.chat.completions.create({
             model: "gpt-4o",
-            messages: [{ role: "user", content: quizPrompt }],
-            max_tokens: 1000,
-            temperature: 0.4,
+            messages: [
+              { 
+                role: "system", 
+                content: `You are an expert ${examType} exam question creator. Create questions that match the exact pattern and difficulty of ${examType} exam. For ${subject} questions, focus ONLY on concepts relevant to ${examType} syllabus. Never create math questions for law topics or vice versa.` 
+              },
+              { role: "user", content: quizPrompt }
+            ],
+            max_tokens: 1200,
+            temperature: 0.2,
             response_format: { type: "json_object" }
           });
 
@@ -2759,71 +2804,182 @@ Format as JSON:
     
     const canvasPrompt = `Generate detailed Canvas drawing instructions for an educational diagram about "${topic}" in ${subject}${examType ? ` (${examType} exam preparation)` : ''}.
 
-Create a comprehensive interactive diagram that helps students understand this topic completely.
+Create a comprehensive, well-structured diagram that helps students understand this topic completely.
 
 Return ONLY valid JSON with this exact structure:
 {
-  "title": "${topic} - Interactive Diagram",
+  "title": "${topic} - Educational Diagram",
   "width": 800,
   "height": 600,
   "elements": [
     {
       "type": "text",
-      "x": 50,
-      "y": 50,
-      "text": "Main Title",
-      "fontSize": 24,
+      "x": 400,
+      "y": 40,
+      "text": "${topic}",
+      "fontSize": 28,
       "fontWeight": "bold",
-      "color": "#2563eb"
+      "color": "#1e40af",
+      "textAlign": "center"
     },
     {
       "type": "rectangle",
       "x": 100,
       "y": 100,
-      "width": 200,
-      "height": 80,
+      "width": 180,
+      "height": 60,
       "fillColor": "#dbeafe",
       "strokeColor": "#2563eb",
       "strokeWidth": 2
     },
     {
-      "type": "circle",
-      "x": 300,
-      "y": 150,
-      "radius": 40,
+      "type": "text",
+      "x": 190,
+      "y": 135,
+      "text": "Key Concept 1",
+      "fontSize": 14,
+      "fontWeight": "normal",
+      "color": "#1e40af",
+      "textAlign": "center"
+    },
+    {
+      "type": "rectangle",
+      "x": 320,
+      "y": 100,
+      "width": 180,
+      "height": 60,
       "fillColor": "#fef3c7",
       "strokeColor": "#f59e0b",
       "strokeWidth": 2
     },
     {
-      "type": "line",
-      "x1": 150,
-      "y1": 180,
-      "x2": 260,
-      "y2": 150,
-      "strokeColor": "#374151",
+      "type": "text",
+      "x": 410,
+      "y": 135,
+      "text": "Key Concept 2",
+      "fontSize": 14,
+      "fontWeight": "normal",
+      "color": "#b45309",
+      "textAlign": "center"
+    },
+    {
+      "type": "rectangle",
+      "x": 540,
+      "y": 100,
+      "width": 180,
+      "height": 60,
+      "fillColor": "#d1fae5",
+      "strokeColor": "#10b981",
       "strokeWidth": 2
     },
     {
+      "type": "text",
+      "x": 630,
+      "y": 135,
+      "text": "Key Concept 3",
+      "fontSize": 14,
+      "fontWeight": "normal",
+      "color": "#047857",
+      "textAlign": "center"
+    },
+    {
       "type": "arrow",
-      "x1": 200,
-      "y1": 250,
-      "x2": 300,
-      "y2": 250,
+      "x1": 280,
+      "y1": 130,
+      "x2": 320,
+      "y2": 130,
+      "strokeColor": "#6b7280",
+      "strokeWidth": 3
+    },
+    {
+      "type": "arrow",
+      "x1": 500,
+      "y1": 130,
+      "x2": 540,
+      "y2": 130,
+      "strokeColor": "#6b7280",
+      "strokeWidth": 3
+    },
+    {
+      "type": "rectangle",
+      "x": 200,
+      "y": 250,
+      "width": 400,
+      "height": 100,
+      "fillColor": "#fef2f2",
+      "strokeColor": "#dc2626",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "x": 400,
+      "y": 280,
+      "text": "Important Application",
+      "fontSize": 16,
+      "fontWeight": "bold",
+      "color": "#dc2626",
+      "textAlign": "center"
+    },
+    {
+      "type": "text",
+      "x": 400,
+      "y": 310,
+      "text": "Real-world usage and exam relevance",
+      "fontSize": 12,
+      "fontWeight": "normal",
+      "color": "#991b1b",
+      "textAlign": "center"
+    },
+    {
+      "type": "arrow",
+      "x1": 400,
+      "y1": 180,
+      "x2": 400,
+      "y2": 240,
       "strokeColor": "#dc2626",
       "strokeWidth": 3
+    },
+    {
+      "type": "text",
+      "x": 400,
+      "y": 450,
+      "text": "Key Formula/Rule (if applicable)",
+      "fontSize": 14,
+      "fontWeight": "bold",
+      "color": "#7c3aed",
+      "textAlign": "center"
+    },
+    {
+      "type": "rectangle",
+      "x": 250,
+      "y": 480,
+      "width": 300,
+      "height": 50,
+      "fillColor": "#f3e8ff",
+      "strokeColor": "#7c3aed",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "x": 400,
+      "y": 510,
+      "text": "Formula or important rule here",
+      "fontSize": 12,
+      "fontWeight": "normal",
+      "color": "#6b21a8",
+      "textAlign": "center"
     }
   ]
 }
 
-Requirements:
-- Include clear labels and titles
-- Use appropriate colors for educational content
-- Show key relationships with arrows and lines
-- Include all important concepts related to ${topic}
-- Make it visually appealing and easy to understand
-- Focus on exam-relevant content
-- Use at least 8-12 elements for comprehensive coverage`;
+CRITICAL REQUIREMENTS:
+- Make text readable and properly centered
+- Use consistent colors and styling
+- Include relevant formulas or rules for ${examType} exam
+- Show clear relationships between concepts
+- Focus on ${examType} exam-specific content
+- Use proper text alignment and positioning
+- Include 12-15 elements for comprehensive coverage`;
 
     try {
       const response = await openai.chat.completions.create({
@@ -2831,13 +2987,13 @@ Requirements:
         messages: [
           { 
             role: "system", 
-            content: "You are an expert educational diagram designer. Create detailed Canvas drawing instructions for educational topics. Always return valid JSON with precise drawing commands that create comprehensive, visually appealing educational diagrams." 
+            content: `You are an expert educational diagram designer specializing in ${examType} exam preparation. Create detailed Canvas drawing instructions that are visually clear, properly formatted, and exam-focused. Always return valid JSON with precise positioning and readable text elements.` 
           },
           { role: "user", content: canvasPrompt }
         ],
         response_format: { type: "json_object" },
-        max_tokens: 2500,
-        temperature: 0.3
+        max_tokens: 3000,
+        temperature: 0.2
       });
 
       const canvasInstructions = JSON.parse(response.choices[0].message.content || '{}');
