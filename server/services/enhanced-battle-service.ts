@@ -1,5 +1,5 @@
 import { db } from '@db';
-import { battles, battleQuestions, battleSpectators, powerUps, userPowerUps, battleParticipants, users } from '@shared/schema';
+import { battles, battleQuestions, battleSpectators, powerUps, userPowerUps, battleParticipants, users, userCoins, coinTransactions } from '@shared/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
 import OpenAI from 'openai';
 
@@ -298,6 +298,106 @@ export class EnhancedBattleService {
       return { success: true, message: 'Added as spectator' };
     } catch (error) {
       console.error('Error adding spectator:', error);
+      throw error;
+    }
+  }
+
+  // Handle battle abandonment with penalty fee
+  async abandonBattle(battleId: number, userId: number) {
+    try {
+      // Get battle details to check penalty fee
+      const battle = await db.query.battles.findFirst({
+        where: eq(battles.id, battleId)
+      });
+
+      if (!battle) {
+        throw new Error('Battle not found');
+      }
+
+      // Get participant details
+      const participant = await db.query.battleParticipants.findFirst({
+        where: and(
+          eq(battleParticipants.battleId, battleId),
+          eq(battleParticipants.userId, userId)
+        )
+      });
+
+      if (!participant) {
+        throw new Error('Not a participant in this battle');
+      }
+
+      // Check if battle is still in progress
+      if (battle.status !== 'in_progress' && battle.status !== 'waiting') {
+        throw new Error('Cannot abandon a completed battle');
+      }
+
+      // Check if already abandoned
+      if (participant.hasAbandoned) {
+        throw new Error('Already abandoned this battle');
+      }
+
+      // Mark participant as abandoned
+      await db
+        .update(battleParticipants)
+        .set({
+          hasAbandoned: true,
+          leftAt: new Date(),
+          penaltyApplied: false // Will be set to true after penalty deduction
+        })
+        .where(and(
+          eq(battleParticipants.battleId, battleId),
+          eq(battleParticipants.userId, userId)
+        ));
+
+      // Apply penalty fee (deduct coins)
+      const penaltyFee = battle.penaltyFee || 10;
+      
+      // Get user's current coin balance
+      const userCoinsData = await db.query.userCoins.findFirst({
+        where: eq(userCoins.userId, userId)
+      });
+
+      if (userCoinsData && userCoinsData.coins >= penaltyFee) {
+        // Deduct penalty fee from coins
+        await db
+          .update(userCoins)
+          .set({
+            coins: userCoinsData.coins - penaltyFee,
+            totalSpent: userCoinsData.totalSpent + penaltyFee,
+            updatedAt: new Date()
+          })
+          .where(eq(userCoins.userId, userId));
+
+        // Record transaction
+        await db.insert(coinTransactions).values({
+          userId,
+          amount: -penaltyFee,
+          type: 'spend',
+          description: `Penalty for abandoning battle: ${battle.title}`,
+          referenceId: battleId,
+          referenceType: 'battle_penalty',
+          createdAt: new Date()
+        });
+
+        // Mark penalty as applied
+        await db
+          .update(battleParticipants)
+          .set({ penaltyApplied: true })
+          .where(and(
+            eq(battleParticipants.battleId, battleId),
+            eq(battleParticipants.userId, userId)
+          ));
+      }
+
+      return {
+        success: true,
+        message: 'Left battle successfully',
+        penaltyApplied: userCoinsData && userCoinsData.coins >= penaltyFee,
+        penaltyAmount: penaltyFee,
+        remainingCoins: userCoinsData ? Math.max(0, userCoinsData.coins - penaltyFee) : 0
+      };
+    } catch (error) {
+      console.error('Error abandoning battle:', error);
       throw error;
     }
   }

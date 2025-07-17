@@ -135,6 +135,7 @@ export const battles = pgTable("battles", {
   rewardPoints: integer("reward_points").notNull(),
   entryFee: integer("entry_fee").default(0).notNull(), // XP cost to join
   prizePool: integer("prize_pool").default(0).notNull(), // Total XP prize pool
+  penaltyFee: integer("penalty_fee").default(10).notNull(), // Coins deducted for leaving mid-battle
   maxParticipants: integer("max_participants").default(8).notNull(),
   status: text("status").default("waiting").notNull(), // waiting, in_progress, completed, cancelled
   battleMode: text("battle_mode").default("public").notNull(), // public, private, tournament
@@ -200,7 +201,9 @@ export const battleParticipants = pgTable("battle_participants", {
   currentQuestionNumber: integer("current_question_number").default(1).notNull(), // Track which question student is currently on
   questionsCompleted: integer("questions_completed").default(0).notNull(), // Track total questions completed by participant
   questionStartTime: timestamp("question_start_time"), // When current question was started
-  questionAnswers: jsonb("question_answers").default("[]").notNull() // Store answers for each question
+  questionAnswers: jsonb("question_answers").default("[]").notNull(), // Store answers for each question
+  hasAbandoned: boolean("has_abandoned").default(false).notNull(), // Track if participant abandoned mid-battle
+  penaltyApplied: boolean("penalty_applied").default(false).notNull() // Track if penalty was already applied
 });
 
 // Battle Questions Table - New for Battle Zone 2.0

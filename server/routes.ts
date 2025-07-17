@@ -1748,6 +1748,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Abandon enhanced battle with penalty fee
+  app.post("/api/enhanced-battles/:battleId/abandon", requireAuth, async (req, res) => {
+    console.log("Registering route: POST /api/enhanced-battles/:battleId/abandon");
+    try {
+      const battleId = parseInt(req.params.battleId);
+      const userId = req.user.id;
+
+      const result = await enhancedBattleService.abandonBattle(battleId, userId);
+      res.json(result);
+    } catch (error) {
+      console.error("Error abandoning battle:", error);
+      res.status(500).json({ error: "Failed to abandon battle" });
+    }
+  });
+
   // Submit answer to enhanced battle
   app.post("/api/enhanced-battles/:battleId/submit", requireAuth, async (req, res) => {
     console.log("Registering route: POST /api/enhanced-battles/:battleId/submit");

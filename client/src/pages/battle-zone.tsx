@@ -10,7 +10,18 @@ import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 import LiveQuestionTracker from "@/components/LiveQuestionTracker";
-import { Sword, Plus, Users, Clock, Target, Trophy, Flame, ArrowLeft, Send, Eye, CheckCircle, XCircle, RotateCcw, Brain } from "lucide-react";
+import { Sword, Plus, Users, Clock, Target, Trophy, Flame, ArrowLeft, Send, Eye, CheckCircle, XCircle, RotateCcw, Brain, AlertTriangle } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function BattleZone() {
   const { toast } = useToast();
@@ -158,6 +169,35 @@ export default function BattleZone() {
           variant: "destructive",
         });
       }
+    },
+  });
+
+  // Abandon battle mutation with penalty fee
+  const abandonBattleMutation = useMutation({
+    mutationFn: (battleId: number) => 
+      apiRequest("POST", `/api/enhanced-battles/${battleId}/abandon`),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/enhanced-battles"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/coins"] });
+      
+      setShowBattleDetail(false);
+      setSelectedBattle(null);
+      
+      toast({
+        title: "Left Battle",
+        description: data.penaltyApplied 
+          ? `You left the battle. Penalty: ${data.penaltyAmount} coins deducted. Remaining: ${data.remainingCoins} coins`
+          : `You left the battle. ${data.message}`,
+        variant: data.penaltyApplied ? "destructive" : "default",
+      });
+    },
+    onError: (error: any) => {
+      console.error('Abandon error:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to leave battle",
+        variant: "destructive",
+      });
     },
   });
 
@@ -1002,13 +1042,47 @@ function BattleDetail({ battle, onBack, userData }: { battle: any; onBack: () =>
           )}
 
           <div className="flex gap-4 justify-center">
-            <Button
-              onClick={onBack}
-              variant="outline"
-              className="border-gray-600 text-gray-300 hover:bg-gray-700"
-            >
-              Leave Battle
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                  disabled={abandonBattleMutation.isPending}
+                >
+                  <AlertTriangle className="w-4 h-4 mr-2" />
+                  Leave Battle
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-gray-900 border-red-500/50">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-red-400 flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5" />
+                    Leave Battle - Penalty Warning
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-gray-300">
+                    Are you sure you want to leave this battle? 
+                    <br /><br />
+                    <strong className="text-red-400">Penalty Fee: {battle.penaltyFee || 10} coins</strong>
+                    <br />
+                    This penalty will be deducted from your coin balance for abandoning the battle mid-way.
+                    <br /><br />
+                    <span className="text-gray-400">This helps maintain fair play for other participants.</span>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="border-gray-600 text-gray-300 hover:bg-gray-800">
+                    Stay in Battle
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => abandonBattleMutation.mutate(battle.id)}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                    disabled={abandonBattleMutation.isPending}
+                  >
+                    {abandonBattleMutation.isPending ? "Leaving..." : "Leave & Pay Penalty"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             
             <Button
               onClick={() => window.location.reload()}
@@ -1030,21 +1104,67 @@ function BattleDetail({ battle, onBack, userData }: { battle: any; onBack: () =>
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onBack}
-          className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Battles
-        </Button>
-        <div className="h-6 w-px bg-gray-600"></div>
-        <div>
-          <h1 className="text-2xl font-bold text-white">{battle.title}</h1>
-          <p className="text-gray-400">{battle.examType} • {battle.subject} • {battle.type}</p>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onBack}
+            className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Battles
+          </Button>
+          <div className="h-6 w-px bg-gray-600"></div>
+          <div>
+            <h1 className="text-2xl font-bold text-white">{battle.title}</h1>
+            <p className="text-gray-400">{battle.examType} • {battle.subject} • {battle.type}</p>
+          </div>
         </div>
+        
+        {/* Leave Battle Button for Active Battles */}
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-600/50 text-red-400 hover:bg-red-600/10 hover:border-red-500"
+              disabled={abandonBattleMutation.isPending}
+            >
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              Leave Battle
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-gray-900 border-red-500/50">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-red-400 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5" />
+                Abandon Active Battle
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-gray-300">
+                Are you sure you want to abandon this active battle? 
+                <br /><br />
+                <strong className="text-red-400">Penalty Fee: {battle.penaltyFee || 10} coins</strong>
+                <br />
+                You will lose your progress and the penalty will be deducted from your coin balance.
+                <br /><br />
+                <span className="text-yellow-400">⚠️ This action cannot be undone!</span>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="border-gray-600 text-gray-300 hover:bg-gray-800">
+                Continue Battle
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => abandonBattleMutation.mutate(battle.id)}
+                className="bg-red-600 hover:bg-red-700 text-white"
+                disabled={abandonBattleMutation.isPending}
+              >
+                {abandonBattleMutation.isPending ? "Abandoning..." : "Abandon & Pay Penalty"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       {/* Battle Info */}
