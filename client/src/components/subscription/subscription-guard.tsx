@@ -52,7 +52,7 @@ export function SubscriptionGuard({
           onAccessDenied();
         }
       } catch (error) {
-        console.error("Error checking access:", error);
+        // Access check failed, deny access
         setHasAccess(false);
       }
     }
@@ -171,7 +171,7 @@ export function useSubscriptionTracking() {
       const result = await trackUsage.mutateAsync({ featureType, metadata });
       return result.hasAccess;
     } catch (error) {
-      console.error("Error tracking usage:", error);
+      // Usage tracking failed silently
       return false;
     }
   };

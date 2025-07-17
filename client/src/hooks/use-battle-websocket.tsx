@@ -44,7 +44,7 @@ export function useBattleWebSocket(battleId?: number) {
     
     socketRef.current.onopen = () => {
       setConnected(true);
-      console.log('WebSocket connection established');
+
       
       // Join the battle's virtual room
       if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -60,11 +60,11 @@ export function useBattleWebSocket(battleId?: number) {
     
     socketRef.current.onclose = () => {
       setConnected(false);
-      console.log('WebSocket connection closed');
+
     };
     
     socketRef.current.onerror = (error) => {
-      console.error('WebSocket error:', error);
+
     };
     
     socketRef.current.onmessage = (event) => {
@@ -128,10 +128,10 @@ export function useBattleWebSocket(battleId?: number) {
             break;
             
           default:
-            console.log('Unhandled message type:', data.type);
+
         }
       } catch (error) {
-        console.error('Error parsing WebSocket message:', error);
+
       }
     };
     

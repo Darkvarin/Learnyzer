@@ -129,17 +129,17 @@ export default function StudyNotesGenerator() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'PDF generation failed' }));
-        console.error('PDF API Error:', errorData);
+        // PDF API error occurred
         throw new Error(errorData.message || 'PDF generation failed');
       }
 
       // Check response headers
       const contentType = response.headers.get('content-type');
       const contentLength = response.headers.get('content-length');
-      console.log('PDF Response - Content-Type:', contentType, 'Content-Length:', contentLength);
+
 
       const blob = await response.blob();
-      console.log('PDF Blob - Size:', blob.size, 'Type:', blob.type);
+
       
       if (blob.size === 0) {
         throw new Error('Received empty PDF file');
@@ -148,7 +148,7 @@ export default function StudyNotesGenerator() {
       return blob;
     },
     onSuccess: (blob) => {
-      console.log('Creating download with blob size:', blob.size);
+
       
       // Create download link
       const url = window.URL.createObjectURL(blob);
@@ -171,7 +171,7 @@ export default function StudyNotesGenerator() {
       });
     },
     onError: (error: any) => {
-      console.error('PDF API Error:', error);
+      // PDF download failed
       toast({
         title: "PDF Generation Failed",
         description: "There was an error generating the PDF. Please try again.",

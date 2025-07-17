@@ -12,7 +12,7 @@ export async function getAITutorResponse(message: string): Promise<{ response: s
     const response = await apiRequest("POST", "/api/ai/tutor/respond", { message });
     return response.json();
   } catch (error) {
-    console.error("Error getting AI tutor response:", error);
+    // AI tutor request failed
     throw error;
   }
 }
@@ -36,7 +36,7 @@ export async function generateStudyNotes(topic: string, preferences: {
     });
     return response.json();
   } catch (error) {
-    console.error("Error generating study notes:", error);
+    // Study notes generation failed
     throw error;
   }
 }
@@ -66,7 +66,7 @@ export async function checkAnswer(
     });
     return response.json();
   } catch (error) {
-    console.error("Error checking answer:", error);
+    // Answer checking failed
     throw error;
   }
 }
@@ -90,7 +90,7 @@ export async function generateFlashcards(
     });
     return response.json();
   } catch (error) {
-    console.error("Error generating flashcards:", error);
+    // Flashcard generation failed
     throw error;
   }
 }
@@ -112,7 +112,7 @@ export async function getPerformanceInsights(
     const response = await apiRequest("GET", `/api/ai/tools/insights/${userId}`);
     return response.json();
   } catch (error) {
-    console.error("Error getting performance insights:", error);
+    // Performance insights failed
     throw error;
   }
 }
@@ -133,7 +133,7 @@ export async function judgeBattle(
     const response = await apiRequest("POST", `/api/ai/battle/judge/${battleId}`);
     return response.json();
   } catch (error) {
-    console.error("Error judging battle:", error);
+    // Battle judging failed
     throw error;
   }
 }

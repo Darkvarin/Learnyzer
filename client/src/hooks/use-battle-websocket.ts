@@ -19,7 +19,7 @@ export function useBattleWebSocket(battleId: string | number, userId: string | n
       wsRef.current = new WebSocket(wsUrl);
 
       wsRef.current.onopen = () => {
-        console.log('Battle WebSocket connected');
+
         setConnected(true);
         setReconnectAttempts(0);
         
@@ -36,18 +36,18 @@ export function useBattleWebSocket(battleId: string | number, userId: string | n
           const data = JSON.parse(event.data);
           handleMessage(data);
         } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
+
         }
       };
 
       wsRef.current.onclose = (event) => {
-        console.log('Battle WebSocket disconnected:', event.code, event.reason);
+
         setConnected(false);
         
         // Attempt to reconnect if not a clean close
         if (event.code !== 1000 && reconnectAttempts < maxReconnectAttempts) {
           setTimeout(() => {
-            console.log(`Reconnecting... Attempt ${reconnectAttempts + 1}/${maxReconnectAttempts}`);
+
             setReconnectAttempts(prev => prev + 1);
             connect();
           }, reconnectDelay * (reconnectAttempts + 1));

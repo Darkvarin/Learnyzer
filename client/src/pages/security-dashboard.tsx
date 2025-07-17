@@ -82,7 +82,7 @@ export default function SecurityDashboard() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Failed to export security logs:", error);
+      // Security log export failed
     }
   };
 

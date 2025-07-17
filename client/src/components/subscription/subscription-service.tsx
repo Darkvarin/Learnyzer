@@ -50,7 +50,7 @@ export default function SubscriptionService({ children }: SubscriptionServicePro
         setIsPaymentModalOpen(true);
       })
       .catch(error => {
-        console.error('Authentication check failed:', error);
+        // Authentication check failed
         toast({
           title: 'Authentication Required',
           description: 'Please sign in to subscribe to a plan',

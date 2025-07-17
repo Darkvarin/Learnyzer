@@ -98,7 +98,7 @@ export function SupportChatbot() {
 
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error('Error sending message:', error);
+      // Message sending failed
       setIsTyping(false);
       
       const errorMessage: Message = {

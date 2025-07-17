@@ -77,7 +77,7 @@ export default function RazorpayModal({
       setOrderData(data);
       setLoading(false);
     } catch (error) {
-      console.error('Error creating order:', error);
+      // Order creation failed
       toast({
         title: "Error",
         description: "Failed to create subscription order. Please try again later.",
@@ -107,7 +107,7 @@ export default function RazorpayModal({
       },
       modal: {
         ondismiss: function () {
-          console.log('Payment modal closed');
+
           onClose();
         },
       },
@@ -120,7 +120,7 @@ export default function RazorpayModal({
       const razorpayInstance = new window.Razorpay(options);
       razorpayInstance.open();
     } catch (error) {
-      console.error('Razorpay initialization error:', error);
+      // Razorpay initialization failed
       toast({
         title: "Error",
         description: "Payment initialization failed. Please try again later.",
@@ -164,7 +164,7 @@ export default function RazorpayModal({
         throw new Error('Payment verification failed');
       }
     } catch (error) {
-      console.error('Payment verification error:', error);
+      // Payment verification failed
       toast({
         title: "Payment Verification Failed",
         description: "We couldn't verify your payment. Please contact support if your account was charged.",

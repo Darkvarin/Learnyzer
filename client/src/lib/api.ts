@@ -19,7 +19,7 @@ export async function apiRequest(
     
     return response;
   } catch (error) {
-    console.error('API request error:', error);
+    // API request failed
     throw error;
   }
 }

@@ -242,7 +242,7 @@ export default function ProfileSettings() {
         description: `${selectedExamForConfirmation?.toUpperCase()} has been set as your entrance exam. This selection is now locked.`,
       });
     } catch (error: any) {
-      console.error("Exam confirmation error:", error);
+      // Exam confirmation failed
       
       // Handle specific error cases
       if (error.message?.includes("already locked")) {

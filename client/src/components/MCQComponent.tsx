@@ -136,7 +136,7 @@ export function MCQComponent({
         });
       }
     } catch (error) {
-      console.error('Error evaluating MCQ:', error);
+      // MCQ evaluation failed
       toast({
         title: "Error",
         description: "Failed to evaluate your answer. Please try again.",

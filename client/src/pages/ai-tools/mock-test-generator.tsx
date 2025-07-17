@@ -131,7 +131,7 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
         description: "Failed to submit test. Please try again.",
         variant: "destructive",
       });
-      console.error('Test submission error:', error);
+      // Test submission failed
     }
   });
 
@@ -150,16 +150,16 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
         // The questions are stored as JSON strings in the database
         const parsedQuestions = typeof testData.questions === 'string' ? JSON.parse(testData.questions) : testData.questions;
         questions = Array.isArray(parsedQuestions) ? parsedQuestions : [];
-        console.log('Parsed questions:', questions.length, 'questions loaded');
+
       }
       if (testData.answerKey) {
         // The answerKey is stored as JSON strings in the database
         const parsedAnswerKey = typeof testData.answerKey === 'string' ? JSON.parse(testData.answerKey) : testData.answerKey;
         answerKey = Array.isArray(parsedAnswerKey) ? parsedAnswerKey : [];
-        console.log('Parsed answer key:', answerKey.length, 'answers loaded');
+
       }
     } catch (error) {
-      console.error('Error parsing test data:', error, 'Test object:', testData);
+      // Error parsing test data
       toast({
         title: "Error Loading Test",
         description: "Unable to load test questions. Please try again.",
@@ -168,9 +168,7 @@ function MockTestViewer({ test, onBack }: { test: MockTest; onBack: () => void }
     }
 
     // Debug: Check if questions are loaded
-    console.log('Test data:', testData);
-    console.log('Questions array length:', questions.length);
-    console.log('Answer key length:', answerKey.length);
+
     
     return { questions, answerKey };
   }, [testData, toast]);

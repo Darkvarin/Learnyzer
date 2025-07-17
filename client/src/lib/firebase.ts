@@ -44,7 +44,7 @@ export class FirebasePhoneAuth {
       // If Firebase is not configured, use mock OTP system
       if (!this.isFirebaseConfigured()) {
         this.mockOTP = Math.floor(100000 + Math.random() * 900000).toString();
-        console.log(`Mock OTP for ${phoneNumber}: ${this.mockOTP}`);
+
         return {
           success: true,
           message: `OTP sent to +91${phoneNumber}`,
@@ -70,9 +70,9 @@ export class FirebasePhoneAuth {
         };
       } catch (firebaseError: any) {
         // If Firebase fails due to billing or other issues, fall back to mock OTP
-        console.log('Firebase SMS failed, using mock OTP:', firebaseError.message);
+
         this.mockOTP = Math.floor(100000 + Math.random() * 900000).toString();
-        console.log(`Fallback OTP for ${phoneNumber}: ${this.mockOTP}`);
+
         return {
           success: true,
           message: `OTP sent to +91${phoneNumber} (Development Mode)`,
@@ -80,7 +80,7 @@ export class FirebasePhoneAuth {
         };
       }
     } catch (error: any) {
-      console.error('Error sending OTP:', error);
+      // OTP sending failed
       return {
         success: false,
         message: error.message || 'Failed to send OTP'
@@ -119,7 +119,7 @@ export class FirebasePhoneAuth {
             uid
           };
         } catch (error: any) {
-          console.error('Firebase OTP verification failed:', error);
+          // Firebase verification failed
           // Fall through to mock verification if Firebase fails
         }
       }
@@ -138,7 +138,7 @@ export class FirebasePhoneAuth {
         };
       }
     } catch (error: any) {
-      console.error('Error verifying OTP:', error);
+      // OTP verification failed
       return {
         success: false,
         message: 'Invalid OTP. Please try again.'

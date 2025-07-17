@@ -44,7 +44,7 @@ export function StreakProgress() {
         setStreakData(data);
       }
     } catch (error) {
-      console.error("Failed to fetch streak data:", error);
+      // Streak data fetch failed
     } finally {
       setLoading(false);
     }

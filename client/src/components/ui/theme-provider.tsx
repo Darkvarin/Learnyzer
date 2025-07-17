@@ -51,7 +51,7 @@ export const useTheme = () => {
     // Return a dummy setTheme function for backward compatibility
     setTheme: () => {
       // Do nothing - dark theme is enforced
-      console.log("Theme switching is disabled - using dark theme only");
+
     }
   };
 };
