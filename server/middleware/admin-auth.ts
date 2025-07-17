@@ -7,8 +7,8 @@ const adminSessions = new Map<string, { email: string; timestamp: number }>();
 const SESSION_TIMEOUT = 24 * 60 * 60 * 1000;
 
 // Admin credentials (environment-based for security)
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@learnyzer.ai';
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '$2b$10$eWqQxzx4bWOjQJ1aJQqJm.8qXJUyL5Y9h6qHK5CtZf2S1t6nH7w8a'; // Default: admin123
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'jonwalekansh.00@gmail.com';
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH || '$2b$10$SdE664rbLuPb4rS9SHVahOPKQ2D.b92kRuRdqa7.aW8AIwpAkxVde'; // Learnyzer2025
 
 export async function authenticateAdmin(email: string, password: string): Promise<boolean> {
   try {
