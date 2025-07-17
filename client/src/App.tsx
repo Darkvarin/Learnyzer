@@ -43,7 +43,7 @@ function App() {
         <AuthProvider>
           <UserProvider>
             <RealTimeProvider>
-              <div className="min-h-screen flex flex-col">
+              <div className="min-h-screen flex flex-col cyber-scrollbar">
                 <ScrollToTop />
                 <main className="flex-1">
                   <Switch>

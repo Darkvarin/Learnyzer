@@ -99,7 +99,7 @@ export default function HomePage() {
 
   // For non-authenticated users, show landing page
   return (
-    <div className="min-h-screen futuristic-bg relative solo-page">
+    <div className="min-h-screen futuristic-bg relative solo-page cyber-scrollbar">
       <SEOHead
         title="Learnyzer - AI-Powered Indian Entrance Exam Preparation | JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE"
         description="Master JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE with AI tutoring, gamified learning, and personalized study plans. Join thousands of successful students achieving their dreams."
