@@ -110,9 +110,15 @@ export function setupAuth(app: Express) {
   passport.deserializeUser(async (id: number, done) => {
     try {
       const user = await storage.getUserById(id);
+      if (!user) {
+        // User was deleted, clear the session
+        done(null, false);
+        return;
+      }
       done(null, user);
     } catch (error) {
-      done(error);
+      // If user not found, clear the session instead of throwing error
+      done(null, false);
     }
   });
 
