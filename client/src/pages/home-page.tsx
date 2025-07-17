@@ -665,12 +665,12 @@ export default function HomePage() {
                   <h3 className="text-2xl font-gaming mb-4 text-white">Advanced Ranking & Analytics</h3>
                   <p className="text-gray-300">
                     Track your performance across all competitive exams with detailed analytics, progress charts, and AI-powered insights. 
-                    Climb 20 rank tiers from Bronze I to Grandmaster with exam-specific leaderboards for each subject area.
+                    Climb 9 prestigious rank tiers from Bronze to Grandmaster with exam-specific leaderboards for each subject area.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>20 competitive rank tiers</span>
+                      <span>9 prestigious rank tiers</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
@@ -886,7 +886,7 @@ export default function HomePage() {
               <Card className="border-primary/10 bg-card/50 backdrop-blur-sm h-full pt-8">
                 <CardContent>
                   <h3 className="text-xl font-bold mb-3">Achieve Excellence</h3>
-                  <p className="text-gray-400">Monitor performance with detailed analytics, climb 20 rank tiers from Bronze to Grandmaster, maintain daily streaks for rewards, and track progress on exam-specific leaderboards to maximize your competitive exam score.</p>
+                  <p className="text-gray-400">Monitor performance with detailed analytics, climb 9 prestigious rank tiers from Bronze to Grandmaster, maintain daily streaks for rewards, and track progress on exam-specific leaderboards to maximize your competitive exam score.</p>
                 </CardContent>
               </Card>
             </motion.div>

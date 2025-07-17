@@ -54,7 +54,7 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
 
 ### Gamification System
 - **Leveling System**: Exponential XP requirements with 35% growth factor per level
-- **Ranking System**: 20-tier ranking from Bronze I to Grandmaster with challenging point requirements
+- **Ranking System**: 9-tier ranking from Bronze to Grandmaster (Bronze, Silver, Gold, Platinum, Diamond, Heroic, Elite, Master, Grandmaster)
 - **Streak System**: Daily learning streaks with reward mechanisms
 - **Battle System**: Competitive academic battles (1v1, 2v2, 3v3, 4v4) with real-time functionality
 - **Achievement System**: Progress tracking and milestone rewards
