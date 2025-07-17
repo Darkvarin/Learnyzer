@@ -784,7 +784,17 @@ export default function AiTutor() {
 
               <Tabs defaultValue="chat" value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
-                  <TabsList className="grid grid-cols-2 w-full sm:w-auto bg-background/30 border border-primary/20 p-1">
+                  <TabsList className="grid grid-cols-3 w-full sm:w-auto bg-background/30 border border-primary/20 p-1">
+                    <TabsTrigger 
+                      value="chat" 
+                      className="text-xs sm:text-sm px-2 sm:px-4 data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=active]:shadow-glow relative overflow-hidden"
+                    >
+                      {/* Solo Leveling active tab effect */}
+                      <div className="absolute inset-0 primary-aura opacity-0 group-data-[state=active]:opacity-20"></div>
+                      <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                      <span className="relative z-10 hidden sm:inline">Chat</span>
+                      <span className="relative z-10 sm:hidden">Chat</span>
+                    </TabsTrigger>
                     <TabsTrigger 
                       value="canvas" 
                       className="text-xs sm:text-sm px-2 sm:px-4 data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=active]:shadow-glow relative overflow-hidden"
@@ -800,8 +810,8 @@ export default function AiTutor() {
                       {/* Solo Leveling active tab effect */}
                       <div className="absolute inset-0 primary-aura opacity-0 group-data-[state=active]:opacity-20"></div>
                       <PenTool className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                      <span className="relative z-10 hidden sm:inline">Visual Learning Lab</span>
-                      <span className="relative z-10 sm:hidden">Visual Lab</span>
+                      <span className="relative z-10 hidden sm:inline">Visual Lab</span>
+                      <span className="relative z-10 sm:hidden">Visual</span>
                     </TabsTrigger>
                     <TabsTrigger 
                       value="performance" 
@@ -810,7 +820,8 @@ export default function AiTutor() {
                       {/* Solo Leveling active tab effect */}
                       <div className="absolute inset-0 primary-aura opacity-0 group-data-[state=active]:opacity-20"></div>
                       <BarChart4 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                      <span className="relative z-10">Progress</span>
+                      <span className="relative z-10 hidden sm:inline">Progress</span>
+                      <span className="relative z-10 sm:hidden">Stats</span>
                     </TabsTrigger>
                   </TabsList>
                   
@@ -1328,34 +1339,34 @@ export default function AiTutor() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                       <div className="bg-dark-surface rounded-lg p-4">
                         <div className="flex items-center justify-between">
-                          <p className="text-sm text-gray-400">Total Study Time</p>
+                          <p className="text-sm text-gray-400">AI Conversations</p>
                           <MessageSquare className="h-4 w-4 text-primary-400" />
                         </div>
-                        <p className="text-2xl font-bold mt-2">0 hrs</p>
+                        <p className="text-2xl font-bold mt-2">{user?.totalConversations || 0}</p>
                         <p className="text-xs text-gray-500 mt-1">
-                          No data available yet
+                          Total chat sessions with AI tutors
                         </p>
                       </div>
                       
                       <div className="bg-dark-surface rounded-lg p-4">
                         <div className="flex items-center justify-between">
-                          <p className="text-sm text-gray-400">Topics Mastered</p>
+                          <p className="text-sm text-gray-400">XP Earned</p>
                           <Check className="h-4 w-4 text-primary-400" />
                         </div>
-                        <p className="text-2xl font-bold mt-2">0</p>
+                        <p className="text-2xl font-bold mt-2">{user?.xp || 0}</p>
                         <p className="text-xs text-gray-500 mt-1">
-                          No data available yet
+                          Experience points from learning activities
                         </p>
                       </div>
                       
                       <div className="bg-dark-surface rounded-lg p-4">
                         <div className="flex items-center justify-between">
-                          <p className="text-sm text-gray-400">Practice Questions</p>
-                          <FileCheck className="h-4 w-4 text-primary-400" />
+                          <p className="text-sm text-gray-400">Current Level</p>
+                          <Award className="h-4 w-4 text-primary-400" />
                         </div>
-                        <p className="text-2xl font-bold mt-2">0</p>
+                        <p className="text-2xl font-bold mt-2">{user?.level || 1}</p>
                         <p className="text-xs text-gray-500 mt-1">
-                          No data available yet
+                          Rank: {user?.rank || 'Bronze I'}
                         </p>
                       </div>
                     </div>
@@ -1363,25 +1374,61 @@ export default function AiTutor() {
                     <div className="space-y-6">
                       <div>
                         <h4 className="font-medium mb-2 flex items-center text-sm">
-                          <PieChart className="h-4 w-4 mr-2 text-primary-400" />
-                          Subject Distribution
+                          <Zap className="h-4 w-4 mr-2 text-primary-400" />
+                          Study Streak & Activity
                         </h4>
-                        <div className="bg-dark-surface rounded-lg p-4 h-40 flex flex-col items-center justify-center text-gray-500">
-                          <PieChart className="h-8 w-8 mb-2 opacity-50" />
-                          <p className="text-sm text-center">No subject data available yet</p>
-                          <p className="text-xs mt-1 text-center">Data will populate as you interact with different subjects</p>
+                        <div className="bg-dark-surface rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <p className="text-lg font-bold">{user?.streak || 0} days</p>
+                              <p className="text-xs text-gray-400">Current study streak</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-lg font-bold">{user?.rp || 0} RP</p>
+                              <p className="text-xs text-gray-400">Ranking points</p>
+                            </div>
+                          </div>
+                          <div className="text-center text-gray-300">
+                            <p className="text-sm">Selected Exam: <span className="text-primary-400 font-medium">{user?.track?.toUpperCase() || 'Not Selected'}</span></p>
+                            <p className="text-xs mt-1">Subscription: <span className="text-green-400">{user?.subscriptionTier || 'Free Trial'}</span></p>
+                          </div>
                         </div>
                       </div>
                       
                       <div>
                         <h4 className="font-medium mb-2 flex items-center text-sm">
-                          <BarChart4 className="h-4 w-4 mr-2 text-primary-400" />
-                          Improvement Areas
+                          <Target className="h-4 w-4 mr-2 text-primary-400" />
+                          Quick Actions
                         </h4>
-                        <div className="bg-dark-surface rounded-lg p-4 text-center text-gray-500">
-                          <ScanSearch className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                          <p className="text-sm">No improvement areas identified yet</p>
-                          <p className="text-xs mt-1">Data will appear as you use the AI Tutor</p>
+                        <div className="grid grid-cols-1 gap-3">
+                          <Button 
+                            variant="outline" 
+                            className="bg-dark-surface hover:bg-dark-surface/80 text-left justify-start h-auto p-4"
+                            onClick={() => {
+                              setActiveTab("chat");
+                              toast({
+                                title: "Ready to Learn",
+                                description: "Ask me anything about your exam subjects!"
+                              });
+                            }}
+                          >
+                            <MessageSquare className="h-4 w-4 mr-3 text-primary-400" />
+                            <div>
+                              <p className="font-medium">Start Learning Session</p>
+                              <p className="text-xs text-gray-400">Ask questions and get detailed explanations</p>
+                            </div>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            className="bg-dark-surface hover:bg-dark-surface/80 text-left justify-start h-auto p-4"
+                            onClick={() => navigate('/ai-tools/performance')}
+                          >
+                            <BarChart4 className="h-4 w-4 mr-3 text-green-400" />
+                            <div>
+                              <p className="font-medium">View Detailed Analytics</p>
+                              <p className="text-xs text-gray-400">Complete performance breakdown and insights</p>
+                            </div>
+                          </Button>
                         </div>
                       </div>
                     </div>
