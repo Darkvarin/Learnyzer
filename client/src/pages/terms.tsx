@@ -202,7 +202,7 @@ export default function TermsPage() {
             </p>
             <div className="bg-muted p-4 rounded-lg">
               <p className="mb-2"><strong>Email:</strong> learnyzer.ai@gmail.com</p>
-              <p className="mb-2"><strong>Phone:</strong> +91 9910601733</p>
+
               <p className="mb-2"><strong>Business Hours:</strong> Monday to Friday, 9:00 AM to 6:00 PM IST</p>
             </div>
           </section>

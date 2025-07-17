@@ -168,7 +168,7 @@ export default function PrivacyPage() {
             
             <div className="bg-muted p-4 rounded-lg mb-4">
               <p className="mb-2"><strong>Email:</strong> learnyzer.ai@gmail.com</p>
-              <p className="mb-2"><strong>Phone:</strong> +91 9910601733</p>
+
               <p className="mb-2"><strong>Address:</strong></p>
               <p className="text-sm">
                 0, 1492, LEARNYZER EDTECH<br />

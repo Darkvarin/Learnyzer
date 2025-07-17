@@ -21,7 +21,7 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 gap-8 mb-12 max-w-md mx-auto">
           {/* Email Contact */}
           <Card>
             <CardContent className="p-6">
@@ -45,28 +45,7 @@ export default function ContactPage() {
             </CardContent>
           </Card>
 
-          {/* Phone Contact */}
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-start space-x-4">
-                <div className="bg-primary/10 p-3 rounded-full">
-                  <Phone className="h-6 w-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">Phone Support</h3>
-                  <p className="text-muted-foreground mb-3">
-                    Call us for urgent support and technical assistance
-                  </p>
-                  <a 
-                    href="tel:+919910601733"
-                    className="text-primary hover:underline font-medium"
-                  >
-                    +91 9910601733
-                  </a>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+
         </div>
 
         {/* Company Information */}
@@ -123,7 +102,7 @@ export default function ContactPage() {
                 <h3 className="text-lg font-semibold mb-2">Support Hours</h3>
                 <div className="space-y-2 text-muted-foreground">
                   <p><strong>Email Support:</strong> 24/7 (Response within 24-48 hours)</p>
-                  <p><strong>Phone Support:</strong> Monday to Friday, 9:00 AM to 6:00 PM IST</p>
+
                   <p><strong>Emergency Technical Issues:</strong> Same-day response guaranteed</p>
                 </div>
               </div>

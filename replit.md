@@ -116,7 +116,7 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
 - **Real-Time Chat Interface**: Modern floating chatbot with typing indicators and smooth animations
 - **API-Enhanced Responses**: Backend integration for complex queries with pattern-based intelligent responses
 - **FAQ Suggestions**: Automatic display of relevant help articles based on user queries
-- **Multi-Channel Support Integration**: Direct links to email (learnyzer.ai@gmail.com) and phone (+91 9910601733) support
+- **Email Support Integration**: Direct link to email support (learnyzer.ai@gmail.com) for all user inquiries
 - **Quick Question Shortcuts**: Pre-defined common questions for instant answers
 - **Responsive Design**: Mobile-optimized chat interface with professional UI/UX
 - **Fallback Mechanisms**: Local response generation when API is unavailable

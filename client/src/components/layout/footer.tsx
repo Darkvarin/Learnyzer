@@ -112,12 +112,7 @@ export function Footer() {
                   learnyzer.ai@gmail.com
                 </a>
               </div>
-              <div>
-                <p className="text-sm font-medium text-foreground mb-1">Phone Support</p>
-                <a href="tel:+919910601733" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  +91 9910601733
-                </a>
-              </div>
+
               <div>
                 <p className="text-sm font-medium text-foreground mb-1">Support Hours</p>
                 <p className="text-muted-foreground text-sm">
