@@ -251,7 +251,7 @@ export default function AiTutor() {
       const newDefaultSubject = getDefaultSubject();
       if (newDefaultSubject !== currentSubject) {
         setCurrentSubject(newDefaultSubject);
-        console.log(`[AI Tutor] Updated subject for ${(userData as any)?.selectedExam || (userData as any)?.track} student: ${newDefaultSubject}`);
+
       }
     }
   }, [userData]);
@@ -311,9 +311,8 @@ export default function AiTutor() {
       });
     },
     onSuccess: (data: any) => {
-      console.log("AI tutor response received:", data);
-      console.log("Response data keys:", Object.keys(data));
-      console.log("Visual suggestions in response:", data.visualSuggestions);
+
+
       setMessage("");
       
 

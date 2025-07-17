@@ -124,9 +124,8 @@ export default function AuthPage() {
 
   // Verify OTP function
   const verifyOTP = async (otp: string) => {
-    console.log('=== OTP VERIFICATION DEBUG ===');
-    console.log('Session ID:', sessionId);
-    console.log('OTP:', otp);
+
+
     
     if (!sessionId) {
       console.error('No session ID available for verification');
@@ -195,11 +194,8 @@ export default function AuthPage() {
   };
 
   const onRegisterSubmit = async (data: RegisterForm) => {
-    console.log('=== FORM SUBMISSION DEBUG ===');
-    console.log('Current OTP Step:', otpStep);
-    console.log('Form Data:', data);
-    console.log('Form Errors:', registerForm.formState.errors);
-    console.log('Form Valid:', registerForm.formState.isValid);
+
+
     
     if (otpStep === 1) {
       // Step 1: Validate form and send OTP to mobile number
