@@ -10,7 +10,7 @@ import { courseService } from "./services/course-service";
 import { battleService } from "./services/battle-service";
 import { enhancedBattleService } from "./services/enhanced-battle-service";
 import { notificationService } from "./services/notification-service";
-import { supportService } from "./services/support-service";
+
 import { wellnessService } from "./services/wellness-service";
 import { leaderboardService } from "./services/leaderboard-service";
 import { paymentService } from "./services/payment-service";
@@ -664,7 +664,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/notifications/leaderboard", notificationService.sendLeaderboardUpdate);
   
   // Support chatbot - available without authentication
-  app.post("/api/support/chat", supportService.getChatResponse);
+
   
   // Wellness routes
   app.get("/api/wellness/preferences", wellnessService.getWellnessPreferences);
@@ -1034,24 +1034,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Support Chatbot API endpoint - Direct GPT-4o Integration
-  app.post("/api/support/chat", async (req, res) => {
-    try {
-      const { query, message } = req.body || {};
-      const userMessage = query || message;
-      
-      if (!userMessage || typeof userMessage !== 'string' || !userMessage.trim()) {
-        return res.status(400).json({ error: "Message is required" });
-      }
 
-      // Direct GPT-4o call for all questions
-      const { supportService } = await import("./services/support-service");
-      await supportService.getChatResponse(req, res);
-    } catch (error) {
-      console.error("Error in support chat:", error);
-      res.status(500).json({ error: "Support chat service temporarily unavailable" });
-    }
-  });
 
 
 
