@@ -29,6 +29,7 @@ export function SupportChatbot() {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -38,6 +39,31 @@ export function SupportChatbot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Initial tooltip and periodic animation effect
+  useEffect(() => {
+    // Show tooltip on first load after 3 seconds
+    const initialTimeout = setTimeout(() => {
+      if (!isOpen) {
+        setShowTooltip(true);
+        setTimeout(() => setShowTooltip(false), 4000);
+      }
+    }, 3000);
+
+    return () => clearTimeout(initialTimeout);
+  }, []);
+
+  // Tooltip animation effect - shows every 15 seconds when chat is closed
+  useEffect(() => {
+    if (!isOpen) {
+      const interval = setInterval(() => {
+        setShowTooltip(true);
+        setTimeout(() => setShowTooltip(false), 4000); // Hide after 4 seconds
+      }, 15000); // Show every 15 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [isOpen]);
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
@@ -106,11 +132,45 @@ export function SupportChatbot() {
         animate={{ scale: 1 }}
         className="fixed bottom-6 right-6 z-40"
       >
+        {/* Animated Tooltip Bubble */}
+        <AnimatePresence>
+          {showTooltip && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.8 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.8 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="absolute bottom-16 right-0 mb-2 w-48 bg-gradient-to-r from-purple-600/95 to-blue-600/95 backdrop-blur-sm rounded-lg p-3 shadow-xl border border-purple-400/30"
+            >
+              <div className="text-white text-sm font-medium">
+                💬 Hi! How can I assist you today?
+              </div>
+              <div className="text-purple-200 text-xs mt-1">
+                Ask me about Learnyzer features, exams, or any questions!
+              </div>
+              {/* Arrow pointing to chat button */}
+              <div className="absolute bottom-[-6px] right-6 w-3 h-3 bg-gradient-to-r from-purple-600 to-blue-600 rotate-45 border-b border-r border-purple-400/30"></div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <Button
-          onClick={() => setIsOpen(true)}
-          className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 group"
+          onClick={() => {
+            setIsOpen(true);
+            setShowTooltip(false); // Hide tooltip when opening chat
+          }}
+          className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 group relative"
         >
           <MessageCircle className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
+          
+          {/* Pulse animation when tooltip is showing */}
+          {showTooltip && (
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-400/40 to-blue-400/40"
+            />
+          )}
         </Button>
       </motion.div>
     );
