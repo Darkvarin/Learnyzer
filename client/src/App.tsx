@@ -64,7 +64,7 @@ function App() {
                     <ProtectedRoute path="/subscription" component={SubscriptionPage} />
                     <ProtectedRoute path="/security-dashboard" component={SecurityDashboard} />
                     <Route path="/admin-login" component={AdminLogin} />
-                    <Route path="/lead-management">
+                    <Route path="/lead-generation">
                       <AdminProtectedRoute>
                         <LeadGeneration />
                       </AdminProtectedRoute>

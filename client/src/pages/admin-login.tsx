@@ -42,8 +42,8 @@ export default function AdminLogin() {
           description: "Welcome to the admin dashboard",
         });
 
-        // Redirect to lead management
-        setLocation('/lead-management');
+        // Redirect to lead generation
+        setLocation('/lead-generation');
       } else {
         setError(data.message || 'Invalid credentials');
       }
