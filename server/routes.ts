@@ -1854,6 +1854,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Complete battle and award RP to all participants
+  app.post("/api/enhanced-battles/:battleId/complete", requireAuth, async (req, res) => {
+    console.log("Registering route: POST /api/enhanced-battles/:battleId/complete");
+    try {
+      const battleId = parseInt(req.params.battleId);
+      
+      const result = await enhancedBattleService.completeBattleAndAwardRP(battleId);
+      
+      // Broadcast battle completion to all participants and spectators
+      broadcastToBattle(`battle_${battleId}`, {
+        type: 'battle_completed',
+        battleId,
+        winner: result.winner,
+        participants: result.participants,
+        timestamp: new Date()
+      });
+      
+      res.json(result);
+    } catch (error) {
+      console.error("Error completing battle:", error);
+      res.status(500).json({ error: "Failed to complete battle" });
+    }
+  });
+
+  // Manual RP award for battle (admin use)
+  app.post("/api/enhanced-battles/:battleId/award-rp", requireAuth, async (req, res) => {
+    console.log("Registering route: POST /api/enhanced-battles/:battleId/award-rp");
+    try {
+      const battleId = parseInt(req.params.battleId);
+      const { winnerId, participants } = req.body;
+      
+      const result = await enhancedBattleService.awardRankingPoints(battleId, winnerId, participants);
+      res.json(result);
+    } catch (error) {
+      console.error("Error awarding RP:", error);
+      res.status(500).json({ error: "Failed to award ranking points" });
+    }
+  });
+
 
 
   // Export the broadcast functions for use throughout the application

@@ -402,7 +402,204 @@ export class EnhancedBattleService {
     }
   }
 
+  // Calculate and award RP based on battle performance
+  async awardRankingPoints(battleId: number, winnerId: number, allParticipants: any[]) {
+    try {
+      // Get battle details for context
+      const battle = await db.query.battles.findFirst({
+        where: eq(battles.id, battleId)
+      });
 
+      if (!battle) {
+        throw new Error('Battle not found');
+      }
+
+      // Sort participants by score (highest to lowest)
+      const sortedParticipants = allParticipants.sort((a, b) => b.score - a.score);
+      
+      // Calculate RP rewards based on ranking and performance
+      for (let i = 0; i < sortedParticipants.length; i++) {
+        const participant = sortedParticipants[i];
+        let rpReward = 0;
+        
+        // Base RP calculation based on position
+        if (i === 0) {
+          // Winner gets the most RP
+          rpReward = 25; // Base winner reward
+        } else if (i === 1) {
+          // Runner-up gets moderate RP
+          rpReward = 15;
+        } else if (i === 2) {
+          // Third place gets small RP
+          rpReward = 10;
+        } else {
+          // Participation RP for others
+          rpReward = 5;
+        }
+
+        // Performance bonuses based on score percentage
+        const maxPossibleScore = battle.questionsCount || 5; // Assuming 5 questions max
+        const scorePercentage = (participant.score / maxPossibleScore) * 100;
+        
+        if (scorePercentage >= 80) {
+          rpReward += 10; // High performance bonus
+        } else if (scorePercentage >= 60) {
+          rpReward += 5; // Good performance bonus
+        }
+
+        // Battle type multipliers
+        const battleTypeMultiplier = this.getBattleTypeMultiplier(battle.type);
+        rpReward = Math.floor(rpReward * battleTypeMultiplier);
+
+        // Award RP to user
+        await this.updateUserRankingPoints(participant.userId, rpReward, battleId, battle.title);
+      }
+
+      return { success: true, message: 'RP awarded to all participants' };
+    } catch (error) {
+      console.error('Error awarding ranking points:', error);
+      throw error;
+    }
+  }
+
+  // Get battle type multiplier for RP calculation
+  getBattleTypeMultiplier(battleType: string): number {
+    switch (battleType.toLowerCase()) {
+      case '1v1': return 1.0;
+      case '2v2': return 1.2;
+      case '3v3': return 1.4;
+      case '4v4': return 1.5;
+      default: return 1.0;
+    }
+  }
+
+  // Update user's ranking points and potentially their rank
+  async updateUserRankingPoints(userId: number, rpGained: number, battleId: number, battleTitle: string) {
+    try {
+      // Get current user data
+      const user = await db.query.users.findFirst({
+        where: eq(users.id, userId)
+      });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const newRankPoints = user.rankPoints + rpGained;
+      
+      // Calculate new rank based on RP thresholds
+      const newRank = this.calculateRankFromRP(newRankPoints);
+
+      // Update user's RP and rank
+      await db
+        .update(users)
+        .set({
+          rankPoints: newRankPoints,
+          rank: newRank
+        })
+        .where(eq(users.id, userId));
+
+      // Create transaction record for RP gain
+      await db.insert(coinTransactions).values({
+        userId,
+        amount: rpGained,
+        type: 'earn',
+        description: `RP gained from battle: ${battleTitle} (+${rpGained} RP)`,
+        referenceId: battleId,
+        referenceType: 'battle_rp_reward',
+        createdAt: new Date()
+      });
+
+      return {
+        rpGained,
+        newRankPoints,
+        newRank,
+        rankUp: newRank !== user.rank
+      };
+    } catch (error) {
+      console.error('Error updating user ranking points:', error);
+      throw error;
+    }
+  }
+
+  // Calculate rank based on RP thresholds
+  calculateRankFromRP(rankPoints: number): string {
+    const rankThresholds = [
+      { min: 0, max: 99, rank: 'Bronze I' },
+      { min: 100, max: 199, rank: 'Bronze II' },
+      { min: 200, max: 299, rank: 'Bronze III' },
+      { min: 300, max: 499, rank: 'Silver I' },
+      { min: 500, max: 699, rank: 'Silver II' },
+      { min: 700, max: 999, rank: 'Silver III' },
+      { min: 1000, max: 1499, rank: 'Gold I' },
+      { min: 1500, max: 1999, rank: 'Gold II' },
+      { min: 2000, max: 2999, rank: 'Gold III' },
+      { min: 3000, max: 4499, rank: 'Platinum I' },
+      { min: 4500, max: 5999, rank: 'Platinum II' },
+      { min: 6000, max: 7999, rank: 'Platinum III' },
+      { min: 8000, max: 11999, rank: 'Diamond I' },
+      { min: 12000, max: 15999, rank: 'Diamond II' },
+      { min: 16000, max: 19999, rank: 'Diamond III' },
+      { min: 20000, max: 29999, rank: 'Heroic' },
+      { min: 30000, max: 49999, rank: 'Elite' },
+      { min: 50000, max: 79999, rank: 'Master' },
+      { min: 80000, max: Infinity, rank: 'Grandmaster' }
+    ];
+
+    for (const threshold of rankThresholds) {
+      if (rankPoints >= threshold.min && rankPoints <= threshold.max) {
+        return threshold.rank;
+      }
+    }
+
+    return 'Bronze I'; // Fallback
+  }
+
+  // Complete battle and award RP to all participants
+  async completeBattleAndAwardRP(battleId: number) {
+    try {
+      // Get all participants with their final scores
+      const participants = await db
+        .select({
+          userId: battleParticipants.userId,
+          score: battleParticipants.score,
+          questionsCompleted: battleParticipants.questionsCompleted
+        })
+        .from(battleParticipants)
+        .where(eq(battleParticipants.battleId, battleId));
+
+      if (participants.length === 0) {
+        throw new Error('No participants found for this battle');
+      }
+
+      // Determine winner (highest score)
+      const winner = participants.reduce((prev, current) => 
+        (current.score > prev.score) ? current : prev
+      );
+
+      // Award RP to all participants based on performance
+      await this.awardRankingPoints(battleId, winner.userId, participants);
+
+      // Update battle status to completed
+      await db
+        .update(battles)
+        .set({
+          status: 'completed',
+          completedAt: new Date()
+        })
+        .where(eq(battles.id, battleId));
+
+      return {
+        success: true,
+        winner: winner,
+        participants: participants.length,
+        message: 'Battle completed and RP awarded'
+      };
+    } catch (error) {
+      console.error('Error completing battle and awarding RP:', error);
+      throw error;
+    }
+  }
 
   // Update participant's current question number (for live tracking)
   async updateParticipantQuestionProgress(battleId: number, userId: number, questionNumber: number) {
