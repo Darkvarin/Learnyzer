@@ -731,7 +731,7 @@ export default function AuthPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-cyan-100">AI-Powered Tutor</h3>
-                  <p className="text-sm text-cyan-100/70">Voice-interactive teaching with whiteboard visualization</p>
+                  <p className="text-sm text-cyan-100/70">Intelligent text-based teaching with interactive diagrams</p>
                 </div>
               </div>
             </div>
