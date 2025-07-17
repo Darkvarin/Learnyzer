@@ -400,20 +400,44 @@ export default function BattleZone() {
                     <div className="flex items-center justify-between mb-4">
                       <div className="text-sm">
                         <span className="text-gray-400">Participants: </span>
-                        <span className="text-cyan-400">{String(battle.participants || 0)}/{String(battle.maxParticipants || 0)}</span>
+                        <span className="text-cyan-400">
+                          {Array.isArray(battle.participants) ? battle.participants.length : (battle.participants || 0)}/{String(battle.maxParticipants || 0)}
+                        </span>
                       </div>
                       <div className="text-sm">
                         <span className="text-gray-400">Prize: </span>
-                        <span className="text-yellow-400">{String(battle.prizePool || 0)} XP</span>
+                        <span className="text-yellow-400">{String(battle.prizePool || 0)} coins</span>
                       </div>
                     </div>
 
+                    {/* Show participant names if available */}
+                    {Array.isArray(battle.participants) && battle.participants.length > 0 && (
+                      <div className="mb-4">
+                        <div className="text-xs text-gray-400 mb-2">Players:</div>
+                        <div className="flex flex-wrap gap-1">
+                          {battle.participants.slice(0, 4).map((participant: any, index: number) => (
+                            <span 
+                              key={index} 
+                              className="text-xs bg-cyan-500/10 text-cyan-300 px-2 py-1 rounded-full border border-cyan-500/20"
+                            >
+                              {participant.name || participant.username || 'Player'}
+                            </span>
+                          ))}
+                          {battle.participants.length > 4 && (
+                            <span className="text-xs bg-gray-500/10 text-gray-400 px-2 py-1 rounded-full border border-gray-500/20">
+                              +{battle.participants.length - 4} more
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     <Button 
                       onClick={() => handleJoinBattle(battle.id)}
-                      disabled={joinBattleMutation.isPending || (battle.participants >= battle.maxParticipants)}
+                      disabled={joinBattleMutation.isPending || ((Array.isArray(battle.participants) ? battle.participants.length : battle.participants) >= battle.maxParticipants)}
                       className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 transition-all duration-300"
                     >
-                      {(battle.participants >= battle.maxParticipants) ? "Battle Full" : joinBattleMutation.isPending ? "Joining..." : "Join Battle"}
+                      {((Array.isArray(battle.participants) ? battle.participants.length : battle.participants) >= battle.maxParticipants) ? "Battle Full" : joinBattleMutation.isPending ? "Joining..." : "Join Battle"}
                     </Button>
                   </div>
                 </div>
