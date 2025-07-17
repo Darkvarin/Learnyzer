@@ -2296,24 +2296,23 @@ Keep the explanation concise and exam-oriented.`;
         packageComponents: []
       };
 
-      // Generate Canvas-based interactive diagram if requested
+      // Generate truly interactive diagram if requested
       if (includeImage) {
         try {
-          const canvasInstructions = await aiService.generateCanvasInstructions({
+          const interactiveDiagram = await aiService.generateInteractiveDiagram({
             topic,
             subject,
-            examType: examType || undefined,
-            style: 'comprehensive_diagram'
+            examType: examType || undefined
           });
 
-          if (canvasInstructions) {
-            results.canvasInstructions = canvasInstructions;
+          if (interactiveDiagram) {
+            results.interactiveDiagram = interactiveDiagram;
             results.packageComponents.push("interactive_diagram");
           } else {
-            results.diagramError = "Failed to generate canvas instructions";
+            results.diagramError = "Failed to generate interactive diagram";
           }
         } catch (diagramError) {
-          console.error("Canvas diagram generation failed:", diagramError);
+          console.error("Interactive diagram generation failed:", diagramError);
           results.diagramError = "Failed to generate interactive diagram";
         }
       }
@@ -2792,194 +2791,190 @@ Format as JSON:
   },
 
   /**
-   * Generate Canvas drawing instructions for educational diagrams
+   * Generate truly interactive diagram with clickable elements
    */
-  async generateCanvasInstructions(options: {
+  async generateInteractiveDiagram(options: {
     topic: string;
     subject: string;
     examType?: string;
-    style?: string;
   }) {
-    const { topic, subject, examType, style = 'diagram' } = options;
+    const { topic, subject, examType } = options;
     
-    const canvasPrompt = `Generate detailed Canvas drawing instructions for an educational diagram about "${topic}" in ${subject}${examType ? ` (${examType} exam preparation)` : ''}.
+    const interactivePrompt = `Create a truly interactive educational diagram for "${topic}" in ${subject}${examType ? ` (${examType} exam preparation)` : ''}.
 
-Create a comprehensive, well-structured diagram that helps students understand this topic completely.
+Generate an interactive SVG diagram with clickable elements that provide detailed explanations when clicked.
 
 Return ONLY valid JSON with this exact structure:
 {
-  "title": "${topic} - Educational Diagram",
-  "width": 800,
-  "height": 600,
-  "elements": [
+  "title": "${topic} - Interactive Learning Diagram",
+  "description": "Click on any element to learn more about it",
+  "type": "interactive_svg",
+  "hasVisual": true,
+  "interactionType": "clickable_elements",
+  "svgElements": [
     {
-      "type": "text",
-      "x": 400,
-      "y": 40,
-      "text": "${topic}",
-      "fontSize": 28,
-      "fontWeight": "bold",
-      "color": "#1e40af",
-      "textAlign": "center"
-    },
-    {
-      "type": "rectangle",
-      "x": 100,
-      "y": 100,
-      "width": 180,
-      "height": 60,
-      "fillColor": "#dbeafe",
-      "strokeColor": "#2563eb",
-      "strokeWidth": 2
-    },
-    {
-      "type": "text",
-      "x": 190,
-      "y": 135,
-      "text": "Key Concept 1",
-      "fontSize": 14,
-      "fontWeight": "normal",
-      "color": "#1e40af",
-      "textAlign": "center"
-    },
-    {
-      "type": "rectangle",
-      "x": 320,
-      "y": 100,
-      "width": 180,
-      "height": 60,
-      "fillColor": "#fef3c7",
-      "strokeColor": "#f59e0b",
-      "strokeWidth": 2
-    },
-    {
-      "type": "text",
-      "x": 410,
-      "y": 135,
-      "text": "Key Concept 2",
-      "fontSize": 14,
-      "fontWeight": "normal",
-      "color": "#b45309",
-      "textAlign": "center"
-    },
-    {
-      "type": "rectangle",
-      "x": 540,
-      "y": 100,
-      "width": 180,
-      "height": 60,
-      "fillColor": "#d1fae5",
-      "strokeColor": "#10b981",
-      "strokeWidth": 2
-    },
-    {
-      "type": "text",
-      "x": 630,
-      "y": 135,
-      "text": "Key Concept 3",
-      "fontSize": 14,
-      "fontWeight": "normal",
-      "color": "#047857",
-      "textAlign": "center"
-    },
-    {
-      "type": "arrow",
-      "x1": 280,
-      "y1": 130,
-      "x2": 320,
-      "y2": 130,
-      "strokeColor": "#6b7280",
-      "strokeWidth": 3
-    },
-    {
-      "type": "arrow",
-      "x1": 500,
-      "y1": 130,
-      "x2": 540,
-      "y2": 130,
-      "strokeColor": "#6b7280",
-      "strokeWidth": 3
-    },
-    {
-      "type": "rectangle",
-      "x": 200,
-      "y": 250,
-      "width": 400,
-      "height": 100,
-      "fillColor": "#fef2f2",
-      "strokeColor": "#dc2626",
-      "strokeWidth": 2
-    },
-    {
-      "type": "text",
-      "x": 400,
-      "y": 280,
-      "text": "Important Application",
-      "fontSize": 16,
-      "fontWeight": "bold",
-      "color": "#dc2626",
-      "textAlign": "center"
-    },
-    {
-      "type": "text",
-      "x": 400,
-      "y": 310,
-      "text": "Real-world usage and exam relevance",
-      "fontSize": 12,
-      "fontWeight": "normal",
-      "color": "#991b1b",
-      "textAlign": "center"
-    },
-    {
-      "type": "arrow",
-      "x1": 400,
-      "y1": 180,
-      "x2": 400,
-      "y2": 240,
-      "strokeColor": "#dc2626",
-      "strokeWidth": 3
-    },
-    {
-      "type": "text",
-      "x": 400,
-      "y": 450,
-      "text": "Key Formula/Rule (if applicable)",
-      "fontSize": 14,
-      "fontWeight": "bold",
-      "color": "#7c3aed",
-      "textAlign": "center"
-    },
-    {
+      "id": "main_concept",
       "type": "rectangle",
       "x": 250,
-      "y": 480,
-      "width": 300,
-      "height": 50,
-      "fillColor": "#f3e8ff",
-      "strokeColor": "#7c3aed",
-      "strokeWidth": 2
+      "y": 50,
+      "width": 200,
+      "height": 60,
+      "fill": "#4CAF50",
+      "stroke": "#2E7D32",
+      "strokeWidth": 2,
+      "label": "${topic}",
+      "clickable": true,
+      "tooltip": "Click to learn about the main concept",
+      "explanation": "Detailed explanation of ${topic} including key principles, applications, and importance in ${examType} exams."
     },
     {
+      "id": "concept_1",
+      "type": "circle",
+      "x": 150,
+      "y": 200,
+      "radius": 40,
+      "fill": "#2196F3",
+      "stroke": "#1976D2",
+      "strokeWidth": 2,
+      "label": "Key Aspect 1",
+      "clickable": true,
+      "tooltip": "Learn about this key aspect",
+      "explanation": "First important aspect of ${topic} that students need to understand for ${examType} preparation."
+    },
+    {
+      "id": "concept_2",
+      "type": "circle",
+      "x": 350,
+      "y": 200,
+      "radius": 40,
+      "fill": "#FF9800",
+      "stroke": "#F57C00",
+      "strokeWidth": 2,
+      "label": "Key Aspect 2",
+      "clickable": true,
+      "tooltip": "Discover this important element",
+      "explanation": "Second crucial element of ${topic} with practical applications in ${examType} exams."
+    },
+    {
+      "id": "concept_3",
+      "type": "circle",
+      "x": 550,
+      "y": 200,
+      "radius": 40,
+      "fill": "#E91E63",
+      "stroke": "#C2185B",
+      "strokeWidth": 2,
+      "label": "Key Aspect 3",
+      "clickable": true,
+      "tooltip": "Explore this concept further",
+      "explanation": "Third essential component of ${topic} that appears frequently in ${examType} questions."
+    },
+    {
+      "id": "arrow_1",
+      "type": "arrow",
+      "x1": 300,
+      "y1": 110,
+      "x2": 200,
+      "y2": 160,
+      "stroke": "#666",
+      "strokeWidth": 2,
+      "label": "Connects to",
+      "animated": true
+    },
+    {
+      "id": "arrow_2",
+      "type": "arrow",
+      "x1": 350,
+      "y1": 110,
+      "x2": 350,
+      "y2": 160,
+      "stroke": "#666",
+      "strokeWidth": 2,
+      "label": "Leads to",
+      "animated": true
+    },
+    {
+      "id": "arrow_3",
+      "type": "arrow",
+      "x1": 400,
+      "y1": 110,
+      "x2": 500,
+      "y2": 160,
+      "stroke": "#666",
+      "strokeWidth": 2,
+      "label": "Results in",
+      "animated": true
+    },
+    {
+      "id": "application",
+      "type": "rectangle",
+      "x": 200,
+      "y": 300,
+      "width": 300,
+      "height": 80,
+      "fill": "#9C27B0",
+      "stroke": "#7B1FA2",
+      "strokeWidth": 2,
+      "label": "Real-world Application",
+      "clickable": true,
+      "tooltip": "See how this applies in practice",
+      "explanation": "Practical applications of ${topic} in real-world scenarios and how it appears in ${examType} exam questions."
+    },
+    {
+      "id": "title_text",
       "type": "text",
-      "x": 400,
-      "y": 510,
-      "text": "Formula or important rule here",
-      "fontSize": 12,
-      "fontWeight": "normal",
-      "color": "#6b21a8",
-      "textAlign": "center"
+      "x": 350,
+      "y": 30,
+      "content": "${topic}",
+      "fontSize": 24,
+      "fontWeight": "bold",
+      "fill": "#1A1A1A",
+      "textAnchor": "middle"
     }
-  ]
+  ],
+  "interactions": [
+    {
+      "elementId": "main_concept",
+      "action": "click",
+      "response": "Show detailed explanation of the main concept"
+    },
+    {
+      "elementId": "concept_1",
+      "action": "click",
+      "response": "Explain first key aspect in detail"
+    },
+    {
+      "elementId": "concept_2",
+      "action": "click",
+      "response": "Provide comprehensive explanation of second aspect"
+    },
+    {
+      "elementId": "concept_3",
+      "action": "click",
+      "response": "Detail the third important element"
+    },
+    {
+      "elementId": "application",
+      "action": "click",
+      "response": "Show practical applications and exam relevance"
+    }
+  ],
+  "learningObjectives": [
+    "Understand the core concepts of ${topic}",
+    "Visualize relationships between different aspects",
+    "Apply knowledge to ${examType} exam questions",
+    "Connect theory to practical applications"
+  ],
+  "examRelevance": "This interactive diagram helps students understand ${topic} as it appears in ${examType} exams, with clickable elements providing detailed explanations for each concept."
 }
 
 CRITICAL REQUIREMENTS:
-- Make text readable and properly centered
-- Use consistent colors and styling
-- Include relevant formulas or rules for ${examType} exam
-- Show clear relationships between concepts
+- Create truly interactive elements with meaningful explanations
 - Focus on ${examType} exam-specific content
-- Use proper text alignment and positioning
-- Include 12-15 elements for comprehensive coverage`;
+- Make explanations detailed and educational
+- Use appropriate colors and positioning
+- Include 8-10 interactive elements minimum
+- Ensure all clickable elements have proper tooltips and explanations`;
 
     try {
       const response = await openai.chat.completions.create({
@@ -2987,19 +2982,19 @@ CRITICAL REQUIREMENTS:
         messages: [
           { 
             role: "system", 
-            content: `You are an expert educational diagram designer specializing in ${examType} exam preparation. Create detailed Canvas drawing instructions that are visually clear, properly formatted, and exam-focused. Always return valid JSON with precise positioning and readable text elements.` 
+            content: `You are an expert educational interaction designer specializing in ${examType} exam preparation. Create interactive SVG diagrams with clickable elements that provide detailed explanations. Always return valid JSON with meaningful interactions and exam-focused content.` 
           },
-          { role: "user", content: canvasPrompt }
+          { role: "user", content: interactivePrompt }
         ],
         response_format: { type: "json_object" },
         max_tokens: 3000,
         temperature: 0.2
       });
 
-      const canvasInstructions = JSON.parse(response.choices[0].message.content || '{}');
-      return canvasInstructions;
+      const interactiveDiagram = JSON.parse(response.choices[0].message.content || '{}');
+      return interactiveDiagram;
     } catch (error) {
-      console.error('Canvas instructions generation failed:', error);
+      console.error('Interactive diagram generation failed:', error);
       return null;
     }
   }

@@ -17,6 +17,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { SubscriptionGuard, useSubscriptionTracking } from "@/components/subscription/subscription-guard";
 import { CanvasRenderer } from "@/components/CanvasRenderer";
+import { InteractiveDiagram } from "@/components/InteractiveDiagram";
 import ReactMarkdown from 'react-markdown';
 // import { TrialLockdown } from "@/components/trial/trial-lockdown"; // Replaced with existing SubscriptionGuard
 
@@ -620,15 +621,10 @@ export default function AIVisualLab() {
                         <Badge variant="secondary">{results.totalComponents} components</Badge>
                       </div>
 
-                      {results.canvasInstructions && (
+                      {results.interactiveDiagram && (
                         <div className="bg-slate-700/30 rounded-lg p-4">
                           <h4 className="text-cyan-400 font-medium mb-2">Interactive Diagram</h4>
-                          <div className="rounded-lg overflow-hidden border border-slate-600 bg-white p-4">
-                            <CanvasRenderer 
-                              instructions={results.canvasInstructions}
-                              className="w-full"
-                            />
-                          </div>
+                          <InteractiveDiagram data={results.interactiveDiagram} />
                         </div>
                       )}
 
@@ -672,15 +668,10 @@ export default function AIVisualLab() {
                         <Badge variant="secondary">{results.estimatedCompletionTime}</Badge>
                       </div>
 
-                      {results.supportingVisual && results.supportingVisual.canvasInstructions && (
+                      {results.supportingVisual && results.supportingVisual.interactiveDiagram && (
                         <div className="bg-slate-700/30 rounded-lg p-4 mb-4">
-                          <h4 className="text-cyan-400 font-medium mb-2">Visual Support</h4>
-                          <div className="rounded-lg overflow-hidden border border-slate-600 bg-white p-4">
-                            <CanvasRenderer 
-                              instructions={results.supportingVisual.canvasInstructions}
-                              className="w-full"
-                            />
-                          </div>
+                          <h4 className="text-cyan-400 font-medium mb-2">Interactive Visual Support</h4>
+                          <InteractiveDiagram data={results.supportingVisual.interactiveDiagram} />
                           <p className="text-xs text-slate-400 mt-2">{results.supportingVisual.description}</p>
                         </div>
                       )}
