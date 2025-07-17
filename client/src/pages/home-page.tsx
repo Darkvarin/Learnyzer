@@ -371,7 +371,7 @@ export default function HomePage() {
               <div className="mt-8 relative">
                 <div className="absolute left-0 top-0 w-1 h-full bg-primary/30"></div>
                 <p className="text-xl pl-4 mb-8 text-gray-300 max-w-xl leading-relaxed">
-                  India's first AI-powered competitive exam preparation platform with advanced gamification. Dominate JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE with voice-interactive AI tutors, real-time battles, and a complete ranking system.
+                  India's first AI-powered competitive exam preparation platform with advanced gamification. Dominate JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE with intelligent AI tutors, real-time battles, and a complete ranking system.
                 </p>
               </div>
               
@@ -418,7 +418,7 @@ export default function HomePage() {
                 </div>
                 <div className="bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-5 py-2 inline-flex items-center">
                   <div className="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse" style={{animationDelay: '1s'}}></div>
-                  <span className="text-sm text-primary">Voice Interaction</span>
+                  <span className="text-sm text-primary">Smart AI Tutoring</span>
                 </div>
                 <div className="bg-primary/10 backdrop-blur-sm border border-primary/20 rounded-full px-5 py-2 inline-flex items-center">
                   <div className="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse" style={{animationDelay: '2s'}}></div>
@@ -453,7 +453,7 @@ export default function HomePage() {
                       REVOLUTIONARY AI-POWERED LEARNING
                     </div>
                     <h2 className="text-3xl font-gaming mb-4 hex-title relative inline-block">
-                      AI Tutor with Voice Interaction
+                      AI Tutor with Smart Interaction
                     </h2>
                     <p className="text-gray-400 mb-6">Master entrance exam concepts with specialized AI tutors for JEE, NEET, UPSC, CLAT, and CUET</p>
                   </div>
@@ -464,7 +464,7 @@ export default function HomePage() {
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-blue-600/10"></div>
                       <div className="bg-background/95 rounded-lg p-4 h-full relative z-10">
                         <Brain className="h-8 w-8 mb-3 text-primary solo-icon" />
-                        <h3 className="text-lg font-semibold mb-1">Voice Interaction</h3>
+                        <h3 className="text-lg font-semibold mb-1">Smart Interaction</h3>
                         <p className="text-sm text-gray-400">Discuss entrance exam concepts naturally with your AI tutor for an immersive preparation experience</p>
                       </div>
                     </div>

@@ -53,6 +53,7 @@ import {
   Award,
   Bookmark,
   Zap,
+  Eye,
   Target,
   Building2,
   Brain,
@@ -552,7 +553,7 @@ export default function AiTutor() {
                     {(aiTutor as any)?.name || "AI Tutor"}
                   </h2>
                   <p className="text-xs sm:text-sm text-cyan-200/70 mt-1 text-center mb-4 sm:mb-6 border-b border-cyan-500/20 pb-2">
-                    {(aiTutor as any)?.specialty || "Your Entrance Exam Voice Coach"}
+                    {(aiTutor as any)?.specialty || "Your Entrance Exam AI Tutor"}
                   </p>
                   
                   <div className="w-full bg-background/60 rounded-lg p-5 text-sm border border-cyan-500/20 monarch-card-glow relative">
@@ -1711,17 +1712,17 @@ export default function AiTutor() {
               </ul>
             </div>
 
-            {/* Voice Features */}
+            {/* Visual Features */}
             <div>
               <h3 className="font-semibold text-primary-400 mb-2 flex items-center gap-2">
-                <Volume2 className="h-4 w-4" />
-                Voice & Audio Features
+                <Eye className="h-4 w-4" />
+                Visual Learning Features
               </h3>
               <ul className="space-y-2 text-gray-300 ml-6">
-                <li>• <strong>Voice Input:</strong> Click the microphone button to speak your questions</li>
-                <li>• <strong>Teaching Voice:</strong> Click "Teach Me" for intelligent audio explanations</li>
-                <li>• <strong>Voice Settings:</strong> Toggle voice on/off, choose English or Hindi</li>
-                <li>• Voice is optimized for Indian accent and educational content</li>
+                <li>• <strong>Interactive Diagrams:</strong> Get Canvas-based visual explanations for complex concepts</li>
+                <li>• <strong>Smart Suggestions:</strong> AI recommends relevant visual content based on your questions</li>
+                <li>• <strong>Downloadable Content:</strong> Save diagrams and explanations for offline study</li>
+                <li>• Visual content is optimized for exam-specific topics and patterns</li>
               </ul>
             </div>
 
@@ -1767,7 +1768,7 @@ export default function AiTutor() {
                 <li>• Ask for practice: "Generate 5 problems on quadratic equations"</li>
                 <li>• Request visuals: "Show me a diagram of the human heart"</li>
                 <li>• Test yourself: Always use "Test Knowledge" after learning new concepts</li>
-                <li>• Use voice features for hands-free studying and better retention</li>
+                <li>• Use visual diagrams and interactive features for better comprehension</li>
               </ul>
             </div>
 

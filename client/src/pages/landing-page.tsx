@@ -122,7 +122,7 @@ export default function LandingPage() {
     {
       name: "UPSC Candidate",
       exam: "Civil Services Preparation",
-      content: "The voice-enabled AI tutor is amazing. I can learn while commuting or during breaks. Very convenient and effective!",
+      content: "The text-based AI tutor with interactive diagrams is amazing. I can learn anywhere with clear, focused explanations. Very convenient and effective!",
       rating: 5
     }
   ];
