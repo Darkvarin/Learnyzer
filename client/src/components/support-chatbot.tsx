@@ -59,12 +59,16 @@ export function SupportChatbot() {
         conversationHistory: messages.slice(-10) // Send last 10 messages for context
       });
 
+      console.log('Chatbot API response:', response);
+      console.log('Reply content:', response.reply);
+      console.log('Reply length:', response.reply?.length);
+
       setIsTyping(false);
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        content: response.reply,
+        content: response.reply || 'I apologize, but I received an empty response. Please try again.',
         timestamp: new Date()
       };
 
