@@ -497,18 +497,18 @@ export default function HomePage() {
                     </div>
                   </div>
                   
-                  {/* Solo Leveling-styled AI Voice Interaction Visual */}
+                  {/* Solo Leveling-styled AI Text Interaction Visual */}
                   <div className="mt-8 flex items-center justify-center">
-                    <div className="flex items-end gap-1 px-4 py-3 rounded-md bg-background/80 border border-primary/30 shadow-glow-sm relative">
+                    <div className="flex items-center gap-3 px-4 py-3 rounded-md bg-background/80 border border-primary/30 shadow-glow-sm relative">
                       <div className="absolute -top-1 -left-1 w-3 h-3 border-t border-l border-cyan-500/60"></div>
                       <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b border-r border-cyan-500/60"></div>
                       
-                      <div className="w-1 bg-cyan-500 rounded-full animate-sound-wave1 h-3"></div>
-                      <div className="w-1 bg-cyan-500 rounded-full animate-sound-wave2 h-5"></div>
-                      <div className="w-1 bg-cyan-500 rounded-full animate-sound-wave3 h-4"></div>
-                      <div className="w-1 bg-primary rounded-full animate-sound-wave1 h-6"></div>
-                      <div className="w-1 bg-primary rounded-full animate-sound-wave2 h-3"></div>
-                      <span className="ml-3 text-sm font-mono text-cyan-500">AI Tutor is speaking...</span>
+                      <div className="flex gap-1">
+                        <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
+                        <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                      </div>
+                      <span className="text-sm font-mono text-cyan-500">AI Tutor is thinking...</span>
                     </div>
                   </div>
                 </div>
