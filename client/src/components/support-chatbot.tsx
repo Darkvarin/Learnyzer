@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, Send, X, Bot, User, Minimize2, Maximize2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiRequest } from "@/lib/queryClient";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   id: string;
@@ -60,11 +61,6 @@ export function SupportChatbot() {
       });
 
       const data = await response.json();
-
-      console.log('Chatbot API response:', data);
-      console.log('Reply content:', data.reply);
-      console.log('Reply length:', data.reply?.length);
-
       setIsTyping(false);
 
       const botMessage: Message = {
@@ -186,7 +182,24 @@ export function SupportChatbot() {
                             ? 'bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30'
                             : 'bg-gray-800/50 border border-gray-700/50'
                         }`}>
-                          <p className="text-sm text-white whitespace-pre-wrap">{message.content}</p>
+                          {message.type === 'bot' ? (
+                            <ReactMarkdown 
+                              className="text-sm text-white prose prose-invert prose-sm max-w-none"
+                              components={{
+                                p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
+                                strong: ({node, ...props}) => <strong className="text-purple-300 font-semibold" {...props} />,
+                                ul: ({node, ...props}) => <ul className="list-disc ml-4 mb-2" {...props} />,
+                                li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                                h1: ({node, ...props}) => <h1 className="text-lg font-bold text-purple-300 mb-2" {...props} />,
+                                h2: ({node, ...props}) => <h2 className="text-base font-bold text-purple-300 mb-2" {...props} />,
+                                h3: ({node, ...props}) => <h3 className="text-sm font-bold text-purple-300 mb-1" {...props} />,
+                              }}
+                            >
+                              {message.content}
+                            </ReactMarkdown>
+                          ) : (
+                            <p className="text-sm text-white whitespace-pre-wrap">{message.content}</p>
+                          )}
                           <p className="text-xs text-gray-400 mt-1">{formatTime(message.timestamp)}</p>
                         </div>
                       </div>
