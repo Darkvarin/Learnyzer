@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import RazorpayCheckout from "@/components/razorpay-checkout";
 import { SEOHead } from "@/components/seo/seo-head";
 import { createEducationalOrganizationSchema, createSoftwareApplicationSchema, createFAQSchema } from "@/components/seo/structured-data";
+import { SupportChatbot } from "@/components/support-chatbot";
 
 
 export default function HomePage() {
@@ -1013,6 +1014,9 @@ export default function HomePage() {
         amount={selectedPlan.amount}
         currency="INR"
       />
+      
+      {/* Support Chatbot */}
+      <SupportChatbot />
     </div>
   );
 }

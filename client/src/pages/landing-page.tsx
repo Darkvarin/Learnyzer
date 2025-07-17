@@ -24,6 +24,7 @@ import {
   GraduationCap
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { SupportChatbot } from "@/components/support-chatbot";
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
@@ -627,6 +628,9 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Support Chatbot */}
+      <SupportChatbot />
     </div>
   );
 }

@@ -196,7 +196,9 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - **CONVERSATION CONTEXT**: Maintains chat history with last 10 messages for contextual responses
   - **ERROR HANDLING**: Comprehensive error handling with fallback messages and proper JSON response parsing
   - **PRODUCTION READY**: Removed debug logging and optimized for seamless user experience
-  - **PLATFORM INTEGRATION**: Added to all pages via App.tsx for universal accessibility
+  - **ANIMATED TOOLTIP SYSTEM**: Added eye-catching tooltip bubble that appears every 15 seconds with welcome message
+  - **STRATEGIC PLACEMENT**: Restricted chatbot to home page and landing page only for focused user guidance
+  - **SMART ANIMATIONS**: Periodic tooltip with smooth spring animations, pulse effects, and gradient styling
 - July 17, 2025: **COMPLETE VOICE/TTS SYSTEM REMOVAL** - Streamlined text-based AI tutoring
   - **SYSTEM-WIDE CLEANUP**: Completely removed all voice and TTS functionality from the platform
   - **CLIENT-SIDE REMOVAL**: Eliminated useVoice, useTeachingVoice hooks, and all voice UI components
