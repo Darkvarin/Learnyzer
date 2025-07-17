@@ -370,11 +370,8 @@ export default function BattleZone() {
           {battles?.active?.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {battles.active.map((battle: any) => (
-                <div key={battle.id} className="group relative glassmorphism border border-cyan-500/30 hover:border-cyan-500/50 transition-all duration-300 p-6 rounded-xl hover:shadow-lg hover:shadow-cyan-500/10">
-                  {/* Glowing effect on hover */}
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-600/0 via-cyan-600/20 to-purple-600/0 rounded-xl opacity-0 group-hover:opacity-100 blur transition duration-500"></div>
-                  
-                  <div className="relative">
+                <div key={battle.id} className="glassmorphism border border-cyan-500/30 hover:border-cyan-500/50 transition-all duration-300 p-6 rounded-xl hover:shadow-lg hover:shadow-cyan-500/10">
+                  <div>
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-bold text-white">{String(battle.title || 'Untitled Battle')}</h3>
                       <Badge variant="outline" className="text-green-400 border-green-400/50 bg-green-400/10">
