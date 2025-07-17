@@ -6,9 +6,7 @@ import { MCQComponent } from "@/components/MCQComponent";
 import { InteractiveDiagram } from "@/components/InteractiveDiagram";
 import { useUser } from "@/contexts/user-context";
 import { useToast } from "@/hooks/use-toast";
-import { useVoice } from "@/hooks/useVoice";
-import { useTeachingVoice } from "@/hooks/useTeachingVoice";
-import { clientTTSService } from "@/services/tts-service";
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { SubscriptionGuard, useSubscriptionTracking } from "@/components/subscription/subscription-guard";
@@ -28,7 +26,6 @@ import { BackButton } from "@/components/ui/back-button";
 import { useLocation } from "wouter";
 import { 
   Send, 
-  Mic, 
   Paperclip, 
   Settings2, 
   MessageSquare,
@@ -38,7 +35,6 @@ import {
   GraduationCap,
   FileCheck,
   UserCircle,
-  
   ArrowLeftCircle,
   BarChart4,
   AlertTriangle,
@@ -48,9 +44,6 @@ import {
   PieChart,
   Search as ScanSearch,
   ChevronRight,
-  MicOff,
-  Volume2,
-  VolumeX,
   History,
   Clock,
   Bell,
@@ -105,27 +98,7 @@ export default function AiTutor() {
     return true;
   };
   
-  // Voice functionality
-  const { 
-    isListening, 
-    isSpeaking, 
-    transcript, 
-    isSupported: isVoiceSupported, 
-    startListening, 
-    stopListening, 
-    speak, 
-    stopSpeaking 
-  } = useVoice();
 
-  // Teaching voice functionality - generates intelligent explanations
-  const {
-    teachConcept,
-    stopTeaching,
-    isGenerating: isGeneratingTeaching,
-    isTeaching,
-    error: teachingError,
-    lastResponse: lastTeachingResponse
-  } = useTeachingVoice();
 
   // MCQ Generation function
   const generateMCQForMessage = async (messageIndex: number, messageContent: string) => {
@@ -251,9 +224,7 @@ export default function AiTutor() {
   
   const [currentSubject, setCurrentSubject] = useState(getDefaultSubject());
   
-  // Voice and language settings
-  const [voiceLanguage, setVoiceLanguage] = useState<'english' | 'hindi'>('english');
-  const [selectedVoice, setSelectedVoice] = useState<'neerja'>('neerja');
+
   
   // Add ref for auto-scrolling chat
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -261,7 +232,6 @@ export default function AiTutor() {
   // Subscription tracking
   const { trackFeatureUsage } = useSubscriptionTracking();
   const [currentTopic, setCurrentTopic] = useState(chapterParam || "");
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [canvasInstructions, setCanvasInstructions] = useState<any>(null);
   const [showVisual, setShowVisual] = useState(false);
   
@@ -286,16 +256,7 @@ export default function AiTutor() {
 
 
 
-  // Handle voice transcript
-  useEffect(() => {
-    if (transcript && !isListening) {
-      setMessage(transcript);
-      // Auto-send message if voice is enabled and we got a complete transcript
-      if (voiceEnabled && transcript.length > 3) {
-        handleSendMessage(transcript);
-      }
-    }
-  }, [transcript, isListening]);
+
   
 
   
@@ -353,20 +314,7 @@ export default function AiTutor() {
       console.log("Visual suggestions in response:", data.visualSuggestions);
       setMessage("");
       
-      // Handle AI response with intelligent teaching voice when enabled
-      if (data.response && voiceEnabled) {
-        // Use intelligent teaching voice instead of just reading the response
-        setTimeout(() => {
-          teachConcept({
-            userMessage: message,
-            aiResponse: data.response,
-            subject: currentSubject
-          }, {
-            voicePreference: selectedVoice,
-            language: voiceLanguage
-          });
-        }, 500);
-      }
+
       
       // Handle interactive diagram display directly in chat
       if (data.visualSuggestions) {
@@ -463,28 +411,7 @@ export default function AiTutor() {
     handleSendMessage();
   };
   
-  // Voice interaction functions
-  const handleVoiceInput = () => {
-    if (isListening) {
-      stopListening();
-    } else {
-      startListening();
-    }
-  };
 
-  const handleTextToSpeech = (text: string) => {
-    if (voiceEnabled && text) {
-      speak(text);
-    }
-  };
-
-  const handleVoiceInteraction = () => {
-    if (isListening) {
-      stopListening();
-    } else {
-      startListening();
-    }
-  };
   
   // Auto-start teaching if coming from course page with chapter parameters
   useEffect(() => {
@@ -507,17 +434,7 @@ export default function AiTutor() {
   
   // Removed automatic TTS - user now has full control over when speech starts
   
-  // Cleanup TTS when component unmounts (user navigates away)
-  useEffect(() => {
-    return () => {
-      // Stop any ongoing speech when leaving the page
-      stopSpeaking();
-      stopTeaching();
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
-    };
-  }, []);
+
 
   const handlePromptClick = (promptText: string) => {
     // Check if user has selected an exam before allowing AI tool usage
@@ -645,7 +562,7 @@ export default function AiTutor() {
                     <h3 className="font-semibold mb-2 font-gaming text-cyan-200">About</h3>
                     <p className="text-cyan-100/80 text-sm leading-relaxed">
                       {(aiTutor as any)?.description || 
-                        "Expert AI tutor for JEE, NEET, UPSC, CLAT, CUET, CSE & CGLE. Provides voice-based teaching with interactive diagrams and personalized study strategies."
+                        "Expert AI tutor for JEE, NEET, UPSC, CLAT, CUET, CSE & CGLE. Provides interactive teaching with diagrams and personalized study strategies."
                       }
                     </p>
                     
@@ -657,7 +574,7 @@ export default function AiTutor() {
                       <div className="grid grid-cols-2 gap-2 text-xs text-cyan-100/70">
                         <div className="flex items-center gap-1">
                           <span className="text-cyan-400">•</span>
-                          <span>Voice Teaching</span>
+                          <span>Text-Based Teaching</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <span className="text-cyan-400">•</span>
@@ -716,18 +633,17 @@ export default function AiTutor() {
                         className="flex items-center gap-3 text-white/90 cursor-pointer hover:bg-cyan-500/10 p-2 rounded-md transition-colors"
                         onClick={() => {
                           toast({
-                            title: "Voice-Based Coaching",
-                            description: "Interactive voice-based coaching with personalized exam strategies and feedback."
+                            title: "AI Coaching",
+                            description: "Interactive AI coaching with personalized exam strategies and feedback."
                           });
                           setActiveTab("chat");
-                          handleVoiceInteraction();
                         }}
                       >
                         <div className="bg-cyan-500/10 p-1.5 rounded relative">
                           <FileCheck className="h-4 w-4 text-cyan-400" />
                           <div className="absolute inset-0 bg-cyan-500/5 animate-pulse rounded"></div>
                         </div>
-                        <span>{(aiTutor as any)?.subjects?.[2] || "Voice-based coaching for all entrance exams"}</span>
+                        <span>{(aiTutor as any)?.subjects?.[2] || "AI coaching for all entrance exams"}</span>
                         <ChevronRight className="h-4 w-4 text-cyan-400 ml-auto" />
                       </li>
                     </ul>
@@ -740,17 +656,16 @@ export default function AiTutor() {
                         size="sm"
                         onClick={() => {
                           setActiveTab("chat");
-                          handleVoiceInteraction();
                           toast({
-                            title: "Voice Mode Activated",
-                            description: "Start speaking your entrance exam questions!"
+                            title: "Text Chat Active",
+                            description: "Type your entrance exam questions for detailed explanations!"
                           });
                         }}
                         className="bg-gradient-to-r from-cyan-500/80 to-cyan-600/80 hover:from-cyan-500 hover:to-cyan-600 text-white relative overflow-hidden"
                       >
                         <div className="absolute inset-0 cyan-aura opacity-0 hover:opacity-30 transition-opacity duration-200"></div>
-                        <Mic className="h-4 w-4 mr-2 relative z-10" />
-                        <span className="relative z-10 font-medium">Voice Chat</span>
+                        <MessageSquare className="h-4 w-4 mr-2 relative z-10" />
+                        <span className="relative z-10 font-medium">Ask Questions</span>
                       </Button>
                       <Button 
                         size="sm"
@@ -758,14 +673,15 @@ export default function AiTutor() {
                         className="bg-background/60 hover:bg-background/80 text-white border-cyan-500/30 hover:border-cyan-500/50"
                         onClick={() => {
                           setActiveTab("chat");
+                          setMessage("Help me understand my weak subjects and create practice questions");
                           toast({
-                            title: "Text Chat Active",
-                            description: "Type your questions below for detailed explanations"
+                            title: "Study Helper Active",
+                            description: "Get help with practice questions and concept explanations"
                           });
                         }}
                       >
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        <span className="font-medium">Text Chat</span>
+                        <Brain className="h-4 w-4 mr-2" />
+                        <span className="font-medium">Study Helper</span>
                       </Button>
                     </div>
                     
@@ -897,51 +813,6 @@ export default function AiTutor() {
                   </TabsList>
                   
                   <div className="flex items-center gap-1 sm:gap-2">
-                    {/* Voice Controls - Compact Header Version */}
-                    <div className="flex items-center gap-1 sm:gap-2 bg-background/40 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 border border-primary/20">
-                      {/* Language Toggle */}
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => setVoiceLanguage('english')}
-                          className={`px-1 sm:px-2 py-1 text-xs rounded transition-all ${
-                            voiceLanguage === 'english'
-                              ? 'bg-cyan-500/30 text-cyan-100'
-                              : 'text-cyan-400 hover:text-cyan-300'
-                          }`}
-                          title="English Mode"
-                        >
-                          🇬🇧
-                        </button>
-                        <button
-                          onClick={() => setVoiceLanguage('hindi')}
-                          className={`px-1 sm:px-2 py-1 text-xs rounded transition-all ${
-                            voiceLanguage === 'hindi'
-                              ? 'bg-orange-500/30 text-orange-100'
-                              : 'text-orange-400 hover:text-orange-300'
-                          }`}
-                          title="Hindi Mode - हिंदी"
-                        >
-                          🇮🇳
-                        </button>
-                      </div>
-                      
-                      <div className="w-px h-3 sm:h-4 bg-primary/20"></div>
-                      
-                      {/* Voice Enable/Disable */}
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => setVoiceEnabled(!voiceEnabled)}
-                          className={`px-1 sm:px-2 py-1 text-xs rounded transition-all ${
-                            voiceEnabled
-                              ? 'bg-green-500/30 text-green-100'
-                              : 'bg-red-500/30 text-red-300'
-                          }`}
-                          title={voiceEnabled ? 'Voice Enabled' : 'Voice Disabled'}
-                        >
-                          {voiceEnabled ? '🔊' : '🔇'}
-                        </button>
-                      </div>
-                    </div>
                     
                     <Button 
                       variant="outline" 
@@ -1134,70 +1005,6 @@ export default function AiTutor() {
                                 
                                 <div className="flex items-center justify-between mt-2 text-xs text-gray-500">
                                   <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
-                                  {voiceEnabled && (
-                                    <div className="flex items-center gap-2">
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => teachConcept({
-                                          userMessage: (conversation as any).messages[idx - 1]?.content || "",
-                                          aiResponse: msg.content,
-                                          subject: currentSubject
-                                        }, {
-                                          voicePreference: 'indian_female', // Use free Indian accent voice
-                                          language: voiceLanguage
-                                        })}
-                                        disabled={isGeneratingTeaching}
-                                        className="text-xs bg-primary-500/10 border-primary-500/30 text-primary-300 hover:bg-primary-500/20"
-                                      >
-                                        {isGeneratingTeaching ? (
-                                          <>
-                                            <div className="w-3 h-3 mr-1 border border-primary-400 border-t-transparent rounded-full animate-spin" />
-                                            Generating...
-                                          </>
-                                        ) : isTeaching ? (
-                                          <>
-                                            <VolumeX className="h-3 w-3 mr-1" />
-                                            Stop Teaching
-                                          </>
-                                        ) : (
-                                          <>
-                                            <Volume2 className="h-3 w-3 mr-1" />
-                                            Teach Me
-                                          </>
-                                        )}
-                                      </Button>
-                                      
-                                      {/* OpenAI TTS Test Button */}
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={async () => {
-                                          console.log('🎤 Testing OpenAI TTS...');
-                                          
-                                          const success = await clientTTSService.speak("Namaste! This is the new free Indian accent text-to-speech system. Acha, can you hear me clearly? Very good! Testing authentic Indian English pronunciation.", {
-                                            voice: 'indian_female',
-                                            language: 'english',
-                                            gender: 'female',
-                                            rate: 0.8
-                                          });
-                                          
-                                          if (!success) {
-                                            console.log('OpenAI TTS failed, testing browser fallback...');
-                                            speak("Fallback: Browser TTS is working if you hear this.", {
-                                              rate: 0.9,
-                                              voicePreference: 'nova',
-                                              language: 'english'
-                                            });
-                                          }
-                                        }}
-                                        className="text-xs bg-orange-500/10 border-orange-500/30 text-orange-300 hover:bg-orange-500/20"
-                                      >
-                                        🎤 Test OpenAI Voice
-                                      </Button>
-
-                                    </div>
-                                  )}
                                 </div>
                               </div>
                             </>
@@ -1234,11 +1041,11 @@ export default function AiTutor() {
                   <form onSubmit={handleFormSubmit} className="relative">
                     <Input
                       type="text"
-                      placeholder={isListening ? "Listening... speak your question" : "Ask anything about your studies..."}
+                      placeholder="Ask anything about your studies..."
                       className="w-full bg-dark-card border border-dark-border focus:border-primary-500 rounded-lg py-2 sm:py-3 px-3 sm:px-4 text-gray-300 focus:outline-none pr-20 sm:pr-24 h-10 sm:h-12 text-sm sm:text-base"
-                      value={isListening ? transcript : message}
+                      value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      disabled={sendMessageMutation.isPending || isListening}
+                      disabled={sendMessageMutation.isPending}
                     />
                     <div className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
                       <Button 
@@ -1254,23 +1061,6 @@ export default function AiTutor() {
                         }}
                       >
                         <Paperclip className="h-3 w-3 sm:h-4 sm:w-4" />
-                      </Button>
-                      <Button 
-                        type="button" 
-                        size="sm" 
-                        variant="ghost"
-                        onClick={handleVoiceInput}
-                        className={`transition-colors p-1 h-6 w-6 sm:h-8 sm:w-8 ${
-                          isListening 
-                            ? 'text-red-400 hover:text-red-300' 
-                            : isVoiceSupported 
-                              ? 'text-gray-400 hover:text-white' 
-                              : 'text-gray-600 cursor-not-allowed'
-                        }`}
-                        disabled={!isVoiceSupported}
-                        title={isListening ? 'Stop listening' : 'Start voice input'}
-                      >
-                        <Mic className={`h-3 w-3 sm:h-4 sm:w-4 ${isListening ? 'animate-pulse' : ''}`} />
                       </Button>
                       <Button 
                         type="submit" 
@@ -1309,45 +1099,7 @@ export default function AiTutor() {
                     </Button>
                   </div>
                   
-                  {/* Voice Status - Minimal footer */}
-                  {isVoiceSupported && (isSpeaking || isTeaching || isListening) && (
-                    <div className="mt-4 bg-dark-card/50 rounded-lg p-2 border border-primary/20">
-                      <div className="flex items-center justify-between text-xs text-gray-400">
-                        <div className="flex items-center gap-4">
-                          {isListening && (
-                            <div className="flex items-center gap-1">
-                              <Mic className="h-3 w-3 text-red-400 animate-pulse" />
-                              <span>Listening...</span>
-                            </div>
-                          )}
-                          {(isSpeaking || isTeaching) && (
-                            <div className="flex items-center gap-1">
-                              <Volume2 className="h-3 w-3 text-green-400" />
-                              <span>{isTeaching ? 'Teaching...' : 'Speaking...'}</span>
-                              <span className="text-cyan-300">(Akira • {voiceLanguage})</span>
-                            </div>
-                          )}
-                        </div>
-                        {(isSpeaking || isTeaching) && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              if (isTeaching) {
-                                stopTeaching();
-                              } else {
-                                stopSpeaking();
-                              }
-                            }}
-                            className="bg-red-500/20 border-red-500/50 text-red-300 hover:bg-red-500/30 h-6 px-2 text-xs"
-                          >
-                            <VolumeX className="h-3 w-3 mr-1" />
-                            Stop
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  )}
+
                 </TabsContent>
                 
                 {/* Interactive Canvas Tab */}
@@ -1534,64 +1286,7 @@ export default function AiTutor() {
                         </div>
                       </div>
                       
-                      <div className="bg-dark-card rounded-lg p-4">
-                        <h3 className="text-md font-bold mb-2 text-gradient-primary">Voice-First Entrance Exam Tutoring</h3>
-                        <div className="flex items-center space-x-3 mb-4">
-                          <div className="w-12 h-12 rounded-full overflow-hidden">
-                            <img 
-                              src={(aiTutor as any)?.image || "/ai-tutor-placeholder.svg"} 
-                              alt="AI Tutor" 
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div>
-                            <p className="font-medium">{(aiTutor as any)?.name || "AI Tutor"}</p>
-                            <p className="text-xs text-gray-400">{(aiTutor as any)?.specialty || "Your Learning Assistant"}</p>
-                          </div>
-                        </div>
-                        
-                        <div className="mt-3 flex flex-col items-center">
-                          <div className="w-full p-3 rounded-lg border border-primary-600/30 bg-dark-surface mb-3">
-                            <p className="text-sm text-center text-gray-300">
-                              <span>Ready to help you with <span className="text-primary-400 font-medium">{currentSubject.replace('_', ' ')}</span>. Ask exam questions!</span>
-                            </p>
-                          </div>
-                          
-                          <Button 
-                            onClick={handleVoiceInput}
-                            size="lg"
-                            className={`h-16 w-16 rounded-full relative
-                              ${isListening ? 'bg-red-500 hover:bg-red-600' : 
-                                isSpeaking ? 'bg-green-500 hover:bg-green-600' : 
-                                isVoiceSupported ? 'bg-primary-600 hover:bg-primary-500' : 'bg-gray-700'}`}
-                            disabled={!isVoiceSupported || isSpeaking}
-                          >
-                            {isListening ? (
-                              // Listening animation
-                              <>
-                                <Mic className="h-6 w-6 text-white animate-pulse" />
-                                <div className="absolute inset-0 rounded-full border-2 border-red-400 animate-ping"></div>
-                              </>
-                            ) : isSpeaking ? (
-                              // Speaking animation 
-                              <>
-                                <div className="flex items-center justify-center space-x-1">
-                                  <div className="w-1 h-3 bg-white animate-sound-wave1"></div>
-                                  <div className="w-1 h-5 bg-white animate-sound-wave2"></div>
-                                  <div className="w-1 h-3 bg-white animate-sound-wave3"></div>
-                                </div>
-                              </>
-                            ) : (
-                              <Mic className="h-6 w-6 text-gray-400" />
-                            )}
-                          </Button>
-                          <p className="text-xs text-center mt-2 text-gray-400">
-                            {isListening ? "Listening to your question... (click to stop)" : 
-                             isSpeaking ? "AI Tutor is explaining your exam topic..." : 
-                             "Press to ask exam questions by voice"}
-                          </p>
-                        </div>
-                      </div>
+
                     </div>
                   </div>
                     </>

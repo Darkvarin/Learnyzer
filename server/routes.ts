@@ -319,7 +319,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/ai/tools/analytics/:userId", requireAuth, aiService.getPerformanceAnalytics);
   app.post("/api/ai/battle/judge/:battleId", requireAuth, aiService.judgeBattle);
 
-  app.post("/api/ai/teaching-voice", requireAuth, aiService.generateTeachingVoice);
+
   
   // New enhanced AI visual learning routes
   app.post("/api/ai/generate-image", requireAuth, aiService.generateEducationalImage);
@@ -1053,78 +1053,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // TTS API endpoint - Free Indian accent TTS with OpenAI fallback
-  app.post("/api/tts/generate", async (req, res) => {
-    try {
-      const { text, voice, language, gender, useFree = true } = req.body;
-      
-      if (!text || typeof text !== 'string' || !text.trim()) {
-        return res.status(400).json({ error: "Text is required" });
-      }
 
-      console.log(`🎤 TTS request: ${text.length} chars, voice: ${voice}, free: ${useFree}`);
-
-      // Always use browser TTS for free requests to avoid service issues
-      if (useFree) {
-        console.log('🎤 Directing to browser TTS for reliable speech synthesis');
-        
-        return res.json({
-          success: true,
-          useBrowserTTS: true,
-          text: text,
-          voice: 'browser_optimized',
-          provider: 'browser_native',
-          message: 'Using browser native speech for reliable TTS'
-        });
-      }
-
-      // Fallback to OpenAI TTS with enhanced Indian accent simulation
-      if (!process.env.OPENAI_API_KEY) {
-        return res.status(500).json({ error: "No TTS service available" });
-      }
-
-      const { TTSService } = await import("./services/tts-service");
-      
-      // Use Alloy voice which is more natural for Indian accent simulation
-      const selectedVoice = 'alloy'; // Best voice for Indian accent
-      
-      // Enhance text for better Indian accent simulation
-      let enhancedText = text
-        // Slow down speech for clarity
-        .replace(/\./g, '... ') // Add pauses at sentences
-        .replace(/,/g, ', ') // Slight pauses at commas
-        // Add natural Indian speech patterns
-        .replace(/\bActually\b/gi, 'Actually you see')
-        .replace(/\bYou know\b/gi, 'You know na')
-        .replace(/\bunderstand\b/gi, 'understand properly')
-        .replace(/\bvery good\b/gi, 'very very good')
-        .replace(/\bKeep going\b/gi, 'Keep going, you are doing excellent');
-      
-      console.log(`🎤 OpenAI TTS with Indian accent enhancement: ${selectedVoice}`);
-      
-      const result = await TTSService.generateSpeechBase64(enhancedText, {
-        voice: selectedVoice,
-        model: 'tts-1-hd', // Higher quality for better pronunciation
-        speed: 0.75 // Slower for Indian accent simulation
-      });
-      
-      if (result.success) {
-        res.json({
-          success: true,
-          audioBase64: result.audioBase64,
-          mimeType: result.mimeType,
-          voice: 'indian_accent_enhanced',
-          provider: 'openai_indian_enhanced'
-        });
-      } else {
-        console.error("TTS generation failed:", result.error);
-        res.status(500).json({ error: result.error || "TTS generation failed" });
-      }
-    } catch (error) {
-      console.error("Error in TTS generation:", error);
-      res.status(500).json({ error: "TTS service temporarily unavailable" });
-    }
-  });
 
   // Payment routes
   app.post("/api/payment/create-order", paymentService.createOrder);

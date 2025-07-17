@@ -53,12 +53,11 @@ export function AiTutorSection() {
     sendMessageMutation.mutate(message);
   };
   
-  const handleVoiceInteraction = () => {
+  const handleAIInteraction = () => {
     toast({
-      title: "Voice interaction activated",
-      description: "Speak clearly and I'll listen to your questions."
+      title: "AI interaction activated",
+      description: "Type your questions for detailed explanations."
     });
-    // Voice interaction logic would be implemented here
   };
 
   return (
@@ -103,10 +102,10 @@ export function AiTutorSection() {
             <div className="flex items-center mt-4 space-x-4">
               <Button 
                 size="icon" 
-                onClick={handleVoiceInteraction}
+                onClick={handleAIInteraction}
                 className="bg-primary-600 hover:bg-primary-500 text-white"
               >
-                <i className="ri-mic-fill"></i>
+                <i className="ri-chat-3-line"></i>
               </Button>
               <Button size="icon" variant="outline" className="bg-dark-card hover:bg-dark-hover text-white">
                 <i className="ri-chat-3-line"></i>
