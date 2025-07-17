@@ -55,7 +55,8 @@ import {
   Zap,
   Target,
   Building2,
-  Brain
+  Brain,
+  Volume2
 } from "lucide-react";
 
 export default function AiTutor() {
