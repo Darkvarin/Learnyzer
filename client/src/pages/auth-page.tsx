@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
-import { Brain, Sword, Trophy, Phone, Shield } from 'lucide-react';
+import { Brain, Sword, Trophy, Phone, Shield, ArrowLeft, Home } from 'lucide-react';
 import { registerSchema } from '@shared/schema';
 
 // Validation schemas
@@ -276,6 +276,18 @@ export default function AuthPage() {
       {/* Left side - Auth form with Solo Leveling style */}
       <div className="flex-1 flex items-center justify-center p-8 z-20 relative">
         <div className="w-full max-w-md">
+          {/* Back to Home Button */}
+          <div className="mb-6 flex justify-start">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/")}
+              className="text-cyan-300 hover:text-cyan-100 hover:bg-cyan-500/10 border border-cyan-500/20 hover:border-cyan-500/40 transition-all duration-300"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Home
+            </Button>
+          </div>
           <Card className="w-full solo-leveling-card border-primary/20 backdrop-blur-sm">
             {/* Solo Leveling hexagonal corners */}
             <div className="absolute -top-3 -right-3 w-32 h-32 solo-leveling-corner-tr"></div>
