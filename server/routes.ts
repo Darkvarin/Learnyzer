@@ -23,6 +23,7 @@ import { PDFService } from "./services/pdf-service";
 import { MockTestService } from "./services/mock-test-service";
 import { storage } from "./storage";
 import { db } from "../db";
+import { authenticateAdmin, createAdminSession, validateAdminSession } from "./middleware/admin-auth";
 import { eq, and, asc, desc, isNotNull, sql } from "drizzle-orm";
 import * as schema from "../shared/schema";
 import { z } from "zod";
@@ -114,6 +115,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     next();
   };
+
+  // Admin authentication middleware for lead generation
+  const requireAdminAuth = (req: any, res: any, next: any) => {
+    const sessionId = req.headers['admin-session'] || req.body.sessionId;
+    if (!sessionId || !validateAdminSession(sessionId)) {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+    next();
+  };
+
+  // Admin login endpoint
+  app.post("/api/admin/login", async (req: any, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Email and password are required" 
+        });
+      }
+
+      const isValid = await authenticateAdmin(email, password);
+      if (isValid) {
+        const sessionId = createAdminSession(email);
+        res.json({ 
+          success: true, 
+          sessionId,
+          message: "Admin authenticated successfully" 
+        });
+      } else {
+        res.status(401).json({ 
+          success: false, 
+          message: "Invalid admin credentials" 
+        });
+      }
+    } catch (error) {
+      res.status(500).json({ 
+        success: false, 
+        message: "Authentication failed" 
+      });
+    }
+  });
+
+  // Admin session validation endpoint
+  app.get("/api/admin/validate", (req: any, res) => {
+    const sessionId = req.headers['admin-session'];
+    if (!sessionId || !validateAdminSession(sessionId)) {
+      return res.status(401).json({ valid: false });
+    }
+    res.json({ valid: true });
+  });
 
   // User routes
   app.get("/api/user/stats", requireAuth, userService.getUserStats);
@@ -542,7 +595,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   };
 
-  app.get("/api/leads", requireAuth, requireAdmin, async (req, res) => {
+  app.get("/api/leads", requireAdminAuth, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const { startDate, endDate, hasEmail, hasMobile, grade, track } = req.query;
@@ -564,7 +617,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/leads/stats", requireAuth, requireAdmin, async (req, res) => {
+  app.get("/api/leads/stats", requireAdminAuth, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const stats = await leadGenerationService.getLeadStats();
@@ -575,7 +628,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/leads/export", requireAuth, requireAdmin, async (req, res) => {
+  app.get("/api/leads/export", requireAdminAuth, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const { startDate, endDate, hasEmail, hasMobile, grade, track } = req.query;
@@ -600,7 +653,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/leads/email-list", requireAuth, requireAdmin, async (req, res) => {
+  app.get("/api/leads/email-list", requireAdminAuth, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const { startDate, endDate, grade, track } = req.query;
@@ -621,7 +674,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/leads/mobile-list", requireAuth, requireAdmin, async (req, res) => {
+  app.get("/api/leads/mobile-list", requireAdminAuth, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const { startDate, endDate, grade, track } = req.query;
@@ -642,7 +695,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/leads/search", requireAuth, requireAdmin, async (req, res) => {
+  app.get("/api/leads/search", requireAdminAuth, async (req, res) => {
     try {
       const { leadGenerationService } = await import("./services/lead-generation");
       const { q } = req.query;

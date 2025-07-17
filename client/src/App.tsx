@@ -36,6 +36,8 @@ import TermsPage from "./pages/terms";
 import PrivacyPage from "./pages/privacy";
 import ContactPage from "./pages/contact";
 import LandingPage from "./pages/landing-page";
+import AdminLogin from "./pages/admin-login";
+import { AdminProtectedRoute } from "@/components/admin-protected-route";
 
 function App() {
   return (
@@ -61,7 +63,12 @@ function App() {
                     <ProtectedRoute path="/ai-visual-lab" component={AIVisualLab} />
                     <ProtectedRoute path="/subscription" component={SubscriptionPage} />
                     <ProtectedRoute path="/security-dashboard" component={SecurityDashboard} />
-                    <ProtectedRoute path="/lead-generation" component={LeadGeneration} />
+                    <Route path="/admin-login" component={AdminLogin} />
+                    <Route path="/lead-management">
+                      <AdminProtectedRoute>
+                        <LeadGeneration />
+                      </AdminProtectedRoute>
+                    </Route>
                     <Route path="/feedback" component={CustomerFeedback} />
                     <Route path="/terms" component={TermsPage} />
                     <Route path="/privacy" component={PrivacyPage} />

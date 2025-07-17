@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { adminApi } from "@/lib/admin-api";
 import { useToast } from "@/hooks/use-toast";
 
 interface LeadData {
@@ -53,50 +54,44 @@ export default function LeadGeneration() {
   const { toast } = useToast();
 
   const { data: leadStats, isLoading: statsLoading, error: statsError } = useQuery({
-    queryKey: ["/api/leads/stats"],
+    queryKey: ["admin-leads-stats"],
+    queryFn: () => adminApi.getLeadStats(),
     refetchInterval: 300000, // Refresh every 5 minutes
     retry: false
   });
 
   const { data: leads, isLoading: leadsLoading, refetch: refetchLeads, error: leadsError } = useQuery({
-    queryKey: ["/api/leads", filters],
+    queryKey: ["admin-leads", filters],
+    queryFn: () => adminApi.getLeads(filters),
     refetchInterval: 60000, // Refresh every minute
     retry: false
   });
 
   const { data: searchResults, isLoading: searchLoading, error: searchError } = useQuery({
-    queryKey: ["/api/leads/search", searchQuery],
+    queryKey: ["admin-leads-search", searchQuery],
+    queryFn: () => adminApi.searchLeads(searchQuery),
     enabled: searchQuery.length > 0,
     refetchInterval: false,
     retry: false
   });
 
   const { data: emailList, error: emailError } = useQuery({
-    queryKey: ["/api/leads/email-list", filters],
+    queryKey: ["admin-email-list", filters],
+    queryFn: () => adminApi.getEmailList(filters),
     refetchInterval: false,
     retry: false
   });
 
   const { data: mobileList, error: mobileError } = useQuery({
-    queryKey: ["/api/leads/mobile-list", filters],
+    queryKey: ["admin-mobile-list", filters],
+    queryFn: () => adminApi.getMobileList(filters),
     refetchInterval: false,
     retry: false
   });
 
   const exportToExcel = async () => {
     try {
-      const params = new URLSearchParams();
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value) params.append(key, value);
-      });
-
-      const response = await fetch(`/api/leads/export?${params.toString()}`, {
-        method: 'GET',
-      });
-
-      if (!response.ok) throw new Error('Export failed');
-
-      const blob = await response.blob();
+      const blob = await adminApi.exportLeads(filters);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
