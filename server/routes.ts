@@ -1671,11 +1671,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const upcomingBattles = await storage.getUpcomingBattles();
       const pastBattles = req.user?.id ? await storage.getPastBattles(req.user.id) : [];
       
-      // Add demo battles for testing
-      const demoBattles = await enhancedBattleService.getDemoBattles();
-      
       res.json({
-        active: [...activeBattles, ...demoBattles],
+        active: activeBattles,
         upcoming: upcomingBattles,
         past: pastBattles
       });
@@ -1685,17 +1682,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get demo battles - MUST be before the parameterized route
-  app.get("/api/enhanced-battles/demo", async (req, res) => {
-    console.log("Registering route: GET /api/enhanced-battles/demo");
-    try {
-      const demoBattles = await enhancedBattleService.getDemoBattles();
-      res.json(demoBattles);
-    } catch (error) {
-      console.error("Error fetching demo battles:", error);
-      res.status(500).json({ error: "Failed to fetch demo battles" });
-    }
-  });
+
 
   // Get enhanced battle details
   app.get("/api/enhanced-battles/:battleId", async (req, res) => {
@@ -1704,14 +1691,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const battleId = parseInt(req.params.battleId);
       const userId = req.user?.id;
       
-      // Handle demo battles
-      if (battleId >= 9998) {
-        const demoBattles = await enhancedBattleService.getDemoBattles();
-        const demoBattle = demoBattles.find(b => b.id === battleId);
-        if (demoBattle) {
-          return res.json(demoBattle);
-        }
-      }
+
       
       const battle = await enhancedBattleService.getBattleDetails(battleId, userId);
       res.json(battle);
@@ -1741,10 +1721,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const battleId = parseInt(req.params.battleId);
       const userId = req.user.id;
       
-      // Handle demo battles
-      if (battleId >= 9998) {
-        return res.json({ success: true, message: "Joined demo battle" });
-      }
+
       
       const result = await storage.joinBattle(battleId, userId);
       res.json(result);
@@ -1761,10 +1738,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const battleId = parseInt(req.params.battleId);
       const userId = req.user.id;
       
-      // Handle demo battles
-      if (battleId >= 9998) {
-        return res.json({ success: true, message: "Spectating demo battle" });
-      }
+
       
       const result = await enhancedBattleService.addSpectator(battleId, userId);
       res.json(result);
@@ -1782,10 +1756,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.id;
       const { answer } = req.body;
       
-      // Handle demo battles
-      if (battleId >= 9998) {
-        return res.json({ success: true, message: "Demo answer submitted" });
-      }
+
       
       const result = await storage.submitBattleAnswer(battleId, userId, answer);
       res.json(result);

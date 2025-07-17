@@ -302,59 +302,7 @@ export class EnhancedBattleService {
     }
   }
 
-  // Get demo battles for testing
-  async getDemoBattles() {
-    return [
-      {
-        id: 9999,
-        title: "🔥 Epic JEE Physics Championship",
-        type: "2v2",
-        status: "waiting",
-        examType: "JEE",
-        subject: "Physics",
-        difficulty: "Hard",
-        duration: 15,
-        maxParticipants: 4,
-        entryFee: 25,
-        prizePool: 100,
-        battleMode: "Championship",
-        spectatorMode: true,
-        questionsCount: 5,
-        participants: [
-          { id: 1, name: "PhysicsKing", team: 0, score: 0, status: "ready", currentQuestionNumber: 1, questionsCompleted: 0 },
-          { id: 2, name: "QuantumMaster", team: 1, score: 0, status: "ready", currentQuestionNumber: 1, questionsCompleted: 0 }
-        ],
-        spectatorCount: 12,
-        topics: ["Mechanics", "Thermodynamics"],
-        scheduledAt: new Date(Date.now() + 300000), // 5 minutes from now
-        createdAt: new Date(),
-      },
-      {
-        id: 9998,
-        title: "⚡ NEET Biology Blitz",
-        type: "1v1",
-        status: "in_progress",
-        examType: "NEET",
-        subject: "Biology",
-        difficulty: "Medium",
-        duration: 10,
-        maxParticipants: 2,
-        entryFee: 15,
-        prizePool: 30,
-        battleMode: "Speed Round",
-        spectatorMode: true,
-        questionsCount: 8,
-        participants: [
-          { id: 3, name: "BioWarrior", team: 0, score: 45, status: "answering", currentQuestionNumber: 4, questionsCompleted: 3 },
-          { id: 4, name: "CellExpert", team: 1, score: 40, status: "submitted", currentQuestionNumber: 3, questionsCompleted: 2 }
-        ],
-        spectatorCount: 8,
-        topics: ["Cell Biology", "Genetics"],
-        scheduledAt: new Date(Date.now() - 300000), // Started 5 minutes ago
-        createdAt: new Date(),
-      }
-    ];
-  }
+
 
   // Update participant's current question number (for live tracking)
   async updateParticipantQuestionProgress(battleId: number, userId: number, questionNumber: number) {
