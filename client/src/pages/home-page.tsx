@@ -584,23 +584,23 @@ export default function HomePage() {
                       <Brain className="h-10 w-10 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-gaming mb-4 text-white">Entrance Exam AI Coach</h3>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">GPT-4o Powered AI Tutors</h3>
                   <p className="text-gray-300">
-                    Experience personalized coaching with our voice-interactive AI tutors that adapt to your exam preparation needs 
-                    and provide real-time feedback to maximize your JEE, NEET, UPSC, CLAT, or CUET score.
+                    Experience personalized coaching with advanced GPT-4o AI tutors specialized for JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE. 
+                    Get instant doubt resolution, step-by-step solutions, and adaptive learning that matches your exam pattern.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Natural voice conversation</span>
+                      <span>7 major competitive exams covered</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Whiteboard visualizations</span>
+                      <span>Interactive visual diagrams & charts</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Adaptive difficulty</span>
+                      <span>Exam-specific problem solving techniques</span>
                     </div>
                   </div>
                 </div>
@@ -623,23 +623,23 @@ export default function HomePage() {
                       <Sword className="h-10 w-10 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-gaming mb-4 text-white">Battle Zone Challenges</h3>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">Competitive Battle Arena</h3>
                   <p className="text-gray-300">
-                    Compete in 1v1, 2v2, 3v3, or 4v4 real-time entrance exam challenges, solve JEE/NEET/UPSC/CLAT/CUET problems under 
-                    pressure and earn rank points to climb the national aspirant leaderboard.
+                    Join India's most advanced competitive learning platform with real-time battles, power-ups, and tournaments. 
+                    Battle other JEE/NEET/UPSC/CLAT/CUET/CSE/CGLE aspirants across the country and prove your knowledge supremacy.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Real-time competitions</span>
+                      <span>Strategic power-ups & special abilities</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Team vs team modes</span>
+                      <span>Spectator mode & live tournaments</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>AI-judged responses</span>
+                      <span>Coin economy & prize pools</span>
                     </div>
                   </div>
                 </div>
@@ -662,23 +662,23 @@ export default function HomePage() {
                       <Trophy className="h-10 w-10 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-gaming mb-4 text-white">Complete Rank System</h3>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">Advanced Ranking & Analytics</h3>
                   <p className="text-gray-300">
-                    Climb from Bronze to Grandmaster with a comprehensive ranking system that reflects your 
-                    entrance exam preparation progress and competitive performance against other aspirants.
+                    Track your performance across all competitive exams with detailed analytics, progress charts, and AI-powered insights. 
+                    Climb 20 rank tiers from Bronze I to Grandmaster with exam-specific leaderboards for each subject area.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>8 rank tiers</span>
+                      <span>20 competitive rank tiers</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Visible progression</span>
+                      <span>Exam-specific performance tracking</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Exclusive rank rewards</span>
+                      <span>AI-generated study recommendations</span>
                     </div>
                   </div>
                 </div>
@@ -740,23 +740,23 @@ export default function HomePage() {
                       <Book className="h-10 w-10 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-gaming mb-4 text-white">Specialized Entrance Exam Preparation</h3>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">Complete Exam Ecosystem</h3>
                   <p className="text-gray-300">
-                    Focused preparation for India's top competitive entrance exams including 
-                    JEE, NEET, UPSC, CLAT, and CUET.
+                    Master all 7 major competitive exams: JEE (Engineering), NEET (Medical), UPSC (Civil Services), 
+                    CLAT (Law), CUET (University), CSE (Computer Science), and CGLE (Government Jobs) with specialized content and strategies.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Coverage of all major entrance exams</span>
+                      <span>All major Indian competitive exams</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Exam-specific preparation strategies</span>
+                      <span>Exam-locked focused preparation</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Exam-focused modules</span>
+                      <span>Subject-wise mastery tracking</span>
                     </div>
                   </div>
                 </div>
@@ -779,23 +779,23 @@ export default function HomePage() {
                       <Star className="h-10 w-10 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-gaming mb-4 text-white">Performance Analytics</h3>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">AI Tools & Mock Tests</h3>
                   <p className="text-gray-300">
-                    Track your progress with detailed analytics and AI-generated insights to identify 
-                    strengths, weaknesses and optimize your study strategy.
+                    Access comprehensive AI-powered study tools including study notes generator, answer checker, mock test generator, 
+                    visual learning lab, and performance analytics. Get instant PDF downloads and detailed explanations for every topic.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Interactive visualizations</span>
+                      <span>AI-generated study materials & PDFs</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>AI-powered recommendations</span>
+                      <span>Real-time mock tests & scoring</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
-                      <span>Progress trend analysis</span>
+                      <span>OCR handwriting recognition</span>
                     </div>
                   </div>
                 </div>
