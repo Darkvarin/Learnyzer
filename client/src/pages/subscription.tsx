@@ -313,7 +313,8 @@ export default function SubscriptionPage() {
     }
   };
 
-  const formatLimit = (limit: number) => {
+  const formatLimit = (limit: number | undefined) => {
+    if (limit === undefined || limit === null) return "N/A";
     return limit === -1 ? "Unlimited" : limit.toString();
   };
 
@@ -426,7 +427,7 @@ export default function SubscriptionPage() {
                         <div className="grid grid-cols-2 gap-2 text-xs text-gray-400">
                           <div>AI Chat: {formatLimit(plan.limits.aiChatLimit)}</div>
                           <div>Visual Lab: {formatLimit(plan.limits.aiVisualLabLimit)}</div>
-                          <div>AI Tutor: {formatLimit(plan.limits.aiTutorSessionLimit)}</div>
+                          <div>Mock Tests: {formatLimit(plan.limits.mockTestLimit)}</div>
                           <div>Packages: {formatLimit(plan.limits.visualPackageLimit)}</div>
                         </div>
                       </div>
