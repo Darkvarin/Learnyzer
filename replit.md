@@ -198,6 +198,11 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - **HOMEPAGE SEO**: Integrated comprehensive SEO into home page, AI tutor, and landing page for maximum search visibility
   - **SEARCH ENGINE READY**: Platform now optimized to appear for all competitive exam preparation searches in India
 - June 30, 2025: Initial setup
+- July 18, 2025: **CRITICAL DATABASE CONNECTION FIX** - Resolved missing dotenv.config() in db/index.ts causing deployment failures
+  - **ROOT CAUSE IDENTIFIED**: Database connection file (db/index.ts) was attempting to read process.env.DATABASE_URL without loading environment variables first
+  - **SOLUTION IMPLEMENTED**: Added dotenv.config() at the top of db/index.ts before database imports
+  - **DEPLOYMENT READY**: Fixed the core issue preventing EC2 server startup and build failures
+  - **ENVIRONMENT LOADING**: All service files now properly load environment variables before accessing process.env
 - July 18, 2025: **CRITICAL COST OPTIMIZATION** - Reduced AI chat interaction limits across all subscription plans for sustainable OpenAI API costs
   - **COST-EFFECTIVE LIMITS**: Updated subscription plans to prevent excessive API usage while maintaining educational value
   - **FREE TRIAL**: 5 AI chat interactions daily (down from previous higher limits)
