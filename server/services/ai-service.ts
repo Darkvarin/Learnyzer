@@ -111,74 +111,222 @@ const validateExamAccess = async (userId: number, requestedExam?: string, reques
   };
 };
 
-// Function to get exam-specific forbidden keywords for content filtering
-const getExamForbiddenKeywords = (examType: string): string[] => {
-  const forbiddenKeywords: Record<string, string[]> = {
-    'jee': [
-      // Biology topics forbidden for JEE
-      'botany', 'zoology', 'anatomy', 'physiology', 'genetics', 'evolution', 'ecology', 
-      'biodiversity', 'biotechnology', 'molecular biology', 'cell biology', 'microbiology',
-      'biochemistry', 'photosynthesis', 'respiration', 'digestion', 'circulation',
-      // Humanities forbidden for JEE
-      'history', 'geography', 'political science', 'economics', 'sociology', 'philosophy',
-      'psychology', 'literature', 'linguistics', 'archaeology', 'anthropology'
-    ],
-    'neet': [
-      // Computer Science topics forbidden for NEET
-      'programming', 'coding', 'algorithms', 'data structures', 'software', 'hardware',
-      'computer science', 'artificial intelligence', 'machine learning', 'database',
-      'networks', 'operating systems', 'computer architecture', 'cybersecurity',
-      // Engineering topics forbidden for NEET
-      'mechanical engineering', 'electrical engineering', 'civil engineering',
-      // Advanced Math forbidden for NEET
-      'calculus', 'differential equations', 'linear algebra', 'complex numbers'
-    ],
-    'upsc': [
-      // Highly technical/specialized topics not relevant to UPSC
-      'quantum mechanics', 'advanced organic chemistry', 'differential equations',
-      'computer programming', 'software development', 'machine learning',
-      'biotechnology research', 'nanotechnology', 'advanced physics',
-      'specialized engineering', 'technical coding', 'algorithms'
-    ],
-    'clat': [
-      // Advanced science and math topics forbidden for CLAT
-      'quantum physics', 'organic chemistry', 'calculus', 'differential equations',
-      'advanced mathematics', 'biotechnology', 'computer programming',
-      'engineering', 'advanced biology', 'molecular biology', 'genetics'
-    ],
-    'cse': [
-      // Humanities topics forbidden for CSE
-      'history', 'geography', 'political science', 'economics', 'sociology',
-      'philosophy', 'psychology', 'literature', 'linguistics', 'archaeology',
-      'anthropology', 'fine arts', 'music theory', 'classical studies'
-    ],
-    'cgle': [
-      // ALL JEE topics forbidden for CGLE
-      'jee', 'iit', 'jee main', 'jee advanced', 'engineering entrance',
-      'calculus', 'differential equations', 'integration', 'matrices', 'vectors',
-      'complex numbers', 'probability', 'permutation', 'combination',
-      'coordinate geometry', 'trigonometry', 'algebra', 'sequences', 'series',
-      'thermodynamics', 'mechanics', 'optics', 'waves', 'electromagnetic',
-      'modern physics', 'atomic structure', 'radioactivity', 'semiconductors',
-      'organic chemistry', 'inorganic chemistry', 'physical chemistry',
-      'chemical bonding', 'periodic table', 'chemical equilibrium',
-      'electrochemistry', 'surface chemistry', 'coordination compounds',
-      // ALL NEET topics forbidden for CGLE
-      'neet', 'medical entrance', 'mbbs', 'medical college',
-      'photosynthesis', 'cellular respiration', 'molecular biology', 'genetics',
-      'botany', 'zoology', 'anatomy', 'physiology', 'biotechnology',
-      'biochemistry', 'microbiology', 'ecology', 'evolution', 'biodiversity',
-      'cell biology', 'human biology', 'plant biology', 'animal biology',
-      'nervous system', 'circulatory system', 'digestive system',
-      'respiratory system', 'reproductive system', 'endocrine system',
-      'immune system', 'excretory system', 'muscular system',
-      // Advanced technical topics forbidden for CGLE
-      'advanced programming', 'machine learning', 'quantum physics',
-      'nanotechnology', 'specialized engineering', 'research methodology'
-    ]
+// Comprehensive exam content mapping for strict filtering
+const getAllExamContent = () => {
+  return {
+    'jee': {
+      name: 'JEE (Joint Entrance Examination)',
+      subjects: ['Physics', 'Chemistry', 'Mathematics'],
+      keywords: [
+        // JEE-specific terms
+        'jee', 'iit', 'jee main', 'jee advanced', 'iit jee', 'engineering entrance',
+        // Physics topics
+        'mechanics', 'thermodynamics', 'waves', 'optics', 'electromagnetism', 'modern physics',
+        'kinematics', 'dynamics', 'work energy', 'rotational motion', 'gravitation',
+        'simple harmonic motion', 'wave motion', 'sound waves', 'electromagnetic waves',
+        'ray optics', 'wave optics', 'electric field', 'magnetic field', 'current electricity',
+        'electromagnetic induction', 'alternating current', 'atoms', 'nuclei', 'semiconductors',
+        // Chemistry topics  
+        'atomic structure', 'periodic table', 'chemical bonding', 'molecular structure',
+        'states of matter', 'thermodynamics chemistry', 'equilibrium chemistry', 'redox reactions',
+        'hydrogen', 's-block elements', 'p-block elements', 'd-block elements', 'f-block elements',
+        'coordination compounds', 'environmental chemistry', 'organic chemistry',
+        'hydrocarbons', 'haloalkanes', 'haloarenes', 'alcohols', 'phenols', 'ethers',
+        'aldehydes', 'ketones', 'carboxylic acids', 'amines', 'biomolecules', 'polymers',
+        // Mathematics topics
+        'sets', 'relations', 'functions', 'trigonometry', 'complex numbers', 'linear inequalities',
+        'permutations', 'combinations', 'binomial theorem', 'sequences', 'series',
+        'limit', 'continuity', 'differentiability', 'application of derivatives',
+        'indefinite integrals', 'definite integrals', 'application of integrals',
+        'differential equations', 'vector algebra', 'three dimensional geometry',
+        'linear programming', 'probability', 'statistics'
+      ]
+    },
+    'neet': {
+      name: 'NEET (National Eligibility cum Entrance Test)',
+      subjects: ['Physics', 'Chemistry', 'Biology'],
+      keywords: [
+        // NEET-specific terms
+        'neet', 'medical entrance', 'mbbs', 'bds', 'medical college', 'aiims', 'jipmer',
+        // Biology topics
+        'diversity of living organisms', 'structural organisation', 'cell structure', 'plant physiology',
+        'human physiology', 'reproduction', 'genetics', 'evolution', 'biology human welfare',
+        'biotechnology', 'ecology', 'environment', 'biodiversity', 'conservation',
+        'photosynthesis', 'respiration', 'plant growth', 'development', 'digestion', 'absorption',
+        'breathing', 'circulation', 'excretion', 'locomotion', 'movement', 'neural control',
+        'coordination', 'chemical coordination', 'integration', 'sexual reproduction',
+        'molecular basis', 'inheritance', 'variation', 'origin', 'evolution',
+        'human health', 'disease', 'microbes', 'biotechnology principles', 'applications',
+        'organisms', 'populations', 'ecosystems', 'biodiversity conservation',
+        // Physics (NEET level)
+        'physical world', 'measurement', 'motion straight line', 'motion plane',
+        'laws motion', 'work energy power', 'system particles', 'rotational motion',
+        'gravitation', 'mechanical properties solids', 'mechanical properties fluids',
+        'thermal properties matter', 'thermodynamics', 'kinetic theory',
+        'oscillations', 'waves', 'electric charges', 'electrostatic potential',
+        'current electricity', 'magnetic effects', 'electromagnetic induction',
+        'alternating current', 'electromagnetic waves', 'ray optics', 'wave optics',
+        'dual nature', 'atoms nuclei', 'electronic devices',
+        // Chemistry (NEET level)
+        'basic concepts', 'structure atom', 'classification elements', 'chemical bonding',
+        'states matter', 'thermodynamics', 'equilibrium', 'redox reactions',
+        'hydrogen', 'block elements', 'organic chemistry basic principles',
+        'hydrocarbons', 'environmental chemistry', 'solid state', 'solutions',
+        'electrochemistry', 'chemical kinetics', 'surface chemistry',
+        'general principles', 'processes isolation', 'p block elements',
+        'd f block elements', 'coordination compounds', 'haloalkanes haloarenes',
+        'alcohols phenols ethers', 'aldehydes ketones carboxylic acids',
+        'organic compounds nitrogen', 'biomolecules', 'polymers', 'chemistry everyday life'
+      ]
+    },
+    'upsc': {
+      name: 'UPSC (Union Public Service Commission)',
+      subjects: ['History', 'Geography', 'Political Science', 'Economics', 'Public Administration', 'Sociology', 'Philosophy', 'Psychology'],
+      keywords: [
+        // UPSC-specific terms
+        'upsc', 'civil services', 'ias', 'ips', 'ifs', 'administrative services',
+        // History
+        'ancient india', 'medieval india', 'modern india', 'freedom struggle', 'independence movement',
+        'colonial period', 'british rule', 'mughal empire', 'delhi sultanate', 'gupta empire',
+        'mauryan empire', 'harappan civilization', 'vedic period', 'post independence',
+        'world history', 'french revolution', 'industrial revolution', 'world wars',
+        // Geography
+        'indian geography', 'world geography', 'physical geography', 'human geography',
+        'economic geography', 'climate', 'monsoon', 'rivers', 'mountains', 'plateaus',
+        'agriculture', 'industries', 'transportation', 'population', 'urbanization',
+        // Political Science
+        'indian constitution', 'fundamental rights', 'directive principles', 'constitutional amendments',
+        'parliament', 'judiciary', 'executive', 'federalism', 'local government', 'elections',
+        'political parties', 'pressure groups', 'governance', 'public policy',
+        // Economics
+        'indian economy', 'economic development', 'planning', 'economic reforms',
+        'agriculture economy', 'industrial development', 'service sector', 'foreign trade',
+        'monetary policy', 'fiscal policy', 'banking', 'capital market', 'inflation',
+        'unemployment', 'poverty', 'economic survey', 'budget',
+        // Current Affairs
+        'current affairs', 'government schemes', 'international relations', 'diplomacy',
+        'internal security', 'external security', 'disaster management', 'environment',
+        'science technology', 'space technology', 'defence technology'
+      ]
+    },
+    'clat': {
+      name: 'CLAT (Common Law Admission Test)',
+      subjects: ['English', 'General Knowledge', 'Legal Reasoning', 'Logical Reasoning', 'Quantitative Techniques'],
+      keywords: [
+        // CLAT-specific terms
+        'clat', 'law entrance', 'legal education', 'law college', 'nlu', 'national law university',
+        // Legal topics
+        'legal reasoning', 'constitutional law', 'jurisprudence', 'legal principles',
+        'tort law', 'contract law', 'criminal law', 'legal aptitude', 'legal knowledge',
+        'indian legal system', 'court system', 'legal profession', 'legal ethics',
+        // English
+        'reading comprehension', 'english grammar', 'vocabulary', 'sentence correction',
+        'verbal ability', 'english literature', 'prose', 'poetry', 'comprehension passages',
+        // General Knowledge
+        'current affairs', 'static gk', 'indian polity', 'indian economy', 'indian history',
+        'indian geography', 'indian culture', 'sports', 'awards', 'books authors',
+        'important dates', 'national international', 'government schemes',
+        // Logical Reasoning
+        'logical reasoning', 'critical reasoning', 'analytical reasoning', 'verbal reasoning',
+        'non verbal reasoning', 'logical puzzles', 'pattern recognition', 'logical sequences',
+        // Quantitative Techniques
+        'basic mathematics', 'arithmetic', 'algebra basic', 'geometry basic',
+        'mensuration', 'statistics basic', 'data interpretation', 'numerical ability'
+      ]
+    },
+    'cuet': {
+      name: 'CUET (Common University Entrance Test)',
+      subjects: ['Physics', 'Chemistry', 'Mathematics', 'Biology', 'English', 'General Knowledge'],
+      keywords: [
+        // CUET-specific terms
+        'cuet', 'common university entrance', 'central university', 'university admission',
+        // Mixed subjects from different streams
+        'cuet physics', 'cuet chemistry', 'cuet mathematics', 'cuet biology',
+        'cuet english', 'cuet general test', 'domain subjects', 'language test',
+        'general test', 'university entrance', 'undergraduate admission'
+      ]
+    },
+    'cse': {
+      name: 'CSE (Computer Science Engineering)',
+      subjects: ['Programming', 'Data Structures', 'Algorithms', 'Operating Systems', 'Networks', 'Database Systems', 'Computer Architecture'],
+      keywords: [
+        // CSE-specific terms
+        'computer science', 'programming', 'software engineering', 'computer engineering',
+        // Programming
+        'programming languages', 'c programming', 'c++', 'java', 'python', 'javascript',
+        'object oriented programming', 'functional programming', 'programming paradigms',
+        'software development', 'coding', 'debugging', 'testing',
+        // Data Structures
+        'data structures', 'arrays', 'linked lists', 'stacks', 'queues', 'trees',
+        'graphs', 'hash tables', 'heaps', 'sorting', 'searching',
+        // Algorithms
+        'algorithms', 'algorithm analysis', 'complexity analysis', 'big o notation',
+        'divide conquer', 'dynamic programming', 'greedy algorithms', 'graph algorithms',
+        // Computer Systems
+        'operating systems', 'process management', 'memory management', 'file systems',
+        'computer networks', 'network protocols', 'tcp ip', 'osi model',
+        'database systems', 'sql', 'database design', 'normalization',
+        'computer architecture', 'processor design', 'memory hierarchy',
+        // Advanced topics
+        'artificial intelligence', 'machine learning', 'deep learning',
+        'computer graphics', 'computer vision', 'natural language processing',
+        'cybersecurity', 'cryptography', 'software engineering', 'system design'
+      ]
+    },
+    'cgle': {
+      name: 'CGLE (Combined Graduate Level Examination)',
+      subjects: ['General Awareness', 'Quantitative Aptitude', 'English Language', 'Reasoning'],
+      keywords: [
+        // CGLE-specific terms
+        'cgle', 'ssc cgl', 'combined graduate level', 'staff selection commission',
+        'government job', 'central government', 'ssc exam',
+        // General Awareness
+        'general awareness', 'general knowledge', 'current affairs', 'static gk',
+        'indian history basic', 'indian geography basic', 'indian polity basic',
+        'indian economy basic', 'general science', 'sports current', 'awards current',
+        'important days', 'books authors current', 'indian culture basic',
+        // Quantitative Aptitude
+        'quantitative aptitude', 'basic mathematics', 'arithmetic', 'number system',
+        'percentage', 'ratio proportion', 'average', 'time work', 'time distance',
+        'simple interest', 'compound interest', 'profit loss', 'data interpretation basic',
+        'mensuration basic', 'geometry basic', 'trigonometry basic',
+        // English Language
+        'english language', 'grammar', 'vocabulary', 'reading comprehension',
+        'sentence improvement', 'error detection', 'fill blanks', 'synonyms antonyms',
+        'idioms phrases', 'one word substitution', 'spelling correction',
+        // Reasoning
+        'reasoning', 'logical reasoning basic', 'verbal reasoning', 'non verbal reasoning',
+        'analytical reasoning basic', 'series completion', 'coding decoding',
+        'blood relations', 'direction sense', 'ranking arrangement', 'puzzle solving basic'
+      ]
+    }
   };
+};
+
+// Function to get exam-specific forbidden content (ALL other exams)
+const getExamForbiddenKeywords = (examType: string): string[] => {
+  const allExamContent = getAllExamContent();
+  const currentExam = examType.toLowerCase();
   
-  return forbiddenKeywords[examType.toLowerCase()] || [];
+  // Get all keywords from OTHER exams (not the current one)
+  let forbiddenKeywords: string[] = [];
+  
+  Object.keys(allExamContent).forEach(exam => {
+    if (exam !== currentExam) {
+      const examData = allExamContent[exam as keyof typeof allExamContent];
+      forbiddenKeywords = forbiddenKeywords.concat(examData.keywords);
+      
+      // Add exam name and subjects as forbidden
+      forbiddenKeywords.push(exam);
+      forbiddenKeywords.push(examData.name.toLowerCase());
+      forbiddenKeywords = forbiddenKeywords.concat(
+        examData.subjects.map(subject => subject.toLowerCase())
+      );
+    }
+  });
+  
+  // Remove duplicates and return
+  return [...new Set(forbiddenKeywords)];
 };
 
 // Middleware to check authentication
@@ -1198,7 +1346,7 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
       const userId = (req.user as any).id;
       
       // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
-      const examAccess = await validateExamAccess(userId, examType, subject);
+      const examAccess = await validateExamAccess(userId, examType, subject, topic);
       if (!examAccess.allowed) {
         return res.status(403).json({
           message: examAccess.message,
@@ -1241,7 +1389,8 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
       const userId = (req.user as any).id;
       
       // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
-      const examAccess = await validateExamAccess(userId, undefined, subject);
+      const questionContent = `${question} ${topic || ''}`;
+      const examAccess = await validateExamAccess(userId, undefined, subject, questionContent);
       if (!examAccess.allowed) {
         return res.status(403).json({
           message: examAccess.message,
@@ -1395,7 +1544,7 @@ ${isCorrect ?
       const userId = (req.user as any).id;
       
       // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
-      const examAccess = await validateExamAccess(userId, examType, subject);
+      const examAccess = await validateExamAccess(userId, examType, subject, topic);
       if (!examAccess.allowed) {
         return res.status(403).json({
           message: examAccess.message,
@@ -1644,7 +1793,7 @@ ADAPTATION RULES:
       const userId = (req.user as any).id;
       
       // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
-      const examAccess = await validateExamAccess(userId, undefined, subject);
+      const examAccess = await validateExamAccess(userId, undefined, subject, question);
       if (!examAccess.allowed) {
         return res.status(403).json({
           message: examAccess.message,
