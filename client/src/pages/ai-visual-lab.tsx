@@ -284,20 +284,10 @@ export default function AIVisualLab() {
               )}
             </div>
             <p className="text-cyan-100 text-sm sm:text-lg max-w-2xl mx-auto px-2 sm:px-0">
-              Create immersive educational content with GPT-4o and DALL-E 3. 
-              Generate stunning visuals, comprehensive study materials, and interactive learning experiences.
+              Create immersive educational content with GPT-4o and interactive diagrams. 
+              Generate engaging visuals, comprehensive study materials, and interactive learning experiences.
             </p>
-            <div className="flex justify-center mt-4">
-              <Button
-                onClick={() => checkExamSelection()}
-                variant="outline"
-                size="sm"
-                className="bg-red-500/20 hover:bg-red-500/30 text-red-300 border-red-500/30"
-              >
-                <AlertTriangle className="h-4 w-4 mr-2" />
-                Test Exam Check
-              </Button>
-            </div>
+
           </div>
         </div>
       </div>
@@ -312,7 +302,7 @@ export default function AIVisualLab() {
                 Learning Content Generator
               </CardTitle>
               <CardDescription className="text-slate-300">
-                Powered by GPT-4o and DALL-E 3 for immersive education
+                Powered by GPT-4o and interactive diagrams for immersive education
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 sm:space-y-6 p-3 sm:p-6">
@@ -428,7 +418,7 @@ export default function AIVisualLab() {
                           onChange={(e) => handleInputChange("includeImage", e.target.checked)}
                           className="rounded"
                         />
-                        <span>DALL-E 3 Educational Image</span>
+                        <span>Interactive Educational Diagram</span>
                       </label>
                       <label className="flex items-center space-x-2 text-sm text-slate-300">
                         <input

@@ -29,7 +29,7 @@ const getExamSubjects = (examType: string): string[] => {
 };
 
 // Function to check if user's exam is locked and validate content access
-const validateExamAccess = async (userId: number, requestedExam?: string, requestedSubject?: string) => {
+const validateExamAccess = async (userId: number, requestedExam?: string, requestedSubject?: string, topic?: string) => {
   const user = await storage.getUserById(userId);
   
   if (!user) {
@@ -77,6 +77,28 @@ const validateExamAccess = async (userId: number, requestedExam?: string, reques
         lockedExam: userExam,
         allowedSubjects,
         message: `Access denied. ${requestedSubject} is not part of ${userExam.toUpperCase()} syllabus. You can only study: ${allowedSubjects.join(', ')}`
+      };
+    }
+  }
+
+  // Check if topic contains forbidden keywords for the user's exam
+  if (userExam && topic) {
+    const forbiddenKeywords = getExamForbiddenKeywords(userExam);
+    const topicLower = topic.toLowerCase();
+    const subjectLower = requestedSubject?.toLowerCase() || '';
+    
+    // Check if the topic or subject contains forbidden keywords
+    const hasForbiddenContent = forbiddenKeywords.some(keyword => 
+      topicLower.includes(keyword.toLowerCase()) || 
+      subjectLower.includes(keyword.toLowerCase())
+    );
+    
+    if (hasForbiddenContent) {
+      return {
+        allowed: false,
+        lockedExam: userExam,
+        allowedSubjects,
+        message: `Access denied. The topic "${topic}" is not relevant for ${userExam.toUpperCase()} exam preparation. Please focus on ${userExam.toUpperCase()}-specific subjects: ${allowedSubjects.join(', ')}`
       };
     }
   }
@@ -131,10 +153,13 @@ const getExamForbiddenKeywords = (examType: string): string[] => {
       'anthropology', 'fine arts', 'music theory', 'classical studies'
     ],
     'cgle': [
+      // Biology topics forbidden for CGLE (government exam focused on general knowledge)
+      'photosynthesis', 'cellular respiration', 'molecular biology', 'genetics', 'botany', 'zoology',
+      'anatomy', 'physiology', 'biotechnology', 'biochemistry', 'microbiology', 'ecology',
       // Advanced technical topics forbidden for CGLE
-      'advanced programming', 'machine learning', 'quantum physics',
-      'advanced mathematics', 'biotechnology', 'nanotechnology',
-      'specialized engineering', 'research methodology', 'advanced chemistry'
+      'advanced programming', 'machine learning', 'quantum physics', 'calculus',
+      'advanced mathematics', 'nanotechnology', 'differential equations',
+      'specialized engineering', 'research methodology', 'advanced chemistry', 'organic chemistry'
     ]
   };
   
