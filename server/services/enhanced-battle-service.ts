@@ -1,13 +1,14 @@
 import { db } from '@db';
 import { battles, battleQuestions, battleSpectators, powerUps, userPowerUps, battleParticipants, users, userCoins, coinTransactions } from '@shared/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
-import OpenAI from 'openai';
 
 // Initialize OpenAI client lazily
-let openai: OpenAI | null = null;
+let openai: any | null = null;
 
 const getOpenAIClient = () => {
   if (!openai) {
+    // Import OpenAI dynamically to avoid module-level initialization
+    const OpenAI = require("openai").default;
     // Temporary hardcoded key for AWS deployment testing
     const apiKey = "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";
     openai = new OpenAI({ apiKey });

@@ -1,16 +1,17 @@
 import type { Request, Response } from "express";
 import { storage } from "../storage";
-import OpenAI from "openai";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { AnalyticsService } from "./analytics-service";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
 // Initialize OpenAI client lazily to ensure environment variables are loaded
-let openai: OpenAI | null = null;
+let openai: any | null = null;
 
 const getOpenAIClient = () => {
   if (!openai) {
+    // Import OpenAI dynamically to avoid module-level initialization
+    const OpenAI = require("openai").default;
     // Temporary hardcoded key for AWS deployment testing
     const apiKey = "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";
     openai = new OpenAI({ apiKey });
