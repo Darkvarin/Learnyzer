@@ -1,21 +1,12 @@
 import { db } from '@db';
 import { battles, battleQuestions, battleSpectators, powerUps, userPowerUps, battleParticipants, users, userCoins, coinTransactions } from '@shared/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
+import OpenAI from "openai";
 
-// Initialize OpenAI client lazily
-let openai: any | null = null;
-
-const getOpenAIClient = () => {
-  if (!openai) {
-    // Import OpenAI dynamically to avoid module-level initialization
-    const OpenAI = require("openai");
-    // Directly pass API key to bypass environment variable check
-    openai = new OpenAI({ 
-      apiKey: "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"
-    });
-  }
-  return openai;
-};
+// Initialize OpenAI client with environment variable
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export class EnhancedBattleService {
   // Get enhanced battle details with participants and spectators
@@ -126,7 +117,7 @@ export class EnhancedBattleService {
       
       Focus on concepts commonly tested in ${examType} exams for ${subject}.`;
 
-      const response = await getOpenAIClient().chat.completions.create({
+      const response = await openai.chat.completions.create({
         model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
         messages: [
           { role: 'system', content: 'You are an expert educator creating competitive exam questions. Generate high-quality, accurate questions with proper explanations.' },

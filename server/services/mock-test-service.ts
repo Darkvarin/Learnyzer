@@ -1,17 +1,9 @@
-// Initialize OpenAI client lazily
-let openai: any | null = null;
+import OpenAI from "openai";
 
-const getOpenAIClient = () => {
-  if (!openai) {
-    // Import OpenAI dynamically to avoid module-level initialization
-    const OpenAI = require("openai");
-    // Directly pass API key to bypass environment variable check
-    openai = new OpenAI({ 
-      apiKey: "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"
-    });
-  }
-  return openai;
-};
+// Initialize OpenAI client with environment variable
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export interface MockTestQuestion {
   id: number;
@@ -92,7 +84,7 @@ RESPONSE FORMAT (JSON):
 Generate high-quality, exam-standard questions with educational explanations that help students understand concepts deeply.`;
 
     try {
-      const response = await getOpenAIClient().chat.completions.create({
+      const response = await openai.chat.completions.create({
         // Using GPT-4o for superior mock test generation with detailed explanations
         model: "gpt-4o",
         messages: [

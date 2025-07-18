@@ -3,23 +3,13 @@ import { storage } from "../storage";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { AnalyticsService } from "./analytics-service";
+import OpenAI from "openai";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-// Initialize OpenAI client lazily to ensure environment variables are loaded
-let openai: any | null = null;
-
-const getOpenAIClient = () => {
-  if (!openai) {
-    // Import OpenAI dynamically to avoid module-level initialization
-    const OpenAI = require("openai");
-    // Directly pass API key to bypass environment variable check
-    openai = new OpenAI({ 
-      apiKey: "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"
-    });
-    console.log("OpenAI client initialized successfully with direct API key");
-  }
-  return openai;
-};
+// Initialize OpenAI client with environment variable
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 // Initialize analytics service for ecosystem awareness
 const analyticsService = new AnalyticsService();
@@ -426,7 +416,7 @@ Respond with JSON in this exact format:
 }`;
 
   try {
-    const response = await getOpenAIClient().chat.completions.create({
+    const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
@@ -502,7 +492,7 @@ Requirements:
 - Use structured format for easy reading
 - Include memory techniques where applicable`;
 
-  const response = await getOpenAIClient().chat.completions.create({
+  const response = await openai.chat.completions.create({
     model: "gpt-3.5-turbo", // Cost-optimized model for study notes
     messages: [
       { role: "system", content: systemPrompt },
@@ -892,7 +882,7 @@ REMEMBER: Every response must be directly tied to the student's specific query. 
       
       // Generate enhanced AI response
       console.log("Starting OpenAI API call...");
-      const completion = await getOpenAIClient().chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { role: "system", content: systemPrompt },
@@ -1002,7 +992,7 @@ Respond with JSON:
   "examRelevance": "How this diagram helps with ${subject?.replace('_', ' ')} exam preparation"
 }`;
 
-          const diagramResponse = await getOpenAIClient().chat.completions.create({
+          const diagramResponse = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
               { 
@@ -1143,7 +1133,7 @@ Respond with JSON:
   "educationalValue": "How this diagram helps understanding"
 }`;
 
-      const canvasResponse = await getOpenAIClient().chat.completions.create({
+      const canvasResponse = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { role: "system", content: "You are an expert educational diagram designer who creates precise Canvas drawing instructions for Indian competitive exam preparation." },
@@ -1246,7 +1236,7 @@ Avoid generic responses. Focus on the exact topic the student is asking about.`;
           }))
         : [];
       
-      const completion = await getOpenAIClient().chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { role: "system", content: promptContext },
@@ -1447,7 +1437,7 @@ ${isCorrect ?
   'Since they got it right, briefly explain why their answer is correct and add one interesting related fact.' : 
   'Since they got it wrong, briefly explain why the correct answer is right and why their choice was incorrect. Be encouraging.'}`;
 
-      const feedbackResponse = await getOpenAIClient().chat.completions.create({
+      const feedbackResponse = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [{ role: "user", content: feedbackPrompt }],
         temperature: 0.3,
@@ -1774,7 +1764,7 @@ ADAPTATION RULES:
       userPrompt += `\nCRITICAL: Every piece of content must be directly related to "${topic}". Do not include general study advice or unrelated concepts. Focus exclusively on mastering this specific topic.`;
       
       // Get response from OpenAI (using GPT-3.5 Turbo for cost optimization)
-      const completion = await getOpenAIClient().chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
           { role: "system", content: systemPrompt },
@@ -1872,7 +1862,7 @@ ADAPTATION RULES:
         }
         
         // Extract text from image using GPT-4o Vision
-        const ocrCompletion = await getOpenAIClient().chat.completions.create({
+        const ocrCompletion = await openai.chat.completions.create({
           model: "gpt-4o", // Use GPT-4o for vision capabilities
           messages: [
             {
@@ -1922,7 +1912,7 @@ ADAPTATION RULES:
       `;
       
       // Get response from OpenAI (using GPT-3.5 Turbo for cost optimization)
-      const completion = await getOpenAIClient().chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
           { 
@@ -2011,7 +2001,7 @@ ADAPTATION RULES:
       `;
       
       // Get response from OpenAI
-      const completion = await getOpenAIClient().chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { 
@@ -2130,7 +2120,7 @@ Analyze this student's performance data and provide comprehensive analytics:
       `;
       
       // Get insights from OpenAI
-      const completion = await getOpenAIClient().chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { 
@@ -2234,7 +2224,7 @@ Analyze this student's performance data and provide comprehensive analytics:
       `;
       
       // Get judging from OpenAI
-      const completion = await getOpenAIClient().chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { 
@@ -2443,7 +2433,7 @@ Return JSON format:
 
 Create a comprehensive diagram for ${topic} showing all key concepts, formulas, and visual elements that will help students understand this topic completely.`;
 
-      const canvasResponse = await getOpenAIClient().chat.completions.create({
+      const canvasResponse = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { role: "system", content: "You are an expert educational diagram designer. Create detailed Canvas drawing instructions for educational topics. Always return valid JSON with precise drawing commands." },
@@ -2465,7 +2455,7 @@ Create a comprehensive diagram for ${topic} showing all key concepts, formulas, 
 
 Keep the explanation concise and exam-oriented.`;
 
-      const explanationResponse = await getOpenAIClient().chat.completions.create({
+      const explanationResponse = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { role: "system", content: "You are an expert educator explaining visual learning materials for Indian competitive exams." },
@@ -2627,7 +2617,7 @@ Step-by-step approach to master this topic
 
 Make this content specific to ${examType} exam requirements and use proper markdown formatting throughout.`;
 
-      const explanationResponse = await getOpenAIClient().chat.completions.create({
+      const explanationResponse = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { role: "system", content: `You are an expert educator creating comprehensive study guides for ${examType} exam preparation. Always use proper markdown formatting and focus on exam-specific content. Never use raw ** symbols - use proper markdown syntax.` },
@@ -2671,7 +2661,7 @@ Format as JSON:
   ]
 }`;
 
-          const quizResponse = await getOpenAIClient().chat.completions.create({
+          const quizResponse = await openai.chat.completions.create({
             model: "gpt-4o",
             messages: [
               { 
@@ -2842,7 +2832,7 @@ Format as JSON with RICH CONTENT:
   "expectedOutcomes": ["What student will achieve"]
 }`;
 
-      const sessionResponse = await getOpenAIClient().chat.completions.create({
+      const sessionResponse = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { role: "system", content: `You are ${tutor?.name || 'an expert AI tutor'} creating personalized interactive study sessions for Indian competitive exam preparation.` },
@@ -2999,7 +2989,7 @@ Format as JSON with RICH CONTENT:
         Keep it motivational, educational, and exam-focused. Limit to 100 words.
       `;
 
-      const completion = await getOpenAIClient().chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { 
@@ -3084,7 +3074,7 @@ Format as JSON with RICH CONTENT:
         Make it sound like a caring tutor who wants to help the student succeed.
       `;
 
-      const completion = await getOpenAIClient().chat.completions.create({
+      const completion = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { 
@@ -3293,7 +3283,7 @@ CRITICAL REQUIREMENTS:
 - Ensure all clickable elements have proper tooltips and explanations`;
 
     try {
-      const response = await getOpenAIClient().chat.completions.create({
+      const response = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           { 
