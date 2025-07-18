@@ -55,13 +55,13 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
+  // Production mode: serve static files, Development mode: use Vite
+  if (process.env.NODE_ENV === "production") {
+    console.log("🚀 Starting in PRODUCTION mode - serving static files");
     serveStatic(app);
+  } else {
+    console.log("🔧 Starting in DEVELOPMENT mode - using Vite");
+    await setupVite(app, server);
   }
 
   // ALWAYS serve the app on port 5000
@@ -73,6 +73,8 @@ app.use((req, res, next) => {
     host: "0.0.0.0",
     reusePort: true,
   }, () => {
-    log(`serving on port ${port}`);
+    const mode = process.env.NODE_ENV === "production" ? "PRODUCTION" : "DEVELOPMENT";
+    log(`🌐 Learnyzer ${mode} server running on port ${port}`);
+    log(`🔗 Access: http://localhost:${port}`);
   });
 })();
