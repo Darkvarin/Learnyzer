@@ -664,36 +664,152 @@ export default function AIVisualLab() {
                     </div>
                   )}
 
-                  {/* Study Session Results */}
+                  {/* Enhanced Interactive Study Session Results */}
                   {results.sessionPlan && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2 mb-4">
-                        <h3 className="text-lg font-semibold text-white">{results.sessionPlan.title}</h3>
-                        <Badge variant="secondary">{results.estimatedCompletionTime}</Badge>
+                    <div className="space-y-6">
+                      {/* Session Header */}
+                      <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl p-6 border border-purple-500/30">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-xl font-bold text-white">{results.sessionPlan.title}</h3>
+                          <div className="flex items-center gap-2">
+                            <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/30">
+                              <Clock className="h-3 w-3 mr-1" />
+                              {results.sessionPlan.duration} min
+                            </Badge>
+                            <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/30">
+                              {results.estimatedDifficulty || "Medium"}
+                            </Badge>
+                          </div>
+                        </div>
+                        
+                        {/* Opening Hook */}
+                        {results.sessionPlan.openingHook && (
+                          <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 mb-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Lightbulb className="h-4 w-4 text-amber-400" />
+                              <h4 className="font-medium text-amber-300">Session Hook</h4>
+                            </div>
+                            <p className="text-amber-100 text-sm">{results.sessionPlan.openingHook}</p>
+                          </div>
+                        )}
+
+                        {/* Learning Objectives */}
+                        {results.sessionPlan.learningObjectives && (
+                          <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Target className="h-4 w-4 text-green-400" />
+                              <h4 className="font-medium text-green-300">Learning Objectives</h4>
+                            </div>
+                            <ul className="space-y-1">
+                              {results.sessionPlan.learningObjectives.map((objective: string, idx: number) => (
+                                <li key={idx} className="text-green-100 text-sm flex items-start gap-2">
+                                  <span className="text-green-400 mt-1">•</span>
+                                  {objective}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
 
+                      {/* Supporting Visual */}
                       {results.supportingVisual && results.supportingVisual.interactiveDiagram && (
-                        <div className="bg-slate-700/30 rounded-lg p-4 mb-4">
-                          <h4 className="text-cyan-400 font-medium mb-2">Interactive Visual Support</h4>
+                        <div className="bg-slate-700/30 rounded-xl p-6 border border-cyan-500/30">
+                          <div className="flex items-center gap-2 mb-4">
+                            <Image className="h-5 w-5 text-cyan-400" />
+                            <h4 className="text-cyan-400 font-medium">Interactive Visual Support</h4>
+                          </div>
                           <InteractiveDiagram data={results.supportingVisual.interactiveDiagram} />
-                          <p className="text-xs text-slate-400 mt-2">{results.supportingVisual.description}</p>
+                          <p className="text-slate-400 text-sm mt-3">{results.supportingVisual.description}</p>
                         </div>
                       )}
 
-                      <div className="space-y-3">
+                      {/* Session Timeline */}
+                      <div className="space-y-4">
+                        <h4 className="text-lg font-semibold text-white flex items-center gap-2">
+                          <Clock className="h-5 w-5 text-cyan-400" />
+                          Interactive Session Timeline
+                        </h4>
+                        
                         {results.sessionPlan.sections?.map((section: any, idx: number) => (
-                          <div key={idx} className="bg-slate-700/30 rounded-lg p-4">
-                            <div className="flex items-center justify-between mb-2">
-                              <h4 className="text-pink-400 font-medium">{section.name}</h4>
-                              <Badge variant="outline">{section.duration}</Badge>
+                          <div key={idx} className={`relative rounded-xl p-6 border ${
+                            section.type === 'interactive_learning' ? 'bg-blue-500/10 border-blue-500/30' :
+                            section.type === 'practice' ? 'bg-green-500/10 border-green-500/30' :
+                            section.type === 'assessment' ? 'bg-purple-500/10 border-purple-500/30' :
+                            'bg-slate-700/30 border-slate-600'
+                          }`}>
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center gap-3">
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                                  section.type === 'interactive_learning' ? 'bg-blue-500 text-white' :
+                                  section.type === 'practice' ? 'bg-green-500 text-white' :
+                                  section.type === 'assessment' ? 'bg-purple-500 text-white' :
+                                  'bg-slate-500 text-white'
+                                }`}>
+                                  {idx + 1}
+                                </div>
+                                <div>
+                                  <h5 className="font-medium text-white">{section.name}</h5>
+                                  <p className="text-xs text-slate-400">{section.timeRange || section.duration}</p>
+                                </div>
+                              </div>
+                              <Badge variant="outline" className="text-xs">
+                                {section.type?.replace('_', ' ') || 'Learning'}
+                              </Badge>
                             </div>
-                            <p className="text-slate-300 text-sm mb-3">{section.content}</p>
-                            {section.keyPoints && (
+                            
+                            <div className="text-slate-200 text-sm leading-relaxed mb-4">
+                              <ReactMarkdown>{section.content}</ReactMarkdown>
+                            </div>
+
+                            {/* Interactive Elements */}
+                            {section.interactiveElements && (
+                              <div className="space-y-3 mb-4">
+                                <h6 className="text-xs font-medium text-cyan-300 uppercase tracking-wide">Interactive Activities</h6>
+                                {section.interactiveElements.map((element: any, elemIdx: number) => (
+                                  <div key={elemIdx} className="bg-slate-800/50 rounded-lg p-4 border border-slate-600">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      {element.type === 'question' && <Target className="h-4 w-4 text-yellow-400" />}
+                                      {element.type === 'exercise' && <BookOpen className="h-4 w-4 text-green-400" />}
+                                      {element.type === 'visualization' && <Image className="h-4 w-4 text-purple-400" />}
+                                      {element.type === 'story' && <Lightbulb className="h-4 w-4 text-orange-400" />}
+                                      <span className="text-xs font-medium text-slate-300 capitalize">{element.type}</span>
+                                    </div>
+                                    <p className="text-slate-200 text-sm mb-2">{element.content}</p>
+                                    {element.feedback && (
+                                      <div className="bg-slate-900/50 rounded p-2 border-l-2 border-cyan-400">
+                                        <p className="text-cyan-300 text-xs">{element.feedback}</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Visual Description */}
+                            {section.visualDescription && (
+                              <div className="bg-purple-500/10 rounded-lg p-3 mb-4 border border-purple-500/30">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Image className="h-4 w-4 text-purple-400" />
+                                  <span className="text-xs font-medium text-purple-300">Visual Guide</span>
+                                </div>
+                                <p className="text-purple-100 text-xs">{section.visualDescription}</p>
+                              </div>
+                            )}
+
+                            {/* Key Takeaways */}
+                            {section.keyTakeaways && (
                               <div>
-                                <h5 className="text-xs font-medium text-slate-400 mb-1">Key Points:</h5>
-                                <ul className="text-xs text-slate-500 space-y-1">
-                                  {section.keyPoints.map((point: string, pointIdx: number) => (
-                                    <li key={pointIdx}>• {point}</li>
+                                <h6 className="text-xs font-medium text-slate-400 mb-2 flex items-center gap-1">
+                                  <Award className="h-3 w-3" />
+                                  Key Takeaways
+                                </h6>
+                                <ul className="space-y-1">
+                                  {section.keyTakeaways.map((takeaway: string, takeawayIdx: number) => (
+                                    <li key={takeawayIdx} className="text-slate-300 text-xs flex items-start gap-2">
+                                      <span className="text-cyan-400 mt-1">✓</span>
+                                      {takeaway}
+                                    </li>
                                   ))}
                                 </ul>
                               </div>
@@ -701,6 +817,90 @@ export default function AIVisualLab() {
                           </div>
                         ))}
                       </div>
+
+                      {/* Memory Techniques */}
+                      {results.sessionPlan.memoryTechniques && (
+                        <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-xl p-6 border border-amber-500/30">
+                          <div className="flex items-center gap-2 mb-4">
+                            <Brain className="h-5 w-5 text-amber-400" />
+                            <h4 className="font-medium text-amber-300">Memory Techniques</h4>
+                          </div>
+                          <div className="grid gap-3">
+                            {results.sessionPlan.memoryTechniques.map((technique: string, idx: number) => (
+                              <div key={idx} className="bg-amber-500/5 rounded-lg p-3 border border-amber-500/20">
+                                <p className="text-amber-100 text-sm">{technique}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Exam Strategies */}
+                      {results.sessionPlan.examStrategies && (
+                        <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl p-6 border border-green-500/30">
+                          <div className="flex items-center gap-2 mb-4">
+                            <Zap className="h-5 w-5 text-green-400" />
+                            <h4 className="font-medium text-green-300">Exam Strategies & Shortcuts</h4>
+                          </div>
+                          <div className="grid gap-3">
+                            {results.sessionPlan.examStrategies.map((strategy: string, idx: number) => (
+                              <div key={idx} className="bg-green-500/5 rounded-lg p-3 border border-green-500/20">
+                                <p className="text-green-100 text-sm">{strategy}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Quick Assessment */}
+                      {results.sessionPlan.assessmentQuestions && (
+                        <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl p-6 border border-purple-500/30">
+                          <div className="flex items-center gap-2 mb-4">
+                            <FileCheck className="h-5 w-5 text-purple-400" />
+                            <h4 className="font-medium text-purple-300">Quick Assessment</h4>
+                          </div>
+                          <div className="space-y-4">
+                            {results.sessionPlan.assessmentQuestions.map((q: any, idx: number) => (
+                              <div key={idx} className="bg-purple-500/5 rounded-lg p-4 border border-purple-500/20">
+                                <p className="text-white font-medium mb-3">Q{idx + 1}: {q.question}</p>
+                                <div className="grid gap-2 mb-3">
+                                  {q.options?.map((option: string, optIdx: number) => (
+                                    <div key={optIdx} className={`p-2 rounded text-sm border ${
+                                      optIdx === q.correct ? 
+                                        'bg-green-500/20 border-green-500/30 text-green-300' : 
+                                        'bg-slate-700/30 border-slate-600 text-slate-400'
+                                    }`}>
+                                      {String.fromCharCode(65 + optIdx)}. {option}
+                                    </div>
+                                  ))}
+                                </div>
+                                <div className="bg-slate-800/50 rounded p-3 border-l-2 border-green-400">
+                                  <p className="text-green-300 text-xs font-medium mb-1">Explanation:</p>
+                                  <p className="text-slate-300 text-xs">{q.explanation}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Next Steps */}
+                      {results.nextRecommendations && (
+                        <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 rounded-xl p-6 border border-cyan-500/30">
+                          <div className="flex items-center gap-2 mb-4">
+                            <GraduationCap className="h-5 w-5 text-cyan-400" />
+                            <h4 className="font-medium text-cyan-300">What's Next?</h4>
+                          </div>
+                          <ul className="space-y-2">
+                            {results.nextRecommendations.map((rec: string, idx: number) => (
+                              <li key={idx} className="text-cyan-100 text-sm flex items-start gap-2">
+                                <span className="text-cyan-400 mt-1">→</span>
+                                {rec}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

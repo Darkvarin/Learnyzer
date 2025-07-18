@@ -2510,45 +2510,81 @@ Format as JSON:
       const user = await storage.getUserById(userId);
       const tutor = await storage.getAITutorForUser(userId);
 
-      // Create personalized study session plan
-      const sessionPrompt = `Create a ${duration}-minute interactive study session for "${topic}" in ${subject} at ${difficulty} level.
+      // Create personalized interactive study session plan
+      const sessionPrompt = `Create an INTERACTIVE ${duration}-minute study session for "${topic}" in ${subject} at ${difficulty} level.
 
 Student Profile:
 - Name: ${user?.name}
 - Level: ${user?.level}
 - Current XP: ${user?.currentXp}
 
-Create a structured session with:
-1. **Introduction** (5 minutes): Hook and learning objectives
-2. **Core Content** (60% of time): Main concepts with examples
-3. **Practice** (25% of time): Interactive exercises
-4. **Review** (10% of time): Summary and key takeaways
+CRITICAL REQUIREMENTS:
+1. Make this HIGHLY INTERACTIVE with questions, exercises, and activities throughout
+2. Include VISUAL LEARNING elements with diagrams and illustrations descriptions
+3. Create TIMED SEGMENTS with specific activities for each minute range
+4. Add ENGAGEMENT HOOKS, stories, real-world examples, and memory techniques
+5. Include ASSESSMENT components with instant feedback
+6. Provide EXAM-SPECIFIC strategies and shortcuts
 
-Include:
-- Engaging explanations that build on previous knowledge
-- Real-world applications and Indian context examples
-- Interactive questions throughout
-- Memory techniques and mnemonics
-- Exam-focused tips and strategies
+STRUCTURE (Detailed Time Allocation):
+1. **Opening Hook** (2-3 min): Attention-grabbing story/question/demonstration
+2. **Learning Objectives** (2 min): Clear goals and outcomes
+3. **Core Learning Blocks** (70% of time): Interactive content with mini-activities every 3-4 minutes
+4. **Practice Zone** (20% of time): Hands-on exercises, problem-solving, quizzes
+5. **Memory Palace** (3-4 min): Mnemonics, shortcuts, and memory techniques
+6. **Quick Assessment** (2-3 min): Self-check questions with immediate feedback
+7. **Wrap-up & Next Steps** (2 min): Summary and connection to future learning
 
-Format as JSON:
+MAKE IT SPECIAL by including:
+- Interactive questions with multiple choice options
+- Step-by-step problem solving with explanations
+- Visual descriptions for diagrams and illustrations
+- Memory techniques specific to the topic
+- Real-world Indian examples and applications
+- Exam shortcuts and time-saving tricks
+- Mini-quizzes with instant feedback
+- Storytelling elements to make concepts memorable
+
+Format as JSON with RICH CONTENT:
 {
   "sessionPlan": {
-    "title": "Session title",
+    "title": "Engaging session title with emoji",
     "duration": ${duration},
+    "openingHook": "Attention-grabbing opening story/question",
+    "learningObjectives": ["Specific measurable objective 1", "Specific measurable objective 2"],
     "sections": [
       {
         "name": "Section name",
-        "duration": "X minutes",
-        "content": "Detailed content",
-        "activities": ["activity1", "activity2"],
-        "keyPoints": ["point1", "point2"]
+        "timeRange": "Minutes X-Y",
+        "duration": "Z minutes",
+        "type": "interactive_learning|practice|assessment",
+        "content": "Rich, engaging content with formatting",
+        "interactiveElements": [
+          {
+            "type": "question|exercise|visualization|story",
+            "content": "Element content",
+            "feedback": "Response/explanation"
+          }
+        ],
+        "visualDescription": "Detailed description of supporting visual/diagram",
+        "keyTakeaways": ["Important point 1", "Important point 2"]
+      }
+    ],
+    "memoryTechniques": ["Mnemonic 1", "Memory palace technique", "Association method"],
+    "examStrategies": ["Shortcut 1", "Time-saving tip", "Common mistake to avoid"],
+    "assessmentQuestions": [
+      {
+        "question": "Assessment question",
+        "options": ["A", "B", "C", "D"],
+        "correct": "A",
+        "explanation": "Why this is correct"
       }
     ]
   },
-  "learningObjectives": ["objective1", "objective2"],
-  "prerequisites": ["prerequisite1"],
-  "nextSteps": ["next topic to study"]
+  "prerequisites": ["What student should know beforehand"],
+  "nextRecommendations": ["What to study next", "Related topics"],
+  "estimatedDifficulty": "Easy|Medium|Hard",
+  "expectedOutcomes": ["What student will achieve"]
 }`;
 
       const sessionResponse = await openai.chat.completions.create({
@@ -2568,7 +2604,7 @@ Format as JSON:
       let supportingVisual = null;
       if (includeVisuals) {
         try {
-          const canvasInstructions = await aiService.generateCanvasInstructions({
+          const canvasInstructions = await this.generateCanvasInstructions({
             topic,
             subject,
             examType: user?.track,
