@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { SupportChatbot } from "@/components/support-chatbot";
+import { EnhancedSEOHead } from "@/components/seo/enhanced-seo-head";
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
@@ -216,6 +217,12 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+      <EnhancedSEOHead
+        title="Learnyzer Landing - AI-Powered Entrance Exam Preparation | Free Trial | JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE"
+        description="Start your free trial today! AI-powered preparation for all Indian competitive exams. JEE, NEET, UPSC, CLAT, CUET, CSE & CGLE with personalized AI tutoring and mock tests."
+        canonical="https://learnyzer.replit.app/landing"
+        pageType="general"
+      />
       {/* Navigation */}
       <nav className="border-b border-white/10 bg-black/20 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

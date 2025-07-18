@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Header } from "@/components/layout/header";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
+import { EnhancedSEOHead } from "@/components/seo/enhanced-seo-head";
 import { CanvasRenderer } from "@/components/CanvasRenderer";
 import { MCQComponent } from "@/components/MCQComponent";
 import { InteractiveDiagram } from "@/components/InteractiveDiagram";
@@ -467,6 +468,13 @@ export default function AiTutor() {
 
   return (
     <div className="min-h-screen flex flex-col solo-bg relative overflow-hidden solo-page">
+      <EnhancedSEOHead
+        title={`AI Tutor - ${userExam ? `${userExam} Preparation` : 'Entrance Exam Preparation'} | Learnyzer`}
+        description={`Get personalized AI tutoring for ${userExam || 'competitive entrance exams'}. Interactive learning, doubt solving, mock tests & concept clarity with GPT-4o powered AI tutor.`}
+        examType={userExam}
+        pageType="tool"
+        canonical="https://learnyzer.replit.app/ai-tutor"
+      />
       {/* Solo Leveling background elements */}
       <div className="absolute inset-0 solo-grid z-0 opacity-30"></div>
       

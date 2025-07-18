@@ -1,0 +1,45 @@
+User-agent: *
+Allow: /
+
+# High-priority pages for crawling
+Allow: /jee-preparation
+Allow: /neet-preparation
+Allow: /upsc-preparation
+Allow: /clat-preparation
+Allow: /cuet-preparation
+Allow: /cse-preparation
+Allow: /cgle-ssc-cgl-preparation
+Allow: /ai-tutor
+Allow: /ai-visual-lab
+Allow: /ai-tools/*
+Allow: /mock-test-generator
+Allow: /study-notes
+Allow: /answer-checker
+Allow: /physics-preparation
+Allow: /chemistry-preparation
+Allow: /mathematics-preparation
+Allow: /biology-preparation
+
+# Block admin and development pages
+Disallow: /admin
+Disallow: /api/
+Disallow: /debug
+Disallow: /test
+
+# Block duplicate or unnecessary pages
+Disallow: /*?utm_source=*
+Disallow: /*?utm_medium=*
+Disallow: /*?utm_campaign=*
+Disallow: /*?fbclid=*
+
+# Allow all exam preparation content
+Allow: /*-preparation
+Allow: /*-mock-test
+Allow: /*-study-material
+Allow: /*-ai-tutor
+
+# Sitemap location
+Sitemap: https://learnyzer.replit.app/sitemap.xml
+
+# Crawl delay (be respectful to search engines)
+Crawl-delay: 1

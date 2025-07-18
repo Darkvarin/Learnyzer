@@ -10,7 +10,7 @@ import { ArrowRight, Book, Sword, Trophy, Calendar, Brain, Star, ShieldCheck, Co
 import { useRealTime } from "@/contexts/real-time-context";
 import { useToast } from "@/hooks/use-toast";
 import RazorpayCheckout from "@/components/razorpay-checkout";
-import { SEOHead } from "@/components/seo/seo-head";
+import { EnhancedSEOHead } from "@/components/seo/enhanced-seo-head";
 import { createEducationalOrganizationSchema, createSoftwareApplicationSchema, createFAQSchema } from "@/components/seo/structured-data";
 import { SupportChatbot } from "@/components/support-chatbot";
 
@@ -101,16 +101,11 @@ export default function HomePage() {
   // For non-authenticated users, show landing page
   return (
     <div className="min-h-screen futuristic-bg relative solo-page cyber-scrollbar">
-      <SEOHead
-        title="Learnyzer - AI-Powered Indian Entrance Exam Preparation | JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE (SSC-CGL)"
-        description="Master JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE (SSC-CGL) with AI tutoring, gamified learning, and personalized study plans. Join thousands of successful students achieving their dreams."
-        keywords="JEE preparation, NEET coaching, UPSC preparation, CLAT exam, CUET preparation, CSE exam, CGLE preparation, SSC-CGL preparation, entrance exam AI, Indian competitive exams, AI tutor, online coaching, exam preparation platform"
-        canonical={window.location.origin}
-        structuredData={{
-          ...createEducationalOrganizationSchema(),
-          ...createSoftwareApplicationSchema(),
-          ...createFAQSchema(faqData)
-        }}
+      <EnhancedSEOHead
+        title="Learnyzer - AI-Powered Indian Entrance Exam Preparation Platform | JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE"
+        description="Master all Indian competitive exams with AI tutoring, mock tests, study materials & personalized learning. Expert preparation for JEE, NEET, UPSC, CLAT, CUET, CSE & CGLE. Join thousands of successful students nationwide."
+        canonical="https://learnyzer.replit.app"
+        pageType="homepage"
       />
       {/* Cyberpunk-style background elements */}
       <div className="absolute inset-0 cyber-grid z-0"></div>
