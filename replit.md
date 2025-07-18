@@ -188,6 +188,17 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
 
 ## Changelog
 - June 30, 2025: Initial setup
+- July 18, 2025: **CRITICAL COST OPTIMIZATION** - Reduced AI chat interaction limits across all subscription plans for sustainable OpenAI API costs
+  - **COST-EFFECTIVE LIMITS**: Updated subscription plans to prevent excessive API usage while maintaining educational value
+  - **FREE TRIAL**: 5 AI chat interactions daily (down from previous higher limits)
+  - **MONTHLY BASIC (₹799)**: 10 AI chat interactions daily (sustainable for pricing tier)
+  - **MONTHLY PRO (₹1500)**: 20 AI chat interactions daily (premium but controlled usage)
+  - **QUARTERLY (₹4199)**: 25 AI chat interactions daily (best value with reasonable limits)
+  - **HALF-YEARLY (₹7599)**: 30 AI chat interactions daily (extended learning with cost control)
+  - **YEARLY (₹12999)**: 40 AI chat interactions daily (highest tier with sustainable usage)
+  - **REVENUE PROTECTION**: Prevents AI API costs from exceeding subscription revenue
+  - **EDUCATIONAL FOCUS**: Limits encourage focused, quality learning sessions rather than unlimited usage
+  - **BUSINESS SUSTAINABILITY**: Ensures platform remains profitable while providing premium AI tutoring experience
 - July 18, 2025: **COMPREHENSIVE TERMINOLOGY CLARIFICATION UPDATE** - Enhanced exam naming for student clarity
   - **COMPLETE CGLE TO CGLE (SSC-CGL) MIGRATION**: Updated all platform references to clearly identify CGLE as SSC-CGL examination
   - **ENHANCED USER EXPERIENCE**: Students now see "CGLE (SSC-CGL)" throughout platform for clear exam identification

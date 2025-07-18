@@ -81,20 +81,20 @@ const pricingPlans: PricingPlan[] = [
     price: 799,
     duration: "month",
     features: [
-      "50 AI chat interactions daily",
-      "25 visual lab generations",
-      "10 visual learning packages",
+      "10 AI chat interactions daily",
+      "5 visual lab generations",
+      "3 visual learning packages",
       "5 mock tests (30 questions each)",
       "Basic analytics",
       "Monthly billing"
     ],
     limits: {
-      aiChatLimit: 50,
-      aiVisualLabLimit: 25,
-      visualPackageLimit: 10,
+      aiChatLimit: 10,
+      aiVisualLabLimit: 5,
+      visualPackageLimit: 3,
       mockTestLimit: 5,
       mockTestQuestions: 30,
-      dailyLimit: 50
+      dailyLimit: 10
     }
   },
   {
@@ -105,20 +105,20 @@ const pricingPlans: PricingPlan[] = [
     duration: "month",
     popular: true,
     features: [
-      "60 AI chat interactions daily",
-      "30 visual lab generations",
-      "20 visual learning packages",
-      "15 mock tests (50 questions each)",
+      "20 AI chat interactions daily",
+      "10 visual lab generations",
+      "8 visual learning packages",
+      "10 mock tests (50 questions each)",
       "Performance analytics",
       "Monthly billing"
     ],
     limits: {
-      aiChatLimit: 60,
-      aiVisualLabLimit: 30,
-      visualPackageLimit: 20,
-      mockTestLimit: 15,
+      aiChatLimit: 20,
+      aiVisualLabLimit: 10,
+      visualPackageLimit: 8,
+      mockTestLimit: 10,
       mockTestQuestions: 50,
-      dailyLimit: 60
+      dailyLimit: 20
     }
   },
   {
@@ -129,20 +129,20 @@ const pricingPlans: PricingPlan[] = [
     duration: "quarter",
     savings: "Save ₹1301 compared to monthly",
     features: [
-      "100 AI chat interactions daily",
-      "50 visual lab generations",
-      "40 visual learning packages",
-      "25 mock tests (100 questions each)",
+      "25 AI chat interactions daily",
+      "15 visual lab generations",
+      "12 visual learning packages",
+      "15 mock tests (100 questions each)",
       "Advanced analytics",
       "Quarterly billing"
     ],
     limits: {
-      aiChatLimit: 100,
-      aiVisualLabLimit: 50,
-      visualPackageLimit: 40,
-      mockTestLimit: 25,
+      aiChatLimit: 25,
+      aiVisualLabLimit: 15,
+      visualPackageLimit: 12,
+      mockTestLimit: 15,
       mockTestQuestions: 100,
-      dailyLimit: 100
+      dailyLimit: 25
     }
   },
   {
@@ -153,20 +153,20 @@ const pricingPlans: PricingPlan[] = [
     duration: "6 months",
     savings: "Save ₹3401 compared to monthly",
     features: [
-      "100 AI chat interactions daily",
-      "50 visual lab generations",
-      "40 visual learning packages",
-      "25 mock tests (100 questions each)",
+      "30 AI chat interactions daily",
+      "20 visual lab generations",
+      "15 visual learning packages",
+      "20 mock tests (100 questions each)",
       "Advanced analytics",
       "6-month billing"
     ],
     limits: {
-      aiChatLimit: 100,
-      aiVisualLabLimit: 50,
-      visualPackageLimit: 40,
-      mockTestLimit: 25,
+      aiChatLimit: 30,
+      aiVisualLabLimit: 20,
+      visualPackageLimit: 15,
+      mockTestLimit: 20,
       mockTestQuestions: 100,
-      dailyLimit: 100
+      dailyLimit: 30
     }
   },
   {
@@ -178,20 +178,20 @@ const pricingPlans: PricingPlan[] = [
     popular: true,
     savings: "Save ₹5001 compared to monthly",
     features: [
-      "100 AI chat interactions daily",
-      "50 visual lab generations",
-      "40 visual learning packages",
+      "40 AI chat interactions daily",
+      "25 visual lab generations",
+      "20 visual learning packages",
       "Unlimited mock tests (100 questions each)",
       "Priority support",
       "Annual billing"
     ],
     limits: {
-      aiChatLimit: 100,
-      aiVisualLabLimit: 50,
-      visualPackageLimit: 40,
+      aiChatLimit: 40,
+      aiVisualLabLimit: 25,
+      visualPackageLimit: 20,
       mockTestLimit: 999,
       mockTestQuestions: 100,
-      dailyLimit: 100
+      dailyLimit: 40
     }
   }
 ];
