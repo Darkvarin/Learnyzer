@@ -580,6 +580,19 @@ export const aiService = {
       const { message, subject, includeVisuals, difficulty } = schema.parse(req.body);
       const userId = (req.user as any).id;
       
+      // Check subscription access for AI chat
+      const subscriptionService = (await import('./simple-subscription-service')).SimpleSubscriptionService;
+      const hasAccess = await subscriptionService.hasFeatureAccess(userId, 'ai_chat');
+      
+      if (!hasAccess.hasAccess) {
+        return res.status(403).json({
+          message: "Subscription required for AI tutor chat",
+          tier: hasAccess.tier,
+          remaining: hasAccess.remaining,
+          limit: hasAccess.limit
+        });
+      }
+      
       // Get user data, AI tutor, and analytics for ecosystem awareness
       const [tutor, user, analyticsData] = await Promise.all([
         storage.getAITutorForUser(userId),
@@ -1061,12 +1074,14 @@ Respond with JSON:
         subject: subject || 'General'
       };
       
-      console.log('[AI Tutor Response] Sending response to frontend:', {
-        responseLength: aiResponse?.length || 0,
-        hasVisualSuggestions: !!visualSuggestions,
-        visualSuggestionsType: visualSuggestions?.type,
-        visualHasVisual: visualSuggestions?.hasVisual,
-        responseKeys: Object.keys(responseData)
+      // Track usage after successful AI response
+      await subscriptionService.trackUsage(userId, 'ai_chat', {
+        message: message.substring(0, 100), // Store first 100 chars only
+        subject,
+        aiResponse: aiResponse ? aiResponse.substring(0, 100) : '',
+        includeVisuals,
+        difficulty,
+        source: 'ai_tutor_chat'
       });
       
       return res.status(200).json(responseData);
@@ -1543,6 +1558,19 @@ ${isCorrect ?
       const { topic, subject, style, level, examType, preferences } = schema.parse(req.body);
       const userId = (req.user as any).id;
       
+      // Check subscription access and track usage
+      const subscriptionService = (await import('./simple-subscription-service')).SimpleSubscriptionService;
+      const hasAccess = await subscriptionService.hasFeatureAccess(userId, 'ai_visual_lab');
+      
+      if (!hasAccess.hasAccess) {
+        return res.status(403).json({
+          message: "Subscription required for study notes generation",
+          tier: hasAccess.tier,
+          remaining: hasAccess.remaining,
+          limit: hasAccess.limit
+        });
+      }
+      
       // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
       const examAccess = await validateExamAccess(userId, examType, subject, topic);
       if (!examAccess.allowed) {
@@ -1761,6 +1789,14 @@ ADAPTATION RULES:
         });
       }
       
+      // Track usage after successful generation
+      await subscriptionService.trackUsage(userId, 'ai_visual_lab', {
+        topic,
+        subject,
+        examType,
+        source: 'study_notes_generator'
+      });
+
       return res.status(200).json({ notes });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -1791,6 +1827,19 @@ ADAPTATION RULES:
     try {
       const { question, subject, inputMode, answer, imageData } = schema.parse(req.body);
       const userId = (req.user as any).id;
+      
+      // Check subscription access and track usage
+      const subscriptionService = (await import('./simple-subscription-service')).SimpleSubscriptionService;
+      const hasAccess = await subscriptionService.hasFeatureAccess(userId, 'ai_visual_lab');
+      
+      if (!hasAccess.hasAccess) {
+        return res.status(403).json({
+          message: "Subscription required for answer checking",
+          tier: hasAccess.tier,
+          remaining: hasAccess.remaining,
+          limit: hasAccess.limit
+        });
+      }
       
       // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
       const examAccess = await validateExamAccess(userId, undefined, subject, question);
@@ -1894,6 +1943,15 @@ ADAPTATION RULES:
           timestamp: new Date().toISOString()
         });
       }
+      
+      // Track usage after successful evaluation
+      await subscriptionService.trackUsage(userId, 'ai_visual_lab', {
+        question,
+        subject,
+        inputMode,
+        score: evaluation.score,
+        source: 'answer_checker'
+      });
       
       return res.status(200).json(evaluation);
     } catch (error) {
@@ -2466,6 +2524,19 @@ Keep the explanation concise and exam-oriented.`;
       const { topic, subject, examType, includeImage, includeDiagram, includeQuiz } = schema.parse(req.body);
       const userId = (req.user as any).id;
 
+      // Check subscription access and track usage
+      const subscriptionService = (await import('./simple-subscription-service')).SimpleSubscriptionService;
+      const hasAccess = await subscriptionService.hasFeatureAccess(userId, 'visual_package_generation');
+      
+      if (!hasAccess.hasAccess) {
+        return res.status(403).json({
+          message: "Subscription required for visual learning packages",
+          tier: hasAccess.tier,
+          remaining: hasAccess.remaining,
+          limit: hasAccess.limit
+        });
+      }
+
       // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
       const examAccess = await validateExamAccess(userId, examType, subject, topic);
       if (!examAccess.allowed) {
@@ -2610,6 +2681,15 @@ Format as JSON:
           results.quizError = "Failed to generate practice quiz";
         }
       }
+
+      // Track usage after successful generation
+      await subscriptionService.trackUsage(userId, 'visual_package_generation', {
+        topic,
+        subject,
+        examType,
+        componentsGenerated: results.packageComponents,
+        source: 'visual_learning_package'
+      });
 
       // Update user stats
       await storage.incrementAISessionCount(userId);

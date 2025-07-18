@@ -43,10 +43,10 @@ interface PricingPlan {
   limits: {
     aiChatLimit: number;
     aiVisualLabLimit: number;
-    aiTutorSessionLimit: number;
     visualPackageLimit: number;
     mockTestLimit: number;
     mockTestQuestions: number;
+    dailyLimit: number;
   };
 }
 
@@ -58,20 +58,20 @@ const pricingPlans: PricingPlan[] = [
     price: 0,
     duration: "1 day",
     features: [
-      "5 AI chat sessions",
+      "5 AI chat interactions daily",
       "3 visual lab generations", 
-      "2 AI tutor sessions",
       "1 visual learning package",
-      "5 mock tests (20 questions each)",
-      "Basic exam preparation content"
+      "1 mock test (20 questions)",
+      "Basic exam preparation content",
+      "All AI tutor conversations included"
     ],
     limits: {
       aiChatLimit: 5,
       aiVisualLabLimit: 3,
-      aiTutorSessionLimit: 2,
       visualPackageLimit: 1,
-      mockTestLimit: 5,
-      mockTestQuestions: 20
+      mockTestLimit: 1,
+      mockTestQuestions: 20,
+      dailyLimit: 5
     }
   },
   {
@@ -81,19 +81,20 @@ const pricingPlans: PricingPlan[] = [
     price: 799,
     duration: "month",
     features: [
-      "Access to all AI tools",
-      "No AI tutor access",
-      "10 mock tests (30 questions each)",
+      "50 AI chat interactions daily",
+      "25 visual lab generations",
+      "10 visual learning packages",
+      "5 mock tests (30 questions each)",
       "Basic analytics",
       "Monthly billing"
     ],
     limits: {
       aiChatLimit: 50,
       aiVisualLabLimit: 25,
-      aiTutorSessionLimit: 0,
       visualPackageLimit: 10,
-      mockTestLimit: 10,
-      mockTestQuestions: 30
+      mockTestLimit: 5,
+      mockTestQuestions: 30,
+      dailyLimit: 50
     }
   },
   {
@@ -104,89 +105,93 @@ const pricingPlans: PricingPlan[] = [
     duration: "month",
     popular: true,
     features: [
-      "2 AI tutor lessons daily",
-      "All AI tools (20 uses/day)",
-      "25 mock tests (50 questions each)",
+      "60 AI chat interactions daily",
+      "30 visual lab generations",
+      "20 visual learning packages",
+      "15 mock tests (50 questions each)",
       "Performance analytics",
       "Monthly billing"
     ],
     limits: {
-      aiChatLimit: 20,
-      aiVisualLabLimit: 20,
-      aiTutorSessionLimit: 2,
+      aiChatLimit: 60,
+      aiVisualLabLimit: 30,
       visualPackageLimit: 20,
-      mockTestLimit: 25,
-      mockTestQuestions: 50
+      mockTestLimit: 15,
+      mockTestQuestions: 50,
+      dailyLimit: 60
     }
   },
   {
     id: "quarterly",
     name: "Quarterly",
-    description: "3 AI tutor lessons daily",
+    description: "Best value for serious students",
     price: 4199,
     duration: "quarter",
     savings: "Save ₹1301 compared to monthly",
     features: [
-      "3 AI tutor lessons daily",
-      "All AI tools (40 uses/day)",
-      "50 mock tests (100 questions each)",
+      "100 AI chat interactions daily",
+      "50 visual lab generations",
+      "40 visual learning packages",
+      "25 mock tests (100 questions each)",
       "Advanced analytics",
       "Quarterly billing"
     ],
     limits: {
-      aiChatLimit: 40,
-      aiVisualLabLimit: 40,
-      aiTutorSessionLimit: 3,
+      aiChatLimit: 100,
+      aiVisualLabLimit: 50,
       visualPackageLimit: 40,
-      mockTestLimit: 50,
-      mockTestQuestions: 100
+      mockTestLimit: 25,
+      mockTestQuestions: 100,
+      dailyLimit: 100
     }
   },
   {
     id: "half_yearly",
     name: "Half-Yearly",
-    description: "3 AI tutor lessons daily",
+    description: "Maximum savings with premium features",
     price: 7599,
     duration: "6 months",
     savings: "Save ₹3401 compared to monthly",
     features: [
-      "3 AI tutor lessons daily",
-      "All AI tools (40 uses/day)",
-      "50 mock tests (100 questions each)",
+      "100 AI chat interactions daily",
+      "50 visual lab generations",
+      "40 visual learning packages",
+      "25 mock tests (100 questions each)",
       "Advanced analytics",
       "6-month billing"
     ],
     limits: {
-      aiChatLimit: 40,
-      aiVisualLabLimit: 40,
-      aiTutorSessionLimit: 3,
+      aiChatLimit: 100,
+      aiVisualLabLimit: 50,
       visualPackageLimit: 40,
-      mockTestLimit: 50,
-      mockTestQuestions: 100
+      mockTestLimit: 25,
+      mockTestQuestions: 100,
+      dailyLimit: 100
     }
   },
   {
     id: "yearly",
     name: "Yearly",
-    description: "3 AI tutor lessons daily",
+    description: "Ultimate value for dedicated students",
     price: 12999,
     duration: "year",
     popular: true,
     savings: "Save ₹5001 compared to monthly",
     features: [
-      "3 AI tutor lessons daily",
-      "All AI tools (40 uses/day)",
+      "100 AI chat interactions daily",
+      "50 visual lab generations",
+      "40 visual learning packages",
       "Unlimited mock tests (100 questions each)",
       "Priority support",
       "Annual billing"
     ],
     limits: {
-      aiChatLimit: 40,
-      aiVisualLabLimit: 40,
-      aiTutorSessionLimit: 3,
+      aiChatLimit: 100,
+      aiVisualLabLimit: 50,
       visualPackageLimit: 40,
       mockTestLimit: 999,
-      mockTestQuestions: 100
+      mockTestQuestions: 100,
+      dailyLimit: 100
     }
   }
 ];

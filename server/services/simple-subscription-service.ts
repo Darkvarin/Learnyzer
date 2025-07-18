@@ -1,6 +1,6 @@
 import { db } from "@db";
-import { users } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { users, usageTracking } from "@shared/schema";
+import { eq, and, gte } from "drizzle-orm";
 
 export interface SubscriptionStats {
   tier: string;
@@ -32,58 +32,58 @@ export class SimpleSubscriptionService {
       free: {
         aiChatLimit: 0,
         aiVisualLabLimit: 0,
-        aiTutorSessionLimit: 0,
         visualPackageLimit: 0,
-        mockTestGenerationLimit: 0
+        mockTestGenerationLimit: 0,
+        dailyLimit: 0
       },
       free_trial: {
         aiChatLimit: 5,
         aiVisualLabLimit: 3,
-        aiTutorSessionLimit: 2,
         visualPackageLimit: 1,
-        mockTestGenerationLimit: 1
+        mockTestGenerationLimit: 1,
+        dailyLimit: 5
       },
       basic: {
         aiChatLimit: 50,
         aiVisualLabLimit: 25,
-        aiTutorSessionLimit: 0,
         visualPackageLimit: 10,
-        mockTestGenerationLimit: 5
+        mockTestGenerationLimit: 5,
+        dailyLimit: 50
       },
       pro: {
-        aiChatLimit: 20,
-        aiVisualLabLimit: 20,
-        aiTutorSessionLimit: 2,
+        aiChatLimit: 60,
+        aiVisualLabLimit: 30,
         visualPackageLimit: 20,
-        mockTestGenerationLimit: 15
+        mockTestGenerationLimit: 15,
+        dailyLimit: 60
       },
       quarterly: {
-        aiChatLimit: 40,
-        aiVisualLabLimit: 40,
-        aiTutorSessionLimit: 3,
+        aiChatLimit: 100,
+        aiVisualLabLimit: 50,
         visualPackageLimit: 40,
-        mockTestGenerationLimit: 25
+        mockTestGenerationLimit: 25,
+        dailyLimit: 100
       },
       half_yearly: {
-        aiChatLimit: 40,
-        aiVisualLabLimit: 40,
-        aiTutorSessionLimit: 3,
+        aiChatLimit: 100,
+        aiVisualLabLimit: 50,
         visualPackageLimit: 40,
-        mockTestGenerationLimit: 25
+        mockTestGenerationLimit: 25,
+        dailyLimit: 100
       },
       yearly: {
-        aiChatLimit: 40,
-        aiVisualLabLimit: 40,
-        aiTutorSessionLimit: 3,
+        aiChatLimit: 100,
+        aiVisualLabLimit: 50,
         visualPackageLimit: 40,
-        mockTestGenerationLimit: 25
+        mockTestGenerationLimit: 25,
+        dailyLimit: 100
       },
       premium: {
         aiChatLimit: -1, // -1 means unlimited
         aiVisualLabLimit: -1,
-        aiTutorSessionLimit: -1,
         visualPackageLimit: -1,
-        mockTestGenerationLimit: -1
+        mockTestGenerationLimit: -1,
+        dailyLimit: -1
       }
     };
 
@@ -159,18 +159,34 @@ export class SimpleSubscriptionService {
       const limits = this.getSubscriptionLimits(effectiveTier);
       const featureLimit = this.getFeatureLimit(limits, featureType);
 
-      // Determine access based on subscription status
+      // Get actual usage for today
+      let currentUsage = 0;
+      if (effectiveTier === 'free' || effectiveTier === 'free_trial') {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const usageRecord = await db.query.usageTracking.findFirst({
+          where: and(
+            eq(usageTracking.userId, userId),
+            eq(usageTracking.featureType, featureType),
+            gte(usageTracking.usageDate, today)
+          )
+        });
+        
+        currentUsage = usageRecord?.usageCount || 0;
+      }
+
+      // Determine access based on subscription status and usage
       let hasAccess = false;
       if (isSubscriptionActive) {
         hasAccess = true; // Active paid subscription
       } else if (isInFreeTrial) {
-        hasAccess = true; // Valid free trial
+        hasAccess = currentUsage < featureLimit; // Trial with usage limits
       } else {
-        hasAccess = featureLimit > 0; // Free tier with limited access
+        hasAccess = featureLimit > 0 && currentUsage < featureLimit; // Free tier with limited access
       }
 
-      const currentUsage = 0; // Reset for trial users
-      const remaining = featureLimit === -1 ? -1 : (hasAccess ? featureLimit : 0); // -1 means unlimited
+      const remaining = featureLimit === -1 ? -1 : Math.max(0, featureLimit - currentUsage);
 
       // Calculate reset time (next midnight)
       const resetTime = new Date();
@@ -268,10 +284,27 @@ export class SimpleSubscriptionService {
         'mock_test_generation'
       ];
 
-      const featureStats = features.map((featureType) => {
+      const featureStats = await Promise.all(features.map(async (featureType) => {
         const limits = this.getSubscriptionLimits(tier);
         const limit = this.getFeatureLimit(limits, featureType);
-        const currentUsage = 0; // Simplified
+        
+        // Get actual usage for today
+        let currentUsage = 0;
+        if (tier === 'free' || tier === 'free_trial') {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          
+          const usageRecord = await db.query.usageTracking.findFirst({
+            where: and(
+              eq(usageTracking.userId, user.id),
+              eq(usageTracking.featureType, featureType),
+              gte(usageTracking.usageDate, today)
+            )
+          });
+          
+          currentUsage = usageRecord?.usageCount || 0;
+        }
+        
         const remaining = limit === -1 ? -1 : Math.max(0, limit - currentUsage);
         const percentage = limit > 0 ? Math.round((currentUsage / limit) * 100) : 0;
 
@@ -282,7 +315,7 @@ export class SimpleSubscriptionService {
           remaining,
           percentage
         };
-      });
+      }));
 
       // Calculate expiry based on subscription data
       let expiresAt: Date | undefined;
@@ -321,24 +354,68 @@ export class SimpleSubscriptionService {
         return limits.aiChatLimit;
       case 'ai_visual_lab':
         return limits.aiVisualLabLimit;
-      case 'ai_tutor_session':
-        return limits.aiTutorSessionLimit;
       case 'visual_package_generation':
         return limits.visualPackageLimit;
       case 'mock_test_generation':
-        return limits.mockTestLimit || limits.aiVisualLabLimit; // Use same limit as visual lab
+        return limits.mockTestGenerationLimit;
       default:
         return 0;
     }
   }
 
   /**
-   * Track feature usage (simplified - no actual tracking for premium users)
+   * Track feature usage with real usage counting
    */
   static async trackUsage(userId: number, featureType: string, metadata?: any): Promise<boolean> {
     try {
+      // First check if user has access
       const access = await this.hasFeatureAccess(userId, featureType);
-      return access.hasAccess;
+      
+      if (!access.hasAccess) {
+        return false;
+      }
+
+      // Only track usage for free and trial users (not for paid subscriptions)
+      if (access.tier === 'free' || access.tier === 'free_trial') {
+        // Get today's usage record
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Check if we have a usage record for today
+        const existingUsage = await db.query.usageTracking.findFirst({
+          where: and(
+            eq(usageTracking.userId, userId),
+            eq(usageTracking.featureType, featureType),
+            gte(usageTracking.usageDate, today)
+          )
+        });
+
+        if (existingUsage) {
+          // Update existing record
+          const newUsageCount = existingUsage.usageCount + 1;
+          await db.update(usageTracking)
+            .set({ 
+              usageCount: newUsageCount,
+              metadata 
+            })
+            .where(eq(usageTracking.id, existingUsage.id));
+        } else {
+          // Create new record for today
+          const tomorrow = new Date(today);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          
+          await db.insert(usageTracking).values({
+            userId,
+            featureType,
+            usageDate: new Date(),
+            resetDate: tomorrow,
+            usageCount: 1,
+            metadata
+          });
+        }
+      }
+
+      return true;
     } catch (error) {
       console.error('Error tracking usage:', error);
       return false;
