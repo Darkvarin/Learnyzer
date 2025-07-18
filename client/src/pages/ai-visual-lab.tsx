@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { BackButton } from "@/components/ui/back-button";
-import { Loader2, Image, BookOpen, Brain, Zap, Download, Share2, GraduationCap, Book, FileCheck, Target, Award, AlertTriangle, Building2 } from "lucide-react";
+import { Loader2, Image, BookOpen, Brain, Zap, Download, Share2, GraduationCap, Book, FileCheck, Target, Award, AlertTriangle, Building2, HelpCircle, Lightbulb, Users, Clock, Sparkles } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -42,6 +42,9 @@ export default function AIVisualLab() {
 
   // State for exam selection modal
   const [showExamModal, setShowExamModal] = useState(false);
+  
+  // State for help modal
+  const [showHelpModal, setShowHelpModal] = useState(false);
   
   // Subscription tracking
   const { trackFeatureUsage } = useSubscriptionTracking();
@@ -272,6 +275,17 @@ export default function AIVisualLab() {
                 AI Visual Learning Lab
                 <span className="text-cyan-400 ml-2">✨</span>
               </h1>
+              
+              {/* Help Button */}
+              <Button
+                onClick={() => setShowHelpModal(true)}
+                variant="outline"
+                size="sm"
+                className="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border-cyan-500/30 mt-2 sm:mt-0"
+              >
+                <HelpCircle className="h-4 w-4 mr-2" />
+                Features Guide
+              </Button>
               
               {/* Exam Lock Status */}
               {examLocked && userExam && (
@@ -794,6 +808,161 @@ export default function AIVisualLab() {
                 Cancel
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Help Features Guide Modal */}
+      <Dialog open={showHelpModal} onOpenChange={setShowHelpModal}>
+        <DialogContent className="bg-dark-card border border-dark-border max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-gradient-primary flex items-center gap-2">
+              <Lightbulb className="h-5 w-5" />
+              AI Visual Learning Lab - Complete Features Guide
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              Master all the powerful features available in your AI Visual Learning Lab
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6 py-4">
+            {/* Educational Diagram Feature */}
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-cyan-500/20 rounded-lg">
+                  <Image className="h-5 w-5 text-cyan-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Interactive Educational Diagrams</h3>
+              </div>
+              <div className="space-y-2 text-slate-300 text-sm">
+                <p><strong>What it creates:</strong> Interactive SVG diagrams with clickable elements, tooltips, and detailed explanations</p>
+                <p><strong>Visual styles:</strong> Flowcharts, mind maps, concept maps, process diagrams, scientific illustrations</p>
+                <p><strong>Features:</strong> Download as PNG, share with friends, clickable elements for deeper learning</p>
+                <p><strong>Best for:</strong> Understanding complex processes, scientific concepts, mathematical relationships</p>
+              </div>
+            </div>
+
+            {/* Complete Learning Package */}
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-purple-500/20 rounded-lg">
+                  <BookOpen className="h-5 w-5 text-purple-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Complete Learning Package</h3>
+              </div>
+              <div className="space-y-2 text-slate-300 text-sm">
+                <p><strong>What it creates:</strong> Comprehensive study package with multiple components</p>
+                <div className="ml-4 space-y-1">
+                  <p>• <strong>Interactive Diagrams:</strong> Visual learning with clickable elements</p>
+                  <p>• <strong>Study Guides:</strong> Detailed explanations and key concepts</p>
+                  <p>• <strong>Practice Quizzes:</strong> Test your understanding with instant feedback</p>
+                </div>
+                <p><strong>Best for:</strong> Complete topic mastery, exam preparation, comprehensive understanding</p>
+              </div>
+            </div>
+
+            {/* Interactive Study Session */}
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-pink-500/20 rounded-lg">
+                  <Zap className="h-5 w-5 text-pink-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Interactive Study Session</h3>
+              </div>
+              <div className="space-y-2 text-slate-300 text-sm">
+                <p><strong>What it creates:</strong> Structured learning session with time-based sections</p>
+                <div className="ml-4 space-y-1">
+                  <p>• <strong>Introduction (5 min):</strong> Learning objectives and topic overview</p>
+                  <p>• <strong>Core Content (60%):</strong> Main concepts with examples and explanations</p>
+                  <p>• <strong>Practice (25%):</strong> Interactive exercises and questions</p>
+                  <p>• <strong>Review (10%):</strong> Summary and key takeaways</p>
+                </div>
+                <p><strong>Duration:</strong> 15-120 minutes (customizable)</p>
+                <p><strong>Includes:</strong> Visual support diagrams, memory techniques, exam tips</p>
+                <p><strong>Best for:</strong> Focused study sessions, time-managed learning, structured preparation</p>
+              </div>
+            </div>
+
+            {/* Exam-Specific Features */}
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-green-500/20 rounded-lg">
+                  <Target className="h-5 w-5 text-green-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Exam-Specific Content Filtering</h3>
+              </div>
+              <div className="space-y-2 text-slate-300 text-sm">
+                <p><strong>Supported Exams:</strong> JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE</p>
+                <p><strong>Smart Filtering:</strong> Content automatically adapts to your selected entrance exam</p>
+                <div className="ml-4 space-y-1">
+                  <p>• <strong>JEE:</strong> Physics, Chemistry, Mathematics only</p>
+                  <p>• <strong>NEET:</strong> Physics, Chemistry, Biology only</p>
+                  <p>• <strong>UPSC:</strong> History, Geography, Political Science, Economics, etc.</p>
+                  <p>• <strong>CLAT:</strong> Legal Reasoning, English, General Knowledge, etc.</p>
+                </div>
+                <p><strong>Benefits:</strong> No distractions, focused preparation, exam-relevant content only</p>
+              </div>
+            </div>
+
+            {/* AI-Powered Features */}
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-blue-500/20 rounded-lg">
+                  <Brain className="h-5 w-5 text-blue-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Advanced AI Capabilities</h3>
+              </div>
+              <div className="space-y-2 text-slate-300 text-sm">
+                <p><strong>GPT-4o Integration:</strong> Latest AI model for highest quality educational content</p>
+                <div className="ml-4 space-y-1">
+                  <p>• <strong>Adaptive Difficulty:</strong> Beginner, Intermediate, Advanced levels</p>
+                  <p>• <strong>Indian Context:</strong> Examples and explanations relevant to Indian students</p>
+                  <p>• <strong>Real-world Applications:</strong> Connect theory to practical applications</p>
+                  <p>• <strong>Memory Techniques:</strong> Mnemonics and memory aids for better retention</p>
+                </div>
+                <p><strong>Personalization:</strong> Content adapts to your learning level and progress</p>
+              </div>
+            </div>
+
+            {/* Pro Tips */}
+            <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-lg p-4 border border-cyan-500/20">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-amber-500/20 rounded-lg">
+                  <Sparkles className="h-5 w-5 text-amber-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Pro Tips for Maximum Learning</h3>
+              </div>
+              <div className="space-y-2 text-slate-300 text-sm">
+                <p>• <strong>Start with Diagrams:</strong> Visual learning helps understand complex concepts faster</p>
+                <p>• <strong>Use Complete Packages:</strong> Combine visuals, guides, and quizzes for comprehensive learning</p>
+                <p>• <strong>Schedule Study Sessions:</strong> Use timed sessions for focused, productive learning</p>
+                <p>• <strong>Practice Regularly:</strong> Use practice quizzes to test and reinforce your knowledge</p>
+                <p>• <strong>Download & Share:</strong> Save diagrams for offline study and share with study groups</p>
+              </div>
+            </div>
+
+            {/* Subscription Info */}
+            <div className="bg-slate-700/50 rounded-lg p-4 border border-slate-600">
+              <div className="flex items-center gap-3 mb-2">
+                <Users className="h-4 w-4 text-cyan-400" />
+                <h4 className="font-medium text-white">Usage & Subscription</h4>
+              </div>
+              <div className="text-slate-300 text-sm space-y-1">
+                <p>• <strong>Free Trial:</strong> Limited daily usage to try all features</p>
+                <p>• <strong>Pro Subscription:</strong> Unlimited access to all AI Visual Lab features</p>
+                <p>• <strong>Exam Lock Required:</strong> Select your target exam in profile settings first</p>
+                <p>• <strong>Quality Guaranteed:</strong> All content powered by GPT-4o for best educational value</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex justify-end pt-4 border-t border-slate-700">
+            <Button 
+              onClick={() => setShowHelpModal(false)}
+              className="bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700"
+            >
+              Got it! Let's Learn
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
