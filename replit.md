@@ -188,6 +188,14 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
 
 ## Changelog
 - June 30, 2025: Initial setup
+- July 18, 2025: **COMPREHENSIVE TERMINOLOGY CLARIFICATION UPDATE** - Enhanced exam naming for student clarity
+  - **COMPLETE CGLE TO CGLE (SSC-CGL) MIGRATION**: Updated all platform references to clearly identify CGLE as SSC-CGL examination
+  - **ENHANCED USER EXPERIENCE**: Students now see "CGLE (SSC-CGL)" throughout platform for clear exam identification
+  - **COMPREHENSIVE COVERAGE**: Updated frontend pages (home, landing, AI tutor, AI visual lab, profile settings, battle zone), database seed file, server AI service, and documentation
+  - **STUDENT CLARITY**: Prevents confusion between different government exam types and clearly identifies Staff Selection Commission Combined Graduate Level Examination
+  - **DATABASE UPDATES**: Course titles, AI tutor descriptions, and category names now include (SSC-CGL) clarification
+  - **SERVER-SIDE UPDATES**: AI service exam definitions and keyword validation updated with proper terminology
+  - **COMPLETE PLATFORM CONSISTENCY**: All 7 supported exams now have clear, unambiguous naming throughout entire system
 - July 18, 2025: **COMPLETE SITE-WIDE EXAM LOCKING ENFORCEMENT** - Implemented comprehensive content filtering across ALL AI services
   - **UNIVERSAL AI VALIDATION**: Added `validateExamAccess` function to ALL AI service endpoints for complete exam-based access control
   - **COMPREHENSIVE CONTENT FILTERING**: Enhanced validation to check message content, topic keywords, and subject matter against forbidden exam content
@@ -357,15 +365,15 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - Maintained only "Ekansh" account as primary user for platform
   - Resolved duplicate subscription plans on subscription page causing React key warnings
   - Fixed pricing consistency across all platform components to match home page exactly
-- July 03, 2025: CGLE (Combined Graduate Level Examination) integration
-  - Added CGLE as new exam type across entire platform infrastructure
-  - Created comprehensive CGLE courses: General Awareness, Quantitative Aptitude, English Language
-  - Added CGLE-specific AI tutor "Priya" specializing in government exam preparation
-  - Updated exam selection modals in AI Tutor and AI Visual Lab to include CGLE option
-  - Added "Government Job Preparation" course category for CGLE and similar exams
-  - Complete database seed integration with 3 CGLE courses covering all major topics
-  - Updated profile settings to support CGLE exam selection and locking
-  - Platform now supports 7 major competitive exams: JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE
+- July 03, 2025: CGLE (SSC-CGL) - Combined Graduate Level Examination integration
+  - Added CGLE (SSC-CGL) as new exam type across entire platform infrastructure
+  - Created comprehensive CGLE (SSC-CGL) courses: General Awareness, Quantitative Aptitude, English Language
+  - Added CGLE (SSC-CGL)-specific AI tutor "Priya" specializing in government exam preparation
+  - Updated exam selection modals in AI Tutor and AI Visual Lab to include CGLE (SSC-CGL) option
+  - Added "Government Job Preparation" course category for CGLE (SSC-CGL) and similar exams
+  - Complete database seed integration with 3 CGLE (SSC-CGL) courses covering all major topics
+  - Updated profile settings to support CGLE (SSC-CGL) exam selection and locking
+  - Platform now supports 7 major competitive exams: JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE (SSC-CGL)
 - July 03, 2025: Database cleanup and removal of fake demo data
   - Permanently removed fake "Aryan Sharma" demo user data from database seed file
   - Cleaned up hardcoded fake user references in rewards page leaderboard
@@ -511,7 +519,7 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - AI Visual Lab, Study Notes Generator, Answer Checker, and Courses page now show only relevant subjects
   - NEET students see only Physics, Chemistry, Biology subjects when exam is locked
   - JEE students see only Physics, Chemistry, Mathematics subjects when exam is locked
-  - Each exam type has tailored subject lists (UPSC: 8 subjects, CLAT: 5 subjects, CSE: 7 subjects, CGLE: 4 subjects)
+  - Each exam type has tailored subject lists (UPSC: 8 subjects, CLAT: 5 subjects, CSE: 7 subjects, CGLE (SSC-CGL): 4 subjects)
   - Fallback to all subjects when exam is not locked for flexibility
   - Enhanced UI shows "(EXAM subjects only)" indicators throughout platform
   - Complete content personalization ensures focused, exam-relevant learning experience

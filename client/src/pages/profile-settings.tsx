@@ -299,7 +299,7 @@ export default function ProfileSettings() {
         icon: "💻"
       },
       cgle: {
-        name: "CGLE (Combined Graduate Level Examination)",
+        name: "CGLE (SSC-CGL) - Combined Graduate Level Examination",
         description: "For government job recruitment at graduate level",
         icon: "🏢"
       }

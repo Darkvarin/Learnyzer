@@ -274,7 +274,7 @@ const getAllExamContent = () => {
       ]
     },
     'cgle': {
-      name: 'CGLE (Combined Graduate Level Examination)',
+      name: 'CGLE (SSC-CGL) - Combined Graduate Level Examination',
       subjects: ['General Awareness', 'Quantitative Aptitude', 'English Language', 'Reasoning'],
       keywords: [
         // CGLE-specific terms

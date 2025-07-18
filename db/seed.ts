@@ -33,9 +33,9 @@ async function seed() {
       },
       {
         name: "Priya",
-        specialty: "Your CGLE & Government Exams AI Tutor",
+        specialty: "Your CGLE (SSC-CGL) & Government Exams AI Tutor",
         image: "https://cdn.jsdelivr.net/gh/lyqht/fake-api-images/avataaars/avatar4.svg",
-        description: "Priya specializes in government job preparation, focusing on general awareness, quantitative aptitude, and current affairs for CGLE.",
+        description: "Priya specializes in government job preparation, focusing on general awareness, quantitative aptitude, and current affairs for CGLE (SSC-CGL).",
         personalityTraits: JSON.stringify(["methodical", "updated", "motivating"])
       }
     ];
@@ -152,7 +152,7 @@ async function seed() {
       },
       {
         name: "Government Job Preparation",
-        description: "Preparation material for CGLE and other government recruitment exams"
+        description: "Preparation material for CGLE (SSC-CGL) and other government recruitment exams"
       }
     ];
     
@@ -690,7 +690,7 @@ async function seed() {
       
       // CGLE Courses
       {
-        title: "General Awareness for CGLE",
+        title: "General Awareness for CGLE (SSC-CGL)",
         description: "Comprehensive current affairs, general knowledge, and awareness preparation for Combined Graduate Level Examination.",
         subject: "General Awareness",
         examType: "CGLE",
@@ -708,11 +708,11 @@ async function seed() {
           { title: "Chapter 7: Environmental Studies", description: "Environmental issues, conservation, and sustainable development." },
           { title: "Chapter 8: Sports and Culture", description: "Sports achievements, cultural heritage, and arts." },
           { title: "Chapter 9: Awards and Honors", description: "National and international awards, recognition, and achievements." },
-          { title: "Chapter 10: Mock Tests", description: "Practice tests based on previous CGLE patterns." }
+          { title: "Chapter 10: Mock Tests", description: "Practice tests based on previous CGLE (SSC-CGL) patterns." }
         ])
       },
       {
-        title: "Quantitative Aptitude for CGLE",
+        title: "Quantitative Aptitude for CGLE (SSC-CGL)",
         description: "Mathematical reasoning, numerical ability, and problem-solving skills for government job examinations.",
         subject: "Mathematics",
         examType: "CGLE",
@@ -736,7 +736,7 @@ async function seed() {
         ])
       },
       {
-        title: "English Language for CGLE",
+        title: "English Language for CGLE (SSC-CGL)",
         description: "English comprehension, grammar, vocabulary, and communication skills for competitive examinations.",
         subject: "English",
         examType: "CGLE",

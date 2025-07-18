@@ -1519,7 +1519,7 @@ export default function AiTutor() {
                 className="bg-yellow-600 hover:bg-yellow-700 text-white"
               >
                 <Building2 className="h-4 w-4 mr-2" />
-                CGLE
+                CGLE (SSC-CGL)
               </Button>
             </div>
             

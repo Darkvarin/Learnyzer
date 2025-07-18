@@ -39,7 +39,7 @@ export default function LandingPage() {
     { name: "CLAT", description: "Common Law Admission Test", subjects: ["English", "Legal Reasoning", "Logical Reasoning"] },
     { name: "CUET", description: "Common University Entrance Test", subjects: ["Physics", "Chemistry", "Mathematics"] },
     { name: "CSE", description: "Computer Science Engineering", subjects: ["Programming", "Data Structures", "Algorithms"] },
-    { name: "CGLE", description: "Combined Graduate Level Examination", subjects: ["General Awareness", "Quantitative Aptitude"] }
+    { name: "CGLE (SSC-CGL)", description: "Combined Graduate Level Examination", subjects: ["General Awareness", "Quantitative Aptitude"] }
   ];
 
   // Auto-rotate exam types for interactive demo
@@ -312,7 +312,7 @@ export default function LandingPage() {
           </motion.h1>
           
           <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
-            India's most advanced AI-powered learning platform for JEE, NEET, UPSC, CLAT, CUET, CSE & CGLE preparation
+            India's most advanced AI-powered learning platform for JEE, NEET, UPSC, CLAT, CUET, CSE & CGLE (SSC-CGL) preparation
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">

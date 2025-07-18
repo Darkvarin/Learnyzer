@@ -72,7 +72,7 @@ export default function BattleZone() {
         return ['English', 'Hindi', 'Mathematics', 'Physics', 'Chemistry', 'Biology', 'History', 'Geography', 'Political Science', 'Economics'];
       case 'CSE':
         return ['Programming', 'Data Structures', 'Algorithms', 'Computer Networks', 'Operating Systems', 'Database Management', 'Software Engineering'];
-      case 'CGLE':
+      case 'CGLE (SSC-CGL)':
         return ['General Awareness', 'Quantitative Aptitude', 'English Language', 'Reasoning'];
       default:
         return ['Physics', 'Chemistry', 'Mathematics', 'Biology'];
@@ -390,7 +390,7 @@ export default function BattleZone() {
                         <SelectItem value="CLAT">CLAT</SelectItem>
                         <SelectItem value="CUET">CUET</SelectItem>
                         <SelectItem value="CSE">CSE</SelectItem>
-                        <SelectItem value="CGLE">CGLE</SelectItem>
+                        <SelectItem value="CGLE">CGLE (SSC-CGL)</SelectItem>
                       </SelectContent>
                     </Select>
                   )}
