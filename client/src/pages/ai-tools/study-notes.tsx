@@ -92,10 +92,16 @@ export default function StudyNotesGenerator() {
         description: "Your personalized study notes are ready!",
       });
     },
-    onError: () => {
+    onError: (error: any) => {
+      // Make exam-related error messages more concise
+      let errorMessage = "There was an error creating your study notes. Please try again.";
+      if (error?.message?.includes("Access denied") && error?.message?.includes("exam preparation")) {
+        errorMessage = "Content blocked - not available for your exam type";
+      }
+      
       toast({
         title: "Failed to generate notes",
-        description: "There was an error creating your study notes. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     }

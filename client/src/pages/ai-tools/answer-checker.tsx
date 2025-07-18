@@ -120,10 +120,16 @@ export default function AnswerChecker() {
         description: "Your answer has been evaluated!",
       });
     },
-    onError: () => {
+    onError: (error: any) => {
+      // Make exam-related error messages more concise
+      let errorMessage = "There was an error evaluating your answer. Please try again.";
+      if (error?.message?.includes("Access denied") && error?.message?.includes("exam preparation")) {
+        errorMessage = "Content blocked - not available for your exam type";
+      }
+      
       toast({
         title: "Failed to check answer",
-        description: "There was an error evaluating your answer. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     }

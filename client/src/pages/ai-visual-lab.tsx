@@ -160,9 +160,15 @@ export default function AIVisualLab() {
         description: "Your educational diagram has been created successfully"
       });
     } catch (error: any) {
+      // Make exam-related error messages more concise
+      let errorMessage = error.message || "Failed to generate image";
+      if (errorMessage.includes("Access denied") && errorMessage.includes("exam preparation")) {
+        errorMessage = "Content blocked - not available for your exam type";
+      }
+      
       toast({
         title: "Generation Failed",
-        description: error.message || "Failed to generate image",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
@@ -203,9 +209,15 @@ export default function AIVisualLab() {
         description: `Generated ${(response as any).totalComponents || 'multiple'} learning components`
       });
     } catch (error: any) {
+      // Make exam-related error messages more concise
+      let errorMessage = error.message || "Failed to generate visual package";
+      if (errorMessage.includes("Access denied") && errorMessage.includes("exam preparation")) {
+        errorMessage = "Content blocked - not available for your exam type";
+      }
+      
       toast({
         title: "Generation Failed",
-        description: error.message || "Failed to generate visual package",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
@@ -245,9 +257,15 @@ export default function AIVisualLab() {
         description: `${formData.duration}-minute interactive session created`
       });
     } catch (error: any) {
+      // Make exam-related error messages more concise
+      let errorMessage = error.message || "Failed to generate study session";
+      if (errorMessage.includes("Access denied") && errorMessage.includes("exam preparation")) {
+        errorMessage = "Content blocked - not available for your exam type";
+      }
+      
       toast({
         title: "Generation Failed",
-        description: error.message || "Failed to generate study session",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {

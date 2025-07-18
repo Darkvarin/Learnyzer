@@ -376,7 +376,9 @@ export default function AiTutor() {
           title: "Exam Access Restricted",
           description: errorMessage.includes("locked your preparation") ? 
             "You've locked your preparation to a specific exam. Contact support to change exams." :
-            errorMessage.length > 100 ? errorMessage.substring(0, 97) + "..." : errorMessage,
+            errorMessage.includes("Access denied") && errorMessage.includes("exam preparation") ?
+            "Content blocked - not available for your exam type" :
+            errorMessage.length > 80 ? errorMessage.substring(0, 77) + "..." : errorMessage,
           variant: "destructive",
         });
       } else if (errorMessage.includes("Usage limit exceeded")) {
