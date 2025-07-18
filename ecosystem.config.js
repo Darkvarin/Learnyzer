@@ -1,15 +1,14 @@
 module.exports = {
   apps: [{
     name: 'learnyzer',
-    script: 'server/index.ts',
-    interpreter: 'node',
-    interpreter_args: '--loader tsx',
+    script: 'dist/index.js',
     instances: 1,
     exec_mode: 'cluster',
     watch: false,
     max_memory_restart: '1G',
+    env_file: '.env',
     env: {
-      NODE_ENV: 'development',
+      NODE_ENV: 'production',
       PORT: 5000
     },
     env_production: {
