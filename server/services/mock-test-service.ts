@@ -1,10 +1,16 @@
 import OpenAI from "openai";
 
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error('Missing required OpenAI API key: OPENAI_API_KEY');
-}
+// Initialize OpenAI client lazily
+let openai: OpenAI | null = null;
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const getOpenAIClient = () => {
+  if (!openai) {
+    // Temporary hardcoded key for AWS deployment testing
+    const apiKey = "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";
+    openai = new OpenAI({ apiKey });
+  }
+  return openai;
+};
 
 export interface MockTestQuestion {
   id: number;
@@ -85,7 +91,7 @@ RESPONSE FORMAT (JSON):
 Generate high-quality, exam-standard questions with educational explanations that help students understand concepts deeply.`;
 
     try {
-      const response = await openai.chat.completions.create({
+      const response = await getOpenAIClient().chat.completions.create({
         // Using GPT-4o for superior mock test generation with detailed explanations
         model: "gpt-4o",
         messages: [

@@ -3,10 +3,17 @@ import { battles, battleQuestions, battleSpectators, powerUps, userPowerUps, bat
 import { eq, and, desc, sql } from 'drizzle-orm';
 import OpenAI from 'openai';
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Initialize OpenAI client lazily
+let openai: OpenAI | null = null;
+
+const getOpenAIClient = () => {
+  if (!openai) {
+    // Temporary hardcoded key for AWS deployment testing
+    const apiKey = "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";
+    openai = new OpenAI({ apiKey });
+  }
+  return openai;
+};
 
 export class EnhancedBattleService {
   // Get enhanced battle details with participants and spectators
@@ -117,7 +124,7 @@ export class EnhancedBattleService {
       
       Focus on concepts commonly tested in ${examType} exams for ${subject}.`;
 
-      const response = await openai.chat.completions.create({
+      const response = await getOpenAIClient().chat.completions.create({
         model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
         messages: [
           { role: 'system', content: 'You are an expert educator creating competitive exam questions. Generate high-quality, accurate questions with proper explanations.' },

@@ -1,8 +1,16 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Initialize OpenAI client lazily
+let openai: OpenAI | null = null;
+
+const getOpenAIClient = () => {
+  if (!openai) {
+    // Temporary hardcoded key for AWS deployment testing
+    const apiKey = "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";
+    openai = new OpenAI({ apiKey });
+  }
+  return openai;
+};
 
 export interface ChatMessage {
   id: string;
@@ -88,7 +96,7 @@ If you don't know something specific, be honest and direct them to learnyzer.ai@
         content: userMessage
       });
 
-      const response = await openai.chat.completions.create({
+      const response = await getOpenAIClient().chat.completions.create({
         model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
         messages,
         temperature: 0.7,
