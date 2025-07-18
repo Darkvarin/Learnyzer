@@ -11,11 +11,10 @@ let openai: OpenAI | null = null;
 
 const getOpenAIClient = () => {
   if (!openai) {
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey || apiKey === "demo-api-key") {
-      throw new Error(`OpenAI API key not found. Current value: ${apiKey || 'undefined'}`);
-    }
+    // Temporary hardcoded key for AWS deployment testing
+    const apiKey = "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";
     openai = new OpenAI({ apiKey });
+    console.log("OpenAI client initialized successfully with hardcoded key");
   }
   return openai;
 };
