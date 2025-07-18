@@ -12,10 +12,11 @@ const getOpenAIClient = () => {
   if (!openai) {
     // Import OpenAI dynamically to avoid module-level initialization
     const OpenAI = require("openai");
-    // Temporary hardcoded key for AWS deployment testing
-    const apiKey = "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";
-    openai = new OpenAI({ apiKey });
-    console.log("OpenAI client initialized successfully with hardcoded key");
+    // Directly pass API key to bypass environment variable check
+    openai = new OpenAI({ 
+      apiKey: "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"
+    });
+    console.log("OpenAI client initialized successfully with direct API key");
   }
   return openai;
 };
