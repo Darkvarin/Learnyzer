@@ -153,13 +153,28 @@ const getExamForbiddenKeywords = (examType: string): string[] => {
       'anthropology', 'fine arts', 'music theory', 'classical studies'
     ],
     'cgle': [
-      // Biology topics forbidden for CGLE (government exam focused on general knowledge)
-      'photosynthesis', 'cellular respiration', 'molecular biology', 'genetics', 'botany', 'zoology',
-      'anatomy', 'physiology', 'biotechnology', 'biochemistry', 'microbiology', 'ecology',
+      // ALL JEE topics forbidden for CGLE
+      'jee', 'iit', 'jee main', 'jee advanced', 'engineering entrance',
+      'calculus', 'differential equations', 'integration', 'matrices', 'vectors',
+      'complex numbers', 'probability', 'permutation', 'combination',
+      'coordinate geometry', 'trigonometry', 'algebra', 'sequences', 'series',
+      'thermodynamics', 'mechanics', 'optics', 'waves', 'electromagnetic',
+      'modern physics', 'atomic structure', 'radioactivity', 'semiconductors',
+      'organic chemistry', 'inorganic chemistry', 'physical chemistry',
+      'chemical bonding', 'periodic table', 'chemical equilibrium',
+      'electrochemistry', 'surface chemistry', 'coordination compounds',
+      // ALL NEET topics forbidden for CGLE
+      'neet', 'medical entrance', 'mbbs', 'medical college',
+      'photosynthesis', 'cellular respiration', 'molecular biology', 'genetics',
+      'botany', 'zoology', 'anatomy', 'physiology', 'biotechnology',
+      'biochemistry', 'microbiology', 'ecology', 'evolution', 'biodiversity',
+      'cell biology', 'human biology', 'plant biology', 'animal biology',
+      'nervous system', 'circulatory system', 'digestive system',
+      'respiratory system', 'reproductive system', 'endocrine system',
+      'immune system', 'excretory system', 'muscular system',
       // Advanced technical topics forbidden for CGLE
-      'advanced programming', 'machine learning', 'quantum physics', 'calculus',
-      'advanced mathematics', 'nanotechnology', 'differential equations',
-      'specialized engineering', 'research methodology', 'advanced chemistry', 'organic chemistry'
+      'advanced programming', 'machine learning', 'quantum physics',
+      'nanotechnology', 'specialized engineering', 'research methodology'
     ]
   };
   
@@ -429,7 +444,7 @@ export const aiService = {
       }
 
       // EXAM LOCKING VALIDATION: Check if user's exam is locked and validate access
-      const examAccess = await validateExamAccess(userId, undefined, subject);
+      const examAccess = await validateExamAccess(userId, undefined, subject, message);
       if (!examAccess.allowed) {
         return res.status(403).json({
           message: examAccess.message,
