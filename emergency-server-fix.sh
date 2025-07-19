@@ -1,87 +1,49 @@
 #!/bin/bash
 
-echo "🚨 EMERGENCY SERVER FIX FOR LEARNYZER PRODUCTION"
+echo "🚨 EMERGENCY NGINX BYPASS - DIRECT PORT ACCESS"
 echo "=============================================="
 
 cd /home/ubuntu/Learnyzer
 
-# Kill the bash process that's running as "learnyzer"
-pm2 delete learnyzer
+# 1. Stop nginx temporarily
+echo "1. Stopping nginx to bypass it completely..."
+sudo systemctl stop nginx
 
-# Check what files exist in the directory
-echo "1. Checking directory structure..."
-ls -la
-echo ""
-echo "Server directory contents:"
-ls -la server/ 2>/dev/null || echo "No server directory"
-echo ""
-echo "Dist directory contents:"
-ls -la dist/ 2>/dev/null || echo "No dist directory"
+# 2. Kill existing server
+echo "2. Stopping existing server..."
+pm2 stop all 2>/dev/null || true
+pm2 delete all 2>/dev/null || true
+sudo pkill -f tsx 2>/dev/null || true
+sudo fuser -k 5000/tcp 2>/dev/null || true
 
-# Check if we have the necessary files
-if [ -f "server/index.ts" ]; then
-    echo "✅ Found server/index.ts"
-    SERVER_FILE="server/index.ts"
-    START_CMD="tsx server/index.ts"
-elif [ -f "dist/server/index.js" ]; then
-    echo "✅ Found dist/server/index.js"
-    SERVER_FILE="dist/server/index.js"
-    START_CMD="node dist/server/index.js"
-elif [ -f "server.js" ]; then
-    echo "✅ Found server.js"
-    SERVER_FILE="server.js"
-    START_CMD="node server.js"
-else
-    echo "❌ No server file found!"
-    echo "Available files:"
-    find . -name "*.js" -o -name "*.ts" | grep -E "(server|index)" | head -10
-fi
+# 3. Start server directly on port 443 (HTTPS port)
+echo "3. Starting server directly on port 443..."
+export NODE_ENV=development
+export PORT=443
+export $(grep -v '^#' .env | xargs)
 
-# Create a simple ecosystem.config.js if it doesn't exist
-echo "2. Creating ecosystem.config.js..."
-cat > ecosystem.config.js << 'EOF'
-module.exports = {
-  apps: [{
-    name: 'learnyzer',
-    script: 'tsx',
-    args: 'server/index.ts',
-    cwd: '/home/ubuntu/Learnyzer',
-    env: {
-      NODE_ENV: 'production',
-      PORT: 5000
-    },
-    env_production: {
-      NODE_ENV: 'production',
-      PORT: 5000
-    }
-  }]
-};
-EOF
+# Start server with SSL support directly
+sudo -E tsx server/index.ts > emergency_server.log 2>&1 &
+SERVER_PID=$!
 
-# Load environment variables
-echo "3. Loading environment variables..."
-if [ -f ".env" ]; then
-    export $(grep -v '^#' .env | xargs)
-    echo "✅ Environment variables loaded"
-else
-    echo "❌ No .env file found"
-fi
-
-# Start the server properly
-echo "4. Starting server with correct configuration..."
-NODE_ENV=production pm2 start ecosystem.config.js --env production
-
-# Wait and check status
+echo "Emergency server PID: $SERVER_PID"
 sleep 5
-pm2 status
 
-# Test the server
-echo "5. Testing server..."
-curl -X POST http://127.0.0.1:5000/api/otp/send \
+# 4. Test direct HTTPS access
+echo "4. Testing direct HTTPS API access..."
+curl -k -X POST https://learnyzer.com:443/api/otp/send \
   -H "Content-Type: application/json" \
-  -d '{"mobile": "9999999999"}' | head -5
+  -d '{"mobile": "9999999999"}'
 
-# Check logs if still not working
 echo ""
-echo "6. Recent logs:"
-pm2 logs learnyzer --lines 10
+echo "5. Testing HTTP on port 443..."
+curl -X POST http://learnyzer.com:443/api/otp/send \
+  -H "Content-Type: application/json" \
+  -d '{"mobile": "9999999999"}'
+
+echo ""
+echo "6. Check emergency server logs:"
+tail -10 emergency_server.log
+
+echo ""
+echo "7. If this works, we found the solution!"

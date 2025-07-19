@@ -1,107 +1,48 @@
 #!/bin/bash
 
-echo "🔧 CHANGE LEARNYZER TO PORT 80"
-echo "==============================="
-echo "This will make your site accessible without Security Group changes"
-echo ""
-echo "Run this on your EC2 server:"
-echo ""
+echo "🔧 DIRECT PORT 80 SOLUTION"
+echo "=========================="
 
-cat << 'PORT80_SCRIPT'
-#!/bin/bash
+cd /home/ubuntu/Learnyzer
 
-echo "🔧 Switching Learnyzer to Port 80"
-echo "================================="
+# 1. Stop nginx completely
+echo "1. Stopping nginx..."
+sudo systemctl stop nginx
+sudo systemctl disable nginx
 
-cd ~/Learnyzer || exit 1
+# 2. Kill existing processes
+echo "2. Cleaning up existing processes..."
+pm2 stop all 2>/dev/null || true
+pm2 delete all 2>/dev/null || true
+sudo pkill -f tsx 2>/dev/null || true
+sudo fuser -k 5000/tcp 2>/dev/null || true
+sudo fuser -k 80/tcp 2>/dev/null || true
 
-# Stop current server
-pm2 delete learnyzer 2>/dev/null || true
-
-# Update environment to use port 80
-export NODE_ENV=production
+# 3. Start server directly on port 80
+echo "3. Starting server on port 80..."
+export NODE_ENV=development
 export PORT=80
-export DATABASE_URL="postgresql://postgres:LearnyzerDB2024@database-1.cro6kewkgl4r.ap-south-1.rds.amazonaws.com:5432/learnyzer"
-export OPENAI_API_KEY="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"
-export TWOFACTOR_API_KEY="75c5f204-57d8-11f0-a562-0200cd936042"
-export RAZORPAY_KEY_ID="rzp_test_KofqomcGyXcjRP"
-export RAZORPAY_KEY_SECRET="dqYO8RMzv4QaEiTOiP97fLka"
+export $(grep -v '^#' .env | xargs)
 
-# Create new startup script for port 80
-cat > start-learnyzer-port80.mjs << 'EOF'
-// ES Module startup for Learnyzer on Port 80
-import { spawn } from 'child_process';
+sudo -E tsx server/index.ts > port80_server.log 2>&1 &
+PORT80_PID=$!
 
-console.log('🚀 LEARNYZER STARTING ON PORT 80');
-console.log('Starting at:', new Date().toString());
+echo "Port 80 server PID: $PORT80_PID"
+sleep 5
 
-process.chdir('/home/ubuntu/Learnyzer');
-
-console.log('Environment check:');
-console.log('- NODE_ENV:', process.env.NODE_ENV || 'production');
-console.log('- PORT: 80 (standard web port)');
-console.log('- Database URL present:', !!process.env.DATABASE_URL ? 'YES' : 'NO');
-
-const server = spawn('sudo', ['npx', 'tsx', 'server/index.ts'], {
-    stdio: 'inherit',
-    env: {
-        ...process.env,
-        NODE_ENV: 'production',
-        PORT: '80'
-    },
-    cwd: process.cwd()
-});
-
-server.on('error', (err) => {
-    console.error('❌ Server error:', err);
-    process.exit(1);
-});
-
-server.on('exit', (code, signal) => {
-    console.log(`Server exited: code=${code}, signal=${signal}`);
-    if (code !== 0 && code !== null) {
-        process.exit(code);
-    }
-});
-
-const shutdown = (signal) => {
-    console.log(`Received ${signal}, shutting down...`);
-    server.kill(signal);
-};
-
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT', () => shutdown('SIGINT'));
-EOF
-
-# Start with PM2 using sudo for port 80
-sudo pm2 start start-learnyzer-port80.mjs \
-    --name learnyzer \
-    --log-date-format="YYYY-MM-DD HH:mm:ss" \
-    --env NODE_ENV=production \
-    --env PORT=80 \
-    --env DATABASE_URL="$DATABASE_URL" \
-    --env OPENAI_API_KEY="$OPENAI_API_KEY" \
-    --env TWOFACTOR_API_KEY="$TWOFACTOR_API_KEY" \
-    --env RAZORPAY_KEY_ID="$RAZORPAY_KEY_ID" \
-    --env RAZORPAY_KEY_SECRET="$RAZORPAY_KEY_SECRET"
-
-sleep 10
-
-# Test the new setup
-sudo pm2 status
-if timeout 5 curl -f http://localhost:80/api/health; then
-    echo "✅ SUCCESS! Learnyzer now running on port 80"
-    echo "🌐 Access at: http://13.235.75.64 (no port needed)"
-    sudo pm2 save
-else
-    echo "❌ Issue starting on port 80"
-    sudo pm2 logs learnyzer --lines 10 --nostream
-fi
-
-PORT80_SCRIPT
+# 4. Test HTTP access
+echo "4. Testing HTTP API access..."
+curl -X POST http://learnyzer.com/api/otp/send \
+  -H "Content-Type: application/json" \
+  -d '{"mobile": "9999999999"}'
 
 echo ""
-echo "After running this script, your site will be accessible at:"
-echo "  http://13.235.75.64 (no port number needed)"
+echo "5. Testing health endpoint..."
+curl -s http://learnyzer.com/api/health
+
 echo ""
-echo "Note: Port 80 requires sudo privileges but is typically allowed by default Security Groups"
+echo "6. Check server logs:"
+tail -10 port80_server.log
+
+echo ""
+echo "Note: This bypasses SSL, but should fix the API routing immediately."
