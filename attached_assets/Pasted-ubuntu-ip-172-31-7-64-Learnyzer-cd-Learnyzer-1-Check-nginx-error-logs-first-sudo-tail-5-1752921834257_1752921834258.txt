@@ -1,0 +1,36 @@
+ubuntu@ip-172-31-7-64:~/Learnyzer$ cd ~/Learnyzer
+
+# 1. Check nginx error logs first
+sudo tail -5 /var/log/nginx/error.log
+
+# 2. Remove problematic dist and create simple one
+sudo rm -rf dist
+mkdir dist
+
+# 3. Create minimal HTML (no sudo to avoid ownership issues)
+cat > dist/index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head><title>Learnyzer</title></head>
+<body>
+<h1>🧠 Learnyzer Platform Online</h1>
+<p>API Status: <span id="api">Testing...</span></p>
+<script>
+fetch('/api/health').then(r=>r.json()).then(d=>document.getElementById('api').textContent='Working ✓').catch(e=>document.getElementById('api').textContent='Error');
+</script>
+</body>
+</html>
+curl -I https://learnyzer.com/r nginx
+2025/07/19 10:42:48 [crit] 99407#99407: *81 stat() "/home/ubuntu/Learnyzer/dist/index.html" failed (13: Permission denied), client: 117.98.0.74, server: learnyzer.com, request: "GET /meta.json HTTP/2.0", host: "learnyzer.com", referrer: "https://learnyzer.com/"
+2025/07/19 10:42:48 [crit] 99407#99407: *81 stat() "/home/ubuntu/Learnyzer/dist/index.html" failed (13: Permission denied), client: 117.98.0.74, server: learnyzer.com, request: "GET /meta.json HTTP/2.0", host: "learnyzer.com", referrer: "https://learnyzer.com/"
+2025/07/19 10:42:48 [crit] 99407#99407: *81 stat() "/home/ubuntu/Learnyzer/dist/index.html" failed (13: Permission denied), client: 117.98.0.74, server: learnyzer.com, request: "GET /meta.json HTTP/2.0", host: "learnyzer.com", referrer: "https://learnyzer.com/"
+2025/07/19 10:42:48 [error] 99407#99407: *81 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 117.98.0.74, server: learnyzer.com, request: "GET /meta.json HTTP/2.0", host: "learnyzer.com", referrer: "https://learnyzer.com/"
+2025/07/19 10:42:50 [error] 99407#99407: *81 open() "/home/ubuntu/Learnyzer/dist/sw.js" failed (13: Permission denied), client: 117.98.0.74, server: learnyzer.com, request: "GET /sw.js HTTP/2.0", host: "learnyzer.com", referrer: "https://learnyzer.com/sw.js"
+3.109.251.7 - - [19/Jul/2025:10:43:40 +0000] "HEAD / HTTP/2.0" 500 0 "-" "curl/8.5.0"
+HTTP/2 500
+server: nginx/1.24.0 (Ubuntu)
+date: Sat, 19 Jul 2025 10:43:40 GMT
+content-type: text/html
+content-length: 186
+
+3.109.251.7 - - [19/Jul/2025:10:43:40 +0000] "HEAD / HTTP/2.0" 500 0 "-" "curl/8.5.0"
