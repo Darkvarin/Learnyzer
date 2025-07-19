@@ -1,208 +1,100 @@
-# Automatic GitHub Push from Replit
+# 🚀 GitHub CI/CD Auto-Push Setup Guide
 
-## 🚀 Complete Setup Guide
+## Step 1: Convert SSH Key Format
 
-### Step 1: Quick Setup
+Your SSH key is in PuTTY format (.ppk). For GitHub Actions, we need OpenSSH format.
+
+### Option A: Using PuTTYgen (Recommended)
+1. Open PuTTYgen
+2. Load your `Learnyzer key_1752898338282.ppk` file
+3. Go to **Conversions** → **Export OpenSSH key**
+4. Save as `learnyzer-key.pem`
+5. Copy the entire content of the `.pem` file
+
+### Option B: Using your EC2 instance
+If you have the original `.pem` file on your EC2 server:
 ```bash
-# Run the complete setup
-chmod +x scripts/setup-github-integration.sh
-./scripts/setup-github-integration.sh
+cat ~/.ssh/learnyzer-key.pem
 ```
 
-### Step 2: Configure GitHub Token
-1. **Generate Personal Access Token**:
-   - Go to [GitHub Settings → Personal Access Tokens](https://github.com/settings/tokens)
-   - Click "Generate new token (classic)"
-   - Select scopes: `repo` (full repository access)
-   - Copy the generated token
+## Step 2: Configure GitHub Secrets
 
-2. **Add to Replit Secrets**:
-   - In Replit: Tools → Secrets
-   - Add: `GITHUB_TOKEN` = `your_token_here`
+Go to your GitHub repository: **Settings → Secrets and variables → Actions**
 
-### Step 3: Configure Repository
+Click **"New repository secret"** for each:
+
+| Secret Name | Value |
+|-------------|--------|
+| `EC2_HOST` | `ec2-13-235-75-64.ap-south-1.compute.amazonaws.com` |
+| `EC2_USER` | `ubuntu` |
+| `EC2_SSH_KEY` | **[Paste your converted OpenSSH private key here]** |
+| `DATABASE_URL` | `postgresql://postgres:LearnyzerDB2024@database-1.cro6kewkgl4r.ap-south-1.rds.amazonaws.com:5432/learnyzer` |
+| `OPENAI_API_KEY` | `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` |
+| `TWOFACTOR_API_KEY` | `75c5f204-57d8-11f0-a562-0200cd936042` |
+| `RAZORPAY_KEY_ID` | `rzp_test_KofqomcGyXcjRP` |
+| `RAZORPAY_KEY_SECRET` | `dqYO8RMzv4QaEiTOiP97fLka` |
+
+## Step 3: Setup EC2 Server (One-time)
+
+SSH to your EC2 server and run:
 ```bash
-# Add your GitHub repository
-git remote add origin https://github.com/YOUR_USERNAME/learnyzer.git
-
-# Or update existing remote
-git remote set-url origin https://github.com/YOUR_USERNAME/learnyzer.git
+cd ~/Learnyzer
+git pull origin main  # Get the latest deployment scripts
+chmod +x deploy/deploy-config.sh
+./deploy/deploy-config.sh
 ```
 
-## 🔄 Usage Options
+## Step 4: Test Automated Deployment
 
-### Option 1: Manual Push (Quick)
-```bash
-./scripts/push-to-github.sh "Your commit message"
-```
-
-### Option 2: Automatic Monitoring (Recommended)
-```bash
-# Start automatic file watching and pushing
-./scripts/auto-push.sh
-```
-This will:
-- ✅ Monitor all code changes in real-time
-- ✅ Auto-commit after 30 seconds of inactivity  
-- ✅ Push to GitHub automatically
-- ✅ Handle merge conflicts
-- ✅ Show commit status and repository links
-
-### Option 3: Two-Way Sync
-```bash
-# Pull from GitHub + Push local changes
-./scripts/sync-with-github.sh
-```
-
-### Option 4: Run in Background (Advanced)
-```bash
-# Start auto-push in background
-nohup ./scripts/auto-push.sh > auto-push.log 2>&1 &
-
-# Check if running
-ps aux | grep auto-push
-
-# Stop background process
-pkill -f auto-push.sh
-```
-
-## 📁 Monitored Files & Directories
-
-The auto-push system watches:
-- `client/` - React frontend code
-- `server/` - Express backend code
-- `shared/` - Shared types and utilities
-- `db/` - Database schemas and migrations
-- `scripts/` - Deployment and utility scripts
-- Root config files: `package.json`, `tsconfig.json`, etc.
-
-## ⚙️ Features
-
-### Smart Change Detection
-- Ignores temporary files (`.tmp`, `.swp`, `.log`)
-- Skips build outputs (`node_modules`, `dist`)
-- Only commits meaningful changes
-
-### Automatic Conflict Resolution
-- Pulls latest changes before pushing
-- Attempts automatic merge for conflicts
-- Falls back to manual intervention if needed
-
-### Detailed Logging
-- Shows which files changed
-- Displays commit messages with timestamps
-- Provides GitHub repository links
-
-## 🔧 Advanced Configuration
-
-### Customize Watch Behavior
-Edit `scripts/auto-push.sh`:
-```bash
-WATCH_DELAY=30    # Seconds to wait after changes
-MAX_WAIT=300      # Force push after 5 minutes
-```
-
-### Add Custom Watch Patterns
-```bash
-# Add to WATCH_DIRS array
-WATCH_DIRS=("client" "server" "shared" "db" "scripts" "your-custom-dir")
-
-# Add to WATCH_FILES array  
-WATCH_FILES=("package.json" "tsconfig.json" "your-config.json")
-```
-
-## 🚨 Troubleshooting
-
-### Authentication Issues
-```bash
-# Check if token is properly set
-echo $GITHUB_TOKEN
-
-# Re-authenticate manually
-git config credential.helper store
-echo "https://${GITHUB_TOKEN}@github.com" > ~/.git-credentials
-```
-
-### Push Failures
-```bash
-# Check repository status
-git status
-git remote -v
-
-# Manual conflict resolution
-git pull origin main --no-edit
-git push origin main
-```
-
-### File Watching Not Working
-```bash
-# Install inotify-tools (Linux)
-sudo apt-get update && sudo apt-get install -y inotify-tools
-
-# Check if inotify is available
-which inotifywait
-
-# Test manual push
-./scripts/push-to-github.sh "test commit"
-```
-
-### Common Issues & Solutions
-
-1. **"Permission denied" errors**
+1. **Make any small change** to your code (e.g., add a comment)
+2. **Commit and push** to main branch:
    ```bash
-   chmod +x scripts/*.sh
+   git add .
+   git commit -m "Test automated deployment"
+   git push origin main
    ```
+3. **Watch GitHub Actions**:
+   - Go to your repository → **Actions** tab
+   - You should see "Deploy to EC2" workflow running
+   - It will automatically build and deploy to your server
 
-2. **"No remote repository" error**
-   ```bash
-   git remote add origin https://github.com/YOUR_USERNAME/learnyzer.git
-   ```
+## Step 5: Verify Deployment
 
-3. **"Authentication failed" error**
-   - Check GITHUB_TOKEN in Replit Secrets
-   - Ensure token has `repo` permissions
-   - Regenerate token if expired
+After GitHub Actions completes:
+- Check your server: `http://ec2-13-235-75-64.ap-south-1.compute.amazonaws.com:5000`
+- SSH to server and run: `pm2 status` to see running processes
 
-4. **"Nothing to commit" warnings**
-   - Normal behavior when no changes detected
-   - System only pushes when files actually change
+## 🔧 Troubleshooting
 
-## 📊 Workflow Integration
+### If SSH Key Conversion Fails:
+You can also extract the private key manually from your PuTTY key file.
 
-### With CI/CD Pipeline
-The auto-push integrates seamlessly with your existing CI/CD:
-1. **Replit** → Auto-push changes to GitHub
-2. **GitHub Actions** → Deploy to EC2 automatically
-3. **EC2** → Production application updated
-
-### Development Workflow
+**For the EC2_SSH_KEY secret, use this format:**
 ```
-Edit code in Replit → Auto-commit (30s delay) → Push to GitHub → Trigger CI/CD → Deploy to EC2
+-----BEGIN RSA PRIVATE KEY-----
+[Your private key content from the .ppk file]
+-----END RSA PRIVATE KEY-----
 ```
 
-## 🎯 Best Practices
+### If GitHub Actions Fails:
+1. Check the **Actions** tab for error logs
+2. Verify all secrets are correctly set
+3. Ensure EC2 security group allows SSH (port 22)
 
-1. **Use descriptive commit messages** when manually pushing
-2. **Review changes** before starting auto-push monitoring
-3. **Test deployment** after major changes
-4. **Monitor logs** for any push failures
-5. **Keep tokens secure** in Replit Secrets only
-
-## 📝 Quick Commands Reference
-
+### If Server Doesn't Start:
+SSH to your server and check:
 ```bash
-# Setup (one-time)
-./scripts/setup-github-integration.sh
-
-# Manual operations
-./scripts/push-to-github.sh "message"    # Single push
-./scripts/sync-with-github.sh           # Two-way sync
-./scripts/git-setup.sh                  # Initial git config
-
-# Automatic monitoring
-./scripts/auto-push.sh                  # Start monitoring
-nohup ./scripts/auto-push.sh &         # Background mode
-pkill -f auto-push.sh                  # Stop monitoring
+pm2 logs learnyzer
+pm2 status
 ```
 
-Your Learnyzer platform now has complete automatic GitHub synchronization! 🎉
+## 🎉 Success!
+
+Once configured, every push to main branch will:
+1. ✅ Build your frontend automatically
+2. ✅ Deploy to EC2 server
+3. ✅ Start production server with PM2
+4. ✅ Run health checks
+5. ✅ Show deployment status
+
+**No more manual server management needed!**
