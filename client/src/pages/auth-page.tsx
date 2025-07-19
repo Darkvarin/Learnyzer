@@ -12,12 +12,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 import { Brain, Sword, Trophy, Phone, Shield, ArrowLeft, Home } from 'lucide-react';
-import { registerSchema } from '@shared/schema';
-
 // Validation schemas
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
+});
+
+const registerSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  email: z.string().email("Must be a valid email"),
+  mobile: z.string().regex(/^[6-9]\d{9}$/, "Mobile number must be a valid 10-digit Indian number"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string(),
+  otp: z.string().optional(),
+  acceptTerms: z.boolean().refine((val) => val === true, "You must accept the terms and conditions"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
