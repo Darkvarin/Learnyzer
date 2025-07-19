@@ -189,7 +189,7 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
 ## Changelog
 - July 19, 2025: **PRODUCTION DEPLOYMENT SUCCESS** - Learnyzer successfully deployed and running on AWS EC2
   - **ES MODULE COMPATIBILITY ACHIEVED**: Resolved CommonJS/ES module conflicts by creating proper .mjs startup files
-  - **SERVER RUNNING**: Confirmed live at ec2-13-235-75-64.ap-south-1.compute.amazonaws.com:5000 with health endpoint responding
+  - **SERVER RUNNING**: Confirmed live at 13.127.206.181:5000 with health endpoint responding
   - **PM2 PROCESS MANAGEMENT**: Successfully configured with start-learnyzer-production.mjs using ES module syntax
   - **DATABASE CONNECTED**: PostgreSQL connection established and all API keys properly configured
   - **WEBSOCKET INTEGRATION**: Real-time features working with WebSocket connection established
