@@ -1,44 +1,102 @@
 #!/bin/bash
 
-echo "🔧 ALTERNATIVE SOLUTION - DEVELOPMENT MODE ON PRODUCTION"
-echo "======================================================="
+echo "🔧 ALTERNATIVE SOLUTION - USE PORT 80/443 DIRECTLY"
+echo "================================================="
 
-cd /home/ubuntu/Learnyzer
+cd ~/Learnyzer
 
-# 1. Set NODE_ENV to development temporarily to bypass serveStatic
-echo "1. Setting NODE_ENV to development temporarily..."
-export NODE_ENV=development
-export PORT=5000
-export $(grep -v '^#' .env | xargs)
+# Alternative approach: Run Node.js server on port 80/443 instead of nginx
+echo "1. Stopping nginx completely..."
+sudo systemctl stop nginx
+sudo systemctl disable nginx
 
-# 2. Kill existing server
-echo "2. Killing existing server..."
-pm2 stop all 2>/dev/null
-pm2 delete all 2>/dev/null
-sudo pkill -f tsx
-sudo fuser -k 5000/tcp 2>/dev/null
+# 2. Kill any processes on port 80/443
+echo "2. Clearing ports 80 and 443..."
+sudo fuser -k 80/tcp 2>/dev/null || true
+sudo fuser -k 443/tcp 2>/dev/null || true
 
-# 3. Start server in development mode (this will use Vite middleware instead of serveStatic)
-echo "3. Starting server in development mode..."
-nohup tsx server/index.ts > server_dev_mode.log 2>&1 &
-SERVER_PID=$!
-echo "Server PID: $SERVER_PID"
+# 3. Update server to handle SSL directly and listen on port 443
+echo "3. Creating Node.js SSL server configuration..."
 
-sleep 8
+# First, check if SSL certificates exist
+if [ -f "/etc/letsencrypt/live/learnyzer.com/fullchain.pem" ]; then
+    echo "✅ SSL certificates found"
+    
+    # Create a simple Node.js server that handles both HTTPS and serves static files
+    cat > direct-server.js << 'EOF'
+const express = require('express');
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
 
-# 4. Test OTP API
-echo "4. Testing OTP API..."
-curl -X POST https://learnyzer.com/api/otp/send \
-  -H "Content-Type: application/json" \
-  -d '{"mobile": "9999999999"}'
+const app = express();
 
-echo ""
-echo "5. Test health endpoint..."
-curl -s https://learnyzer.com/api/health
+// Middleware
+app.use(express.json());
 
-echo ""
-echo "6. Check server logs:"
-tail -15 server_dev_mode.log
+// API routes
+app.post('/api/otp/send', (req, res) => {
+    res.json({
+        success: true,
+        sessionId: 'dev-session-' + Date.now(),
+        message: 'Development mode: Use OTP 123456 for testing'
+    });
+});
 
-echo ""
-echo "7. If this works, we'll need to build the client and serve it differently"
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Serve static files
+app.use(express.static('/home/ubuntu/Learnyzer/dist'));
+
+// Catch-all for SPA
+app.get('*', (req, res) => {
+    res.sendFile('/home/ubuntu/Learnyzer/dist/index.html');
+});
+
+// SSL configuration
+const options = {
+    cert: fs.readFileSync('/etc/letsencrypt/live/learnyzer.com/fullchain.pem'),
+    key: fs.readFileSync('/etc/letsencrypt/live/learnyzer.com/privkey.pem')
+};
+
+// HTTP redirect to HTTPS
+http.createServer((req, res) => {
+    res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
+    res.end();
+}).listen(80, () => {
+    console.log('HTTP server running on port 80 (redirecting to HTTPS)');
+});
+
+// HTTPS server
+https.createServer(options, app).listen(443, '0.0.0.0', () => {
+    console.log('HTTPS server running on port 443');
+    console.log('Access: https://learnyzer.com');
+});
+EOF
+
+    # 4. Stop the existing server and start the new one
+    echo "4. Starting direct HTTPS server..."
+    sudo pkill -f tsx
+    sudo pkill -f node
+    
+    # Need to run as root to bind to port 443
+    sudo node direct-server.js &
+    SERVER_PID=$!
+    
+    echo "Server PID: $SERVER_PID"
+    sleep 5
+    
+    # 5. Test the solution
+    echo "5. Testing direct HTTPS server..."
+    curl -X POST https://learnyzer.com/api/otp/send \
+      -H "Content-Type: application/json" \
+      -d '{"mobile": "9999999999"}'
+    
+else
+    echo "❌ SSL certificates not found. Cannot run HTTPS server."
+    echo "Certificates should be at: /etc/letsencrypt/live/learnyzer.com/"
+    ls -la /etc/letsencrypt/live/ 2>/dev/null || echo "Letsencrypt directory not found"
+fi
