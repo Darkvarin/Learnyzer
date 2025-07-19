@@ -1,0 +1,89 @@
+ubuntu@ip-172-31-7-64:~/Learnyzer$ curl -i http://localhost:5000/api/otp/send
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Accept-Ranges: bytes
+Cache-Control: public, max-age=0
+Last-Modified: Fri, 18 Jul 2025 10:50:27 GMT
+ETag: W/"cb3-1981d2827a6"
+Content-Type: text/html; charset=UTF-8
+Content-Length: 3251
+Date: Sat, 19 Jul 2025 10:11:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>Learnyzer - AI-Powered Indian Entrance Exam Preparation Platform | JEE, NEET, UPSC, CLAT, CUET, CSE</title>
+    <meta name="description" content="Learnyzer combines AI tutoring with gamification to help Indian students prepare for JEE, NEET, UPSC, CLAT, CUET, and CSE entrance exams. Personalized voice coaching, battle challenges, and comprehensive tracking to maximize your score." />
+    <meta name="keywords" content="JEE preparation, NEET coaching, UPSC preparation, CLAT exam, CUET preparation, CSE exam, entrance exam AI, Indian competitive exams, AI tutor for exams, computer science engineering" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://learnyzer.com" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Learnyzer - AI-Powered Indian Entrance Exam Preparation" />
+    <meta property="og:description" content="Revolutionary platform combining AI voice coaching with gamification to help you ace JEE, NEET, UPSC, CLAT, CUET and CSE entrance exams." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://learnyzer.com" />
+    <meta property="og:image" content="https://learnyzer.com/images/learnyzer-og-image.svg" />
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Learnyzer - AI-Powered Entrance Exam Preparation" />
+    <meta name="twitter:description" content="Prepare for JEE, NEET, UPSC, CLAT, CUET and CSE with our AI voice tutoring platform." />
+    <meta name="twitter:image" content="https://learnyzer.com/images/learnyzer-og-image.svg" />
+
+    <!-- Structured Data for Rich Results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Learnyzer Edtech",
+      "description": "AI-powered preparation platform for Indian entrance exams including JEE, NEET, UPSC, CLAT, and CUET",
+      "url": "https://learnyzer.com",
+      "logo": "https://learnyzer.com/images/logo.png",
+      "sameAs": [
+        "https://www.facebook.com/learnyzer",
+        "https://twitter.com/learnyzer",
+        "https://www.instagram.com/learnyzer"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "India"
+      }
+    }
+    </script>
+
+    <!-- Mobile theme color -->
+    <meta name="theme-color" content="#141625" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.svg" />
+    <script type="module" crossorigin src="/assets/index-3TL2Gb4u.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DfcCqErM.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
+    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
+  </body>
+
+
+ChatGPT said:
+The response you're seeing confirms the endpoint http://localhost:5000/api/otp/send is serving an HTML page, not a JSON API.
+
+What’s Happening:
+You're expecting this route to be an API endpoint (returning JSON like { success: true }, etc.)
+
+But it's returning your React frontend’s HTML page (SSR or static HTML), which means the request is being handled by the frontend's fallback route, not your Express backend route.
+
+Why This Is Happening
+Your Express backend is likely misconfigured in one of these ways:
+
+Frontend is capturing all requests, including API ones like /api/otp/send.
+
+Express is not distinguishing frontend and backend routes, or the backend is built into the frontend (dist folder serving everything).
