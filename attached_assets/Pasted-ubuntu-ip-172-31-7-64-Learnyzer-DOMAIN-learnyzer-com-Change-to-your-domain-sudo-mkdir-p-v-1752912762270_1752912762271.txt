@@ -1,0 +1,89 @@
+ubuntu@ip-172-31-7-64:~/Learnyzer$ DOMAIN="learnyzer.com"  # Change to your domain
+sudo mkdir -p /var/www/${DOMAIN}/html
+sudo chown -R $USER:$USER /var/www/${DOMAIN}/html
+# 3. Copy SEO files (CORRECTED PATHS)
+cd /home/ubuntu/Learnyzer  # Adjust if your path is different
+# Copy the files that actually exist
+sudo cp public/sitemap.xml /var/www/${DOMAIN}/html/
+sudo cp public/robots.txt /var/www/${DOMAIN}/html/
+sudo cp public/manifest.json /var/www/${DOMAIN}/html/
+sudo cp -r public/images /var/www/${DOMAIN}/html/
+sudo cp public/*.png /var/www/${DOMAIN}/html/ 2>/dev/null || echo "No PNG files"
+sudo cp public/*.svg /var/www/${DOMAIN}/html/ 2>/dev/null || echo "No SVG files"
+# 4. Create nginx configuration
+sudo tee /etc/nginx/sites-available/${DOMAIN} > /dev/null <<'EOF'
+server {
+    listen 80;
+    server_name learnyzer.com www.learnyzer.com;
+    # SEO files served directly
+    location = /sitemap.xml {
+        root /var/www/learnyzer.com/html;
+        try_files $uri =404;
+curl -I http://learnyzer.com/robots.txtldevrting fresh"inx/sites-enabled/
+cp: cannot stat 'public/sitemap.xml': No such file or directory
+cp: cannot stat 'public/robots.txt': No such file or directory
+cp: cannot stat 'public/manifest.json': No such file or directory
+ln: failed to create symbolic link '/etc/nginx/sites-enabled/learnyzer.com': File exists
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+changed 135 packages in 10s
+
+13 packages are looking for funding
+  run `npm fund` for details
+[PM2] Applying action stopProcessId on app [learnyzer](ids: [ 0, 1 ])
+[PM2] [learnyzer](0) ✓
+[PM2] [learnyzer](1) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ learnyzer          │ fork     │ 0    │ stopped   │ 0%       │ 0b       │
+│ 1  │ learnyzer          │ fork     │ 184  │ stopped   │ 0%       │ 0b       │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[PM2] Starting /usr/bin/npm in fork_mode (1 instance)
+[PM2] Done.
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ learnyzer          │ fork     │ 0    │ stopped   │ 0%       │ 0b       │
+│ 1  │ learnyzer          │ fork     │ 184  │ stopped   │ 0%       │ 0b       │
+│ 2  │ learnyzer          │ fork     │ 0    │ online    │ 0%       │ 18.8mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[PM2] Saving current process list...
+[PM2] Successfully saved in /home/ubuntu/.pm2/dump.pm2
+[PM2] Init System found: systemd
+[PM2] To setup the Startup Script, copy/paste the following command:
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Sat, 19 Jul 2025 08:11:42 GMT
+Content-Type: text/xml
+Content-Length: 4939
+Last-Modified: Sat, 19 Jul 2025 08:03:44 GMT
+Connection: keep-alive
+ETag: "687b5160-134b"
+Content-Type: application/xml
+Accept-Ranges: bytes
+
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Sat, 19 Jul 2025 08:11:42 GMT
+Content-Type: text/plain
+Content-Length: 989
+Last-Modified: Sat, 19 Jul 2025 08:03:44 GMT
+Connection: keep-alive
+ETag: "687b5160-3dd"
+Content-Type: text/plain
+Accept-Ranges: bytes
+
+HTTP/1.1 200 OK
+Server: nginx/1.24.0 (Ubuntu)
+Date: Sat, 19 Jul 2025 08:11:42 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 3251
+Connection: keep-alive
+X-Powered-By: Express
+Accept-Ranges: bytes
+Cache-Control: public, max-age=0
+Last-Modified: Fri, 18 Jul 2025 10:50:27 GMT
+ETag: W/"cb3-1981d2827a6"
