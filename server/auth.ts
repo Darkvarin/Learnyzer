@@ -10,6 +10,7 @@ import { eq } from "drizzle-orm";
 import { users } from "../shared/schema";
 import connectPg from "connect-pg-simple";
 import { pool } from "../db";
+import crypto from "crypto";
 
 // Type declaration for Express session
 declare global {
@@ -64,23 +65,45 @@ export async function comparePasswords(supplied: string, stored: string): Promis
 
 // Set up authentication for the Express app
 export function setupAuth(app: Express) {
-  // Session configuration
+  // Session configuration with proper security
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || "learnity-secret-key-change-in-production",
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
+    name: 'learnyzer.session', // Custom session name
     cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours (reduced from 30 days for security)
+      secure: process.env.NODE_ENV === "production", // HTTPS only in production
+      httpOnly: true, // Prevent XSS attacks
+      sameSite: process.env.NODE_ENV === "production" ? 'strict' : 'lax', // CSRF protection
+    },
+    genid: () => {
+      // Generate unique session IDs to prevent conflicts
+      return crypto.randomBytes(32).toString('hex');
     }
   };
 
-  // Set up session middleware
-  app.set("trust proxy", 1);
+  // Set up session middleware with proper proxy trust
+  app.set("trust proxy", process.env.NODE_ENV === "production" ? 1 : false);
   app.use(session(sessionSettings));
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // Add session cleanup middleware
+  app.use((req: any, res: any, next: any) => {
+    // Regenerate session ID on login to prevent session fixation
+    if (req.path === '/api/auth/login' && req.method === 'POST') {
+      req.session.regenerate((err: any) => {
+        if (err) {
+          console.error('Session regeneration failed:', err);
+        }
+        next();
+      });
+    } else {
+      next();
+    }
+  });
 
   // Set up local strategy
   passport.use(
@@ -186,14 +209,30 @@ export function setupAuth(app: Express) {
     })(req, res, next);
   });
 
-  // Logout
+  // Logout endpoint with proper session cleanup
   app.post("/api/auth/logout", (req, res) => {
-    req.logout((err) => {
-      if (err) {
-        return res.status(500).json({ message: "Logout failed" });
-      }
-      return res.status(200).json({ message: "Logged out successfully" });
-    });
+    if (req.isAuthenticated()) {
+      const sessionId = req.sessionID;
+      req.logout((err) => {
+        if (err) {
+          console.error("Logout error:", err);
+          return res.status(500).json({ message: "Logout failed" });
+        }
+        req.session.destroy((err) => {
+          if (err) {
+            console.error("Session destruction error:", err);
+            return res.status(500).json({ message: "Session destruction failed" });
+          }
+          // Clear the session cookie properly
+          res.clearCookie("learnyzer.session");
+          res.clearCookie("connect.sid"); // Fallback for default cookie name
+          console.log(`Session ${sessionId} destroyed for user logout`);
+          return res.status(200).json({ message: "Logged out successfully" });
+        });
+      });
+    } else {
+      return res.status(200).json({ message: "Already logged out" });
+    }
   });
 
   // Get current user
