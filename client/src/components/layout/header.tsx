@@ -24,19 +24,21 @@ export function Header() {
   const [activeLink, setActiveLink] = useState("");
   const [hoverEffect, setHoverEffect] = useState(false);
 
-  // Determine active link based on current path
+  // Determine active link based on current path using wouter
+  const [location] = useLocation();
   useEffect(() => {
-    const path = window.location.pathname;
-    if (path.includes("/dashboard")) setActiveLink("dashboard");
-    else if (path.includes("/battle-zone")) setActiveLink("battle-zone");
-    else if (path.includes("/ai-tutor")) setActiveLink("ai-tutor");
-    else if (path.includes("/ai-tools")) setActiveLink("ai-tools");
-    else if (path.includes("/leaderboard")) setActiveLink("leaderboard");
+    if (location.includes("/dashboard")) setActiveLink("dashboard");
+    else if (location.includes("/battle-zone")) setActiveLink("battle-zone");
+    else if (location.includes("/ai-tutor")) setActiveLink("ai-tutor");
+    else if (location.includes("/ai-tools")) setActiveLink("ai-tools");
+    else if (location.includes("/leaderboard")) setActiveLink("leaderboard");
     else setActiveLink("");
-  }, []);
+  }, [location]);
 
-  // Add scroll effect
+  // Add scroll effect with proper window guard
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const handleScroll = () => {
       if (window.scrollY > 20) {
         setIsScrolled(true);
@@ -58,7 +60,9 @@ export function Header() {
       // Redirect to homepage after logout
       navigate("/");
       // Force a page reload to ensure all components update their state
-      window.location.reload();
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
     } catch (error) {
       toast({
         title: "Logout failed",

@@ -32,7 +32,7 @@ export default function Dashboard() {
         title={`${user?.name || user?.username || 'Student'}'s Dashboard - Learnyzer`}
         description={`Track your entrance exam preparation progress with AI-powered learning. Level ${userStats?.level || 1}, ${userStats?.currentXp || 0} XP earned. Advanced analytics for JEE, NEET, UPSC, CLAT, and CUET success.`}
         keywords="student dashboard, exam preparation progress, JEE progress tracker, NEET study analytics, UPSC preparation dashboard, AI learning progress, competitive exam analytics"
-        canonical={`${window.location.origin}/dashboard`}
+        canonical="/dashboard"
         structuredData={dashboardSchema}
       />
       {/* Modern cyberpunk grid background with subtle Solo Leveling accents */}
