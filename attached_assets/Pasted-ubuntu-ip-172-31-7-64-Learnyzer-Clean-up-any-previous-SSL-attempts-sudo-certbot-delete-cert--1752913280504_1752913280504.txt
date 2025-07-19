@@ -1,0 +1,67 @@
+ubuntu@ip-172-31-7-64:~/Learnyzer$ # Clean up any previous SSL attempts
+sudo certbot delete --cert-name learnyzer.com 2>/dev/null || echo "No existing certs"
+
+# Retry SSL with your correct email
+sudo systemctl stop nginx
+sudo certbot certonly --standalone --email learnyzer.ai@gmail.com --agree-tos --no-eff-email -d learnyzer.com -d www.learnyzer.com
+sudo systemctl start nginx
+
+# If successful, update nginx for SSL
+DOMAIN="learnyzer.com"
+sudo cp /etc/nginx/sites-available/${DOMAIN} /etc/nginx/sites-available/${DOMAIN}.backup
+
+sudo tee /etc/nginx/sites-available/${DOMAIN} > /dev/null <<'EOF'
+# HTTP redirect to HTTPS
+server {
+    listen 80;
+    server_name learnyzer.com www.learnyzer.com;
+    return 301 https://$server_name$request_uri;
+}
+
+# HTTPS configuration
+curl -I https://learnyzer.com/l reload nginx";;eme;_x_forwarded_for;ent-Type app
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+The following certificate(s) are selected for deletion:
+
+  * learnyzer.com
+
+WARNING: Before continuing, ensure that the listed certificates are not being
+used by any installed server software (e.g. Apache, nginx, mail servers).
+Deleting a certificate that is still being used will cause the server software
+to stop working. See https://certbot.org/deleting-certs for information on
+deleting certificates safely.
+
+Are you sure you want to delete the above certificate(s)?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: y
+No existing certs
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Account registered.
+Requesting a certificate for learnyzer.com and www.learnyzer.com
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/learnyzer.com/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/learnyzer.com/privkey.pem
+This certificate expires on 2025-10-17.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+HTTP/2 200
+server: nginx/1.24.0 (Ubuntu)
+date: Sat, 19 Jul 2025 08:21:00 GMT
+content-type: text/html; charset=UTF-8
+content-length: 3251
+x-powered-by: Express
+accept-ranges: bytes
+cache-control: public, max-age=0
+last-modified: Fri, 18 Jul 2025 10:50:27 GMT
+etag: W/"cb3-1981d2827a6"
+
