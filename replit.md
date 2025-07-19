@@ -187,6 +187,13 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
 - **Schema.org Integration**: JSON-LD structured data for better search engine understanding and rich snippets
 
 ## Changelog
+- July 19, 2025: **CRITICAL REACT CRASH FIX IN PROGRESS** - Addressing dashboard black screen and missing header issue
+  - **PROBLEM IDENTIFIED**: Window object references in React components causing SSR/rendering failures
+  - **COMPONENTS FIXED**: Header, ScrollToTop, Dashboard, SEOHead, and ReferralSection components updated with proper window guards
+  - **LOCAL BUILD WORKING**: Replit environment running successfully with fixed components
+  - **PRODUCTION ISSUE**: EC2 server needs updated components deployed from GitHub repository
+  - **SOLUTION READY**: Comprehensive deployment script created for production server
+  - **NEXT STEP**: Deploy fixes to learnyzer.com production environment
 - July 19, 2025: **CRITICAL REACT CRASH FIX COMPLETE** - Resolved dashboard flashing and black screen issue
   - **ROOT CAUSE IDENTIFIED**: Window object references in React components causing SSR/initial render crashes
   - **HEADER COMPONENT FIXED**: Replaced `window.location.pathname` with wouter's `useLocation()` hook for route detection
