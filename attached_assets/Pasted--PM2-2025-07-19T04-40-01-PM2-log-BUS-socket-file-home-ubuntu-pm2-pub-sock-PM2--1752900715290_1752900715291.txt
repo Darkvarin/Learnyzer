@@ -1,0 +1,50 @@
+
+PM2        | 2025-07-19T04:40:01: PM2 log: BUS socket file      : /home/ubuntu/.pm2/pub.sock
+PM2        | 2025-07-19T04:40:01: PM2 log: Application log path : /home/ubuntu/.pm2/logs
+PM2        | 2025-07-19T04:40:01: PM2 log: Worker Interval      : 30000
+PM2        | 2025-07-19T04:40:01: PM2 log: Process dump file    : /home/ubuntu/.pm2/dump.pm2
+PM2        | 2025-07-19T04:40:01: PM2 log: Concurrent actions   : 2
+PM2        | 2025-07-19T04:40:01: PM2 log: SIGTERM timeout      : 1600
+PM2        | 2025-07-19T04:40:01: PM2 log: Runtime Binary       : /usr/bin/node
+PM2        | 2025-07-19T04:40:01: PM2 log: ===============================================================================
+PM2        | 2025-07-19T04:48:31: PM2 log: App [learnyzer:0] starting in -fork mode-
+PM2        | 2025-07-19T04:48:31: PM2 log: App [learnyzer:0] online
+PM2        | 2025-07-19T04:50:33: PM2 log: Stopping app:learnyzer id:0
+PM2        | 2025-07-19T04:50:33: PM2 log: App [learnyzer:0] exited with code [0] via signal [SIGINT]
+PM2        | 2025-07-19T04:50:33: PM2 log: pid=1768 msg=process killed
+PM2        | 2025-07-19T04:50:34: PM2 log: App [learnyzer:0] starting in -fork mode-
+PM2        | 2025-07-19T04:50:34: PM2 log: App [learnyzer:0] online
+
+/home/ubuntu/.pm2/logs/learnyzer-error.log last 15 lines:
+0|learnyze | 2025-07-18 14:36:49:     at resolveBase (file:///usr/lib/node_modules/tsx/dist/esm/index.mjs?1752849409618:2:3811)
+0|learnyze | 2025-07-18 14:36:49:     at resolveDirectory (file:///usr/lib/node_modules/tsx/dist/esm/index.mjs?1752849409618:2:4310)
+0|learnyze | 2025-07-18 14:36:49:     at resolveTsPaths (file:///usr/lib/node_modules/tsx/dist/esm/index.mjs?1752849409618:2:5051)
+0|learnyze | 2025-07-18 14:36:49:     at async resolve (file:///usr/lib/node_modules/tsx/dist/esm/index.mjs?1752849409618:2:5422)
+0|learnyze | 2025-07-18 14:36:49:     at async nextResolve (node:internal/modules/esm/hooks:864:22)
+0|learnyze | 2025-07-18 14:36:49:     at async Hooks.resolve (node:internal/modules/esm/hooks:306:24) {
+0|learnyze | 2025-07-18 14:36:49:   code: 'ERR_MODULE_NOT_FOUND'
+0|learnyze | 2025-07-18 14:36:49: }
+0|learnyze | 2025-07-18 14:36:49:
+0|learnyze | 2025-07-18 14:36:49: Node.js v20.19.4
+0|learnyze | 2025-07-19 04:48:31: ReferenceError: require is not defined in ES module scope, you can use import instead
+0|learnyze | 2025-07-19 04:48:31: This file is being treated as an ES module because it has a '.js' file extension and '/home/ubuntu/Learnyzer/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+0|learnyze | 2025-07-19 04:48:31:     at file:///home/ubuntu/Learnyzer/start-learnyzer.js:2:19
+0|learnyze | 2025-07-19 04:48:31:     at ModuleJob.run (node:internal/modules/esm/module_job:263:25)
+0|learnyze | 2025-07-19 04:48:31:     at async ModuleLoader.import (node:internal/modules/esm/loader:540:24)
+
+/home/ubuntu/.pm2/logs/learnyzer-out.log last 15 lines:
+0|learnyze | 2025-07-19 04:50:34: 🚀 LEARNYZER PRODUCTION STARTUP
+0|learnyze | 2025-07-19 04:50:34: Starting at: Sat Jul 19 2025 04:50:34 GMT+0000 (Coordinated Universal Time)
+0|learnyze | 2025-07-19 04:50:34: Environment check:
+0|learnyze | 2025-07-19 04:50:34: - NODE_ENV: production
+0|learnyze | 2025-07-19 04:50:34: - PORT: 5000
+0|learnyze | 2025-07-19 04:50:34: - Working Directory: /home/ubuntu/Learnyzer
+0|learnyze | 2025-07-19 04:50:34: - Database URL present: YES
+0|learnyze | 2025-07-19 04:50:34: - OpenAI API Key present: YES
+0|learnyze | 2025-07-19 04:50:34: Starting server with tsx...
+0|learnyze | 2025-07-19 04:50:36: [dotenv@17.2.0] injecting env (0) from .env (tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] })
+0|learnyze | 2025-07-19 04:50:36: ✅ DATABASE_URL loaded successfully
+0|learnyze | 2025-07-19 04:50:36: [dotenv@17.2.0] injecting env (0) from .env (tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild)
+0|learnyze | 2025-07-19 04:50:36: WebSocket server created successfully
+0|learnyze | 2025-07-19 04:50:36: 4:50:36 AM [express] 🚀 Learnyzer server running on port 5000
+0|learnyze | 2025-07-19 04:50:44: 4:50:44 AM [express] GET /api/health 200 in 6ms :: {"status":"healthy","timestamp":"2025-07-19T04:50…
