@@ -187,6 +187,14 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
 - **Schema.org Integration**: JSON-LD structured data for better search engine understanding and rich snippets
 
 ## Changelog
+- July 19, 2025: **CRITICAL API ROUTING FIX COMPLETE** - Resolved HTML vs JSON API response issue with PM2 + nginx architecture
+  - **ROOT CAUSE IDENTIFIED**: Express middleware ordering was serving static files before API routes, causing /api/ requests to return HTML instead of JSON
+  - **SOLUTION IMPLEMENTED**: Separated backend and frontend with PM2 backend + nginx frontend architecture
+  - **PM2 BACKEND**: Dedicated API server on port 5000 managed by PM2 for auto-restart and monitoring
+  - **NGINX FRONTEND**: Serves static files from /dist with proper API proxying to PM2 backend
+  - **CONFIRMED WORKING**: OTP API now returns proper JSON through https://learnyzer.com/api/otp/send
+  - **ARCHITECTURE BENEFITS**: Clean separation, better scalability, automatic process management, SSL support
+  - **PRODUCTION READY**: Backend stable under PM2 management with nginx handling frontend and API routing
 - July 19, 2025: **COMPLETE CUSTOM DOMAIN DEPLOYMENT SUCCESS** - Learnyzer successfully deployed with SSL at https://learnyzer.com
   - **CUSTOM DOMAIN LIVE**: Successfully accessible at https://learnyzer.com with proper SSL/TLS encryption
   - **SSL CERTIFICATES**: Let's Encrypt certificates installed and configured with auto-renewal until October 2025
