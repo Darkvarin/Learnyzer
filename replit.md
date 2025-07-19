@@ -203,6 +203,8 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
   - **IMPROVED ERROR HANDLING**: Detailed API response logging and network error handling for debugging
   - **TESTING VERIFIED**: Both real SMS delivery and development mode OTP verification working correctly
   - **USER EXPERIENCE ENHANCED**: Clear instructions and mobile number validation for seamless registration process
+  - **CRITICAL PRODUCTION ISSUE**: Port 5000 conflict preventing Node.js backend from starting correctly on production server
+  - **NGINX ROUTING CONFIRMED**: nginx configuration is correct but backend not responding due to port conflict
 - July 19, 2025: **PRODUCTION DEPLOYMENT SUCCESS** - Learnyzer successfully deployed and accessible worldwide
   - **LIVE PLATFORM**: Successfully accessible at http://3.109.251.7:5000 with stable elastic IP
   - **ES MODULE COMPATIBILITY**: Resolved CommonJS/ES module conflicts with proper .mjs startup files
