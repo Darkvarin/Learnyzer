@@ -188,10 +188,10 @@ Learnyzer is a comprehensive educational platform designed specifically for Indi
 
 ## Changelog
 - July 19, 2025: **PRODUCTION DEPLOYMENT SUCCESS** - Learnyzer successfully deployed and accessible worldwide
-  - **LIVE PLATFORM**: Successfully accessible at http://13.127.206.181:5000 with full functionality
+  - **LIVE PLATFORM**: Successfully accessible at http://3.109.251.7:5000 with stable elastic IP
   - **ES MODULE COMPATIBILITY**: Resolved CommonJS/ES module conflicts with proper .mjs startup files
   - **AWS EC2 DEPLOYMENT**: Complete server setup with PM2 process management and health monitoring
-  - **NETWORK CONFIGURATION**: Resolved IP address confusion (corrected from 13.235.75.64 to 13.127.206.181)
+  - **ELASTIC IP CONFIGURATION**: Connected to stable elastic IP 3.109.251.7 for permanent access
   - **DATABASE CONNECTED**: PostgreSQL connection established with all API keys properly configured
   - **WEBSOCKET INTEGRATION**: Real-time features operational with user authentication working
   - **PRODUCTION READY**: Full AI-powered educational platform serving all 7 competitive exams (JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE)
