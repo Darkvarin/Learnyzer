@@ -1,60 +1,44 @@
 #!/bin/bash
 
-echo "🔄 ALTERNATIVE SOLUTION - COMPLETE PORT CLEANUP"
-echo "=============================================="
+echo "🔧 ALTERNATIVE SOLUTION - DEVELOPMENT MODE ON PRODUCTION"
+echo "======================================================="
 
 cd /home/ubuntu/Learnyzer
 
-# Kill everything related to Node.js/PM2
-echo "1. Complete process cleanup..."
-pm2 kill
-sudo pkill -f node
+# 1. Set NODE_ENV to development temporarily to bypass serveStatic
+echo "1. Setting NODE_ENV to development temporarily..."
+export NODE_ENV=development
+export PORT=5000
+export $(grep -v '^#' .env | xargs)
+
+# 2. Kill existing server
+echo "2. Killing existing server..."
+pm2 stop all 2>/dev/null
+pm2 delete all 2>/dev/null
 sudo pkill -f tsx
-sudo pkill -f npm
-sleep 3
+sudo fuser -k 5000/tcp 2>/dev/null
 
-# Find what's actually using port 5000
-echo "2. Investigating port 5000 usage..."
-sudo ss -tulnp | grep :5000
-sudo lsof -i :5000
-
-# Force kill any remaining processes on port 5000
-sudo fuser -k 5000/tcp 2>/dev/null || echo "No processes to kill on port 5000"
-
-# Install dependencies without dev restrictions
-echo "3. Installing complete dependency set..."
-npm install
-
-# Use port 8080 as safe alternative
-echo "4. Using port 8080 as safe alternative..."
-export NODE_ENV=production
-export PORT=8080
-
-# Load environment
-if [ -f ".env" ]; then
-    export $(grep -v '^#' .env | xargs)
-fi
-
-# Start server on port 8080
-echo "5. Starting server on port 8080..."
-tsx server/index.ts &
+# 3. Start server in development mode (this will use Vite middleware instead of serveStatic)
+echo "3. Starting server in development mode..."
+nohup tsx server/index.ts > server_dev_mode.log 2>&1 &
 SERVER_PID=$!
+echo "Server PID: $SERVER_PID"
 
-sleep 5
+sleep 8
 
-# Test server
-echo "6. Testing server on port 8080..."
-curl -X POST http://127.0.0.1:8080/api/otp/send \
-  -H "Content-Type: application/json" \
-  -d '{"mobile": "9999999999"}'
-
-# Update nginx to use port 8080
-echo "7. Updating nginx to use port 8080..."
-sudo sed -i 's/127.0.0.1:3000/127.0.0.1:8080/g' /etc/nginx/sites-available/learnyzer.com
-sudo nginx -t && sudo systemctl reload nginx
-
-# Final test
-echo "8. Final test through nginx..."
+# 4. Test OTP API
+echo "4. Testing OTP API..."
 curl -X POST https://learnyzer.com/api/otp/send \
   -H "Content-Type: application/json" \
   -d '{"mobile": "9999999999"}'
+
+echo ""
+echo "5. Test health endpoint..."
+curl -s https://learnyzer.com/api/health
+
+echo ""
+echo "6. Check server logs:"
+tail -15 server_dev_mode.log
+
+echo ""
+echo "7. If this works, we'll need to build the client and serve it differently"

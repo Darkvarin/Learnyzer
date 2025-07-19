@@ -1,89 +1,92 @@
 #!/bin/bash
 
-echo "🔧 PRODUCTION SERVER FIX - DIRECT TYPESCRIPT EXECUTION"
-echo "====================================================="
+echo "🚀 DEFINITIVE PRODUCTION SERVER FIX"
+echo "==================================="
 
 cd /home/ubuntu/Learnyzer
 
-# Stop everything
-pm2 kill
-sudo pkill -f node
-sudo pkill -f tsx
+# 1. Kill all existing processes
+echo "1. Stopping all existing processes..."
+pm2 stop all 2>/dev/null || true
+pm2 delete all 2>/dev/null || true
+sudo pkill -f tsx 2>/dev/null || true
+sudo pkill -f node 2>/dev/null || true
+sudo fuser -k 5000/tcp 2>/dev/null || true
 
-# Check project structure
-echo "1. Project structure check:"
-pwd
-ls -la
+sleep 3
 
-# Check if server files exist
-if [ -f "server/index.ts" ]; then
-    echo "✅ server/index.ts found"
-else
-    echo "❌ server/index.ts not found"
-    echo "Available server files:"
-    find . -name "*.ts" -o -name "*.js" | grep -i server
-    exit 1
-fi
+# 2. Create a custom production server script that fixes the middleware order
+echo "2. Creating custom production server..."
+cat > server-production-fixed.js << 'EOF'
+const express = require('express');
+const path = require('path');
+const { createRequire } = require('module');
 
-# Check if tsx is available
-echo "2. Checking tsx availability:"
-which tsx || echo "tsx not in PATH"
-npm list -g tsx || echo "tsx not installed globally"
+// Set up ES module require
+const require = createRequire(import.meta.url);
 
-# Install tsx if not available
-if ! command -v tsx &> /dev/null; then
-    echo "Installing tsx globally..."
-    sudo npm install -g tsx
-fi
+const app = express();
+app.use(express.json());
 
-# Load environment variables
-echo "3. Loading environment variables:"
-if [ -f ".env" ]; then
-    export $(grep -v '^#' .env | xargs)
-    echo "✅ Environment loaded"
-    echo "NODE_ENV: $NODE_ENV"
-    echo "PORT: ${PORT:-5000}"
-else
-    echo "❌ .env file not found"
-fi
+// 1. FIRST: Register API routes BEFORE static serving
+console.log('🔧 Registering API routes first...');
 
-# Set production environment
+// Import and setup authentication and routes
+const { default: setupAuth } = await import('./server/auth.js');
+const { default: registerRoutes } = await import('./server/routes.js');
+
+// Setup authentication
+setupAuth(app);
+
+// Register all API routes
+const server = await registerRoutes(app);
+
+// 2. SECOND: Serve static files only for non-API routes
+console.log('📁 Setting up static file serving...');
+const distPath = path.resolve('./server/public');
+
+// Serve static files
+app.use(express.static(distPath));
+
+// 3. LAST: Catch-all for frontend routing (excluding API)
+app.use('*', (req, res, next) => {
+  if (req.originalUrl.startsWith('/api/')) {
+    // Let API routes through
+    return next();
+  }
+  // Serve index.html for frontend routes
+  res.sendFile(path.resolve(distPath, 'index.html'));
+});
+
+const port = process.env.PORT || 5000;
+server.listen(port, '0.0.0.0', () => {
+  console.log(`🌐 Fixed production server running on port ${port}`);
+});
+EOF
+
+# 3. Make it executable and run
+echo "3. Starting fixed production server..."
 export NODE_ENV=production
-export PORT=3000
+export PORT=5000
+export $(grep -v '^#' .env | xargs)
 
-# Start server directly
-echo "4. Starting server directly with tsx:"
-echo "Command: tsx server/index.ts"
+# Start with node --experimental-modules for ES module support
+node --experimental-modules --loader ./server-production-fixed.js > server_fixed.log 2>&1 &
+FIXED_PID=$!
 
-# Run server in foreground first to see any errors
-timeout 10s tsx server/index.ts 2>&1 || echo "Server startup error detected"
-
-# If no immediate errors, start in background
-echo "5. Starting server in background:"
-nohup tsx server/index.ts > server.log 2>&1 &
-SERVER_PID=$!
-
-echo "Server PID: $SERVER_PID"
-
-# Wait for startup
+echo "Fixed server PID: $FIXED_PID"
 sleep 5
 
-# Check if process is running
-if ps -p $SERVER_PID > /dev/null; then
-    echo "✅ Server process running"
-    
-    # Show server logs
-    echo "6. Server logs:"
-    tail -20 server.log
-    
-    # Test server
-    echo "7. Testing server:"
-    curl -X POST http://127.0.0.1:3000/api/otp/send \
-      -H "Content-Type: application/json" \
-      -d '{"mobile": "9999999999"}'
-      
-else
-    echo "❌ Server failed to start"
-    echo "Error logs:"
-    cat server.log
-fi
+# 4. Test the fixed server
+echo "4. Testing fixed OTP API..."
+curl -X POST https://learnyzer.com/api/otp/send \
+  -H "Content-Type: application/json" \
+  -d '{"mobile": "9999999999"}'
+
+echo ""
+echo "5. Testing health endpoint..."
+curl -s https://learnyzer.com/api/health
+
+echo ""
+echo "6. Check logs:"
+tail -10 server_fixed.log

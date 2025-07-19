@@ -1,33 +1,40 @@
 #!/bin/bash
 
-echo "🔍 DEBUGGING PORT 80 ACCESS"
-echo "=========================="
+echo "🔍 ALTERNATIVE SOLUTION - DIRECT PORT 80 ACCESS"
+echo "=============================================="
 
-echo "Run these commands on your EC2 server:"
+cd /home/ubuntu/Learnyzer
+
+# 1. Test different approach - bypass nginx entirely
+echo "1. Kill current server on port 5000..."
+sudo pkill -f tsx
+sudo fuser -k 5000/tcp 2>/dev/null
+
+# 2. Start server directly on port 80 (requires sudo)
+echo "2. Starting server directly on port 80..."
+export NODE_ENV=production
+export PORT=80
+export $(grep -v '^#' .env | xargs)
+
+# Start with sudo for port 80
+sudo -E tsx server/index.ts > server_port80.log 2>&1 &
+SERVER_PID=$!
+
+echo "Server PID: $SERVER_PID"
+sleep 5
+
+# 3. Test direct port 80 access
+echo "3. Testing OTP API on port 80..."
+curl -X POST http://learnyzer.com/api/otp/send \
+  -H "Content-Type: application/json" \
+  -d '{"mobile": "9999999999"}'
+
 echo ""
+echo "4. Testing HTTPS with port 80 backend..."
+curl -X POST https://learnyzer.com/api/otp/send \
+  -H "Content-Type: application/json" \
+  -d '{"mobile": "9999999999"}'
 
-cat << 'DEBUG_COMMANDS'
-# Check what's running on port 80
-sudo netstat -tlnp | grep :80
-
-# Check PM2 status
-pm2 status
-
-# Test local port 80 access
-curl -v http://localhost:80/api/health 2>&1 | head -10
-
-# Check if anything is blocking port 80
-sudo lsof -i :80
-
-# Check if nginx or apache is running (they use port 80)
-sudo systemctl status nginx 2>/dev/null || echo "nginx not running"
-sudo systemctl status apache2 2>/dev/null || echo "apache2 not running"
-
-# Check Ubuntu firewall
-sudo ufw status
-
-# Get your public IP for testing
-PUBLIC_IP=$(curl -s ifconfig.me)
-echo "Your public IP: $PUBLIC_IP"
-echo "Try accessing: http://$PUBLIC_IP"
-DEBUG_COMMANDS
+echo ""
+echo "5. Check server logs:"
+tail -10 server_port80.log
