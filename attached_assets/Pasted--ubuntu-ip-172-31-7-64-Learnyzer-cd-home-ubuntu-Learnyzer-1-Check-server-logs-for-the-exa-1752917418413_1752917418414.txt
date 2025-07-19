@@ -1,0 +1,63 @@
+
+ubuntu@ip-172-31-7-64:~/Learnyzer$ cd /home/ubuntu/Learnyzer
+
+# 1. Check server logs for the exact error
+cat server.log
+
+# 2. Run server in foreground to see errors immediately
+export NODE_ENV=production
+export PORT=3000
+export $(grep -v '^#' .env | xargs)
+tsx server/index.ts
+nohup: ignoring input
+[dotenv@17.2.0] injecting env (0) from .env (tip: 🔐 encrypt with dotenvx: https://dotenvx.com)
+✅ DATABASE_URL loaded successfully
+[dotenv@17.2.0] injecting env (0) from .env (tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`)
+WebSocket server created successfully
+node:events:502
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use 0.0.0.0:5000
+    at Server.setupListenHandle [as _listen2] (node:net:1908:16)
+    at listenInCluster (node:net:1965:12)
+    at doListen (node:net:2139:7)
+    at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+Emitted 'error' event on WebSocketServer instance at:
+    at Server.emit (node:events:524:28)
+    at emitErrorNT (node:net:1944:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 5000
+}
+
+Node.js v20.19.4
+[dotenv@17.2.0] injecting env (0) from .env (tip: ⚙️  suppress all logs with { quiet: true })
+✅ DATABASE_URL loaded successfully
+[dotenv@17.2.0] injecting env (0) from .env (tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild)
+WebSocket server created successfully
+node:events:502
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use 0.0.0.0:5000
+    at Server.setupListenHandle [as _listen2] (node:net:1908:16)
+    at listenInCluster (node:net:1965:12)
+    at doListen (node:net:2139:7)
+    at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+Emitted 'error' event on WebSocketServer instance at:
+    at Server.emit (node:events:524:28)
+    at emitErrorNT (node:net:1944:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 5000
+}
+
+Node.js v20.19.4
+ubuntu@ip-172-31-7-64:~/Learnyzer$
