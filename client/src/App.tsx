@@ -13,6 +13,7 @@ import { ScrollToTop } from "@/components/scroll-to-top";
 
 
 import Dashboard from "@/pages/dashboard";
+import DashboardMinimal from "@/pages/dashboard-minimal";
 import BattleZone from "@/pages/battle-zone";
 import AiTools from "@/pages/ai-tools";
 
@@ -52,7 +53,8 @@ function App() {
                   <Switch>
                     <Route path="/" component={HomePage} />
                     <Route path="/landing" component={LandingPage} />
-                    <ProtectedRoute path="/dashboard" component={Dashboard} />
+                    <ProtectedRoute path="/dashboard" component={DashboardMinimal} />
+                    <ProtectedRoute path="/dashboard-full" component={Dashboard} />
                     <ProtectedRoute path="/battle-zone" component={BattleZone} />
                     <ProtectedRoute path="/ai-tools" component={AiTools} />
                     <ProtectedRoute path="/ai-tools/study-notes" component={StudyNotesGenerator} />
