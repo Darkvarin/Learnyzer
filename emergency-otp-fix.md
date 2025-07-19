@@ -1,48 +1,108 @@
-# EMERGENCY OTP FIX FOR LEARNYZER.COM
+# Emergency OTP Fix Guide
 
-## Quick Commands for Server 3.109.251.7
+## Problem
+Nginx is returning HTML instead of JSON for `/api/otp/send` requests, indicating API routes are not being properly proxied to the backend server.
 
+## Root Cause Analysis
+1. Backend server is running correctly on port 5000 ✅
+2. Direct API calls to `http://localhost:5000/api/otp/send` work ✅
+3. Through nginx `https://learnyzer.com/api/otp/send` returns HTML ❌
+
+## Solution Steps
+
+### Step 1: Verify Backend Server
 ```bash
-# Connect to your server
-ssh ubuntu@3.109.251.7
+# Test backend directly
+curl -X POST http://localhost:5000/api/otp/send \
+  -H "Content-Type: application/json" \
+  -d '{"mobile": "9999999999"}'
+```
+Expected: JSON response with OTP session
 
-# 1. Fix nginx upstream
-sudo sed -i 's/server app:5000;/server 127.0.0.1:5000;/' /etc/nginx/sites-available/learnyzer.com
+### Step 2: Fix Nginx Configuration
+```bash
+cd ~/Learnyzer
 
-# 2. Reload nginx
-sudo nginx -t && sudo systemctl reload nginx
+# Stop nginx
+sudo systemctl stop nginx
 
-# 3. Test OTP API
+# Remove conflicting configurations
+sudo rm -f /etc/nginx/sites-enabled/default
+
+# Create clean configuration
+sudo tee /etc/nginx/sites-available/learnyzer.com > /dev/null << 'EOF'
+server {
+    listen 80;
+    server_name learnyzer.com www.learnyzer.com;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name learnyzer.com www.learnyzer.com;
+
+    ssl_certificate /etc/letsencrypt/live/learnyzer.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/learnyzer.com/privkey.pem;
+
+    # API routes - HIGHEST PRIORITY
+    location /api/ {
+        proxy_pass http://127.0.0.1:5000/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
+    # Frontend
+    root /home/ubuntu/Learnyzer/dist;
+    index index.html;
+    
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+EOF
+
+# Enable site
+sudo ln -sf /etc/nginx/sites-available/learnyzer.com /etc/nginx/sites-enabled/
+
+# Test and start
+sudo nginx -t && sudo systemctl start nginx
+```
+
+### Step 3: Test Fix
+```bash
 curl -X POST https://learnyzer.com/api/otp/send \
   -H "Content-Type: application/json" \
   -d '{"mobile": "9999999999"}'
 ```
 
-## Expected Success Response
-```json
-{"success":true,"sessionId":"dev-session-xxx","message":"Development mode: Use OTP 123456 for testing"}
-```
-
-## If Still HTML Response
-
+### Step 4: If Still Not Working
 ```bash
-# Check backend status
-pm2 status
+# Check nginx logs
+sudo tail -20 /var/log/nginx/error.log
+sudo tail -20 /var/log/nginx/access.log
 
-# Restart backend if needed
-cd /home/ubuntu/Learnyzer
-pm2 restart learnyzer
+# Verify no other nginx sites are interfering
+ls -la /etc/nginx/sites-enabled/
 
-# Check logs
-pm2 logs learnyzer --lines 20
-
-# Test backend directly
-curl http://127.0.0.1:5000/api/otp/send \
-  -H "Content-Type: application/json" \
-  -d '{"mobile": "9999999999"}'
+# Test nginx configuration
+sudo nginx -T | grep -A10 -B10 "location /api"
 ```
 
-## Root Issue
-nginx was trying to proxy to `app:5000` (Docker) instead of `127.0.0.1:5000` (your actual server), causing API calls to return HTML instead of JSON.
+## Expected Final Result
+```json
+{
+  "success": true,
+  "sessionId": "dev-session-xxx",
+  "message": "Development mode: Use OTP 123456 for testing"
+}
+```
 
-This single configuration change should fix mobile registration on your live website.
+## Troubleshooting
+- If still getting HTML: Check for duplicate nginx configurations
+- If 502 Bad Gateway: Backend server might be down
+- If 404: API route doesn't exist in backend
+- If connection refused: Port 5000 not accessible
