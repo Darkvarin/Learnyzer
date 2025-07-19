@@ -1,30 +1,27 @@
-#!/usr/bin/env node
+const express = require('express');
+const app = express();
 
-// Quick test script to verify server startup on production
-console.log('🚀 Testing server startup...');
+// Essential middleware only
+app.use(express.json());
 
-// Set environment
-process.env.NODE_ENV = 'production';
-process.env.PORT = '3000';
+// Simple test route
+app.post('/api/otp/send', (req, res) => {
+    console.log('OTP endpoint hit with:', req.body);
+    res.setHeader('Content-Type', 'application/json');
+    res.json({
+        success: true,
+        sessionId: 'test-' + Date.now(),
+        message: 'Test server working',
+        mobile: req.body.mobile
+    });
+});
 
-// Load .env manually
-const fs = require('fs');
-try {
-  const envFile = fs.readFileSync('.env', 'utf8');
-  envFile.split('\n').forEach(line => {
-    if (line && !line.startsWith('#')) {
-      const [key, ...values] = line.split('=');
-      if (key && values.length > 0) {
-        process.env[key] = values.join('=');
-      }
-    }
-  });
-  console.log('✅ Environment loaded');
-} catch (err) {
-  console.log('⚠️  No .env file found');
-}
+app.get('/api/health', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.json({ status: 'ok', test: true });
+});
 
-console.log('Port will be:', process.env.PORT);
-
-// Import and start server
-require('./server/index.ts');
+// Start on different port to avoid conflicts
+app.listen(3001, '0.0.0.0', () => {
+    console.log('Test server running on port 3001');
+});
