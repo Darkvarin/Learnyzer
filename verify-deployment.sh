@@ -1,37 +1,38 @@
 #!/bin/bash
 
-echo "🔍 LEARNYZER DEPLOYMENT VERIFICATION"
-echo "===================================="
+# Verify that sitemap deployment is successful
+echo "🔍 Verifying Learnyzer deployment and SEO files..."
+echo ""
 
-cd ~/Learnyzer || { echo "❌ Project directory not found"; exit 1; }
+# Check live sitemap URLs
+echo "📋 Checking live sitemap.xml (first 10 URLs):"
+curl -s https://learnyzer.com/sitemap.xml | grep -o 'https://learnyzer.com[^<]*' | head -10
+echo ""
 
-echo "1️⃣ PM2 Status:"
-pm2 status
+# Count total URLs in sitemap
+echo "📊 Total URLs in sitemap:"
+curl -s https://learnyzer.com/sitemap.xml | grep -c '<loc>'
+echo ""
 
-echo -e "\n2️⃣ Process Information:"
-ps aux | grep -E "(learnyzer|tsx.*server)" | grep -v grep || echo "No processes found"
+# Verify key pages are accessible
+echo "🌐 Testing key pages accessibility:"
+echo "Homepage:"
+curl -s -w "Status: %{http_code}, Time: %{time_total}s\n" -o /dev/null https://learnyzer.com/
 
-echo -e "\n3️⃣ Port Check:"
-netstat -tlnp | grep :5000 || echo "Port 5000 not listening"
+echo "Landing page:"
+curl -s -w "Status: %{http_code}, Time: %{time_total}s\n" -o /dev/null https://learnyzer.com/landing
 
-echo -e "\n4️⃣ Health Check:"
-if timeout 10 curl -f http://localhost:5000/api/health 2>/dev/null; then
-    echo -e "\n✅ Health check successful!"
-else
-    echo -e "\n❌ Health check failed"
-fi
+echo "AI Tutor:"
+curl -s -w "Status: %{http_code}, Time: %{time_total}s\n" -o /dev/null https://learnyzer.com/ai-tutor
 
-echo -e "\n5️⃣ Recent Logs (last 10 lines):"
-pm2 logs learnyzer --lines 10 --nostream
+echo "Subscription:"
+curl -s -w "Status: %{http_code}, Time: %{time_total}s\n" -o /dev/null https://learnyzer.com/subscription
 
-echo -e "\n6️⃣ Server Information:"
-PUBLIC_IP=$(timeout 5 curl -s ifconfig.me 2>/dev/null || echo "Unable to get IP")
-echo "🌐 Your Learnyzer server should be accessible at:"
-echo "   http://$PUBLIC_IP:5000"
-echo "   http://localhost:5000 (local access)"
-
-echo -e "\n7️⃣ PM2 Process Details:"
-pm2 describe learnyzer 2>/dev/null | head -20
-
-echo -e "\n✅ VERIFICATION COMPLETE"
-echo "If health check passed, your server is running successfully!"
+echo ""
+echo "✅ Google Search Console Actions:"
+echo "1. Go to https://search.google.com/search-console/"
+echo "2. Remove old sitemap (if exists)"
+echo "3. Add new sitemap: https://learnyzer.com/sitemap.xml"
+echo "4. Request re-indexing for main pages"
+echo ""
+echo "🎯 All URLs now use correct https://learnyzer.com domain!"

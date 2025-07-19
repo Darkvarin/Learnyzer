@@ -1,16 +1,20 @@
 #!/bin/bash
 
-# Update sitemap.xml with custom domain
-DOMAIN="learnyzer.com"  # Replace with your actual domain
+# Update sitemap.xml to use correct domain
+echo "🔄 Updating sitemap.xml with correct domain..."
 
-echo "🔄 Updating sitemap.xml for domain: ${DOMAIN}"
-
-# Backup original sitemap
+# Backup original
 cp public/sitemap.xml public/sitemap.xml.backup
 
-# Update all URLs in sitemap to use custom domain with HTTPS
-sed -i "s|http://3.109.251.7:5000|https://${DOMAIN}|g" public/sitemap.xml
+# Replace all replit.app URLs with learnyzer.com
+sed -i 's|https://learnyzer.replit.app|https://learnyzer.com|g' public/sitemap.xml
 
-echo "✅ Sitemap updated successfully!"
-echo "📄 Check updated sitemap: public/sitemap.xml"
-echo "🔗 Your sitemap will be available at: https://${DOMAIN}/sitemap.xml"
+echo "✅ Updated sitemap.xml URLs from replit.app to learnyzer.com"
+echo "📋 Checking updated URLs:"
+grep -n "https://learnyzer.com" public/sitemap.xml | head -5
+
+echo ""
+echo "🚀 Next steps:"
+echo "1. Deploy this fix to your server"
+echo "2. Re-submit sitemap in Google Search Console"
+echo "3. All 26 pages will now use correct domain"

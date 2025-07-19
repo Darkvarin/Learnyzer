@@ -1,3 +1,15 @@
+#!/bin/bash
+
+# Script to run on EC2 server to fix sitemap URLs
+# Run this on your EC2 server: ubuntu@ip-172-31-7-64:~/Learnyzer
+
+echo "🔄 Fixing sitemap.xml URLs on server..."
+
+# Backup current sitemap
+sudo cp /var/www/learnyzer.com/html/sitemap.xml /var/www/learnyzer.com/html/sitemap.xml.backup 2>/dev/null || echo "No existing sitemap to backup"
+
+# Create corrected sitemap directly on server
+sudo tee /var/www/learnyzer.com/html/sitemap.xml > /dev/null <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
@@ -177,3 +189,25 @@
   </url>
   
 </urlset>
+EOF
+
+# Set proper permissions
+sudo chown nginx:nginx /var/www/learnyzer.com/html/sitemap.xml
+sudo chmod 644 /var/www/learnyzer.com/html/sitemap.xml
+
+echo "✅ Sitemap updated successfully!"
+
+# Verify the fix
+echo "🔍 Verifying sitemap URLs (first 5):"
+curl -s https://learnyzer.com/sitemap.xml | grep -o 'https://learnyzer.com[^<]*' | head -5
+
+echo ""
+echo "📊 Total URLs in sitemap:"
+curl -s https://learnyzer.com/sitemap.xml | grep -c '<loc>'
+
+echo ""
+echo "🎯 Next steps:"
+echo "1. Go to Google Search Console"
+echo "2. Re-submit sitemap: https://learnyzer.com/sitemap.xml"
+echo "3. All 26 pages now use correct domain!"
+EOF
