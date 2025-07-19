@@ -847,6 +847,7 @@ export type StudentProfile = typeof studentProfile.$inferSelect;
 export type InsertStudentProfile = typeof studentProfile.$inferInsert;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type RegisterUser = z.infer<typeof registerSchema>;
 export type InsertFeedbackCategory = z.infer<typeof insertFeedbackCategorySchema>;
 export type InsertCustomerFeedback = z.infer<typeof insertCustomerFeedbackSchema>;
 export type InsertFeedbackVote = z.infer<typeof insertFeedbackVoteSchema>;

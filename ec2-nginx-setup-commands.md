@@ -28,14 +28,26 @@ sudo chmod -R 755 /var/www/${DOMAIN}
 # Navigate to your Learnyzer directory (adjust path as needed)
 cd /home/ubuntu/Learnyzer
 
-# Build the frontend
-npm run build
+# First, let's check what's available
+ls -la public/
 
-# Copy built files to nginx directory
-sudo cp -r dist/public/* /var/www/${DOMAIN}/html/
+# Copy SEO files directly from public directory first
 sudo cp public/sitemap.xml /var/www/${DOMAIN}/html/
 sudo cp public/robots.txt /var/www/${DOMAIN}/html/
 sudo cp public/manifest.json /var/www/${DOMAIN}/html/
+
+# Build the frontend (we'll check if build works, if not we'll use dev mode)
+npm run build
+
+# If build succeeds, copy from dist/public, otherwise we'll serve via proxy
+if [ -d "dist/public" ]; then
+    sudo cp -r dist/public/* /var/www/${DOMAIN}/html/
+    echo "✅ Using built files from dist/public"
+else
+    echo "⚠️  Build failed, will use development mode with nginx proxy"
+    # Copy essential static files from public
+    sudo cp -r public/* /var/www/${DOMAIN}/html/ 2>/dev/null || echo "Some files already copied"
+fi
 
 # Set proper permissions
 sudo chown -R www-data:www-data /var/www/${DOMAIN}/html
@@ -108,9 +120,18 @@ server {
         add_header Content-Type application/json;
     }
 
-    # Main application - serve React app
+    # Main application - serve React app or proxy to dev server
     location / {
-        try_files $uri $uri/ /index.html;
+        try_files $uri $uri/ @fallback;
+    }
+
+    # Fallback to development server if files not found
+    location @fallback {
+        proxy_pass http://localhost:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
     # Error pages
