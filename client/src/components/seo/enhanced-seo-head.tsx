@@ -16,7 +16,7 @@ export function EnhancedSEOHead({
   description = "Master JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE (SSC-CGL) with India's most advanced AI tutoring platform. Get personalized study plans, mock tests, interactive diagrams, performance analytics, and gamified learning. Join thousands of successful students preparing for competitive entrance exams.",
   keywords = "JEE preparation, NEET coaching, UPSC study material, CLAT mock tests, CUET exam prep, CSE preparation, CGLE SSC-CGL, AI tutor India, entrance exam preparation, competitive exam coaching, online mock tests, JEE main advanced, NEET UG, UPSC CSE prelims mains, CLAT preparation online, CUET domain subjects, computer science engineering, SSC CGL preparation, mock test generator, study notes AI, answer checker, physics preparation, chemistry preparation, mathematics preparation, biology preparation, entrance exam coaching India, competitive exam preparation platform, online test series, previous year questions, exam pattern analysis, syllabus coverage, preparation strategy, doubt solving app, concept clarity, exam tips tricks, AI-powered learning platform, personalized study plan, performance analytics dashboard, rank improvement, score enhancement, Indian education technology, coaching institute alternative, best exam preparation app 2025, adaptive learning system, smart tutoring AI, educational technology India, entrance exam success, competitive exam results",
   canonical,
-  ogImage = "https://learnyzer.replit.app/images/learnyzer-og-image.svg",
+  ogImage = "https://learnyzer.com/images/learnyzer-og-image.svg",
   examType,
   subject,
   pageType = 'general'

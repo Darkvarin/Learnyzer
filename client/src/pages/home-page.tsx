@@ -104,7 +104,7 @@ export default function HomePage() {
       <EnhancedSEOHead
         title="Learnyzer - AI-Powered Indian Entrance Exam Preparation Platform | JEE, NEET, UPSC, CLAT, CUET, CSE, CGLE"
         description="Master all Indian competitive exams with AI tutoring, mock tests, study materials & personalized learning. Expert preparation for JEE, NEET, UPSC, CLAT, CUET, CSE & CGLE. Join thousands of successful students nationwide."
-        canonical="https://learnyzer.replit.app"
+        canonical="https://learnyzer.com"
         pageType="homepage"
       />
       {/* Cyberpunk-style background elements */}

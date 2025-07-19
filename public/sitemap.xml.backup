@@ -3,14 +3,14 @@
   
   <!-- Main pages -->
   <url>
-    <loc>https://learnyzer.com/</loc>
+    <loc>http://3.109.251.7:5000/</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/landing</loc>
+    <loc>http://3.109.251.7:5000/landing</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -18,14 +18,14 @@
   
   <!-- Core AI Features -->
   <url>
-    <loc>https://learnyzer.com/ai-tutor</loc>
+    <loc>http://3.109.251.7:5000/ai-tutor</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/ai-visual-lab</loc>
+    <loc>http://3.109.251.7:5000/ai-visual-lab</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -33,35 +33,35 @@
   
   <!-- AI Tools -->
   <url>
-    <loc>https://learnyzer.com/ai-tools</loc>
+    <loc>http://3.109.251.7:5000/ai-tools</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/ai-tools/study-notes</loc>
+    <loc>http://3.109.251.7:5000/ai-tools/study-notes</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/ai-tools/answer-checker</loc>
+    <loc>http://3.109.251.7:5000/ai-tools/answer-checker</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/ai-tools/mock-test-generator</loc>
+    <loc>http://3.109.251.7:5000/ai-tools/mock-test-generator</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/ai-tools/performance</loc>
+    <loc>http://3.109.251.7:5000/ai-tools/performance</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -69,21 +69,21 @@
   
   <!-- Student Features -->
   <url>
-    <loc>https://learnyzer.com/battle-zone</loc>
+    <loc>http://3.109.251.7:5000/battle-zone</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/leaderboard</loc>
+    <loc>http://3.109.251.7:5000/leaderboard</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/dashboard</loc>
+    <loc>http://3.109.251.7:5000/dashboard</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -91,7 +91,7 @@
   
   <!-- Business pages -->
   <url>
-    <loc>https://learnyzer.com/subscription</loc>
+    <loc>http://3.109.251.7:5000/subscription</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -99,63 +99,63 @@
   
   <!-- Exam-specific preparation pages -->
   <url>
-    <loc>https://learnyzer.com/jee-preparation</loc>
+    <loc>http://3.109.251.7:5000/jee-preparation</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/neet-preparation</loc>
+    <loc>http://3.109.251.7:5000/neet-preparation</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/upsc-preparation</loc>
+    <loc>http://3.109.251.7:5000/upsc-preparation</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/clat-preparation</loc>
+    <loc>http://3.109.251.7:5000/clat-preparation</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/cuet-preparation</loc>
+    <loc>http://3.109.251.7:5000/cuet-preparation</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/cse-preparation</loc>
+    <loc>http://3.109.251.7:5000/cse-preparation</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/cgle-ssc-cgl-preparation</loc>
+    <loc>http://3.109.251.7:5000/cgle-ssc-cgl-preparation</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/feedback</loc>
+    <loc>http://3.109.251.7:5000/feedback</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/contact</loc>
+    <loc>http://3.109.251.7:5000/contact</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -163,14 +163,14 @@
   
   <!-- Legal pages -->
   <url>
-    <loc>https://learnyzer.com/terms</loc>
+    <loc>http://3.109.251.7:5000/terms</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   
   <url>
-    <loc>https://learnyzer.com/privacy</loc>
+    <loc>http://3.109.251.7:5000/privacy</loc>
     <lastmod>2025-07-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
