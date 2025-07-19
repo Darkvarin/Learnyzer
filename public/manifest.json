@@ -1,0 +1,25 @@
+{
+  "name": "Learnyzer - AI-Powered Entrance Exam Preparation",
+  "short_name": "Learnyzer",
+  "description": "Master JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE with AI tutoring, mock tests, and gamified learning",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#7d27ff",
+  "orientation": "portrait-primary",
+  "categories": ["education", "productivity"],
+  "lang": "en-IN",
+  "icons": [
+    {
+      "src": "/generated-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

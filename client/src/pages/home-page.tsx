@@ -346,8 +346,8 @@ export default function HomePage() {
                 <div className="absolute -left-6 top-6 w-4 h-20 border-l-2 border-t-2 border-primary/60"></div>
                 <div className="mb-2 font-mono tracking-wider text-primary/80">FUTURE OF EDUCATION</div>
                 <h1 className="text-4xl md:text-7xl font-gaming mb-2 relative">
-                  <span className="block text-white relative z-10">Level Up <span className="relative">
-                    Your
+                  <span className="block text-white relative z-10">AI-Powered <span className="relative">
+                    Entrance Exam
                     <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-primary via-purple-500 to-blue-500"></div>
                   </span></span>
                   <span className="block gradient-text relative z-10 hex-clip-badge" style={{
@@ -356,7 +356,7 @@ export default function HomePage() {
                     WebkitTextFillColor: "transparent",
                     backgroundSize: "200% auto",
                     animation: "gradient-animation 3s linear infinite"
-                  }}>Learning Journey</span>
+                  }}>Preparation Platform</span>
                 </h1>
                 
                 {/* Solo Leveling inspired decorative element */}
@@ -366,7 +366,7 @@ export default function HomePage() {
               <div className="mt-8 relative">
                 <div className="absolute left-0 top-0 w-1 h-full bg-primary/30"></div>
                 <p className="text-xl pl-4 mb-8 text-gray-300 max-w-xl leading-relaxed">
-                  India's first AI-powered competitive exam preparation platform with advanced gamification. Dominate JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE (SSC-CGL) with intelligent AI tutors, real-time battles, and a complete ranking system.
+                  Master JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE (SSC-CGL) with India's most advanced AI tutoring system. Get personalized study plans, mock tests, interactive diagrams, and gamified learning that adapts to your pace.
                 </p>
               </div>
               
@@ -448,9 +448,9 @@ export default function HomePage() {
                       REVOLUTIONARY AI-POWERED LEARNING
                     </div>
                     <h2 className="text-3xl font-gaming mb-4 hex-title relative inline-block">
-                      AI Tutor with Smart Interaction
+                      GPT-4o AI Tutors for Every Exam
                     </h2>
-                    <p className="text-gray-400 mb-6">Master entrance exam concepts with specialized AI tutors for JEE, NEET, UPSC, CLAT, and CUET</p>
+                    <p className="text-gray-400 mb-6">Get instant answers, step-by-step explanations, and personalized study guidance from AI tutors specialized in JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE preparation</p>
                   </div>
                   
                   {/* Interactive Tech Features with Solo Leveling style */}
@@ -545,7 +545,7 @@ export default function HomePage() {
                 className="text-3xl md:text-5xl font-gaming mb-2 relative px-6"
               >
                 <span className="relative z-10">
-                  Exam-Mastery Features
+                  Complete AI-Powered Study Tools
                   <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent"></div>
                 </span>
               </motion.h2>
@@ -557,7 +557,7 @@ export default function HomePage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-xl text-gray-300 max-w-2xl mx-auto mt-6"
             >
-              Learnyzer combines advanced AI technology with immersive gamification to create the future of entrance exam preparation
+              Everything you need to crack JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE: AI tutors, mock tests, study notes, performance analytics, and competitive battles
             </motion.p>
           </div>
 
@@ -580,10 +580,10 @@ export default function HomePage() {
                       <Brain className="h-10 w-10 text-primary" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-gaming mb-4 text-white">GPT-4o Powered AI Tutors</h3>
+                  <h3 className="text-2xl font-gaming mb-4 text-white">AI Tutors for All Exams</h3>
                   <p className="text-gray-300">
-                    Experience personalized coaching with advanced GPT-4o AI tutors specialized for JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE (SSC-CGL). 
-                    Get instant doubt resolution, step-by-step solutions, and adaptive learning that matches your exam pattern.
+                    Get personalized coaching with GPT-4o AI tutors specialized for JEE, NEET, UPSC, CLAT, CUET, CSE, and CGLE (SSC-CGL). 
+                    Receive instant doubt resolution, step-by-step solutions, interactive diagrams, and adaptive learning that matches your specific exam pattern and difficulty level.
                   </p>
                   <div className="mt-6 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-gray-400">

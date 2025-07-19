@@ -1,0 +1,42 @@
+User-agent: *
+Allow: /
+
+# High-priority pages for search engines
+Allow: /
+Allow: /landing
+Allow: /ai-tutor
+Allow: /ai-visual-lab
+Allow: /ai-tools/
+Allow: /battle-zone
+Allow: /leaderboard
+Allow: /subscription
+Allow: /feedback
+Allow: /contact
+Allow: /terms
+Allow: /privacy
+
+# Block admin and development pages
+Disallow: /admin/
+Disallow: /api/
+Disallow: /auth/
+Disallow: /dashboard/
+Disallow: /profile-settings/
+Disallow: /create-profile/
+Disallow: /security-dashboard/
+Disallow: /lead-generation/
+
+# Block duplicate or test pages
+Disallow: /*?*
+Disallow: /websocket-test
+Disallow: /test/
+
+# Allow crawling of static assets
+Allow: /images/
+Allow: /favicon.svg
+Allow: /generated-icon.png
+
+# Sitemap location
+Sitemap: http://3.109.251.7:5000/sitemap.xml
+
+# Crawl delay (be respectful)
+Crawl-delay: 1
