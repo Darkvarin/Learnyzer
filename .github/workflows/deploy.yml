@@ -3,8 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -17,62 +16,86 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '18'
         cache: 'npm'
         
     - name: Install dependencies
       run: npm ci
       
-    - name: Build application
-      run: npm run build
-      env:
-        NODE_ENV: production
-        
-    - name: Run tests (if available)
-      run: npm test --if-present
+    - name: Build frontend
+      run: npx vite build --config vite.config.ts
       
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
+        username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
-        port: ${{ secrets.EC2_PORT || 22 }}
+        port: 22
         script: |
-          # Navigate to application directory
-          cd /home/${{ secrets.EC2_USERNAME }}/learnyzer
+          echo "🚀 Starting automated deployment..."
           
-          # Stop the application
-          pm2 stop learnyzer || true
+          # Navigate to project directory
+          cd ~/Learnyzer
           
           # Pull latest changes
           git pull origin main
           
-          # Install dependencies
+          # Stop PM2 processes
+          pm2 delete learnyzer 2>/dev/null || true
+          
+          # Set environment variables
+          export NODE_ENV=production
+          export DATABASE_URL="${{ secrets.DATABASE_URL }}"
+          export OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
+          export TWOFACTOR_API_KEY="${{ secrets.TWOFACTOR_API_KEY }}"
+          export RAZORPAY_KEY_ID="${{ secrets.RAZORPAY_KEY_ID }}"
+          export RAZORPAY_KEY_SECRET="${{ secrets.RAZORPAY_KEY_SECRET }}"
+          export PORT="5000"
+          
+          # Install/update dependencies
           npm ci --production
           
-          # Build application
-          npm run build
+          # Build frontend
+          npx vite build --config vite.config.ts
           
-          # Run database migrations if needed
-          npm run db:push || true
+          # Create production startup script
+          cat > start-production.mjs << 'EOF'
+          // Production server with TypeScript loader
+          import { register } from 'module';
+          import { pathToFileURL } from 'url';
           
-          # Start application with PM2
-          pm2 start ecosystem.config.js || pm2 restart learnyzer
+          // Register TypeScript loader
+          register('tsx/esm', pathToFileURL('./'));
+          
+          // Set production environment
+          process.env.NODE_ENV = 'production';
+          
+          console.log('🚀 Learnyzer Production Server Starting...');
+          console.log('📁 Serving static files from dist/public/');
+          console.log(`🌐 Server running on port ${process.env.PORT || 5000}`);
+          
+          // Import and start the server
+          import('./server/index.ts');
+          EOF
+          
+          # Start production server
+          pm2 start start-production.mjs --name learnyzer --log-date-format="YYYY-MM-DD HH:mm:ss"
           
           # Save PM2 configuration
           pm2 save
           
-          echo "Deployment completed successfully!"
-
-  health-check:
-    needs: deploy
-    runs-on: ubuntu-latest
-    if: success()
-    
-    steps:
-    - name: Health Check
-      run: |
-        sleep 30
-        curl -f ${{ secrets.APP_URL }}/api/health || exit 1
-        echo "Health check passed!"
+          # Wait for startup
+          sleep 10
+          
+          # Test server
+          if curl -f http://localhost:5000/api/health > /dev/null 2>&1; then
+            echo "✅ Deployment successful! Server is running."
+            pm2 status
+          else
+            echo "❌ Deployment failed. Server not responding."
+            pm2 logs learnyzer --lines 20
+            exit 1
+          fi
+          
+          echo "🌐 Learnyzer is LIVE at: http://$(curl -s ifconfig.me):5000"
