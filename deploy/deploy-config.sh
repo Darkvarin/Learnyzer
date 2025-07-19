@@ -108,7 +108,7 @@ SCRIPT_EOF
 echo "🚀 Starting production server..."
 pm2 start ecosystem.config.js --env production
 
-# Save PM2 configuration
+# Save PM2 configuration (skip startup command to avoid hanging)
 pm2 save
 
 # Wait for startup

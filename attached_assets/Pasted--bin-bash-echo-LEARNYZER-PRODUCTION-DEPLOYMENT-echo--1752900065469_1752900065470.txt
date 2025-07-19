@@ -1,0 +1,87 @@
+#!/bin/bash
+
+echo "🚀 LEARNYZER PRODUCTION DEPLOYMENT"
+echo "=================================="
+
+# Navigate to project directory
+cd ~/Learnyzer
+
+# Stop all PM2 processes
+pm2 delete all 2>/dev/null || true
+
+# Set environment variables for production
+export NODE_ENV=production
+export DATABASE_URL="postgresql://postgres:LearnyzerDB2024@database-1.cro6kewkgl4r.ap-south-1.rds.amazonaws.com:5432/learnyzer"
+export OPENAI_API_KEY="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"
+export TWOFACTOR_API_KEY="75c5f204-57d8-11f0-a562-0200cd936042"
+export RAZORPAY_KEY_ID="rzp_test_KofqomcGyXcjRP"
+export RAZORPAY_KEY_SECRET="dqYO8RMzv4QaEiTOiP97fLka"
+export PORT="5000"
+
+echo "1️⃣ Installing production dependencies..."
+npm ci --production
+
+echo "2️⃣ Building frontend only (bypassing server compilation)..."
+# Remove any problematic compiled configs
+rm -f vite.config.js 2>/dev/null
+
+# Build frontend with TypeScript config
+npx vite build --config vite.config.ts
+
+# Verify frontend build
+if [ ! -f "dist/public/index.html" ]; then
+    echo "❌ Frontend build failed"
+    exit 1
+fi
+
+echo "✅ Frontend build completed: $(du -sh dist/public/)"
+
+echo "3️⃣ Starting production server with Node.js runtime..."
+
+# Create production startup script that uses Node.js with TypeScript loader
+cat > start-production.mjs << 'EOF'
+// Production server with TypeScript loader
+import { register } from 'module';
+import { pathToFileURL } from 'url';
+
+// Register TypeScript loader
+register('tsx/esm', pathToFileURL('./'));
+
+// Set production environment
+process.env.NODE_ENV = 'production';
+
+console.log('🚀 Starting Learnyzer Production Server...');
+console.log('📁 Serving static files from dist/public/');
+console.log(`🌐 Server will run on port ${process.env.PORT || 5000}`);
+
+// Import and start the server
+import('./server/index.ts');
+EOF
+
+# Start with PM2
+pm2 start start-production.mjs --name learnyzer --log-date-format="YYYY-MM-DD HH:mm:ss"
+
+# Configure PM2 for auto-restart
+pm2 startup
+pm2 save
+
+echo "4️⃣ Waiting for server startup..."
+sleep 10
+
+# Check server status
+pm2 status
+
+echo "5️⃣ Testing production server..."
+if curl -f http://localhost:5000/api/health > /dev/null 2>&1; then
+    echo "✅ Production server running successfully!"
+    echo "🌐 Learnyzer is LIVE at: http://$(curl -s ifconfig.me):5000"
+else
+    echo "❌ Server not responding. Checking logs..."
+    pm2 logs learnyzer --lines 20
+fi
+
+echo ""
+echo "📊 Monitor: pm2 monit"
+echo "📋 Logs: pm2 logs learnyzer"
+echo "🔄 Restart: pm2 restart learnyzer"
+echo "🛑 Stop: pm2 stop learnyzer"
