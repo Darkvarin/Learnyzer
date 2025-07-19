@@ -1,0 +1,119 @@
+ <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Learnyzer - AI-Powered Entrance Exam Preparation" />
+    <meta name="twitter:description" content="Prepare for JEE, NEET, UPSC, CLAT, CUET and CSE with our AI voice tutoring platform." />
+    <meta name="twitter:image" content="https://learnyzer.com/images/learnyzer-og-image.svg" />
+
+    <!-- Structured Data for Rich Results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Learnyzer Edtech",
+      "description": "AI-powered preparation platform for Indian entrance exams including JEE, NEET, UPSC, CLAT, and CUET",
+      "url": "https://learnyzer.com",
+      "logo": "https://learnyzer.com/images/logo.png",
+      "sameAs": [
+        "https://www.facebook.com/learnyzer",
+        "https://twitter.com/learnyzer",
+        "https://www.instagram.com/learnyzer"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "India"
+      }
+    }
+    </script>
+
+    <!-- Mobile theme color -->
+    <meta name="theme-color" content="#141625" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.svg" />
+    <script type="module" crossorigin src="/assets/index-3TL2Gb4u.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DfcCqErM.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
+    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
+  </body>
+</html>Checking nginx error logs...
+9:34:55 AM [express] POST /api/otp/send 200 in 12ms
+2025/07/19 09:28:58 [error] 72693#72693: *12 connect() failed (111: Connection refused) while connecting to upstream, client: 117.98.0.74, server: learnyzer.com, request: "GET /api/feedback/categories HTTP/2.0", upstream: "http://127.0.0.1:3000/api/feedback/categories", host: "learnyzer.com", referrer: "https://learnyzer.com/feedback"
+2025/07/19 09:28:58 [error] 72693#72693: *12 connect() failed (111: Connection refused) while connecting to upstream, client: 117.98.0.74, server: learnyzer.com, request: "GET /api/feedback/categories/counts HTTP/2.0", upstream: "http://127.0.0.1:3000/api/feedback/categories/counts", host: "learnyzer.com", referrer: "https://learnyzer.com/feedback"
+2025/07/19 09:28:58 [error] 72693#72693: *12 connect() failed (111: Connection refused) while connecting to upstream, client: 117.98.0.74, server: learnyzer.com, request: "GET /api/feedback?type=all_types&status=all_statuses&priority=all_priorities&categoryId=all_categories&page=1 HTTP/2.0", upstream: "http://127.0.0.1:3000/api/feedback?type=all_types&status=all_statuses&priority=all_priorities&categoryId=all_categories&page=1", host: "learnyzer.com", referrer: "https://learnyzer.com/feedback"
+2025/07/19 09:28:58 [error] 72693#72693: *12 connect() failed (111: Connection refused) while connecting to upstream, client: 117.98.0.74, server: learnyzer.com, request: "GET /api/feedback/stats HTTP/2.0", upstream: "http://127.0.0.1:3000/api/feedback/stats", host: "learnyzer.com", referrer: "https://learnyzer.com/feedback"
+2025/07/19 09:29:29 [error] 72693#72693: *12 connect() failed (111: Connection refused) while connecting to upstream, client: 117.98.0.74, server: learnyzer.com, request: "GET /api/feedback/categories HTTP/2.0", upstream: "http://127.0.0.1:3000/api/feedback/categories", host: "learnyzer.com", referrer: "https://learnyzer.com/feedback"
+2025/07/19 09:29:29 [error] 72693#72693: *12 connect() failed (111: Connection refused) while connecting to upstream, client: 117.98.0.74, server: learnyzer.com, request: "GET /api/feedback/categories/counts HTTP/2.0", upstream: "http://127.0.0.1:3000/api/feedback/categories/counts", host: "learnyzer.com", referrer: "https://learnyzer.com/feedback"
+2025/07/19 09:29:29 [error] 72693#72693: *12 connect() failed (111: Connection refused) while connecting to upstream, client: 117.98.0.74, server: learnyzer.com, request: "GET /api/feedback?type=all_types&status=all_statuses&priority=all_priorities&categoryId=all_categories&page=1 HTTP/2.0", upstream: "http://127.0.0.1:3000/api/feedback?type=all_types&status=all_statuses&priority=all_priorities&categoryId=all_categories&page=1", host: "learnyzer.com", referrer: "https://learnyzer.com/feedback"
+2025/07/19 09:29:29 [error] 72693#72693: *12 connect() failed (111: Connection refused) while connecting to upstream, client: 117.98.0.74, server: learnyzer.com, request: "GET /api/feedback/stats HTTP/2.0", upstream: "http://127.0.0.1:3000/api/feedback/stats", host: "learnyzer.com", referrer: "https://learnyzer.com/feedback"
+2025/07/19 09:31:29 [error] 72693#72693: *27 connect() failed (111: Connection refused) while connecting to upstream, client: 3.109.251.7, server: learnyzer.com, request: "POST /api/otp/send HTTP/2.0", upstream: "http://127.0.0.1:3000/api/otp/send", host: "learnyzer.com"
+2025/07/19 09:32:41 [error] 72693#72693: *29 connect() failed (111: Connection refused) while connecting to upstream, client: 3.109.251.7, server: learnyzer.com, request: "POST /api/otp/send HTTP/2.0", upstream: "http://127.0.0.1:3000/api/otp/send", host: "learnyzer.com"
+Applying comprehensive nginx configuration...
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+Testing OTP API through nginx...
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>Learnyzer - AI-Powered Indian Entrance Exam Preparation Platform | JEE, NEET, UPSC, CLAT, CUET, CSE</title>
+    <meta name="description" content="Learnyzer combines AI tutoring with gamification to help Indian students prepare for JEE, NEET, UPSC, CLAT, CUET, and CSE entrance exams. Personalized voice coaching, battle challenges, and comprehensive tracking to maximize your score." />
+    <meta name="keywords" content="JEE preparation, NEET coaching, UPSC preparation, CLAT exam, CUET preparation, CSE exam, entrance exam AI, Indian competitive exams, AI tutor for exams, computer science engineering" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://learnyzer.com" />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Learnyzer - AI-Powered Indian Entrance Exam Preparation" />
+    <meta property="og:description" content="Revolutionary platform combining AI voice coaching with gamification to help you ace JEE, NEET, UPSC, CLAT, CUET and CSE entrance exams." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://learnyzer.com" />
+    <meta property="og:image" content="https://learnyzer.com/images/learnyzer-og-image.svg" />
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Learnyzer - AI-Powered Entrance Exam Preparation" />
+    <meta name="twitter:description" content="Prepare for JEE, NEET, UPSC, CLAT, CUET and CSE with our AI voice tutoring platform." />
+    <meta name="twitter:image" content="https://learnyzer.com/images/learnyzer-og-image.svg" />
+
+    <!-- Structured Data for Rich Results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Learnyzer Edtech",
+      "description": "AI-powered preparation platform for Indian entrance exams including JEE, NEET, UPSC, CLAT, and CUET",
+      "url": "https://learnyzer.com",
+      "logo": "https://learnyzer.com/images/logo.png",
+      "sameAs": [
+        "https://www.facebook.com/learnyzer",
+        "https://twitter.com/learnyzer",
+        "https://www.instagram.com/learnyzer"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "India"
+      }
+    }
+    </script>
+
+    <!-- Mobile theme color -->
+    <meta name="theme-color" content="#141625" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.svg" />
+    <script type="module" crossorigin src="/assets/index-3TL2Gb4u.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DfcCqErM.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
+    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
+  </body>
+</html>9:34:56 AM [express] POST /api/otp/send 200 in 2ms
+ubuntu@ip-172-31-7-64:~/Learnyzer$
