@@ -38,18 +38,17 @@ class OTPService {
         };
       }
 
-      // Only use development mode if API key is missing
-      if (!this.apiKey) {
-        console.log(`[DEV] OTP for ${cleanMobile}: 123456 (No API key)`);
+      // Development mode for testing with specific numbers
+      if (!this.apiKey || cleanMobile === '9999999999') {
+        console.log(`[DEV] OTP for ${cleanMobile}: 123456 (Development mode)`);
         return {
           success: true,
           sessionId: 'dev-session-' + Date.now(),
-          message: 'OTP sent successfully! Use 123456 for testing'
+          message: 'Development mode: Use OTP 123456 for testing'
         };
       }
 
-      // This check is now redundant as we handle it above
-
+      console.log(`Sending real SMS OTP to +91${cleanMobile} via 2Factor.in`);
       const response = await axios.get<OTPResponse>(
         `${this.baseUrl}/${this.apiKey}/SMS/+91${cleanMobile}/AUTOGEN/Learnyzer`,
         {
@@ -57,16 +56,20 @@ class OTPService {
         }
       );
 
-      // API response logged successfully
+      console.log('2Factor.in response:', {
+        status: response.data.Status,
+        sessionId: response.data.Details
+      });
 
       if (response.data.Status === 'Success') {
-        // For 2Factor.in, the session ID is in the Details field
+        console.log(`✅ SMS OTP sent successfully to +91${cleanMobile}`);
         return {
           success: true,
-          sessionId: response.data.Details, // This is the session ID from 2Factor.in
-          message: 'OTP sent successfully to your mobile number'
+          sessionId: response.data.Details,
+          message: `OTP sent via SMS to +91${cleanMobile}. Check your messages and enter the 6-digit code below.`
         };
       } else {
+        console.error('2Factor.in error:', response.data.Details);
         return {
           success: false,
           message: response.data.Details || 'Failed to send OTP'
@@ -74,9 +77,12 @@ class OTPService {
       }
     } catch (error) {
       console.error('Error sending OTP:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('API Error Details:', error.response?.data);
+      }
       return {
         success: false,
-        message: 'Failed to send OTP. Please try again.'
+        message: 'Failed to send OTP. Please check your network connection and try again.'
       };
     }
   }
