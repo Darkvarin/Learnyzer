@@ -1,189 +1,103 @@
 #!/bin/bash
 
-echo "🚨 EMERGENCY SERVER FIX - ES MODULE ISSUE"
-echo "========================================"
+echo "EMERGENCY SERVER FIXES FOR REACT CRASH"
+echo "====================================="
 
-cd ~/Learnyzer
+cd /home/ubuntu/Learnyzer
 
-# 1. Kill ALL Node processes aggressively
-echo "1. Force killing all Node processes..."
-sudo pkill -9 -f tsx
-sudo pkill -9 -f node
-sudo pkill -9 -f start-learnyzer
-sudo fuser -k 5000/tcp 2>/dev/null || true
-sleep 3
+echo "1. Creating minimal dashboard to test basic React functionality..."
+cat > client/src/pages/dashboard-minimal.tsx << 'EOF'
+import { SEOHead } from "@/components/seo-head";
 
-# 2. Verify cleanup
-echo "2. Verifying all processes are killed..."
-ps aux | grep -E "node|tsx" | grep -v grep || echo "✅ All Node processes killed"
-
-# 3. Create CommonJS server (using .cjs extension)
-echo "3. Creating CommonJS server (.cjs extension)..."
-cat > fixed-api-server.cjs << 'EOF'
-const express = require('express');
-const path = require('path');
-const fs = require('fs');
-
-console.log('Starting CommonJS Express server...');
-
-const app = express();
-
-// Basic middleware
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: false, limit: "10mb" }));
-
-// Request logging
-app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} ${req.method} ${req.path}`);
-    next();
-});
-
-// API ROUTES FIRST - HIGHEST PRIORITY
-app.get('/api/health', (req, res) => {
-    console.log('✅ Health endpoint called');
-    res.setHeader('Content-Type', 'application/json');
-    res.json({ 
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        server: 'fixed-cjs'
-    });
-});
-
-app.post('/api/otp/send', (req, res) => {
-    console.log('✅ OTP endpoint called with:', req.body);
-    const { mobile } = req.body;
-    
-    // Force JSON content type
-    res.setHeader('Content-Type', 'application/json');
-    
-    if (!mobile) {
-        console.log('❌ Missing mobile number');
-        return res.status(400).json({ 
-            success: false,
-            message: "Mobile number is required" 
-        });
-    }
-    
-    const response = {
-        success: true,
-        sessionId: 'fixed-cjs-' + Date.now(),
-        message: 'Development mode: Use OTP 123456 for testing',
-        mobile: mobile
-    };
-    
-    console.log('✅ Sending OTP response:', response);
-    res.json(response);
-});
-
-app.get('/api/auth/me', (req, res) => {
-    console.log('✅ Auth endpoint called');
-    res.setHeader('Content-Type', 'application/json');
-    res.json({
-        id: 6,
-        username: "Ekansh",
-        name: "Ekansh",
-        authenticated: true
-    });
-});
-
-// Catch-all for unhandled API routes
-app.all('/api/*', (req, res) => {
-    console.log(`❌ Unhandled API route: ${req.method} ${req.path}`);
-    res.setHeader('Content-Type', 'application/json');
-    res.status(404).json({ 
-        error: 'API endpoint not found',
-        path: req.path,
-        method: req.method
-    });
-});
-
-// STATIC FILES AFTER API ROUTES
-const distPath = path.resolve(__dirname, 'dist');
-console.log(`📁 Checking for dist directory: ${distPath}`);
-
-if (fs.existsSync(distPath)) {
-    console.log('📁 Serving static files from dist directory');
-    app.use(express.static(distPath));
-    
-    // SPA fallback for frontend routes ONLY
-    app.get('*', (req, res) => {
-        if (req.path.startsWith('/api/')) {
-            // This should never happen due to API routes above
-            console.log('🚨 ERROR: API route reached static handler:', req.path);
-            return res.status(500).json({ error: 'Server misconfiguration' });
-        }
+function MinimalDashboard() {
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
+      <SEOHead
+        title="Dashboard - Learnyzer"
+        description="Your learning dashboard"
+        keywords="dashboard, learning"
+        canonical="/dashboard"
+      />
+      
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold mb-8 text-center">Dashboard</h1>
         
-        console.log(`🌐 Frontend route: ${req.path}`);
-        res.sendFile(path.resolve(distPath, 'index.html'));
-    });
-} else {
-    console.log('❌ No dist directory found - API only mode');
-    app.get('*', (req, res) => {
-        res.status(404).json({ error: 'Frontend not built' });
-    });
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-gray-800 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-4">Study Progress</h2>
+            <p className="text-gray-300">Track your learning journey</p>
+          </div>
+          
+          <div className="bg-gray-800 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-4">AI Tutor</h2>
+            <p className="text-gray-300">Get personalized help</p>
+          </div>
+          
+          <div className="bg-gray-800 p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-4">Battle Zone</h2>
+            <p className="text-gray-300">Compete with peers</p>
+          </div>
+        </div>
+        
+        <div className="text-center mt-8">
+          <p className="text-green-400 text-lg">✅ React is working correctly!</p>
+          <p className="text-gray-400">If you see this, the basic React app is functional</p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-const port = 5000;
-app.listen(port, '0.0.0.0', () => {
-    console.log(`🚀 Fixed CommonJS server running on port ${port}`);
-    console.log(`✅ API routes registered BEFORE static file middleware`);
-    console.log(`🔗 Test: curl -X POST http://localhost:${port}/api/otp/send -H "Content-Type: application/json" -d '{"mobile": "test"}'`);
-});
+export default MinimalDashboard;
 EOF
 
-echo "4. Starting CommonJS server..."
-node fixed-api-server.cjs > cjs-server.log 2>&1 &
-SERVER_PID=$!
+echo "2. Temporarily switching to minimal dashboard..."
+cp client/src/App.tsx client/src/App.tsx.original
+sed -i 's|import Dashboard from "@/pages/dashboard";|import Dashboard from "@/pages/dashboard-minimal";|' client/src/App.tsx
 
-echo "Server PID: $SERVER_PID"
-sleep 5
+echo "3. Building with minimal dashboard..."
+npm run build 2>&1 | tee build_minimal.log
 
-# 5. Test the server
-echo "5. Testing CommonJS server..."
+if grep -q "error\|Error\|ERROR" build_minimal.log; then
+    echo "❌ Build failed with minimal dashboard:"
+    grep -i error build_minimal.log
+    echo "Reverting..."
+    mv client/src/App.tsx.original client/src/App.tsx
+    exit 1
+fi
 
-echo "Health check:"
-HEALTH=$(curl -s http://localhost:5000/api/health 2>/dev/null || echo "FAILED")
-echo "$HEALTH"
+echo "✅ Clean build with minimal dashboard"
+
+echo "4. Setting permissions and deploying..."
+sudo chown -R ubuntu:ubuntu dist/
+find dist -type f -exec chmod 644 {} \;
+find dist -type d -exec chmod 755 {} \;
+
+# Remove any Replit artifacts
+sed -i '/replit/d' dist/index.html
+
+sudo systemctl restart nginx
+sleep 3
+
+echo "5. Testing minimal dashboard..."
+dashboard_response=$(curl -s -o /dev/null -w "%{http_code}" https://learnyzer.com/dashboard)
+echo "Dashboard response: $dashboard_response"
+
+if [ "$dashboard_response" = "200" ]; then
+    echo "✅ SUCCESS! Minimal dashboard loads"
+    echo ""
+    echo "Visit https://learnyzer.com/dashboard"
+    echo "You should see a simple working dashboard without crashes"
+    echo ""
+    echo "If this works, the issue is in the complex dashboard components"
+    echo "We can then fix the window references step by step"
+else
+    echo "❌ Even minimal dashboard fails - deeper infrastructure issue"
+    mv client/src/App.tsx.original client/src/App.tsx
+fi
 
 echo ""
-echo "OTP API test:"
-OTP_RESPONSE=$(curl -s -X POST http://localhost:5000/api/otp/send \
-  -H "Content-Type: application/json" \
-  -d '{"mobile": "9999999999"}' 2>/dev/null || echo "FAILED")
+echo "Build log saved to: build_minimal.log"
+EOF
 
-echo "Response: $OTP_RESPONSE"
-
-# 6. Check results
-if [[ "$OTP_RESPONSE" == *"success"* ]]; then
-    echo ""
-    echo "🎉 SUCCESS! CommonJS server is working correctly"
-    echo "✅ API endpoints now return proper JSON"
-    echo "📊 Server PID: $SERVER_PID"
-    echo "📄 Log file: cjs-server.log"
-    
-    echo ""
-    echo "7. Recent server logs:"
-    tail -10 cjs-server.log
-    
-    echo ""
-    echo "🔥 Next step: Test through nginx/domain"
-    echo "curl -X POST https://learnyzer.com/api/otp/send -H 'Content-Type: application/json' -d '{\"mobile\": \"9999999999\"}'"
-    
-elif [[ "$OTP_RESPONSE" == *"html"* ]] || [[ "$OTP_RESPONSE" == *"DOCTYPE"* ]]; then
-    echo ""
-    echo "❌ Still returning HTML - deeper configuration issue"
-    echo "Response length: ${#OTP_RESPONSE}"
-    echo "First 200 chars: ${OTP_RESPONSE:0:200}"
-    echo ""
-    echo "Server status:"
-    ps aux | grep -E "node|tsx" | grep -v grep
-    
-else
-    echo ""
-    echo "❌ Server failed to start or respond"
-    echo "Error logs:"
-    tail -20 cjs-server.log 2>/dev/null || echo "No log file found"
-    echo ""
-    echo "Process check:"
-    ps -p $SERVER_PID 2>/dev/null || echo "Server process not running"
-fi
+chmod +x emergency-server-fix.sh
