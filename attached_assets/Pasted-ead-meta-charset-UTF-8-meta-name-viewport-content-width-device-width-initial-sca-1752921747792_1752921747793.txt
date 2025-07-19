@@ -1,0 +1,94 @@
+ead>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learnyzer - AI-Powered Exam Preparation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; margin: 0; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; text-align: center; padding: 20px;
+        }
+        .logo { font-size: 4em; margin-bottom: 20px; }
+        .subtitle { font-size: 1.5em; margin-bottom: 30px; opacity: 0.9; }
+        .status { background: rgba(255,255,255,0.1); padding: 30px;
+                 border-radius: 15px; backdrop-filter: blur(10px); }
+        .btn { background: white; color: #667eea; border: none;
+               padding: 12px 24px; border-radius: 8px; cursor: pointer;
+               font-size: 16px; margin: 10px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); }
+        .result { margin-top: 20px; padding: 15px; border-radius: 8px; }
+        .success { background: rgba(76, 175, 80, 0.2); }
+        .error { background: rgba(244, 67, 54, 0.2); }
+    </style>
+</head>
+<body>
+    <div class="logo">🧠 Learnyzer</div>
+    <div class="subtitle">AI-Powered Educational Platform</div>
+    <div class="status">
+        <h3>Platform Status Dashboard</h3>
+        <p>Backend API: <span id="api-status">Testing...</span></p>
+        <p>PM2 Process: Active</p>
+        <p>SSL Certificate: Valid</p>
+        <button class="btn" onclick="testAPI()">Test API</button>
+        <button class="btn" onclick="testOTP()">Test OTP Service</button>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function testAPI() {
+            showResult('Testing API connection...');
+            fetch('/api/health')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('api-status').textContent = 'Working ✓';
+                    document.getElementById('api-status').style.color = '#4ade80';
+                    showResult('✅ API Health: ' + JSON.stringify(data), 'success');
+                })
+                .catch(err => {
+                    document.getElementById('api-status').textContent = 'Error ✗';
+                    document.getElementById('api-status').style.color = '#ef4444';
+                    showResult('❌ API Error: ' + err.message, 'error');
+                });
+        }
+
+        function testOTP() {
+            showResult('Testing OTP service...');
+            fetch('/api/otp/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mobile: '9999999999' })
+            })
+            .then(r => r.json())
+            .then(data => {
+                showResult('✅ OTP Service: ' + JSON.stringify(data), 'success');
+            })
+            .catch(err => {
+                showResult('❌ OTP Error: ' + err.message, 'error');
+            });
+        }
+
+        function showResult(message, type = '') {
+            const results = document.getElementById('results');
+            results.innerHTML = `<div class="result ${type}">${message}</div>`;
+        }
+
+        // Auto-test API on load
+        setTimeout(testAPI, 1000);
+    </script>
+</body>
+</html>
+Testing frontend:
+HTTP/2 500
+server: nginx/1.24.0 (Ubuntu)
+date: Sat, 19 Jul 2025 10:42:13 GMT
+content-type: text/html
+content-length: 186
+
+3.109.251.7 - - [19/Jul/2025:10:42:13 +0000] "HEAD / HTTP/2.0" 500 0 "-" "curl/8.5.0"
+3.109.251.7 - - [19/Jul/2025:10:42:13 +0000] "HEAD / HTTP/2.0" 500 0 "-" "curl/8.5.0"
+
+Testing API through domain:
+{"success":true,"sessionId":"pm2-backend-1752921733697","message":"Development mode: Use OTP 123456 for testing","mobile":"9999999999"}3.109.251.7 - - [19/Jul/2025:10:42:13 +0000] "POST /api/otp/send HTTP/2.0" 200 135 "-" "curl/8.5.0"
+3.109.251.7 - - [19/Jul/2025:10:42:13 +0000] "POST /api/otp/send HTTP/2.0" 200 135 "-" "curl/8.5.0"
