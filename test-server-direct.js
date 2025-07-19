@@ -1,32 +1,27 @@
-// Direct server test to bypass PM2 issues
-import { register } from 'module';
-import { pathToFileURL } from 'url';
-import dotenv from 'dotenv';
+// Simple test server to verify EC2 connectivity
+const http = require('http');
 
-// Load environment variables
-dotenv.config();
+const server = http.createServer((req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*'
+  });
+  
+  const response = {
+    status: 'success',
+    message: 'EC2 server is accessible!',
+    timestamp: new Date().toISOString(),
+    port: process.env.PORT || 5000,
+    ip: req.connection.remoteAddress
+  };
+  
+  res.end(JSON.stringify(response, null, 2));
+  console.log(`Request from ${req.connection.remoteAddress} at ${new Date()}`);
+});
 
-// Register TypeScript loader for ES modules
-register('tsx/esm', pathToFileURL('./'));
-
-// Set production environment
-process.env.NODE_ENV = 'production';
-
-console.log('🔧 DIRECT SERVER TEST');
-console.log('=====================');
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('PORT:', process.env.PORT || 5000);
-console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
-console.log('OPENAI_API_KEY exists:', !!process.env.OPENAI_API_KEY);
-
-console.log('\n🚀 Starting server directly...');
-
-try {
-    // Import and start the server
-    await import('./server/index.ts');
-    console.log('✅ Server imported successfully');
-} catch (error) {
-    console.error('❌ Server startup failed:', error);
-    console.error('Error stack:', error.stack);
-    process.exit(1);
-}
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`🔍 Test server running on port ${PORT}`);
+  console.log(`Access at: http://YOUR_PUBLIC_IP:${PORT}`);
+  console.log(`Listening on all interfaces (0.0.0.0:${PORT})`);
+});
