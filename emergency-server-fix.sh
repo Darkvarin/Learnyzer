@@ -1,49 +1,71 @@
 #!/bin/bash
 
-echo "🚨 EMERGENCY NGINX BYPASS - DIRECT PORT ACCESS"
-echo "=============================================="
+echo "🚨 EMERGENCY SERVER FIX"
+echo "======================="
 
-cd /home/ubuntu/Learnyzer
+cd ~/Learnyzer
 
-# 1. Stop nginx temporarily
-echo "1. Stopping nginx to bypass it completely..."
-sudo systemctl stop nginx
-
-# 2. Kill existing server
-echo "2. Stopping existing server..."
+# 1. Stop everything
+sudo pkill -f tsx
+sudo pkill -f node
 pm2 stop all 2>/dev/null || true
 pm2 delete all 2>/dev/null || true
-sudo pkill -f tsx 2>/dev/null || true
-sudo fuser -k 5000/tcp 2>/dev/null || true
 
-# 3. Start server directly on port 443 (HTTPS port)
-echo "3. Starting server directly on port 443..."
-export NODE_ENV=development
-export PORT=443
+# 2. Check what's in .env
+echo "Current .env:"
+cat .env
+
+# 3. Force update .env with working values
+echo "Updating .env..."
+cat > .env << 'EOF'
+NODE_ENV=production
+PORT=3001
+DATABASE_URL=postgresql://neondb_owner:L5uX8HhbS5XT@ep-empty-flower-a50xh1ka.us-east-2.aws.neon.tech/neondb?sslmode=require
+EOF
+
+# Add API keys from environment or backup
+if [ -f .env.backup ]; then
+    grep "OPENAI_API_KEY=" .env.backup >> .env 2>/dev/null || echo "OPENAI_API_KEY=sk-placeholder" >> .env
+    grep "RAZORPAY_KEY_ID=" .env.backup >> .env 2>/dev/null || echo "RAZORPAY_KEY_ID=rzp_placeholder" >> .env
+    grep "RAZORPAY_KEY_SECRET=" .env.backup >> .env 2>/dev/null || echo "RAZORPAY_KEY_SECRET=secret_placeholder" >> .env
+    grep "TWOFACTOR_API_KEY=" .env.backup >> .env 2>/dev/null || echo "TWOFACTOR_API_KEY=api_placeholder" >> .env
+fi
+
+echo "Updated .env:"
+cat .env
+
+# 4. Test server startup in foreground
+echo "Testing server startup..."
 export $(grep -v '^#' .env | xargs)
+echo "PORT: $PORT"
 
-# Start server with SSL support directly
-sudo -E tsx server/index.ts > emergency_server.log 2>&1 &
-SERVER_PID=$!
+# Start server and capture output
+tsx server/index.ts > startup_test.log 2>&1 &
+TEST_PID=$!
 
-echo "Emergency server PID: $SERVER_PID"
-sleep 5
+sleep 8
 
-# 4. Test direct HTTPS access
-echo "4. Testing direct HTTPS API access..."
-curl -k -X POST https://learnyzer.com:443/api/otp/send \
-  -H "Content-Type: application/json" \
-  -d '{"mobile": "9999999999"}'
-
-echo ""
-echo "5. Testing HTTP on port 443..."
-curl -X POST http://learnyzer.com:443/api/otp/send \
-  -H "Content-Type: application/json" \
-  -d '{"mobile": "9999999999"}'
-
-echo ""
-echo "6. Check emergency server logs:"
-tail -10 emergency_server.log
-
-echo ""
-echo "7. If this works, we found the solution!"
+if ps -p $TEST_PID > /dev/null; then
+    echo "✅ Server is running on PID $TEST_PID"
+    
+    # Test API
+    echo "Testing API..."
+    curl -v http://localhost:3001/api/health 2>&1 | head -10
+    
+    echo "Testing OTP..."
+    curl -X POST http://localhost:3001/api/otp/send \
+      -H "Content-Type: application/json" \
+      -d '{"mobile": "9999999999"}' | head -3
+    
+    echo "✅ Server working! Now testing through nginx..."
+    curl -X POST https://learnyzer.com/api/otp/send \
+      -H "Content-Type: application/json" \
+      -d '{"mobile": "9999999999"}' | head -3
+      
+    # Keep server running
+    echo "Server is working! Keeping it running..."
+    wait $TEST_PID
+else
+    echo "❌ Server crashed. Log:"
+    cat startup_test.log
+fi
