@@ -37,17 +37,17 @@ export function ReferralSection() {
   };
   
   const shareViaFacebook = () => {
-    if (!referralData?.referralLink) return;
+    if (!referralData?.referralLink || typeof window === 'undefined') return;
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralData.referralLink)}`, '_blank');
   };
   
   const shareViaTwitter = () => {
-    if (!referralData?.referralLink) return;
+    if (!referralData?.referralLink || typeof window === 'undefined') return;
     window.open(`https://twitter.com/intent/tweet?text=Join me on Learnyzer and learn in a fun, gamified way!&url=${encodeURIComponent(referralData.referralLink)}`, '_blank');
   };
   
   const shareViaWhatsApp = () => {
-    if (!referralData?.referralLink) return;
+    if (!referralData?.referralLink || typeof window === 'undefined') return;
     window.open(`https://wa.me/?text=${encodeURIComponent(`Join me on Learnyzer and learn in a fun, gamified way! ${referralData.referralLink}`)}`, '_blank');
   };
 

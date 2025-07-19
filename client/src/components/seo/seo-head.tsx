@@ -49,8 +49,8 @@ export function SEOHead({
       updateStructuredData(structuredData);
     }
 
-    // Add breadcrumb JSON-LD if not homepage
-    if (window.location.pathname !== '/') {
+    // Add breadcrumb JSON-LD if not homepage (with window guard)
+    if (typeof window !== 'undefined' && window.location.pathname !== '/') {
       addBreadcrumbStructuredData();
     }
 

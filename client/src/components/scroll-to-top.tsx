@@ -7,12 +7,14 @@ export function ScrollToTop() {
   useEffect(() => {
     // Add a small delay to ensure proper page transition
     const timer = setTimeout(() => {
-      // Scroll to top with smooth behavior
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth'
-      });
+      // Scroll to top with smooth behavior (with window guard)
+      if (typeof window !== 'undefined') {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+      }
     }, 100); // Small delay to ensure DOM is ready
 
     return () => clearTimeout(timer);
