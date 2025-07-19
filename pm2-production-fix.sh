@@ -1,89 +1,87 @@
 #!/bin/bash
 
-echo "🔧 COMPREHENSIVE PRODUCTION SERVER FIX"
-echo "===================================="
+echo "🚀 PM2 PRODUCTION SOLUTION"
+echo "========================="
 
-# Step 1: Check what's actually running on port 5000
-echo "1. Checking what's running on port 5000..."
-sudo lsof -i :5000
+cd ~/Learnyzer
 
-# Step 2: Stop all processes on port 5000
-echo "2. Stopping all processes on port 5000..."
-sudo fuser -k 5000/tcp
-sleep 2
+# 1. Stop everything and clean up
+echo "1. Stopping all processes..."
+pm2 stop all 2>/dev/null || true
+pm2 delete all 2>/dev/null || true
+sudo pkill -f tsx
+sudo fuser -k 5000/tcp 2>/dev/null
+sudo fuser -k 3001/tcp 2>/dev/null
 
-# Step 3: Clean PM2 and start fresh
-echo "3. Cleaning PM2 processes..."
-pm2 delete all
-pm2 kill
+# 2. Update .env for production
+echo "2. Updating .env for production..."
+cp .env .env.backup
 
-# Step 4: Navigate to correct directory and check files
-echo "4. Checking Learnyzer directory structure..."
-cd /home/ubuntu/Learnyzer
-pwd
-ls -la
+# Create production .env with port 3001
+cat > .env << 'EOF'
+NODE_ENV=production
+PORT=3001
+DATABASE_URL=postgresql://neondb_owner:L5uX8HhbS5XT@ep-empty-flower-a50xh1ka.us-east-2.aws.neon.tech/neondb?sslmode=require
+EOF
 
-# Check if server files exist
-if [ -f "server/index.ts" ]; then
-    echo "✅ server/index.ts found"
-elif [ -f "dist/server/index.js" ]; then
-    echo "✅ dist/server/index.js found"
-elif [ -f "server.js" ]; then
-    echo "✅ server.js found"
-else
-    echo "❌ No server file found"
-    ls -la server/ dist/
-fi
+# Add API keys from backup
+echo "OPENAI_API_KEY=$(grep OPENAI_API_KEY .env.backup | cut -d= -f2)" >> .env
+echo "RAZORPAY_KEY_ID=$(grep RAZORPAY_KEY_ID .env.backup | cut -d= -f2)" >> .env
+echo "RAZORPAY_KEY_SECRET=$(grep RAZORPAY_KEY_SECRET .env.backup | cut -d= -f2)" >> .env
+echo "TWOFACTOR_API_KEY=$(grep TWOFACTOR_API_KEY .env.backup | cut -d= -f2)" >> .env
 
-# Step 5: Start server correctly
-echo "5. Starting server in production mode..."
+echo "Updated .env:"
+grep -E "(NODE_ENV|PORT)" .env
 
-# Try different startup methods
-if [ -f "ecosystem.config.js" ]; then
-    echo "Using ecosystem.config.js..."
-    NODE_ENV=production pm2 start ecosystem.config.js
-elif [ -f "server/index.ts" ]; then
-    echo "Using tsx to start TypeScript server..."
-    NODE_ENV=production pm2 start "tsx server/index.ts" --name "learnyzer"
-elif [ -f "dist/server/index.js" ]; then
-    echo "Using compiled server..."
-    NODE_ENV=production pm2 start dist/server/index.js --name "learnyzer"
-else
-    echo "Using npm start..."
-    NODE_ENV=production pm2 start npm --name "learnyzer" -- start
-fi
+# 3. Update nginx to use port 3001
+echo "3. Updating nginx configuration..."
+sudo sed -i 's/127\.0\.0\.1:5000/127.0.0.1:3001/g' /etc/nginx/sites-available/learnyzer.com
+sudo nginx -t && sudo systemctl reload nginx
 
-# Step 6: Check PM2 status
-echo "6. Checking PM2 status..."
-sleep 3
+# 4. Create PM2 ecosystem for production
+echo "4. Creating PM2 production config..."
+cat > ecosystem.production.config.js << 'EOF'
+module.exports = {
+  apps: [{
+    name: 'learnyzer-production',
+    script: 'tsx',
+    args: 'server/index.ts',
+    cwd: '/home/ubuntu/Learnyzer',
+    env: {
+      NODE_ENV: 'production',
+      PORT: 3001
+    },
+    instances: 1,
+    autorestart: true,
+    watch: false,
+    max_memory_restart: '1G',
+    log_file: '/home/ubuntu/Learnyzer/logs/production.log',
+    error_file: '/home/ubuntu/Learnyzer/logs/error.log',
+    out_file: '/home/ubuntu/Learnyzer/logs/out.log'
+  }]
+};
+EOF
+
+# 5. Create logs directory and start with PM2
+mkdir -p logs
+echo "5. Starting with PM2..."
+pm2 start ecosystem.production.config.js
+
+# 6. Wait and check status
+sleep 10
+echo "6. PM2 status:"
 pm2 status
-pm2 logs learnyzer --lines 10
 
-# Step 7: Test server directly
-echo "7. Testing server directly on localhost..."
-sleep 2
-
-# Test different endpoints
-echo "Testing /api/otp/send:"
-curl -s -X POST http://127.0.0.1:5000/api/otp/send \
+# 7. Test OTP API
+echo "7. Testing OTP API..."
+curl -X POST https://learnyzer.com/api/otp/send \
   -H "Content-Type: application/json" \
-  -d '{"mobile": "9999999999"}' | head -3
+  -d '{"mobile": "9999999999"}'
 
 echo ""
-echo "Testing root endpoint:"
-curl -s http://127.0.0.1:5000/ | head -3
+echo "8. Testing health endpoint..."
+curl -s https://learnyzer.com/api/health
 
 echo ""
-echo "Testing /api/health (if exists):"
-curl -s http://127.0.0.1:5000/api/health | head -3
-
-# Step 8: Check environment variables
-echo "8. Checking environment variables..."
-pm2 env learnyzer | grep -E "(NODE_ENV|DATABASE_URL|TWOFACTOR_API_KEY)"
-
-echo ""
-echo "🔍 If still serving HTML, the issue is likely:"
-echo "1. Server is running in wrong mode (development vs production)"
-echo "2. Static file middleware is catching all routes"
-echo "3. Environment variables not loaded properly"
-echo "4. Wrong server file being executed"
+echo "9. PM2 logs:"
+pm2 logs learnyzer-production --lines 10
